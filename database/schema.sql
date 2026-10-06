@@ -60,7 +60,8 @@ CREATE TABLE IF NOT EXISTS language (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-    CONSTRAINT language_iso_code2_format CHECK (iso_code2 ~ '^[a-z]{2}
+    CONSTRAINT language_iso_code2_format CHECK (iso_code2 ~ '^[a-z]{2}$')
+);
 
 DROP TRIGGER IF EXISTS trg_language_updated_at ON language;
 CREATE TRIGGER trg_language_updated_at
