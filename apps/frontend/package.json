@@ -1,0 +1,33 @@
+{
+  "name": "@lmn24/frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "next build",
+    "start": "node scripts/start.mjs",
+    "lint": "eslint .",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "5.104.0",
+    "bootstrap": "5.3.8",
+    "next": "16.3.8",
+    "next-intl": "4.14.9",
+    "react": "19.3.0",
+    "react-bootstrap": "2.10.10",
+    "react-dom": "19.3.0",
+    "react-hook-form": "7.89.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "16.3.8",
+    "vitest": "^3.2.0"
+  }
+}
