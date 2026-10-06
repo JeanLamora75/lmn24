@@ -33,7 +33,7 @@ FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
 
 ALTER TABLE feed
-    ADD COLUMN language_iso_code2 CHAR(2);
+    ADD COLUMN language_iso_code2 CHAR(2) NOT NULL;
 
 ALTER TABLE feed
     ADD CONSTRAINT feed_language_fk
