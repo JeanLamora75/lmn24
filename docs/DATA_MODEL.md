@@ -134,7 +134,6 @@ Représente un flux XML/RSS provenant d’une `Source`.
 - Un `Feed` appartient à une `Source`.
 - Un `Feed` appartient à une `Category`.
 - Un `Feed` appartient à une `Language`.
-- Un `Feed` peut produire plusieurs `Article`.
 
 ### Contraintes
 
@@ -146,12 +145,12 @@ Représente un flux XML/RSS provenant d’une `Source`.
 
 # 6. Article
 
-Représente une actualité récupérée depuis un `Feed`.
+Représente une actualité provenant directement d’une `Source` (journal ou média).
 
 | Champ | Type | Obligatoire | Description |
 |---|---|---:|---|
 | `id` | UUID | Oui | Identifiant unique |
-| `feedId` | UUID | Oui | Flux ayant fourni l’article |
+| `sourceId` | UUID | Oui | Journal ou média auquel appartient l’article |
 | `title` | String | Oui | Titre de l’article |
 | `summary` | Text | Non | Résumé fourni par le flux |
 | `imageUrl` | String | Non | URL de l’image associée |
@@ -161,7 +160,7 @@ Représente une actualité récupérée depuis un `Feed`.
 
 ### Relations
 
-- Un `Article` appartient à un `Feed`.
+- Un `Article` appartient directement à une `Source`.
 
 ### Contraintes
 
@@ -252,8 +251,8 @@ Représente un utilisateur autorisé à accéder aux interfaces d’administrati
 ```text
 Country
   └── Source
-        └── Feed
-              └── Article
+        ├── Feed
+        └── Article
 
 Language
   └── Feed
@@ -276,7 +275,7 @@ User
 
 - Le modèle doit rester simple pour le MVP.
 - Les flux XML/RSS sont rattachés à une source, une langue et une catégorie.
-- Les articles héritent indirectement de la source, du pays, de la langue et de la catégorie via leur feed.
+- Les articles sont rattachés directement à leur `Source`. Le pays est hérité via la source. La langue et la catégorie restent définies au niveau du `Feed` utilisé lors de l’import, sans relation persistée entre `Article` et `Feed`.
 - Les paramètres techniques et fonctionnels doivent être configurables sans modifier le code.
 - Les traductions de l’interface seront stockées dans des fichiers multilingues séparés.
 - Les données techniques de supervision du parseur sont stockées sur `Feed`.
