@@ -15,7 +15,6 @@ Représente un pays utilisé pour rattacher les sources d’actualités et perme
 | Champ | Type | Obligatoire | Description |
 |---|---|---:|---|
 | `id` | UUID | Oui | Identifiant unique |
-| `name` | String | Oui | Nom du pays, ex. `France` |
 | `isoCode2` | String(2) | Oui | Code ISO 3166-1 alpha-2, ex. `FR` |
 | `isoCode3` | String(3) | Oui | Code ISO 3166-1 alpha-3, ex. `FRA` |
 | `slug` | String | Oui | Valeur utilisée dans les URL, ex. `france` |
@@ -29,10 +28,10 @@ Représente un pays utilisé pour rattacher les sources d’actualités et perme
 - `isoCode3` doit être unique.
 - `slug` doit être unique.
 - Les codes pays utilisent la norme ISO 3166-1.
+- Le nom affiché du pays n'est pas stocké en base : il est lu dans les fichiers multilingues via `isoCode2`.
 
 ### Exemple
 
-- name : `France`
 - isoCode2 : `FR`
 - isoCode3 : `FRA`
 - slug : `france`
@@ -46,16 +45,16 @@ Représente une langue utilisée par les flux et par les pages d’actualités.
 
 | Champ | Type | Obligatoire | Description |
 |---|---|---:|---|
-| `id` | UUID | Oui | Identifiant unique |
-| `name` | String | Oui | Nom de la langue, ex. `Français` |
-| `code` | String | Oui | Code langue, ex. `fr`, `en`, `es` |
+| `isoCode2` | String(2) | Oui | Clé primaire ISO 639-1, ex. `fr`, `en`, `de` |
 | `isActive` | Boolean | Oui | Indique si la langue est active sur le site |
 | `createdAt` | DateTime | Oui | Date de création |
 | `updatedAt` | DateTime | Oui | Date de modification |
 
 ### Contraintes
 
-- `code` doit être unique.
+- `isoCode2` est la clé primaire de la table.
+- `isoCode2` est stocké en minuscules.
+- Le nom affiché de la langue n'est pas stocké en base : il est lu dans les fichiers multilingues via `isoCode2`.
 
 ---
 
@@ -68,7 +67,6 @@ Exemples : Monde, Politique, Économie, Technologie, Sport, Culture, Santé.
 | Champ | Type | Obligatoire | Description |
 |---|---|---:|---|
 | `id` | UUID | Oui | Identifiant unique |
-| `name` | String | Oui | Nom fonctionnel de la catégorie |
 | `slug` | String | Oui | Identifiant utilisable dans les URL |
 | `isActive` | Boolean | Oui | Indique si la catégorie est active |
 | `createdAt` | DateTime | Oui | Date de création |
@@ -78,7 +76,7 @@ Exemples : Monde, Politique, Économie, Technologie, Sport, Culture, Santé.
 
 - `slug` doit être unique.
 
-> Les libellés affichés dans l’interface seront gérés via les fichiers de traduction multilingues et ne devront pas être codés en dur.
+> Les libellés des catégories ne sont pas stockés en base. Le `slug` sert de clé technique et les libellés affichés sont lus dans les fichiers de traduction multilingues.
 
 ---
 
@@ -119,7 +117,7 @@ Représente un flux XML/RSS provenant d’une `Source`.
 | `id` | UUID | Oui | Identifiant unique |
 | `sourceId` | UUID | Oui | Journal auquel appartient le flux |
 | `categoryId` | UUID | Oui | Catégorie d’actualité |
-| `languageId` | UUID | Oui | Langue du flux |
+| `languageIsoCode2` | String(2) | Oui | Code ISO 639-1 de la langue du flux |
 | `feedUrl` | String | Oui | URL du flux XML/RSS |
 | `isActive` | Boolean | Oui | Active ou désactive la récupération du flux |
 | `lastFetchedAt` | DateTime | Non | Date et heure de la dernière récupération |
@@ -280,6 +278,6 @@ User
 - Les flux XML/RSS sont rattachés à une source, une langue et une catégorie.
 - Les articles sont rattachés directement à leur `Source` et à leur `Category`. Le pays est hérité via la source. La langue reste définie au niveau du `Feed` utilisé lors de l’import, sans relation persistée entre `Article` et `Feed`.
 - Les paramètres techniques et fonctionnels doivent être configurables sans modifier le code.
-- Les traductions de l’interface seront stockées dans des fichiers multilingues séparés.
+- Les traductions de l’interface, des pays, des catégories et des langues sont stockées dans des fichiers multilingues séparés sous `/messages`.
 - Les données techniques de supervision du parseur sont stockées sur `Feed`.
 - Les mots de passe sont stockés uniquement sous forme de hash.
