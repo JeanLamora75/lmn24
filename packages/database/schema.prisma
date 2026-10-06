@@ -166,8 +166,11 @@ model Setting {
   // PostgreSQL partial unique indexes used by the current schema:
   // - GLOBAL: key must be unique.
   // - CATEGORY / FEED: (key, scope, scope_id) must be unique.
+  //
+  // The GLOBAL partial unique index is represented below.
+  // The scoped unique index contains nullable scopeId and remains managed by
+  // the SQL migration layer as uq_setting_scoped_key.
   @@unique([key], map: "uq_setting_global_key", where: raw("scope = 'GLOBAL'"))
-  @@unique([key, scope, scopeId], map: "uq_setting_scoped_key", where: raw("scope IN ('CATEGORY', 'FEED')"))
   @@index([scope], map: "idx_setting_scope")
   @@index([scopeId], map: "idx_setting_scope_id")
   @@map("setting")
