@@ -197,6 +197,7 @@ EXECUTE FUNCTION set_updated_at();
 CREATE TABLE IF NOT EXISTS article (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     source_id UUID NOT NULL,
+    category_id UUID NOT NULL,
     title TEXT NOT NULL,
     summary TEXT,
     image_url TEXT,
@@ -209,17 +210,28 @@ CREATE TABLE IF NOT EXISTS article (
         FOREIGN KEY (source_id)
         REFERENCES source(id)
         ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    CONSTRAINT article_category_fk
+        FOREIGN KEY (category_id)
+        REFERENCES category(id)
+        ON UPDATE CASCADE
         ON DELETE RESTRICT
 );
 
 CREATE INDEX IF NOT EXISTS idx_article_source_id
     ON article(source_id);
 
+CREATE INDEX IF NOT EXISTS idx_article_category_id
+    ON article(category_id);
+
 CREATE INDEX IF NOT EXISTS idx_article_published_at
     ON article(published_at DESC);
 
 CREATE INDEX IF NOT EXISTS idx_article_source_published_at
     ON article(source_id, published_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_article_category_published_at
+    ON article(category_id, published_at DESC);
 
 -- ---------------------------------------------------------------------------
 -- SETTING
