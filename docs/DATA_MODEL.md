@@ -134,6 +134,7 @@ Représente un flux XML/RSS provenant d’une `Source`.
 - Un `Feed` appartient à une `Source`.
 - Un `Feed` appartient à une `Category`.
 - Un `Feed` appartient à une `Language`.
+- Un `Feed` peut posséder plusieurs `FeedRun`.
 
 ### Contraintes
 
@@ -152,6 +153,7 @@ Représente une actualité provenant directement d’une `Source` (journal ou m�
 | `id` | UUID | Oui | Identifiant unique |
 | `sourceId` | UUID | Oui | Journal ou média auquel appartient l’article |
 | `categoryId` | UUID | Oui | Catégorie de l’article |
+| `languageIsoCode2` | String(2) | Oui | Code ISO 639-1 de la langue de l’article |
 | `title` | String | Oui | Titre de l’article |
 | `summary` | Text | Non | Résumé fourni par le flux |
 | `imageUrl` | String | Non | URL de l’image associée |
@@ -163,6 +165,7 @@ Représente une actualité provenant directement d’une `Source` (journal ou m�
 
 - Un `Article` appartient directement à une `Source`.
 - Un `Article` appartient à une `Category`.
+- Un `Article` appartient à une `Language`.
 
 ### Contraintes
 
@@ -172,7 +175,41 @@ Représente une actualité provenant directement d’une `Source` (journal ou m�
 
 ---
 
-# 7. Setting
+# 7. FeedRun
+
+Représente l’historique d’une exécution du parser pour un `Feed`.
+
+Cette table permet de superviser les traitements, mesurer leurs performances et diagnostiquer les erreurs.
+
+| Champ | Type | Obligatoire | Description |
+|---|---|---:|---|
+| `id` | UUID | Oui | Identifiant unique |
+| `feedId` | UUID | Oui | Feed concerné par l’exécution |
+| `startedAt` | DateTime | Oui | Date et heure de début du traitement |
+| `finishedAt` | DateTime | Non | Date et heure de fin du traitement |
+| `durationMs` | Integer | Non | Durée totale du traitement en millisecondes |
+| `status` | String | Oui | Statut de l’exécution : `RUNNING`, `SUCCESS`, `ERROR`, etc. |
+| `itemsFound` | Integer | Oui | Nombre d’éléments trouvés dans le flux |
+| `articlesImported` | Integer | Oui | Nombre d’articles réellement ajoutés |
+| `articlesSkipped` | Integer | Oui | Nombre d’articles ignorés, notamment car déjà présents |
+| `errorMessage` | Text | Non | Message d’erreur éventuel |
+| `createdAt` | DateTime | Oui | Date de création de l’enregistrement |
+
+### Relations
+
+- Un `FeedRun` appartient à un `Feed`.
+- Un `Feed` peut posséder plusieurs `FeedRun`.
+
+### Contraintes
+
+- `durationMs` doit être positif ou nul lorsqu’il est renseigné.
+- `itemsFound`, `articlesImported` et `articlesSkipped` doivent être positifs ou nuls.
+- `finishedAt` peut être nul tant que le traitement est en cours.
+- `errorMessage` est principalement utilisé lorsque `status = ERROR`.
+
+---
+
+# 8. Setting
 
 Représente un paramètre configurable depuis l’interface d’administration.
 
@@ -217,7 +254,7 @@ Un paramètre spécifique à un `Feed` ou une `Category` surcharge la valeur glo
 
 ---
 
-# 8. User
+# 9. User
 
 Représente un utilisateur autorisé à accéder aux interfaces d’administration.
 
@@ -248,16 +285,18 @@ Représente un utilisateur autorisé à accéder aux interfaces d’administrati
 
 ---
 
-# 9. Vue synthétique des relations
+# 10. Vue synthétique des relations
 
 ```text
 Country
   └── Source
         ├── Feed
+        │    └── FeedRun
         └── Article
 
 Language
-  └── Feed
+  ├── Feed
+  └── Article
 
 Category
   ├── Feed
@@ -274,12 +313,12 @@ User
 
 ---
 
-# 10. Principes retenus
+# 11. Principes retenus
 
 - Le modèle doit rester simple pour le MVP.
 - Les flux XML/RSS sont rattachés à une source, une langue et une catégorie.
-- Les articles sont rattachés directement à leur `Source` et à leur `Category`. Le pays est hérité via la source. La langue reste définie au niveau du `Feed` utilisé lors de l’import, sans relation persistée entre `Article` et `Feed`.
+- Les articles sont rattachés directement à leur `Source`, à leur `Category` et à leur `Language`. Le pays est hérité via la source. Il n’existe pas de relation persistée entre `Article` et `Feed`.
 - Les paramètres techniques et fonctionnels doivent être configurables sans modifier le code.
 - Les traductions de l’interface, des pays, des catégories et des langues sont stockées dans des fichiers multilingues séparés sous `/messages`.
-- Les données techniques de supervision du parseur sont stockées sur `Feed`.
+- Les données de dernier état du parseur sont stockées sur `Feed` et l’historique des exécutions est conservé dans `FeedRun`.
 - Les mots de passe sont stockés uniquement sous forme de hash.
