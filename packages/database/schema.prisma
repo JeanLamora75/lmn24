@@ -1,0 +1,211 @@
+// LMN24 - Prisma schema
+// Functional reference: docs/DATA_MODEL.md
+// PostgreSQL uses snake_case; Prisma/TypeScript uses camelCase.
+//
+// Important:
+// - CHECK constraints that cannot be expressed directly in Prisma remain enforced
+//   through SQL migrations.
+// - Setting uses partial unique indexes to support GLOBAL/CATEGORY/FEED scopes.
+// - Prisma migrations must be managed only from packages/database.
+
+generator client {
+  provider        = "prisma-client"
+  output          = "./generated/client"
+  previewFeatures = ["partialIndexes"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Country {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  isoCode2  String   @unique(map: "country_iso_code2_unique") @map("iso_code2") @db.Char(2)
+  isoCode3  String   @unique(map: "country_iso_code3_unique") @map("iso_code3") @db.Char(3)
+  slug      String   @unique(map: "country_slug_unique") @db.VarChar(255)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  sources Source[]
+
+  @@map("country")
+}
+
+model Language {
+  isoCode2  String   @id @map("iso_code2") @db.Char(2)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  feeds    Feed[]
+  articles Article[]
+
+  @@map("language")
+}
+
+model Category {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug      String   @unique(map: "category_slug_unique") @db.VarChar(255)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  feeds    Feed[]
+  articles Article[]
+
+  @@map("category")
+}
+
+model Source {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String   @db.VarChar(255)
+  slug       String   @unique(map: "source_slug_unique") @db.VarChar(255)
+  websiteUrl String   @map("website_url") @db.Text
+  logoUrl    String?  @map("logo_url") @db.Text
+  countryId  String   @map("country_id") @db.Uuid
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  country  Country   @relation(fields: [countryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  feeds    Feed[]
+  articles Article[]
+
+  @@index([countryId], map: "idx_source_country_id")
+  @@index([isActive], map: "idx_source_is_active")
+  @@map("source")
+}
+
+model Feed {
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceId             String    @map("source_id") @db.Uuid
+  categoryId           String    @map("category_id") @db.Uuid
+  languageIsoCode2     String    @map("language_iso_code2") @db.Char(2)
+  feedUrl              String    @unique(map: "feed_url_unique") @map("feed_url") @db.Text
+  isActive             Boolean   @default(true) @map("is_active")
+  lastFetchedAt        DateTime? @map("last_fetched_at") @db.Timestamptz(6)
+  lastFetchDurationMs  Int?      @map("last_fetch_duration_ms")
+  lastFetchStatus      String?   @map("last_fetch_status") @db.VarChar(32)
+  lastError            String?   @map("last_error") @db.Text
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  source   Source   @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  language Language @relation(fields: [languageIsoCode2], references: [isoCode2], onDelete: Restrict, onUpdate: Cascade)
+  runs     FeedRun[]
+
+  @@index([sourceId], map: "idx_feed_source_id")
+  @@index([categoryId], map: "idx_feed_category_id")
+  @@index([languageIsoCode2], map: "idx_feed_language_iso_code2")
+  @@index([isActive], map: "idx_feed_is_active")
+  @@index([lastFetchedAt], map: "idx_feed_last_fetched_at")
+  @@map("feed")
+}
+
+model Article {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceId         String   @map("source_id") @db.Uuid
+  categoryId       String   @map("category_id") @db.Uuid
+  languageIsoCode2 String   @map("language_iso_code2") @db.Char(2)
+  title            String   @db.Text
+  summary          String?  @db.Text
+  imageUrl         String?  @map("image_url") @db.Text
+  articleUrl       String   @unique(map: "article_url_unique") @map("article_url") @db.Text
+  publishedAt      DateTime @map("published_at") @db.Timestamptz(6)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  source   Source   @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  language Language @relation(fields: [languageIsoCode2], references: [isoCode2], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([sourceId], map: "idx_article_source_id")
+  @@index([categoryId], map: "idx_article_category_id")
+  @@index([languageIsoCode2], map: "idx_article_language_iso_code2")
+  @@index([publishedAt(sort: Desc)], map: "idx_article_published_at")
+  @@index([sourceId, publishedAt(sort: Desc)], map: "idx_article_source_published_at")
+  @@index([categoryId, publishedAt(sort: Desc)], map: "idx_article_category_published_at")
+  @@index([languageIsoCode2, categoryId, publishedAt(sort: Desc)], map: "idx_article_language_category_published_at")
+  @@map("article")
+}
+
+model FeedRun {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  feedId           String    @map("feed_id") @db.Uuid
+  startedAt        DateTime  @default(now()) @map("started_at") @db.Timestamptz(6)
+  finishedAt       DateTime? @map("finished_at") @db.Timestamptz(6)
+  durationMs       Int?      @map("duration_ms")
+  status           String    @db.VarChar(32)
+  itemsFound       Int       @default(0) @map("items_found")
+  articlesImported Int       @default(0) @map("articles_imported")
+  articlesSkipped  Int       @default(0) @map("articles_skipped")
+  errorMessage     String?   @map("error_message") @db.Text
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  feed Feed @relation(fields: [feedId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([feedId], map: "idx_feed_run_feed_id")
+  @@index([startedAt(sort: Desc)], map: "idx_feed_run_started_at")
+  @@index([status], map: "idx_feed_run_status")
+  @@index([feedId, startedAt(sort: Desc)], map: "idx_feed_run_feed_started_at")
+  @@map("feed_run")
+}
+
+model Setting {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key         String   @db.VarChar(255)
+  value       String   @db.Text
+  type        String   @db.VarChar(32)
+  scope       String   @db.VarChar(32)
+  scopeId     String?  @map("scope_id") @db.Uuid
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // PostgreSQL partial unique indexes used by the current schema:
+  // - GLOBAL: key must be unique.
+  // - CATEGORY / FEED: (key, scope, scope_id) must be unique.
+  @@unique([key], map: "uq_setting_global_key", where: raw("scope = 'GLOBAL'"))
+  @@unique([key, scope, scopeId], map: "uq_setting_scoped_key", where: raw("scope IN ('CATEGORY', 'FEED')"))
+  @@index([scope], map: "idx_setting_scope")
+  @@index([scopeId], map: "idx_setting_scope_id")
+  @@map("setting")
+}
+
+model User {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String    @db.VarChar(320)
+  passwordHash String    @map("password_hash") @db.Text
+  firstName    String?   @map("first_name") @db.VarChar(255)
+  lastName     String?   @map("last_name") @db.VarChar(255)
+  role         String    @default("EDITOR") @db.VarChar(32)
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  sessions Session[]
+
+  // The existing PostgreSQL schema enforces case-insensitive email uniqueness
+  // with UNIQUE INDEX uq_app_user_email_lower ON app_user(LOWER(email)).
+  // Expression indexes are maintained through SQL migrations.
+  @@map("app_user")
+}
+
+model Session {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique(map: "session_token_hash_unique") @map("token_hash") @db.Text
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([userId], map: "idx_session_user_id")
+  @@index([expiresAt], map: "idx_session_expires_at")
+  @@index([revokedAt], map: "idx_session_revoked_at")
+  @@map("session")
+}
