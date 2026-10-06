@@ -271,6 +271,10 @@ Représente un utilisateur autorisé à accéder aux interfaces d’administrati
 | `createdAt` | DateTime | Oui | Date de création |
 | `updatedAt` | DateTime | Oui | Date de modification |
 
+### Relations
+
+- Un `User` peut posséder plusieurs `Session`.
+
 ### Contraintes
 
 - `email` doit être unique.
@@ -285,7 +289,36 @@ Représente un utilisateur autorisé à accéder aux interfaces d’administrati
 
 ---
 
-# 10. Vue synthétique des relations
+# 10. Session
+
+Représente une session d’authentification serveur persistée dans PostgreSQL pour un utilisateur de l’administration.
+
+| Champ | Type | Obligatoire | Description |
+|---|---|---:|---|
+| `id` | UUID | Oui | Identifiant unique de la session |
+| `userId` | UUID | Oui | Utilisateur auquel appartient la session |
+| `tokenHash` | String | Oui | Hash du jeton de session envoyé au navigateur |
+| `expiresAt` | DateTime | Oui | Date et heure d’expiration de la session |
+| `revokedAt` | DateTime | Non | Date et heure de révocation manuelle de la session |
+| `createdAt` | DateTime | Oui | Date et heure de création de la session |
+| `updatedAt` | DateTime | Oui | Date et heure de dernière modification |
+
+### Relations
+
+- Une `Session` appartient à un seul `User`.
+- Un `User` peut posséder plusieurs `Session`, par exemple sur plusieurs navigateurs ou appareils.
+
+### Contraintes
+
+- `tokenHash` doit être unique.
+- Le jeton de session brut ne doit jamais être stocké en base.
+- Une session est valide uniquement si elle n’est pas révoquée et si `expiresAt` est dans le futur.
+- La suppression d’un utilisateur doit entraîner la suppression de ses sessions associées.
+- Les sessions expirées peuvent être supprimées périodiquement.
+
+---
+
+# 11. Vue synthétique des relations
 
 ```text
 Country
@@ -308,12 +341,13 @@ Setting
   └── FEED
 
 User
-  └── Accès aux interfaces d’administration
+  ├── Accès aux interfaces d’administration
+  └── Session
 ```
 
 ---
 
-# 11. Principes retenus
+# 12. Principes retenus
 
 - Le modèle doit rester simple pour le MVP.
 - Les flux XML/RSS sont rattachés à une source, une langue et une catégorie.
@@ -322,3 +356,4 @@ User
 - Les traductions de l’interface, des pays, des catégories et des langues sont stockées dans des fichiers multilingues séparés sous `/messages`.
 - Les données de dernier état du parseur sont stockées sur `Feed` et l’historique des exécutions est conservé dans `FeedRun`.
 - Les mots de passe sont stockés uniquement sous forme de hash.
+- Les sessions d’administration sont persistées dans PostgreSQL. Le navigateur conserve uniquement le jeton de session et la base stocke son hash.
