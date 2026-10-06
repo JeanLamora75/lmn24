@@ -1,0 +1,30 @@
+{
+  "name": "lmn24",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@12.10.0",
+  "engines": {
+    "node": "24.21.0",
+    "pnpm": "12.10.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:generate": "pnpm --filter @lmn24/database prisma:generate",
+    "db:validate": "pnpm --filter @lmn24/database prisma:validate",
+    "db:format": "pnpm --filter @lmn24/database prisma:format",
+    "db:migrate:dev": "pnpm --filter @lmn24/database prisma:migrate:dev",
+    "db:migrate:deploy": "pnpm --filter @lmn24/database prisma:migrate:deploy",
+    "db:studio": "pnpm --filter @lmn24/database prisma:studio"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "turbo": "2.11.2",
+    "typescript": "^5.9.2"
+  }
+}
