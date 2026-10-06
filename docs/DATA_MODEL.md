@@ -62,7 +62,7 @@ Représente une langue utilisée par les flux et par les pages d’actualités.
 
 Représente une catégorie d’actualité.
 
-Exemples : Monde, Politique, Économie, Technologie, Sport, Culture, Santé.
+Référentiel initial : Actualité, International, National, Sports, Faits divers, Technologie, Économie, Politique, Cinéma, Culture, Santé, Éducation, Société, Musique, Télévision, Radio.
 
 | Champ | Type | Obligatoire | Description |
 |---|---|---:|---|
@@ -77,6 +77,8 @@ Exemples : Monde, Politique, Économie, Technologie, Sport, Culture, Santé.
 - `slug` doit être unique.
 
 > Les libellés des catégories ne sont pas stockés en base. Le `slug` sert de clé technique et les libellés affichés sont lus dans les fichiers de traduction multilingues.
+>
+> Slugs officiels : `news`, `international`, `national`, `sports`, `faits-divers`, `technology`, `economy`, `politics`, `cinema`, `culture`, `health`, `education`, `society`, `music`, `television`, `radio`.
 
 ---
 
