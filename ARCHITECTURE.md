@@ -160,6 +160,7 @@ Contient les règles ESLint communes au monorepo.
 - Swagger / OpenAPI ;
 - Pino pour les logs structurés ;
 - cache mémoire NestJS pour le MVP ;
+- bcrypt pour le hash et la vérification des mots de passe ;
 - Nodemailer pour les capacités SMTP ;
 - Vitest.
 
@@ -1039,7 +1040,7 @@ La sécurité doit être prise en compte par défaut.
 - validation systématique des entrées ;
 - authentification robuste ;
 - autorisation par rôle ;
-- hash Argon2id ;
+- hash bcrypt des mots de passe ;
 - cookies HTTP-only ;
 - protection CSRF ;
 - prévention XSS ;
