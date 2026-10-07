@@ -20,6 +20,8 @@ jobs:
     name: Quality checks
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/lmn24
 
     steps:
       - name: Checkout repository
