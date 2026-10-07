@@ -9,9 +9,12 @@
 // - Prisma migrations must be managed only from packages/database.
 
 generator client {
-  provider        = "prisma-client"
-  output          = "./src/generated/prisma"
-  previewFeatures = ["partialIndexes"]
+  provider               = "prisma-client"
+  output                 = "./src/generated/prisma"
+  moduleFormat           = "cjs"
+  generatedFileExtension = "ts"
+  importFileExtension    = ""
+  previewFeatures        = ["partialIndexes"]
 }
 
 datasource db {
