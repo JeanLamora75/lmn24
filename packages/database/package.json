@@ -2,10 +2,18 @@
   "name": "@lmn24/database",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "exports": {
-    ".": "./src/index.ts",
-    "./client": "./src/client.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "require": "./dist/client.js",
+      "default": "./dist/client.js"
+    }
   },
   "scripts": {
     "prisma:generate": "prisma generate",
@@ -13,7 +21,9 @@
     "prisma:format": "prisma format",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "build": "pnpm prisma:generate && tsc -p tsconfig.json",
+    "typecheck": "pnpm prisma:generate && tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
@@ -24,5 +34,7 @@
     "@types/pg": "^8.23.1",
     "dotenv": "^17.2.3",
     "prisma": "^7.10.0"
-  }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts"
 }
