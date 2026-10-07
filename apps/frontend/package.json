@@ -8,9 +8,10 @@
     "start": "node scripts/start.mjs",
     "lint": "eslint .",
     "test": "vitest run --passWithNoTests",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@lmn24/config": "workspace:*",
     "@tanstack/react-query": "5.104.0",
     "bootstrap": "5.3.8",
     "next": "16.3.8",
@@ -19,8 +20,7 @@
     "react-bootstrap": "2.10.10",
     "react-dom": "19.3.0",
     "react-hook-form": "7.89.0",
-    "zod": "^4.0.0",
-    "@lmn24/config": "workspace:*"
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
