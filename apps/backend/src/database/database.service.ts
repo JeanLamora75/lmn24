@@ -19,6 +19,10 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     this.logger.log("Connected to PostgreSQL through Prisma");
   }
 
+  async ping(): Promise<void> {
+    await this.prisma.$queryRaw`SELECT 1`;
+  }
+
   async onModuleDestroy(): Promise<void> {
     await this.prisma.$disconnect();
   }
