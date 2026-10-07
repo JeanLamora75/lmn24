@@ -1,0 +1,27 @@
+{
+  "name": "@lmn24/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@lmn24/eslint-config": "workspace:*",
+    "eslint": "^9.0.0",
+    "typescript": "^5.9.0"
+  }
+}
