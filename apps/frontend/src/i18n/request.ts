@@ -25,7 +25,13 @@ export default getRequestConfig(async ({ requestLocale }) => {
   }
 
   const locale = requestedLocale as AppLocale;
-  const messages = (await messageLoaders[locale]()).default;
+  const loader = messageLoaders[locale];
+
+  if (!loader) {
+    notFound();
+  }
+
+  const messages = (await loader()).default;
 
   return {
     locale,
