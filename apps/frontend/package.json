@@ -19,7 +19,8 @@
     "react-bootstrap": "2.10.10",
     "react-dom": "19.3.0",
     "react-hook-form": "7.89.0",
-    "zod": "^4.0.0"
+    "zod": "^4.0.0",
+    "@lmn24/config": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
