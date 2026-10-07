@@ -1,8 +1,10 @@
 import { spawn } from "node:child_process";
+import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
 try {
   process.loadEnvFile(resolve(currentDir, "../../../.env"));
@@ -11,11 +13,18 @@ try {
 }
 
 const port = process.env.FRONTEND_PORT ?? "3000";
-const command = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
-const child = spawn(command, ["exec", "next", "dev", "--port", port], {
+const nextBin = require.resolve("next/dist/bin/next");
+
+const child = spawn(process.execPath, [nextBin, "dev", "--port", port], {
   stdio: "inherit",
   env: process.env,
-  shell: process.platform === "win32",
 });
 
-child.on("exit", (code) => process.exit(code ?? 0));
+child.on("exit", (code, signal) => {
+  if (signal) {
+    process.kill(process.pid, signal);
+    return;
+  }
+
+  process.exit(code ?? 0);
+});
