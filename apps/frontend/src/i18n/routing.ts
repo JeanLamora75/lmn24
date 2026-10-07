@@ -1,12 +1,17 @@
+import {
+  BOOTSTRAP_DEFAULT_LOCALE,
+  LOCALE_COOKIE_NAME,
+  SUPPORTED_LOCALES,
+} from "@lmn24/config";
 import { defineRouting } from "next-intl/routing";
 
 export const routing = defineRouting({
-  locales: ["fr", "en", "de", "es", "pt", "it", "ru"],
-  defaultLocale: "fr",
+  locales: SUPPORTED_LOCALES,
+  defaultLocale: BOOTSTRAP_DEFAULT_LOCALE,
   localePrefix: "always",
   localeDetection: true,
   localeCookie: {
-    name: "LMN24_LOCALE",
+    name: LOCALE_COOKIE_NAME,
   },
 });
 
