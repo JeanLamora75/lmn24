@@ -1,8 +1,8 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/prisma/client";
 
-function getDatabaseUrl(): string {
-  const databaseUrl = process.env.DATABASE_URL;
+function resolveDatabaseUrl(connectionString?: string): string {
+  const databaseUrl = connectionString ?? process.env.DATABASE_URL;
 
   if (!databaseUrl) {
     throw new Error("DATABASE_URL is required to initialize Prisma.");
@@ -11,12 +11,12 @@ function getDatabaseUrl(): string {
   return databaseUrl;
 }
 
-export function createPrismaClient(): PrismaClient {
+export function createPrismaClient(connectionString?: string): PrismaClient {
   const adapter = new PrismaPg({
-    connectionString: getDatabaseUrl(),
+    connectionString: resolveDatabaseUrl(connectionString),
   });
 
   return new PrismaClient({ adapter });
 }
 
-export const prisma = createPrismaClient();
+export type DatabaseClient = PrismaClient;
