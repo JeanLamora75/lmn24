@@ -496,11 +496,27 @@ Les permissions détaillées relèvent des User Stories et des règles métier.
 
 ### 10.5 Mots de passe
 
-Les mots de passe sont hashés avec **Argon2id**.
+Les mots de passe sont hashés avec **bcrypt**.
+
+Le backend NestJS est la référence applicative pour :
+
+- générer les hashes bcrypt lors de la création ou modification d’un mot de passe ;
+- vérifier un mot de passe lors de l’authentification ;
+- utiliser un coût bcrypt adapté, avec une valeur cible initiale de **12 rounds**.
 
 Ils ne sont jamais stockés ni journalisés en clair.
 
-Politique minimale :
+La colonne PostgreSQL `app_user.password_hash` contient uniquement le hash bcrypt.
+
+Pour les besoins de bootstrap ou de test local, PostgreSQL peut générer un hash bcrypt compatible via l’extension `pgcrypto`, par exemple :
+
+```sql
+crypt('mot_de_passe', gen_salt('bf', 12))
+```
+
+Cette possibilité est réservée aux opérations de bootstrap/test et ne remplace pas la logique d’authentification du backend.
+
+Politique minimale pour les comptes créés via l’application :
 
 - 12 caractères ;
 - au moins une majuscule ;
@@ -509,6 +525,8 @@ Politique minimale :
 - au moins un caractère spécial.
 
 La règle est validée côté frontend pour l’UX et obligatoirement côté backend pour la sécurité.
+
+Les comptes de test locaux peuvent utiliser des identifiants simplifiés lorsqu’ils sont explicitement créés pour le développement et ne sont jamais utilisés hors environnement local.
 
 ### 10.6 Email
 
