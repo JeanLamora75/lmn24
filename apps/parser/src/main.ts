@@ -1,3 +1,4 @@
+import type { ApiErrorResponse, HealthResponse } from "@lmn24/contracts";
 import { createServer } from "node:http";
 import { resolve } from "node:path";
 
@@ -20,26 +21,28 @@ const server = createServer((request, response) => {
     response.writeHead(200, {
       "content-type": "application/json; charset=utf-8",
     });
-    response.end(
-      JSON.stringify({
-        status: "ok",
-        service: "parser",
-      }),
-    );
+
+    const health: HealthResponse = {
+      status: "ok",
+      service: "parser",
+    };
+
+    response.end(JSON.stringify(health));
     return;
   }
 
   response.writeHead(404, {
     "content-type": "application/json; charset=utf-8",
   });
-  response.end(
-    JSON.stringify({
-      statusCode: 404,
-      code: "NOT_FOUND",
-      message: "Route not found",
-      timestamp: new Date().toISOString(),
-    }),
-  );
+
+  const error: ApiErrorResponse = {
+    statusCode: 404,
+    code: "NOT_FOUND",
+    message: "Route not found",
+    timestamp: new Date().toISOString(),
+  };
+
+  response.end(JSON.stringify(error));
 });
 
 server.listen(port, () => {
