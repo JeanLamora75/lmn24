@@ -15,6 +15,7 @@ const command = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
 const child = spawn(command, ["exec", "next", "start", "--port", port], {
   stdio: "inherit",
   env: process.env,
+  shell: process.platform === "win32",
 });
 
 child.on("exit", (code) => process.exit(code ?? 0));
