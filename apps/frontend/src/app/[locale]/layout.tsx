@@ -7,7 +7,7 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { routing } from "@/i18n/routing";
+import { routing, type AppLocale } from "@/i18n/routing";
 
 export const metadata: Metadata = {
   title: { default: "LMN24", template: "%s | LMN24" },
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
+  return routing.locales.map((locale: AppLocale) => ({ locale }));
 }
 
 type Props = Readonly<{
