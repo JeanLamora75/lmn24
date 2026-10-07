@@ -1,3 +1,4 @@
+import type { HealthResponse } from "@lmn24/contracts";
 import {
   Controller,
   Get,
@@ -19,7 +20,7 @@ export class HealthController {
   @Get()
   @ApiOkResponse({ description: "Backend and database operational status" })
   @ApiServiceUnavailableResponse({ description: "Database unavailable" })
-  async getHealth() {
+  async getHealth(): Promise<HealthResponse> {
     try {
       await this.databaseService.ping();
 
@@ -29,11 +30,13 @@ export class HealthController {
         database: "up",
       };
     } catch {
-      throw new ServiceUnavailableException({
+      const response: HealthResponse = {
         status: "error",
         service: "backend",
         database: "down",
-      });
+      };
+
+      throw new ServiceUnavailableException(response);
     }
   }
 }
