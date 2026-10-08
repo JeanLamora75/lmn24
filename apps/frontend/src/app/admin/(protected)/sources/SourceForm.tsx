@@ -261,18 +261,6 @@ export function SourceForm({ mode, sourceId }: Props) {
       [key]: value,
     }));
 
-    if (
-      key === "name" ||
-      key === "slug" ||
-      key === "websiteUrl" ||
-      key === "countryId"
-    ) {
-      setFieldErrors((current) => {
-        const next = { ...current };
-        delete next[key];
-        return next;
-      });
-    }
   };
 
   const validate = (): boolean => {
