@@ -10,13 +10,13 @@ import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import styles from "./PublicHeader.module.css";
 
 const LANGUAGE_FLAGS: Record<SupportedLocale, string> = {
-  fr: "🇫🇷",
-  en: "🇬🇧",
-  de: "🇩🇪",
-  es: "🇪🇸",
-  pt: "🇵🇹",
-  it: "🇮🇹",
-  ru: "🇷🇺",
+  fr: "/flags/fr.png",
+  en: "/flags/en.png",
+  de: "/flags/de.png",
+  es: "/flags/es.png",
+  pt: "/flags/pt.png",
+  it: "/flags/it.png",
+  ru: "/flags/ru.png",
 };
 
 function isSupportedLocale(locale: string): locale is SupportedLocale {
@@ -82,7 +82,7 @@ export function PublicHeader() {
     <header
       className={`sticky-top bg-white border-bottom shadow-sm ${styles.header}`}
     >
-      <div className="container-fluid d-flex align-items-center justify-content-between px-3 px-md-4">
+      <div className="container-fluid d-flex align-items-center justify-content-between ps-3 ps-md-4 pe-0">
         <Link href="/" className={styles.logoLink} aria-label="LMN24">
           <Image
             src="/logo_lmn24.png"
@@ -90,10 +90,12 @@ export function PublicHeader() {
             height={64}
             alt="LMN24"
             className={styles.logo}
+            unoptimized
+            priority
           />
         </Link>
 
-        <div className="dropdown" ref={dropdownRef}>
+        <div className={`dropdown ${styles.languageDropdown}`} ref={dropdownRef}>
           <button
             ref={toggleRef}
             type="button"
@@ -105,14 +107,20 @@ export function PublicHeader() {
             title={tLanguages(locale)}
             onClick={() => setIsOpen((current) => !current)}
           >
-            <span className={styles.currentFlag} aria-hidden="true">
-              {LANGUAGE_FLAGS[locale]}
-            </span>
+            <Image
+              src={LANGUAGE_FLAGS[locale]}
+              width={32}
+              height={32}
+              alt=""
+              aria-hidden="true"
+              className={styles.currentFlag}
+              unoptimized
+            />
           </button>
 
           <ul
             id="public-language-menu"
-            className={`dropdown-menu dropdown-menu-end mt-2 ${styles.languageMenu} ${
+            className={`dropdown-menu mt-2 ${styles.languageMenu} ${
               isOpen ? "show" : ""
             }`}
             role="menu"
@@ -129,9 +137,15 @@ export function PublicHeader() {
                   }`}
                   onClick={() => changeLanguage(language)}
                 >
-                  <span className={styles.flag} aria-hidden="true">
-                    {LANGUAGE_FLAGS[language]}
-                  </span>
+                  <Image
+                    src={LANGUAGE_FLAGS[language]}
+                    width={28}
+                    height={28}
+                    alt=""
+                    aria-hidden="true"
+                    className={styles.flag}
+                    unoptimized
+                  />
                   <span>{tLanguages(language)}</span>
                 </button>
               </li>
