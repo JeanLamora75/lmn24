@@ -5,8 +5,8 @@ import { DatabaseService } from "../database/database.service";
 export type SourceStatusFilter = "all" | "active" | "inactive";
 
 export type ListSourcesParams = {
-  search?: string;
-  countryId?: string;
+  search: string | undefined;
+  countryId: string | undefined;
   status: SourceStatusFilter;
   page: number;
   pageSize: number;
