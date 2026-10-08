@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { ChangeEvent, useState } from "react";
 
 import styles from "./import-csv.module.css";
 
@@ -17,7 +20,70 @@ const IMPORT_TYPES = [
   },
 ] as const;
 
+const CSV_MIME_TYPES = new Set([
+  "",
+  "text/csv",
+  "application/csv",
+  "application/vnd.ms-excel",
+  "text/plain",
+]);
+
+type Feedback =
+  | {
+      kind: "danger" | "success";
+      message: string;
+    }
+  | null;
+
+function isCsvFile(file: File): boolean {
+  const hasCsvExtension = file.name.toLocaleLowerCase().endsWith(".csv");
+  const hasAcceptedMime = CSV_MIME_TYPES.has(file.type.toLocaleLowerCase());
+
+  return hasCsvExtension && hasAcceptedMime;
+}
+
 export default function ImportCsvPage() {
+  const [importType, setImportType] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [feedback, setFeedback] = useState<Feedback>(null);
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSelectedFile(event.target.files?.[0] ?? null);
+    setFeedback(null);
+  };
+
+  const validateFile = () => {
+    if (!importType) {
+      setFeedback({
+        kind: "danger",
+        message: "Sélectionnez un type d’import.",
+      });
+      return;
+    }
+
+    if (!selectedFile) {
+      setFeedback({
+        kind: "danger",
+        message: "Sélectionnez un fichier CSV.",
+      });
+      return;
+    }
+
+    if (!isCsvFile(selectedFile)) {
+      setFeedback({
+        kind: "danger",
+        message: "Le fichier sélectionné doit être au format CSV.",
+      });
+      return;
+    }
+
+    setFeedback({
+      kind: "success",
+      message:
+        "Le type d’import et le fichier CSV sont valides. Le fichier est prêt pour le traitement.",
+    });
+  };
+
   return (
     <main className="container py-4 py-lg-5">
       <div className="mb-4">
@@ -42,7 +108,11 @@ export default function ImportCsvPage() {
             id="csv-import-type"
             name="importType"
             className="form-select"
-            defaultValue=""
+            value={importType}
+            onChange={(event) => {
+              setImportType(event.target.value);
+              setFeedback(null);
+            }}
           >
             <option value="" disabled>
               Sélectionner un type d’import
@@ -65,28 +135,55 @@ export default function ImportCsvPage() {
           Fichier CSV
         </h2>
 
-        <div className="alert alert-info mb-4" role="note">
-          Sélectionnez le type de données à mettre à jour puis choisissez le
-          fichier CSV à importer. Les contrôles et règles d’import dépendent du
-          type de données sélectionné.
-        </div>
+        <label className="form-label" htmlFor="csv-file">
+          Pièce jointe
+        </label>
 
-        <div>
-          <label className="form-label" htmlFor="csv-file">
-            Pièce jointe
-          </label>
+        <div className="input-group">
           <input
             id="csv-file"
             name="csvFile"
             type="file"
             className="form-control"
             accept=".csv,text/csv"
-            aria-describedby="csv-file-help"
+            aria-describedby="csv-file-help csv-import-feedback"
+            onChange={handleFileChange}
           />
-          <div className="form-text" id="csv-file-help">
-            Format accepté : fichier CSV (.csv).
-          </div>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={validateFile}
+          >
+            Charger le fichier
+          </button>
         </div>
+
+        <div className="mt-3" id="csv-file-help">
+          <p className="small text-body-secondary mb-1">
+            Sélectionnez le type de données à mettre à jour puis choisissez le
+            fichier CSV à importer.
+          </p>
+          <p className="small text-body-secondary mb-0">
+            Format accepté : fichier CSV (.csv). Les contrôles et règles
+            d’import dépendent du type de données sélectionné.
+          </p>
+        </div>
+
+        {feedback ? (
+          <div
+            id="csv-import-feedback"
+            className={
+              "alert mt-3 mb-0 " +
+              (feedback.kind === "success"
+                ? "alert-success"
+                : "alert-danger")
+            }
+            role={feedback.kind === "danger" ? "alert" : "status"}
+            aria-live="polite"
+          >
+            {feedback.message}
+          </div>
+        ) : null}
       </section>
     </main>
   );
