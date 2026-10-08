@@ -39,6 +39,24 @@ type SourceAnalysis = {
   duplicates: number;
 };
 
+type FeedAnalysis = {
+  feedsFound: number;
+  newFeeds: number;
+  errorFeeds: number;
+  duplicates: number;
+};
+
+type AnalysisState =
+  | {
+      kind: "sources";
+      data: SourceAnalysis;
+    }
+  | {
+      kind: "feeds";
+      data: FeedAnalysis;
+    }
+  | null;
+
 function isCsvFile(file: File): boolean {
   const hasCsvExtension = file.name.toLocaleLowerCase().endsWith(".csv");
   const hasAcceptedMime = CSV_MIME_TYPES.has(file.type.toLocaleLowerCase());
@@ -72,7 +90,7 @@ export default function ImportCsvPage() {
   const [importType, setImportType] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [feedback, setFeedback] = useState<Feedback>(null);
-  const [analysis, setAnalysis] = useState<SourceAnalysis | null>(null);
+  const [analysis, setAnalysis] = useState<AnalysisState>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [importing, setImporting] = useState(false);
 
@@ -133,15 +151,17 @@ export default function ImportCsvPage() {
       return;
     }
 
-    if (importType !== "sources") {
+    if (importType === "articles") {
       setAnalysis(null);
       setFeedback({
         kind: "info",
         message:
-          "Le fichier est prêt. Le traitement spécifique de ce type d’import sera réalisé dans une User Story dédiée.",
+          "Le fichier est prêt. Le traitement spécifique de l’import des articles sera réalisé dans une User Story dédiée.",
       });
       return;
     }
+
+    const target = importType === "sources" ? "sources" : "feeds";
 
     setAnalyzing(true);
     setAnalysis(null);
@@ -152,7 +172,7 @@ export default function ImportCsvPage() {
       formData.append("file", file);
 
       const response = await fetch(
-        "/api/admin/import-csv/sources/analyze",
+        "/api/admin/import-csv/" + target + "/analyze",
         {
           method: "POST",
           body: formData,
@@ -173,8 +193,18 @@ export default function ImportCsvPage() {
         );
       }
 
-      const result = (await response.json()) as SourceAnalysis;
-      setAnalysis(result);
+      if (target === "sources") {
+        setAnalysis({
+          kind: "sources",
+          data: (await response.json()) as SourceAnalysis,
+        });
+      } else {
+        setAnalysis({
+          kind: "feeds",
+          data: (await response.json()) as FeedAnalysis,
+        });
+      }
+
       setFeedback({
         kind: "info",
         message:
@@ -193,7 +223,7 @@ export default function ImportCsvPage() {
     }
   };
 
-  const importSources = async () => {
+  const importAnalyzedData = async () => {
     if (!selectedFile || !analysis || importing || analyzing) {
       return;
     }
@@ -206,7 +236,7 @@ export default function ImportCsvPage() {
       formData.append("file", selectedFile);
 
       const response = await fetch(
-        "/api/admin/import-csv/sources/import",
+        "/api/admin/import-csv/" + analysis.kind + "/import",
         {
           method: "POST",
           body: formData,
@@ -222,7 +252,9 @@ export default function ImportCsvPage() {
         throw new Error(
           await readErrorMessage(
             response,
-            "L’import des sources a échoué.",
+            analysis.kind === "sources"
+              ? "L’import des sources a échoué."
+              : "L’import des flux RSS/XML a échoué.",
           ),
         );
       }
@@ -234,9 +266,13 @@ export default function ImportCsvPage() {
       setFeedback({
         kind: "success",
         message:
-          "Import terminé avec succès. " +
-          result.imported +
-          " source(s) ont été ajoutée(s).",
+          analysis.kind === "sources"
+            ? "Import terminé avec succès. " +
+              result.imported +
+              " source(s) ont été ajoutée(s)."
+            : "Import terminé avec succès. " +
+              result.imported +
+              " flux RSS/XML ont été ajoutés.",
       });
 
       redirectTimer.current = setTimeout(() => {
@@ -248,12 +284,19 @@ export default function ImportCsvPage() {
         message:
           error instanceof Error
             ? error.message
-            : "L’import des sources a échoué.",
+            : "L’import a échoué.",
       });
     } finally {
       setImporting(false);
     }
   };
+
+  const expectedHeader =
+    importType === "sources"
+      ? "name,slug,websiteUrl,country,isActive"
+      : importType === "feeds"
+        ? "sourceWebsiteUrl,category,language,feedUrl,isActive"
+        : null;
 
   return (
     <main className="container py-4 py-lg-5">
@@ -337,11 +380,15 @@ export default function ImportCsvPage() {
             Sélectionnez le type de données à mettre à jour puis choisissez le
             fichier CSV à importer.
           </p>
-          <p className="small text-body-secondary mb-0">
-            Pour les sources, l’en-tête attendu est :
-            {" "}
-            <code>name,slug,websiteUrl,country,isActive</code>.
-          </p>
+          {expectedHeader ? (
+            <p className="small text-body-secondary mb-0">
+              En-tête attendu : <code>{expectedHeader}</code>.
+            </p>
+          ) : (
+            <p className="small text-body-secondary mb-0">
+              Format accepté : fichier CSV (.csv).
+            </p>
+          )}
         </div>
 
         {feedback ? (
@@ -366,41 +413,65 @@ export default function ImportCsvPage() {
       {analysis ? (
         <section
           className="card border-0 shadow-sm mt-4"
-          aria-labelledby="source-import-summary-title"
+          aria-labelledby="csv-import-summary-title"
         >
           <div className="card-body p-4">
-            <h2 className="h5 mb-3" id="source-import-summary-title">
+            <h2 className="h5 mb-3" id="csv-import-summary-title">
               Résultat de l’analyse
             </h2>
 
-            <dl className="row mb-4">
-              <dt className="col-8 col-md-6">Sources trouvées</dt>
-              <dd className="col-4 col-md-6 text-end text-md-start">
-                {analysis.sourcesFound}
-              </dd>
+            {analysis.kind === "sources" ? (
+              <dl className="row mb-4">
+                <dt className="col-8 col-md-6">Sources trouvées</dt>
+                <dd className="col-4 col-md-6 text-end text-md-start">
+                  {analysis.data.sourcesFound}
+                </dd>
 
-              <dt className="col-8 col-md-6">Nouvelles sources</dt>
-              <dd className="col-4 col-md-6 text-end text-md-start">
-                {analysis.newSources}
-              </dd>
+                <dt className="col-8 col-md-6">Nouvelles sources</dt>
+                <dd className="col-4 col-md-6 text-end text-md-start">
+                  {analysis.data.newSources}
+                </dd>
 
-              <dt className="col-8 col-md-6">Sources en erreur</dt>
-              <dd className="col-4 col-md-6 text-end text-md-start">
-                {analysis.errorSources}
-              </dd>
+                <dt className="col-8 col-md-6">Sources en erreur</dt>
+                <dd className="col-4 col-md-6 text-end text-md-start">
+                  {analysis.data.errorSources}
+                </dd>
 
-              <dt className="col-8 col-md-6">Doublons</dt>
-              <dd className="col-4 col-md-6 text-end text-md-start">
-                {analysis.duplicates}
-              </dd>
-            </dl>
+                <dt className="col-8 col-md-6">Doublons</dt>
+                <dd className="col-4 col-md-6 text-end text-md-start">
+                  {analysis.data.duplicates}
+                </dd>
+              </dl>
+            ) : (
+              <dl className="row mb-4">
+                <dt className="col-8 col-md-6">Flux trouvés</dt>
+                <dd className="col-4 col-md-6 text-end text-md-start">
+                  {analysis.data.feedsFound}
+                </dd>
+
+                <dt className="col-8 col-md-6">Nouveaux flux</dt>
+                <dd className="col-4 col-md-6 text-end text-md-start">
+                  {analysis.data.newFeeds}
+                </dd>
+
+                <dt className="col-8 col-md-6">Flux en erreur</dt>
+                <dd className="col-4 col-md-6 text-end text-md-start">
+                  {analysis.data.errorFeeds}
+                </dd>
+
+                <dt className="col-8 col-md-6">Doublons</dt>
+                <dd className="col-4 col-md-6 text-end text-md-start">
+                  {analysis.data.duplicates}
+                </dd>
+              </dl>
+            )}
 
             <div className="d-flex flex-column flex-sm-row gap-2">
               <button
                 type="button"
                 className="btn btn-primary"
                 disabled={importing || analyzing}
-                onClick={() => void importSources()}
+                onClick={() => void importAnalyzedData()}
               >
                 {importing ? "Chargement…" : "Charger"}
               </button>
