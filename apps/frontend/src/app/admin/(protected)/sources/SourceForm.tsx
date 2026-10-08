@@ -180,14 +180,26 @@ export function SourceForm({ mode, sourceId }: Props) {
           throw new Error("load-failed");
         }
 
-        const countriesPayload = (await responses[0].json()) as {
+        const countriesResponse = responses[0];
+
+        if (!countriesResponse) {
+          throw new Error("load-failed");
+        }
+
+        const countriesPayload = (await countriesResponse.json()) as {
           items: CountryItem[];
         };
 
         setCountries(countriesPayload.items);
 
         if (mode === "edit") {
-          const source = (await responses[1].json()) as SourceData;
+          const sourceResponse = responses[1];
+
+          if (!sourceResponse) {
+            throw new Error("load-failed");
+          }
+
+          const source = (await sourceResponse.json()) as SourceData;
           setValues({
             name: source.name,
             slug: source.slug,
@@ -249,10 +261,18 @@ export function SourceForm({ mode, sourceId }: Props) {
       [key]: value,
     }));
 
-    setFieldErrors((current) => ({
-      ...current,
-      [key]: undefined,
-    }));
+    if (
+      key === "name" ||
+      key === "slug" ||
+      key === "websiteUrl" ||
+      key === "countryId"
+    ) {
+      setFieldErrors((current) => {
+        const next = { ...current };
+        delete next[key];
+        return next;
+      });
+    }
   };
 
   const validate = (): boolean => {
@@ -302,10 +322,11 @@ export function SourceForm({ mode, sourceId }: Props) {
       return;
     }
 
-    setFieldErrors((current) => ({
-      ...current,
-      image: undefined,
-    }));
+    setFieldErrors((current) => {
+      const next = { ...current };
+      delete next.image;
+      return next;
+    });
     setSelectedFile(file);
   };
 
