@@ -132,6 +132,7 @@ export function SourceForm({ mode, sourceId }: Props) {
       return;
     }
 
+    const editSourceId = sourceId;
     const controller = new AbortController();
 
     async function load() {
@@ -140,7 +141,7 @@ export function SourceForm({ mode, sourceId }: Props) {
 
       try {
         const response = await fetch(
-          "/api/admin/sources/" + encodeURIComponent(sourceId),
+          "/api/admin/sources/" + encodeURIComponent(editSourceId),
           {
             cache: "no-store",
             signal: controller.signal,
