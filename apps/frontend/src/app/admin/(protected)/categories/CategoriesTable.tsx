@@ -223,12 +223,6 @@ export function CategoriesTable() {
   const totalPages = Math.ceil(filteredItems.length / pageSize);
   const safePage = totalPages === 0 ? 1 : Math.min(page, totalPages);
 
-  useEffect(() => {
-    if (safePage !== page) {
-      setPage(safePage);
-    }
-  }, [page, safePage]);
-
   const visibleItems = useMemo(() => {
     const start = (safePage - 1) * pageSize;
     return filteredItems.slice(start, start + pageSize);
