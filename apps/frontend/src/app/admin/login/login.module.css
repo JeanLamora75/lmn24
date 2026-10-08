@@ -1,0 +1,20 @@
+.card {
+  width: min(100%, 30rem);
+}
+
+.logo {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+}
+
+.eyeButton {
+  display: inline-flex;
+  min-width: 3rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.eyeButton:focus-visible {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
