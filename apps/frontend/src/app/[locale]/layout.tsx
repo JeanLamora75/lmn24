@@ -7,6 +7,7 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { PublicFooter } from "@/components/public/PublicFooter";
 import { PublicHeader } from "@/components/public/PublicHeader";
 import { routing, type AppLocale } from "@/i18n/routing";
 
@@ -35,10 +36,11 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <html lang={locale}>
-      <body>
+      <body className="d-flex min-vh-100 flex-column">
         <NextIntlClientProvider>
           <PublicHeader />
-          {children}
+          <div className="flex-grow-1">{children}</div>
+          <PublicFooter />
         </NextIntlClientProvider>
       </body>
     </html>
