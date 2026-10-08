@@ -1,0 +1,76 @@
+.header {
+  z-index: 1030;
+  min-height: 72px;
+}
+
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.5rem;
+}
+
+.logoLink:focus-visible {
+  outline: 3px solid rgba(13, 110, 253, 0.35);
+  outline-offset: 2px;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.languageButton {
+  display: inline-flex;
+  width: 3rem;
+  height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.languageButton:hover,
+.languageButton:focus-visible {
+  background-color: #f1f3f5;
+}
+
+.languageButton:focus-visible {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.currentFlag {
+  line-height: 1;
+}
+
+.languageMenu {
+  min-width: 12rem;
+  max-height: min(70vh, 28rem);
+  overflow-y: auto;
+}
+
+.flag {
+  display: inline-flex;
+  width: 1.75rem;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+@media (max-width: 767.98px) {
+  .header {
+    min-height: 64px;
+  }
+
+  .logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .languageButton {
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.55rem;
+  }
+}
