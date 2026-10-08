@@ -23,7 +23,8 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.0",
     "zod": "^4.0.0",
-    "@lmn24/contracts": "workspace:*"
+    "@lmn24/contracts": "workspace:*",
+    "playwright": "1.63.0"
   },
   "devDependencies": {
     "@nestjs/cli": "12.0.8",

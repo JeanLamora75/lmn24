@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-function getBackendUrl(): string {
+export function getBackendUrl(): string {
   return (
     process.env.BACKEND_INTERNAL_URL ??
     process.env.NEXT_PUBLIC_BACKEND_URL ??

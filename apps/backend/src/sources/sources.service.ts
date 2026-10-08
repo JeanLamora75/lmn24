@@ -1,6 +1,12 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 
 import { DatabaseService } from "../database/database.service";
+import { SourceMediaService } from "./source-media.service";
 
 export type SourceStatusFilter = "all" | "active" | "inactive";
 
@@ -12,9 +18,21 @@ export type ListSourcesParams = {
   pageSize: number;
 };
 
+export type SourceInput = {
+  name: string;
+  slug: string;
+  websiteUrl: string;
+  countryId: string;
+  isActive: boolean;
+  logoUrl?: string | null | undefined;
+};
+
 @Injectable()
 export class SourcesService {
-  constructor(private readonly database: DatabaseService) {}
+  constructor(
+    private readonly database: DatabaseService,
+    private readonly media: SourceMediaService,
+  ) {}
 
   async list(params: ListSourcesParams) {
     const search = params.search?.trim();
@@ -87,6 +105,103 @@ export class SourcesService {
     });
   }
 
+  async listFormCountries() {
+    return this.database.prisma.country.findMany({
+      where: {
+        isActive: true,
+      },
+      orderBy: {
+        isoCode2: "asc",
+      },
+      select: {
+        id: true,
+        isoCode2: true,
+      },
+    });
+  }
+
+  async getById(id: string) {
+    const source = await this.database.prisma.source.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        websiteUrl: true,
+        logoUrl: true,
+        countryId: true,
+        isActive: true,
+      },
+    });
+
+    if (!source) {
+      throw new NotFoundException("Source introuvable.");
+    }
+
+    return source;
+  }
+
+  async create(input: SourceInput) {
+    await this.assertCountryExists(input.countryId);
+    await this.assertSlugAvailable(input.slug);
+
+    return this.database.prisma.source.create({
+      data: {
+        name: input.name.trim(),
+        slug: input.slug.trim(),
+        websiteUrl: input.websiteUrl.trim(),
+        countryId: input.countryId,
+        isActive: input.isActive,
+        logoUrl: input.logoUrl ?? null,
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  async update(id: string, input: SourceInput) {
+    const existing = await this.database.prisma.source.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        logoUrl: true,
+      },
+    });
+
+    if (!existing) {
+      throw new NotFoundException("Source introuvable.");
+    }
+
+    await this.assertCountryExists(input.countryId);
+    await this.assertSlugAvailable(input.slug, id);
+
+    const updated = await this.database.prisma.source.update({
+      where: { id },
+      data: {
+        name: input.name.trim(),
+        slug: input.slug.trim(),
+        websiteUrl: input.websiteUrl.trim(),
+        countryId: input.countryId,
+        isActive: input.isActive,
+        logoUrl: input.logoUrl ?? null,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (
+      existing.logoUrl &&
+      existing.logoUrl !== input.logoUrl &&
+      this.media.isManagedLogoUrl(existing.logoUrl)
+    ) {
+      await this.media.deleteLocalImage(existing.logoUrl);
+    }
+
+    return updated;
+  }
+
   async updateStatus(id: string, isActive: boolean) {
     const existing = await this.database.prisma.source.findUnique({
       where: { id },
@@ -105,5 +220,127 @@ export class SourcesService {
         isActive: true,
       },
     });
+  }
+
+  async getDeleteImpact(id: string) {
+    const source = await this.database.prisma.source.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!source) {
+      throw new NotFoundException("Source introuvable.");
+    }
+
+    const [feeds, articles] = await Promise.all([
+      this.database.prisma.feed.count({
+        where: { sourceId: id },
+      }),
+      this.database.prisma.article.count({
+        where: { sourceId: id },
+      }),
+    ]);
+
+    return {
+      feeds,
+      articles,
+    };
+  }
+
+  async delete(id: string) {
+    const result = await this.database.prisma.$transaction(async (tx) => {
+      const source = await tx.source.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          logoUrl: true,
+        },
+      });
+
+      if (!source) {
+        throw new NotFoundException("Source introuvable.");
+      }
+
+      const feeds = await tx.feed.findMany({
+        where: { sourceId: id },
+        select: { id: true },
+      });
+
+      const feedIds = feeds.map((feed) => feed.id);
+
+      if (feedIds.length > 0) {
+        await tx.feedRun.deleteMany({
+          where: {
+            feedId: {
+              in: feedIds,
+            },
+          },
+        });
+      }
+
+      const deletedFeeds = await tx.feed.deleteMany({
+        where: { sourceId: id },
+      });
+
+      const deletedArticles = await tx.article.deleteMany({
+        where: { sourceId: id },
+      });
+
+      await tx.source.delete({
+        where: { id },
+      });
+
+      return {
+        logoUrl: source.logoUrl,
+        feeds: deletedFeeds.count,
+        articles: deletedArticles.count,
+      };
+    });
+
+    if (result.logoUrl) {
+      await this.media.deleteLocalImage(result.logoUrl);
+    }
+
+    return {
+      feeds: result.feeds,
+      articles: result.articles,
+    };
+  }
+
+  private async assertCountryExists(countryId: string): Promise<void> {
+    const country = await this.database.prisma.country.findUnique({
+      where: { id: countryId },
+      select: {
+        id: true,
+        isActive: true,
+      },
+    });
+
+    if (!country || !country.isActive) {
+      throw new BadRequestException("Pays invalide.");
+    }
+  }
+
+  private async assertSlugAvailable(
+    slug: string,
+    currentId?: string,
+  ): Promise<void> {
+    const existing = await this.database.prisma.source.findFirst({
+      where: {
+        slug: slug.trim(),
+        ...(currentId
+          ? {
+              id: {
+                not: currentId,
+              },
+            }
+          : {}),
+      },
+      select: { id: true },
+    });
+
+    if (existing) {
+      throw new ConflictException("Ce slug est déjà utilisé.");
+    }
   }
 }
