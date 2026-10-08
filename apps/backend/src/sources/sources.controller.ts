@@ -26,6 +26,7 @@ import {
 } from "../auth/auth.constants";
 import { AuthService } from "../auth/auth.service";
 import { SourceCaptureService } from "./source-capture.service";
+import { SourceCsvImportService } from "./source-csv-import.service";
 import { SourceMediaService } from "./source-media.service";
 import { SourcesService } from "./sources.service";
 
@@ -105,6 +106,7 @@ export class SourcesController {
     private readonly sourcesService: SourcesService,
     private readonly mediaService: SourceMediaService,
     private readonly captureService: SourceCaptureService,
+    private readonly sourceCsvImportService: SourceCsvImportService,
     private readonly authService: AuthService,
     configService: ConfigService,
   ) {
@@ -173,6 +175,56 @@ export class SourcesController {
         file.mimetype,
       ),
     };
+  }
+
+  @Post("csv/analyze")
+  @UseInterceptors(
+    FileInterceptor("file", {
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  @Header("Cache-Control", "no-store")
+  async analyzeCsv(
+    @Req() request: RequestLike,
+    @UploadedFile() file?: UploadedImage,
+  ) {
+    await this.assertAuthenticated(request);
+
+    if (!file?.buffer) {
+      throw new BadRequestException("Aucun fichier CSV n’a été fourni.");
+    }
+
+    return this.sourceCsvImportService.analyze(
+      file.buffer,
+      file.originalname,
+    );
+  }
+
+  @Post("csv/import")
+  @UseInterceptors(
+    FileInterceptor("file", {
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  @Header("Cache-Control", "no-store")
+  async importCsv(
+    @Req() request: RequestLike,
+    @UploadedFile() file?: UploadedImage,
+  ) {
+    await this.assertAuthenticated(request);
+
+    if (!file?.buffer) {
+      throw new BadRequestException("Aucun fichier CSV n’a été fourni.");
+    }
+
+    return this.sourceCsvImportService.import(
+      file.buffer,
+      file.originalname,
+    );
   }
 
   @Post("capture")

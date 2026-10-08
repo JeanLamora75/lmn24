@@ -1,23 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { ChangeEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  ChangeEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import styles from "./import-csv.module.css";
 
 const IMPORT_TYPES = [
-  {
-    value: "sources",
-    label: "Sources",
-  },
-  {
-    value: "feeds",
-    label: "Flux RSS",
-  },
-  {
-    value: "articles",
-    label: "Articles",
-  },
+  { value: "sources", label: "Sources" },
+  { value: "feeds", label: "Flux RSS" },
+  { value: "articles", label: "Articles" },
 ] as const;
 
 const CSV_MIME_TYPES = new Set([
@@ -30,10 +27,17 @@ const CSV_MIME_TYPES = new Set([
 
 type Feedback =
   | {
-      kind: "danger" | "success";
+      kind: "danger" | "success" | "info";
       message: string;
     }
   | null;
+
+type SourceAnalysis = {
+  sourcesFound: number;
+  newSources: number;
+  errorSources: number;
+  duplicates: number;
+};
 
 function isCsvFile(file: File): boolean {
   const hasCsvExtension = file.name.toLocaleLowerCase().endsWith(".csv");
@@ -42,23 +46,61 @@ function isCsvFile(file: File): boolean {
   return hasCsvExtension && hasAcceptedMime;
 }
 
+async function readErrorMessage(
+  response: Response,
+  fallback: string,
+): Promise<string> {
+  try {
+    const payload = (await response.json()) as {
+      message?: string | string[];
+    };
+
+    if (Array.isArray(payload.message)) {
+      return payload.message.join(" ");
+    }
+
+    return payload.message || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export default function ImportCsvPage() {
+  const router = useRouter();
+  const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [importType, setImportType] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [feedback, setFeedback] = useState<Feedback>(null);
+  const [analysis, setAnalysis] = useState<SourceAnalysis | null>(null);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [importing, setImporting] = useState(false);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSelectedFile(event.target.files?.[0] ?? null);
+  useEffect(() => {
+    return () => {
+      if (redirectTimer.current) {
+        clearTimeout(redirectTimer.current);
+      }
+    };
+  }, []);
+
+  const resetAnalysis = () => {
+    setAnalysis(null);
     setFeedback(null);
   };
 
-  const validateFile = () => {
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSelectedFile(event.target.files?.[0] ?? null);
+    resetAnalysis();
+  };
+
+  const validateSelection = (): File | null => {
     if (!importType) {
       setFeedback({
         kind: "danger",
         message: "Sélectionnez un type d’import.",
       });
-      return;
+      return null;
     }
 
     if (!selectedFile) {
@@ -66,7 +108,7 @@ export default function ImportCsvPage() {
         kind: "danger",
         message: "Sélectionnez un fichier CSV.",
       });
-      return;
+      return null;
     }
 
     if (!isCsvFile(selectedFile)) {
@@ -74,14 +116,143 @@ export default function ImportCsvPage() {
         kind: "danger",
         message: "Le fichier sélectionné doit être au format CSV.",
       });
+      return null;
+    }
+
+    return selectedFile;
+  };
+
+  const analyzeFile = async () => {
+    if (analyzing || importing) {
       return;
     }
 
-    setFeedback({
-      kind: "success",
-      message:
-        "Le type d’import et le fichier CSV sont valides. Le fichier est prêt pour le traitement.",
-    });
+    const file = validateSelection();
+
+    if (!file) {
+      return;
+    }
+
+    if (importType !== "sources") {
+      setAnalysis(null);
+      setFeedback({
+        kind: "info",
+        message:
+          "Le fichier est prêt. Le traitement spécifique de ce type d’import sera réalisé dans une User Story dédiée.",
+      });
+      return;
+    }
+
+    setAnalyzing(true);
+    setAnalysis(null);
+    setFeedback(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch(
+        "/api/admin/import-csv/sources/analyze",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      if (response.status === 401) {
+        router.replace("/admin/login");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          await readErrorMessage(
+            response,
+            "Le fichier CSV n’a pas pu être analysé.",
+          ),
+        );
+      }
+
+      const result = (await response.json()) as SourceAnalysis;
+      setAnalysis(result);
+      setFeedback({
+        kind: "info",
+        message:
+          "Analyse terminée. Vérifiez le récapitulatif avant de charger les données en base.",
+      });
+    } catch (error) {
+      setFeedback({
+        kind: "danger",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Le fichier CSV n’a pas pu être analysé.",
+      });
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  const importSources = async () => {
+    if (!selectedFile || !analysis || importing || analyzing) {
+      return;
+    }
+
+    setImporting(true);
+    setFeedback(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      const response = await fetch(
+        "/api/admin/import-csv/sources/import",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      if (response.status === 401) {
+        router.replace("/admin/login");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          await readErrorMessage(
+            response,
+            "L’import des sources a échoué.",
+          ),
+        );
+      }
+
+      const result = (await response.json()) as {
+        imported: number;
+      };
+
+      setFeedback({
+        kind: "success",
+        message:
+          "Import terminé avec succès. " +
+          result.imported +
+          " source(s) ont été ajoutée(s).",
+      });
+
+      redirectTimer.current = setTimeout(() => {
+        router.push("/admin");
+      }, 5000);
+    } catch (error) {
+      setFeedback({
+        kind: "danger",
+        message:
+          error instanceof Error
+            ? error.message
+            : "L’import des sources a échoué.",
+      });
+    } finally {
+      setImporting(false);
+    }
   };
 
   return (
@@ -109,9 +280,10 @@ export default function ImportCsvPage() {
             name="importType"
             className="form-select"
             value={importType}
+            disabled={analyzing || importing}
             onChange={(event) => {
               setImportType(event.target.value);
-              setFeedback(null);
+              resetAnalysis();
             }}
           >
             <option value="" disabled>
@@ -147,14 +319,16 @@ export default function ImportCsvPage() {
             className="form-control"
             accept=".csv,text/csv"
             aria-describedby="csv-file-help csv-import-feedback"
+            disabled={analyzing || importing}
             onChange={handleFileChange}
           />
           <button
             type="button"
             className="btn btn-primary"
-            onClick={validateFile}
+            disabled={analyzing || importing}
+            onClick={() => void analyzeFile()}
           >
-            Charger le fichier
+            {analyzing ? "Analyse…" : "Charger le fichier"}
           </button>
         </div>
 
@@ -164,8 +338,9 @@ export default function ImportCsvPage() {
             fichier CSV à importer.
           </p>
           <p className="small text-body-secondary mb-0">
-            Format accepté : fichier CSV (.csv). Les contrôles et règles
-            d’import dépendent du type de données sélectionné.
+            Pour les sources, l’en-tête attendu est :
+            {" "}
+            <code>name,slug,websiteUrl,country,isActive</code>.
           </p>
         </div>
 
@@ -176,7 +351,9 @@ export default function ImportCsvPage() {
               "alert mt-3 mb-0 " +
               (feedback.kind === "success"
                 ? "alert-success"
-                : "alert-danger")
+                : feedback.kind === "info"
+                  ? "alert-info"
+                  : "alert-danger")
             }
             role={feedback.kind === "danger" ? "alert" : "status"}
             aria-live="polite"
@@ -185,6 +362,61 @@ export default function ImportCsvPage() {
           </div>
         ) : null}
       </section>
+
+      {analysis ? (
+        <section
+          className="card border-0 shadow-sm mt-4"
+          aria-labelledby="source-import-summary-title"
+        >
+          <div className="card-body p-4">
+            <h2 className="h5 mb-3" id="source-import-summary-title">
+              Résultat de l’analyse
+            </h2>
+
+            <dl className="row mb-4">
+              <dt className="col-8 col-md-6">Sources trouvées</dt>
+              <dd className="col-4 col-md-6 text-end text-md-start">
+                {analysis.sourcesFound}
+              </dd>
+
+              <dt className="col-8 col-md-6">Nouvelles sources</dt>
+              <dd className="col-4 col-md-6 text-end text-md-start">
+                {analysis.newSources}
+              </dd>
+
+              <dt className="col-8 col-md-6">Sources en erreur</dt>
+              <dd className="col-4 col-md-6 text-end text-md-start">
+                {analysis.errorSources}
+              </dd>
+
+              <dt className="col-8 col-md-6">Doublons</dt>
+              <dd className="col-4 col-md-6 text-end text-md-start">
+                {analysis.duplicates}
+              </dd>
+            </dl>
+
+            <div className="d-flex flex-column flex-sm-row gap-2">
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={importing || analyzing}
+                onClick={() => void importSources()}
+              >
+                {importing ? "Chargement…" : "Charger"}
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                disabled={importing}
+                onClick={() => window.location.reload()}
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }

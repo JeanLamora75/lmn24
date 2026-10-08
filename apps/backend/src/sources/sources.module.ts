@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 
 import { AuthModule } from "../auth/auth.module";
 import { SourceCaptureService } from "./source-capture.service";
+import { SourceCsvImportService } from "./source-csv-import.service";
 import { SourceMediaController } from "./source-media.controller";
 import { SourceMediaService } from "./source-media.service";
 import { SourcesController } from "./sources.controller";
@@ -14,6 +15,7 @@ import { SourcesService } from "./sources.service";
     SourcesService,
     SourceMediaService,
     SourceCaptureService,
+    SourceCsvImportService,
   ],
 })
 export class SourcesModule {}
