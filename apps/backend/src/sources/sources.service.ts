@@ -22,7 +22,7 @@ export type SourceInput = {
   name: string;
   slug: string;
   websiteUrl: string;
-  countryId: string;
+  countryIsoCode2: string;
   isActive: boolean;
   logoUrl?: string | null | undefined;
 };
@@ -129,7 +129,11 @@ export class SourcesService {
         slug: true,
         websiteUrl: true,
         logoUrl: true,
-        countryId: true,
+        country: {
+          select: {
+            isoCode2: true,
+          },
+        },
         isActive: true,
       },
     });
@@ -138,11 +142,19 @@ export class SourcesService {
       throw new NotFoundException("Source introuvable.");
     }
 
-    return source;
+    return {
+      id: source.id,
+      name: source.name,
+      slug: source.slug,
+      websiteUrl: source.websiteUrl,
+      logoUrl: source.logoUrl,
+      countryIsoCode2: source.country.isoCode2.trim(),
+      isActive: source.isActive,
+    };
   }
 
   async create(input: SourceInput) {
-    await this.assertCountryExists(input.countryId);
+    const countryId = await this.resolveCountryId(input.countryIsoCode2);
     await this.assertSlugAvailable(input.slug);
 
     return this.database.prisma.source.create({
@@ -150,7 +162,7 @@ export class SourcesService {
         name: input.name.trim(),
         slug: input.slug.trim(),
         websiteUrl: input.websiteUrl.trim(),
-        countryId: input.countryId,
+        countryId,
         isActive: input.isActive,
         logoUrl: input.logoUrl ?? null,
       },
@@ -173,7 +185,7 @@ export class SourcesService {
       throw new NotFoundException("Source introuvable.");
     }
 
-    await this.assertCountryExists(input.countryId);
+    const countryId = await this.resolveCountryId(input.countryIsoCode2);
     await this.assertSlugAvailable(input.slug, id);
 
     const updated = await this.database.prisma.source.update({
@@ -182,7 +194,7 @@ export class SourcesService {
         name: input.name.trim(),
         slug: input.slug.trim(),
         websiteUrl: input.websiteUrl.trim(),
-        countryId: input.countryId,
+        countryId,
         isActive: input.isActive,
         logoUrl: input.logoUrl ?? null,
       },
@@ -307,18 +319,23 @@ export class SourcesService {
     };
   }
 
-  private async assertCountryExists(countryId: string): Promise<void> {
+  private async resolveCountryId(isoCode2: string): Promise<string> {
     const country = await this.database.prisma.country.findUnique({
-      where: { id: countryId },
+      where: {
+        isoCode2: isoCode2.trim().toUpperCase(),
+      },
       select: {
         id: true,
-        isActive: true,
       },
     });
 
-    if (!country || !country.isActive) {
-      throw new BadRequestException("Pays invalide.");
+    if (!country) {
+      throw new BadRequestException(
+        "Le pays sélectionné n’existe pas dans la base LMN24.",
+      );
     }
+
+    return country.id;
   }
 
   private async assertSlugAvailable(

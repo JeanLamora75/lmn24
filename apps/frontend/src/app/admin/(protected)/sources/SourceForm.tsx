@@ -11,12 +11,9 @@ import {
   useState,
 } from "react";
 
-import styles from "./source-form.module.css";
+import { FRENCH_COUNTRY_OPTIONS } from "@/lib/fr-country-options";
 
-type CountryItem = {
-  id: string;
-  isoCode2: string;
-};
+import styles from "./source-form.module.css";
 
 type SourceData = {
   id: string;
@@ -24,7 +21,7 @@ type SourceData = {
   slug: string;
   websiteUrl: string;
   logoUrl: string | null;
-  countryId: string;
+  countryIsoCode2: string;
   isActive: boolean;
 };
 
@@ -46,7 +43,7 @@ type Props = Readonly<
 
 type FieldErrors = Partial<
   Record<
-    "name" | "slug" | "websiteUrl" | "countryId" | "image",
+    "name" | "slug" | "websiteUrl" | "countryIsoCode2" | "image",
     string
   >
 >;
@@ -56,19 +53,9 @@ const EMPTY_SOURCE: Omit<SourceData, "id"> = {
   slug: "",
   websiteUrl: "",
   logoUrl: null,
-  countryId: "",
+  countryIsoCode2: "",
   isActive: true,
 };
-
-const regionNames =
-  typeof Intl !== "undefined" && "DisplayNames" in Intl
-    ? new Intl.DisplayNames(["fr"], { type: "region" })
-    : null;
-
-function countryName(isoCode2: string): string {
-  const code = isoCode2.trim().toUpperCase();
-  return regionNames?.of(code) ?? code;
-}
 
 function isValidHttpUrl(value: string): boolean {
   try {
@@ -102,13 +89,12 @@ export function SourceForm({ mode, sourceId }: Props) {
   const router = useRouter();
 
   const [values, setValues] = useState(EMPTY_SOURCE);
-  const [countries, setCountries] = useState<CountryItem[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [pageError, setPageError] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(mode === "edit");
   const [saving, setSaving] = useState(false);
   const [capturing, setCapturing] = useState(false);
   const [loadingDeleteImpact, setLoadingDeleteImpact] = useState(false);
@@ -142,6 +128,10 @@ export function SourceForm({ mode, sourceId }: Props) {
   }, []);
 
   useEffect(() => {
+    if (mode !== "edit") {
+      return;
+    }
+
     const controller = new AbortController();
 
     async function load() {
@@ -149,70 +139,37 @@ export function SourceForm({ mode, sourceId }: Props) {
       setPageError("");
 
       try {
-        const requests: Promise<Response>[] = [
-          fetch("/api/admin/sources/form-countries", {
+        const response = await fetch(
+          "/api/admin/sources/" + encodeURIComponent(sourceId),
+          {
             cache: "no-store",
             signal: controller.signal,
-          }),
-        ];
+          },
+        );
 
-        if (mode === "edit") {
-          requests.push(
-            fetch(
-              "/api/admin/sources/" +
-                encodeURIComponent(sourceId),
-              {
-                cache: "no-store",
-                signal: controller.signal,
-              },
-            ),
-          );
-        }
-
-        const responses = await Promise.all(requests);
-
-        if (responses.some((response) => response.status === 401)) {
+        if (response.status === 401) {
           router.replace("/admin/login");
           return;
         }
 
-        if (responses.some((response) => !response.ok)) {
+        if (!response.ok) {
           throw new Error("load-failed");
         }
 
-        const countriesResponse = responses[0];
+        const source = (await response.json()) as SourceData;
 
-        if (!countriesResponse) {
-          throw new Error("load-failed");
-        }
-
-        const countriesPayload = (await countriesResponse.json()) as {
-          items: CountryItem[];
-        };
-
-        setCountries(countriesPayload.items);
-
-        if (mode === "edit") {
-          const sourceResponse = responses[1];
-
-          if (!sourceResponse) {
-            throw new Error("load-failed");
-          }
-
-          const source = (await sourceResponse.json()) as SourceData;
-          setValues({
-            name: source.name,
-            slug: source.slug,
-            websiteUrl: source.websiteUrl,
-            logoUrl: source.logoUrl,
-            countryId: source.countryId,
-            isActive: source.isActive,
-          });
-        }
+        setValues({
+          name: source.name,
+          slug: source.slug,
+          websiteUrl: source.websiteUrl,
+          logoUrl: source.logoUrl,
+          countryIsoCode2: source.countryIsoCode2,
+          isActive: source.isActive,
+        });
       } catch (caught) {
         if (!(caught instanceof DOMException && caught.name === "AbortError")) {
           setPageError(
-            "Impossible de charger les informations du formulaire.",
+            "Impossible de charger les informations de la source.",
           );
         }
       } finally {
@@ -226,18 +183,6 @@ export function SourceForm({ mode, sourceId }: Props) {
 
     return () => controller.abort();
   }, [mode, router, sourceId]);
-
-  const sortedCountries = useMemo(
-    () =>
-      [...countries].sort((a, b) =>
-        countryName(a.isoCode2).localeCompare(
-          countryName(b.isoCode2),
-          "fr",
-          { sensitivity: "base" },
-        ),
-      ),
-    [countries],
-  );
 
   const imagePreview = localPreview ?? values.logoUrl;
 
@@ -280,8 +225,8 @@ export function SourceForm({ mode, sourceId }: Props) {
       errors.websiteUrl = "Renseignez une URL HTTP ou HTTPS valide.";
     }
 
-    if (!values.countryId) {
-      errors.countryId = "Le pays est obligatoire.";
+    if (!values.countryIsoCode2) {
+      errors.countryIsoCode2 = "Le pays est obligatoire.";
     }
 
     setFieldErrors(errors);
@@ -369,7 +314,7 @@ export function SourceForm({ mode, sourceId }: Props) {
         name: values.name.trim(),
         slug: values.slug.trim(),
         websiteUrl: values.websiteUrl.trim(),
-        countryId: values.countryId,
+        countryIsoCode2: values.countryIsoCode2,
         isActive: values.isActive,
         logoUrl,
       };
@@ -450,6 +395,12 @@ export function SourceForm({ mode, sourceId }: Props) {
       }
 
       if (!response.ok) {
+        if (response.status === 503) {
+          throw new Error(
+            "Le service de capture n’est pas disponible. Redémarrez le backend LMN24 puis réessayez.",
+          );
+        }
+
         throw new Error(
           await readErrorMessage(
             response,
@@ -694,23 +645,23 @@ export function SourceForm({ mode, sourceId }: Props) {
                     id="source-country"
                     className={
                       "form-select " +
-                      (fieldErrors.countryId ? "is-invalid" : "")
+                      (fieldErrors.countryIsoCode2 ? "is-invalid" : "")
                     }
-                    value={values.countryId}
+                    value={values.countryIsoCode2}
                     onChange={(event) =>
-                      updateValue("countryId", event.target.value)
+                      updateValue("countryIsoCode2", event.target.value)
                     }
                   >
                     <option value="">Sélectionner un pays</option>
-                    {sortedCountries.map((country) => (
-                      <option value={country.id} key={country.id}>
-                        {countryName(country.isoCode2)}
+                    {FRENCH_COUNTRY_OPTIONS.map((country) => (
+                      <option value={country.isoCode2} key={country.isoCode2}>
+                        {country.label}
                       </option>
                     ))}
                   </select>
-                  {fieldErrors.countryId ? (
+                  {fieldErrors.countryIsoCode2 ? (
                     <div className="invalid-feedback">
-                      {fieldErrors.countryId}
+                      {fieldErrors.countryIsoCode2}
                     </div>
                   ) : null}
                 </div>
@@ -841,12 +792,16 @@ export function SourceForm({ mode, sourceId }: Props) {
 
       {toastMessage ? (
         <div
-          className={"toast show " + styles.toast}
+          className={
+            "toast show border border-warning shadow-lg " + styles.toast
+          }
           role="alert"
           aria-live="assertive"
           aria-atomic="true"
         >
-          <div className="toast-body">{toastMessage}</div>
+          <div className="toast-body text-center fw-semibold py-3">
+            {toastMessage}
+          </div>
         </div>
       ) : null}
 

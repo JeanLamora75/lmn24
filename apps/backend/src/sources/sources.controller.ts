@@ -67,7 +67,11 @@ const sourceInputSchema = z.object({
   name: z.string().trim().min(1).max(255),
   slug: z.string().trim().min(1).max(255),
   websiteUrl: httpUrlSchema,
-  countryId: z.string().uuid(),
+  countryIsoCode2: z
+    .string()
+    .trim()
+    .regex(/^[A-Za-z]{2}$/)
+    .transform((value) => value.toUpperCase()),
   isActive: z.boolean(),
   logoUrl: z.string().trim().max(2048).nullable().optional(),
 });
