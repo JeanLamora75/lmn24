@@ -7,6 +7,7 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { PublicHeader } from "@/components/public/PublicHeader";
 import { routing, type AppLocale } from "@/i18n/routing";
 
 export const metadata: Metadata = {
@@ -35,7 +36,10 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html lang={locale}>
       <body>
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <PublicHeader />
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );
