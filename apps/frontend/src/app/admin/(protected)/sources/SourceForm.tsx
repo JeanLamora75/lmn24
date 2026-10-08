@@ -128,7 +128,7 @@ export function SourceForm({ mode, sourceId }: Props) {
   }, []);
 
   useEffect(() => {
-    if (mode !== "edit") {
+    if (mode !== "edit" || !sourceId) {
       return;
     }
 
