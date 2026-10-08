@@ -1,0 +1,50 @@
+.cardLink {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--bs-border-radius-lg);
+}
+
+.cardLink:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.card {
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.cardLink:hover .card,
+.cardLink:focus-visible .card {
+  transform: translateY(-3px);
+  box-shadow: var(--bs-box-shadow) !important;
+}
+
+.iconWrapper {
+  display: inline-flex;
+  width: 3.5rem;
+  height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: var(--bs-primary-bg-subtle);
+}
+
+.iconWrapper img {
+  width: 2rem;
+  height: 2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .cardLink:hover .card,
+  .cardLink:focus-visible .card {
+    transform: none;
+  }
+}
