@@ -60,24 +60,57 @@ Représente une langue utilisée par les flux et par les pages d’actualités.
 
 # 3. Category
 
-Représente une catégorie d’actualité.
+Représente une catégorie d’actualité. La catégorie porte également les **paramètres de présentation de sa section sur la page d’accueil** : ces paramètres sont communs à toutes les langues et n’affectent pas les pages dédiées aux catégories.
 
 Référentiel initial : Actualité, International, National, Sports, Faits divers, Technologie, Économie, Politique, Cinéma, Culture, Santé, Éducation, Société, Musique, Télévision, Radio.
 
 | Champ | Type | Obligatoire | Description |
 |---|---|---:|---|
 | `id` | UUID | Oui | Identifiant unique |
-| `slug` | String | Oui | Identifiant utilisable dans les URL |
-| `isActive` | Boolean | Oui | Indique si la catégorie est active |
+| `slug` | String | Oui | Identifiant utilisable dans les URL et les traductions |
+| `isActive` | Boolean | Oui | Statut actif/inactif, indépendant de la configuration de l’accueil |
+| `displayOrder` | Integer | Oui | Position globale de la section sur l’accueil (`display_order` en PostgreSQL) |
+| `layoutType` | Enum | Oui | Mise en page de l’accueil (`layout_type`), valeur initiale `GRID` |
+| `themeColor` | String(7) | Oui | Couleur d’accent de l’accueil (`theme_color`), valeur initiale `#2563EB` |
 | `createdAt` | DateTime | Oui | Date de création |
 | `updatedAt` | DateTime | Oui | Date de modification |
 
 ### Contraintes
 
-- `slug` doit être unique.
+- `slug` est unique. Les libellés des catégories ne sont pas stockés en base : le `slug` sert de clé dans les fichiers de traduction multilingues sous `/messages`.
+- `displayOrder` est un entier strictement positif, unique pour **toutes les catégories**, y compris inactives. Les positions persistées sont consécutives, de 1 à N.
+- Lors de la migration des catégories existantes, les positions initiales suivent le `slug` alphabétique ; une nouvelle catégorie est ajoutée à la fin, avec protection contre les créations concurrentes.
+- Les changements de classement sont sauvegardés **atomiquement** et protégés contre les modifications concurrentes ; une erreur ne doit pas laisser un ordre partiel.
+- `layoutType` n’admet que les huit valeurs du catalogue ci-dessous.
+- `themeColor` suit le format canonique `#RRGGBB` ; plusieurs catégories peuvent avoir la même couleur. Il s’agit d’un accent graphique, qui ne doit pas compromettre l’accessibilité.
+- `isActive` n’est pas modifié par les réglages de mise en page. Une catégorie inactive conserve son ordre et sa présentation, mais n’apparaît pas sur l’accueil.
+- `displayOrder`, `layoutType` et `themeColor` ne modifient **ni l’ordre des articles**, ni la présentation des pages publiques dédiées aux catégories.
 
-> Les libellés des catégories ne sont pas stockés en base. Le `slug` sert de clé technique et les libellés affichés sont lus dans les fichiers de traduction multilingues.
->
+### Catalogue des mises en page de l’accueil
+
+La **capacité maximale** de chaque section est fixée par `layoutType` ; il n’existe **aucun champ de nombre d’articles** propre à la catégorie, ni paramètre `Setting` pour cette capacité sur la page d’accueil.
+
+| `layoutType` | Présentation | Capacité maximale |
+|---|---|---:|
+| `FEATURED` | Un article principal, quatre secondaires | 5 |
+| `GRID` | Grille 3 colonnes × 2 lignes (desktop) | 6 |
+| `LIST` | Liste de cinq articles | 5 |
+| `SPLIT` | Un grand article et deux secondaires | 3 |
+| `MOSAIC` | Mosaïque : un grand article et quatre vignettes | 5 |
+| `COMPACT` | Grille compacte 4 colonnes × 2 lignes (desktop) | 8 |
+| `HEADLINES` | Liste dense de titres d’actualité | 10 |
+| `CAROUSEL` | Six cartes dans un carrousel accessible | 6 |
+
+Le rendu est responsive : la disposition change selon le terminal, mais la capacité du modèle reste identique. Lorsque le nombre d’articles disponibles est inférieur à cette capacité, seuls les articles réels disponibles sont affichés, sans doublon ni carte vide.
+
+### Règles de sélection et de visibilité sur l’accueil
+
+- Pour une page `/fr`, seuls les `Article` dont `languageIsoCode2 = fr` sont éligibles ; même principe pour `/en`, `/de`, `/es`, `/pt`, `/it` et `/ru`. Aucun mélange de langues ni repli vers une autre langue.
+- Pour chaque catégorie active, sélectionner ses articles dans la langue demandée et les trier par **`publishedAt DESC`** (date réelle de publication), puis `id DESC` en cas d’égalité. Ne pas utiliser `createdAt` (date d’import) pour le tri.
+- Limiter les résultats à la capacité de `layoutType`. **Une catégorie sans article éligible dans la langue demandée n’est pas affichée sur l’accueil**, sans modification de son statut ni de sa position persistée.
+- Les sections visibles conservent leur ordre relatif `displayOrder ASC`. Les articles et les pages dédiées aux catégories restent indépendants de ces paramètres d’accueil.
+- Si aucune catégorie n’a d’article éligible, la page d’accueil présente un état global « Aucune actualité disponible pour le moment ».
+
 > Slugs officiels : `news`, `international`, `national`, `sports`, `faits-divers`, `technology`, `economy`, `politics`, `cinema`, `culture`, `health`, `education`, `society`, `music`, `television`, `radio`.
 
 ---
@@ -227,13 +260,6 @@ Représente un paramètre configurable depuis l’interface d’administration.
 
 ### Exemples
 
-#### Nombre d’articles affichés par catégorie
-
-- key : `articlesPerCategory`
-- value : `20`
-- type : `INTEGER`
-- scope : `CATEGORY`
-
 #### Timeout spécifique d’un feed
 
 - key : `feedTimeoutMs`
@@ -251,6 +277,8 @@ Représente un paramètre configurable depuis l’interface d’administration.
 ### Règle de surcharge
 
 Un paramètre spécifique à un `Feed` ou une `Category` surcharge la valeur globale correspondante.
+
+**Exception explicite :** le nombre d’articles affichés par section sur la page d’accueil n’est pas configurable dans `Setting` ; il est automatiquement déterminé par le `layoutType` de la catégorie. L’ordre et la couleur des sections sont également stockés sur `Category`.
 
 ---
 
@@ -353,6 +381,8 @@ User
 - Les flux XML/RSS sont rattachés à une source, une langue et une catégorie.
 - Les articles sont rattachés directement à leur `Source`, à leur `Category` et à leur `Language`. Le pays est hérité via la source. Il n’existe pas de relation persistée entre `Article` et `Feed`.
 - Les paramètres techniques et fonctionnels doivent être configurables sans modifier le code.
+- Sur la page d’accueil, les paramètres de présentation (`displayOrder`, `layoutType`, `themeColor`) sont portés directement par `Category` et le nombre d’articles par section dépend exclusivement du modèle choisi.
+- La page d’accueil présente uniquement les articles de la langue sélectionnée, triés par date de publication (`publishedAt DESC`), et masque les catégories sans articles éligibles.
 - Les traductions de l’interface, des pays, des catégories et des langues sont stockées dans des fichiers multilingues séparés sous `/messages`.
 - Les données de dernier état du parseur sont stockées sur `Feed` et l’historique des exécutions est conservé dans `FeedRun`.
 - Les mots de passe sont stockés uniquement sous forme de hash.
