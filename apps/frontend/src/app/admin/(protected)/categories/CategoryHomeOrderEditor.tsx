@@ -175,6 +175,7 @@ export function CategoryHomeOrderEditor({
 
   return (
     <section
+      id="category-home-order-panel"
       aria-labelledby="category-home-order-title"
       className={"card mb-4 " + styles.organizer}
     >
@@ -241,7 +242,7 @@ export function CategoryHomeOrderEditor({
                 <span aria-hidden="true" className={styles.dragHandle}>
                   ⋮⋮
                 </span>
-                <div className="flex-grow-1 min-w-0">
+                <div className={"flex-grow-1 " + styles.orderLabel}>
                   <span className="fw-semibold">{label}</span>
                   <span className="ms-2 text-body-secondary small">
                     Position {index + 1}
