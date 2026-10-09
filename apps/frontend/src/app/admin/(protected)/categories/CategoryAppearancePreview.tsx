@@ -29,14 +29,14 @@ const PLACEHOLDER_HEADLINES = [
 ] as const;
 
 const layoutClasses: Record<CategoryHomeLayout, string> = {
-  FEATURED: styles.featured,
-  GRID: styles.grid,
-  LIST: styles.list,
-  SPLIT: styles.split,
-  MOSAIC: styles.mosaic,
-  COMPACT: styles.compact,
-  HEADLINES: styles.headlines,
-  CAROUSEL: styles.carousel,
+  FEATURED: styles.featured!,
+  GRID: styles.grid!,
+  LIST: styles.list!,
+  SPLIT: styles.split!,
+  MOSAIC: styles.mosaic!,
+  COMPACT: styles.compact!,
+  HEADLINES: styles.headlines!,
+  CAROUSEL: styles.carousel!,
 };
 
 export function CategoryAppearancePreview({
