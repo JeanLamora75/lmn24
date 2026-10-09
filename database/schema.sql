@@ -11,7 +11,7 @@
 -- - UUIDs are generated with pgcrypto/gen_random_uuid().
 -- - PostgreSQL uses snake_case; Prisma/TypeScript uses camelCase.
 -- - URL validation is handled by the application layer.
--- - Article is linked directly to Source, Category and Language, not Feed.
+-- - Article keeps Source, Category and Language and may also reference its originating Feed.
 -- - Setting.scope_id is polymorphic (CATEGORY or FEED), so it has no standard FK.
 
 BEGIN;
@@ -190,6 +190,7 @@ EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE article (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    feed_id UUID,
     source_id UUID NOT NULL,
     category_id UUID NOT NULL,
     language_iso_code2 CHAR(2) NOT NULL,
@@ -201,6 +202,11 @@ CREATE TABLE article (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     CONSTRAINT article_url_unique UNIQUE (article_url),
+    CONSTRAINT article_feed_fk
+        FOREIGN KEY (feed_id)
+        REFERENCES feed(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
     CONSTRAINT article_source_fk
         FOREIGN KEY (source_id)
         REFERENCES source(id)
@@ -217,6 +223,9 @@ CREATE TABLE article (
         ON UPDATE CASCADE
         ON DELETE RESTRICT
 );
+
+CREATE INDEX idx_article_feed_id
+    ON article(feed_id);
 
 CREATE INDEX idx_article_source_id
     ON article(source_id);

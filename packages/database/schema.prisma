@@ -98,6 +98,7 @@ model Feed {
   category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   language Language @relation(fields: [languageIsoCode2], references: [isoCode2], onDelete: Restrict, onUpdate: Cascade)
   runs     FeedRun[]
+  articles Article[]
 
   @@index([sourceId], map: "idx_feed_source_id")
   @@index([categoryId], map: "idx_feed_category_id")
@@ -109,6 +110,7 @@ model Feed {
 
 model Article {
   id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  feedId           String?  @map("feed_id") @db.Uuid
   sourceId         String   @map("source_id") @db.Uuid
   categoryId       String   @map("category_id") @db.Uuid
   languageIsoCode2 String   @map("language_iso_code2") @db.Char(2)
@@ -119,10 +121,12 @@ model Article {
   publishedAt      DateTime @map("published_at") @db.Timestamptz(6)
   createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
+  feed     Feed?    @relation(fields: [feedId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   source   Source   @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   language Language @relation(fields: [languageIsoCode2], references: [isoCode2], onDelete: Restrict, onUpdate: Cascade)
 
+  @@index([feedId], map: "idx_article_feed_id")
   @@index([sourceId], map: "idx_article_source_id")
   @@index([categoryId], map: "idx_article_category_id")
   @@index([languageIsoCode2], map: "idx_article_language_iso_code2")

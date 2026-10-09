@@ -1,4 +1,6 @@
 import {
+  BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
@@ -13,6 +15,14 @@ export type ListFeedsParams = {
   status: FeedStatusFilter;
   page: number;
   pageSize: number;
+};
+
+export type FeedInput = {
+  sourceId: string;
+  categoryId: string;
+  languageIsoCode2: string;
+  feedUrl: string;
+  isActive: boolean;
 };
 
 @Injectable()
@@ -123,6 +133,109 @@ export class FeedsService {
     });
   }
 
+  async listFormOptions() {
+    const [sources, categories, languages] = await Promise.all([
+      this.database.prisma.source.findMany({
+        orderBy: [{ name: "asc" }, { id: "asc" }],
+        select: {
+          id: true,
+          name: true,
+          websiteUrl: true,
+        },
+      }),
+      this.database.prisma.category.findMany({
+        orderBy: [{ slug: "asc" }, { id: "asc" }],
+        select: {
+          id: true,
+          slug: true,
+        },
+      }),
+      this.database.prisma.language.findMany({
+        orderBy: {
+          isoCode2: "asc",
+        },
+        select: {
+          isoCode2: true,
+        },
+      }),
+    ]);
+
+    return {
+      sources,
+      categories,
+      languages,
+    };
+  }
+
+  async getById(id: string) {
+    const feed = await this.database.prisma.feed.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        sourceId: true,
+        categoryId: true,
+        languageIsoCode2: true,
+        feedUrl: true,
+        isActive: true,
+      },
+    });
+
+    if (!feed) {
+      throw new NotFoundException("Flux RSS/XML introuvable.");
+    }
+
+    return {
+      ...feed,
+      languageIsoCode2: feed.languageIsoCode2.trim().toLowerCase(),
+    };
+  }
+
+  async create(input: FeedInput) {
+    await this.assertReferencesExist(input);
+    await this.assertFeedUrlAvailable(input.feedUrl);
+
+    return this.database.prisma.feed.create({
+      data: {
+        sourceId: input.sourceId,
+        categoryId: input.categoryId,
+        languageIsoCode2: input.languageIsoCode2.trim().toLowerCase(),
+        feedUrl: input.feedUrl.trim(),
+        isActive: input.isActive,
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
+  async update(id: string, input: FeedInput) {
+    const existing = await this.database.prisma.feed.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!existing) {
+      throw new NotFoundException("Flux RSS/XML introuvable.");
+    }
+
+    await this.assertReferencesExist(input);
+    await this.assertFeedUrlAvailable(input.feedUrl, id);
+
+    return this.database.prisma.feed.update({
+      where: { id },
+      data: {
+        sourceId: input.sourceId,
+        categoryId: input.categoryId,
+        languageIsoCode2: input.languageIsoCode2.trim().toLowerCase(),
+        feedUrl: input.feedUrl.trim(),
+        isActive: input.isActive,
+      },
+      select: {
+        id: true,
+      },
+    });
+  }
+
   async updateStatus(id: string, isActive: boolean) {
     const existing = await this.database.prisma.feed.findUnique({
       where: { id },
@@ -141,5 +254,114 @@ export class FeedsService {
         isActive: true,
       },
     });
+  }
+
+  async getDeleteImpact(id: string) {
+    const feed = await this.database.prisma.feed.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!feed) {
+      throw new NotFoundException("Flux RSS/XML introuvable.");
+    }
+
+    const articles = await this.database.prisma.article.count({
+      where: {
+        feedId: id,
+      },
+    });
+
+    return {
+      articles,
+    };
+  }
+
+  async delete(id: string) {
+    return this.database.prisma.$transaction(async (tx) => {
+      const feed = await tx.feed.findUnique({
+        where: { id },
+        select: { id: true },
+      });
+
+      if (!feed) {
+        throw new NotFoundException("Flux RSS/XML introuvable.");
+      }
+
+      const deletedRuns = await tx.feedRun.deleteMany({
+        where: {
+          feedId: id,
+        },
+      });
+
+      const deletedArticles = await tx.article.deleteMany({
+        where: {
+          feedId: id,
+        },
+      });
+
+      await tx.feed.delete({
+        where: { id },
+      });
+
+      return {
+        articles: deletedArticles.count,
+        feedRuns: deletedRuns.count,
+      };
+    });
+  }
+
+  private async assertReferencesExist(input: FeedInput): Promise<void> {
+    const languageIsoCode2 = input.languageIsoCode2.trim().toLowerCase();
+
+    const [source, category, language] = await Promise.all([
+      this.database.prisma.source.findUnique({
+        where: { id: input.sourceId },
+        select: { id: true },
+      }),
+      this.database.prisma.category.findUnique({
+        where: { id: input.categoryId },
+        select: { id: true },
+      }),
+      this.database.prisma.language.findUnique({
+        where: { isoCode2: languageIsoCode2 },
+        select: { isoCode2: true },
+      }),
+    ]);
+
+    if (!source) {
+      throw new BadRequestException("La source sélectionnée n’existe pas.");
+    }
+
+    if (!category) {
+      throw new BadRequestException("La catégorie sélectionnée n’existe pas.");
+    }
+
+    if (!language) {
+      throw new BadRequestException("La langue sélectionnée n’existe pas.");
+    }
+  }
+
+  private async assertFeedUrlAvailable(
+    feedUrl: string,
+    currentId?: string,
+  ): Promise<void> {
+    const existing = await this.database.prisma.feed.findFirst({
+      where: {
+        feedUrl: feedUrl.trim(),
+        ...(currentId
+          ? {
+              id: {
+                not: currentId,
+              },
+            }
+          : {}),
+      },
+      select: { id: true },
+    });
+
+    if (existing) {
+      throw new ConflictException("Cette URL de flux est déjà utilisée.");
+    }
   }
 }

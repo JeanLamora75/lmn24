@@ -2,11 +2,14 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Header,
+  HttpCode,
   Param,
   Patch,
   Post,
+  Put,
   Query,
   Req,
   UnauthorizedException,
@@ -52,6 +55,32 @@ const listQuerySchema = z.object({
       "Taille de page invalide.",
     )
     .default(10),
+});
+
+const httpUrlSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(2048)
+  .refine((value) => {
+    try {
+      const url = new URL(value);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+      return false;
+    }
+  });
+
+const feedInputSchema = z.object({
+  sourceId: z.string().uuid(),
+  categoryId: z.string().uuid(),
+  languageIsoCode2: z
+    .string()
+    .trim()
+    .regex(/^[A-Za-z]{2}$/)
+    .transform((value) => value.toLowerCase()),
+  feedUrl: httpUrlSchema,
+  isActive: z.boolean(),
 });
 
 const updateStatusSchema = z.object({
@@ -109,6 +138,14 @@ export class FeedsController {
     };
   }
 
+  @Get("form-options")
+  @Header("Cache-Control", "no-store")
+  async formOptions(@Req() request: RequestLike) {
+    await this.assertAuthenticated(request);
+
+    return this.feedsService.listFormOptions();
+  }
+
   @Post("csv/analyze")
   @UseInterceptors(
     FileInterceptor("file", {
@@ -159,6 +196,76 @@ export class FeedsController {
     );
   }
 
+  @Post()
+  @Header("Cache-Control", "no-store")
+  async create(
+    @Req() request: RequestLike,
+    @Body() body: unknown,
+  ) {
+    await this.assertAuthenticated(request);
+
+    const parsed = feedInputSchema.safeParse(body);
+
+    if (!parsed.success) {
+      throw new BadRequestException("Informations de flux invalides.");
+    }
+
+    return this.feedsService.create(parsed.data);
+  }
+
+  @Get(":id/delete-impact")
+  @Header("Cache-Control", "no-store")
+  async deleteImpact(
+    @Req() request: RequestLike,
+    @Param("id") rawId: string,
+  ) {
+    await this.assertAuthenticated(request);
+
+    const id = feedIdSchema.safeParse(rawId);
+
+    if (!id.success) {
+      throw new BadRequestException("Identifiant de flux invalide.");
+    }
+
+    return this.feedsService.getDeleteImpact(id.data);
+  }
+
+  @Get(":id")
+  @Header("Cache-Control", "no-store")
+  async getOne(
+    @Req() request: RequestLike,
+    @Param("id") rawId: string,
+  ) {
+    await this.assertAuthenticated(request);
+
+    const id = feedIdSchema.safeParse(rawId);
+
+    if (!id.success) {
+      throw new BadRequestException("Identifiant de flux invalide.");
+    }
+
+    return this.feedsService.getById(id.data);
+  }
+
+  @Put(":id")
+  @Header("Cache-Control", "no-store")
+  async update(
+    @Req() request: RequestLike,
+    @Param("id") rawId: string,
+    @Body() body: unknown,
+  ) {
+    await this.assertAuthenticated(request);
+
+    const id = feedIdSchema.safeParse(rawId);
+    const parsed = feedInputSchema.safeParse(body);
+
+    if (!id.success || !parsed.success) {
+      throw new BadRequestException("Informations de flux invalides.");
+    }
+
+    return this.feedsService.update(id.data, parsed.data);
+  }
+
   @Patch(":id/status")
   @Header("Cache-Control", "no-store")
   async updateStatus(
@@ -179,6 +286,24 @@ export class FeedsController {
       id.data,
       payload.data.isActive,
     );
+  }
+
+  @Delete(":id")
+  @HttpCode(200)
+  @Header("Cache-Control", "no-store")
+  async remove(
+    @Req() request: RequestLike,
+    @Param("id") rawId: string,
+  ) {
+    await this.assertAuthenticated(request);
+
+    const id = feedIdSchema.safeParse(rawId);
+
+    if (!id.success) {
+      throw new BadRequestException("Identifiant de flux invalide.");
+    }
+
+    return this.feedsService.delete(id.data);
   }
 
   private async assertAuthenticated(request: RequestLike): Promise<void> {
