@@ -11,8 +11,8 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { z } from "zod";
 import { CATEGORY_HOME_LAYOUTS } from "@lmn24/contracts";
+import { z } from "zod";
 
 import {
   AUTH_FAILURE_MESSAGE,
@@ -23,15 +23,22 @@ import { CategoriesService } from "./categories.service";
 
 const categoryIdSchema = z.string().uuid();
 
-const homeDisplaySchema = z.object({
-  layoutType: z.enum(CATEGORY_HOME_LAYOUTS),
-  themeColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).transform((value) => value.toUpperCase()),
-}).strict();
+const homeDisplaySchema = z
+  .object({
+    layoutType: z.enum(CATEGORY_HOME_LAYOUTS),
+    themeColor: z
+      .string()
+      .regex(/^#[0-9a-fA-F]{6}$/)
+      .transform((value) => value.toUpperCase()),
+  })
+  .strict();
 
-const homeOrderSchema = z.object({
-  categoryIds: z.array(z.string().uuid()).max(500),
-  expectedOrder: z.array(z.string().uuid()).max(500),
-}).strict();
+const homeOrderSchema = z
+  .object({
+    categoryIds: z.array(z.string().uuid()).max(500),
+    expectedOrder: z.array(z.string().uuid()).max(500),
+  })
+  .strict();
 
 const updateStatusSchema = z.object({
   isActive: z.boolean(),
