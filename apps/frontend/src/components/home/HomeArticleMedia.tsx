@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { safeExternalUrl } from "./home-data";
 import styles from "./home.module.css";
@@ -20,10 +20,6 @@ export function HomeArticleMedia({ imageUrl, logoUrl }: Props) {
     : logo && !failedUrls.includes(logo)
       ? logo
       : null;
-
-  useEffect(() => {
-    setFailedUrls([]);
-  }, [imageUrl, logoUrl]);
 
   return (
     <span className={styles.media} aria-hidden="true">
