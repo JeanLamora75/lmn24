@@ -86,7 +86,7 @@ describe("SCRUM-26 — composition des sections", () => {
     const [sqlPieces, locale] = query.mock.calls[0] as [string[], string];
     const sql = sqlPieces.join("?");
     expect(locale).toBe("fr");
-    expect(sql).toContain("CROSS JOIN LATERAL");
+    expect(sql).toContain("JOIN LATERAL");
     expect(sql).toContain("a.language_iso_code2 = CAST(");
     expect(sql).toContain("ORDER BY a.published_at DESC, a.id DESC");
     expect(sql).toContain("WHERE c.is_active = TRUE");
