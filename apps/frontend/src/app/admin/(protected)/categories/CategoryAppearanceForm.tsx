@@ -120,14 +120,22 @@ export function CategoryAppearanceForm({ categoryId }: Props) {
     setLayoutType(next);
     setSuccess("");
     setSaveError("");
-    setFieldErrors((errors) => ({ ...errors, layoutType: undefined }));
+    setFieldErrors((errors) => {
+      const next = { ...errors };
+      delete next.layoutType;
+      return next;
+    });
   }
 
   function updateColor(next: string) {
     setThemeColor(next);
     setSuccess("");
     setSaveError("");
-    setFieldErrors((errors) => ({ ...errors, themeColor: undefined }));
+    setFieldErrors((errors) => {
+      const next = { ...errors };
+      delete next.themeColor;
+      return next;
+    });
   }
 
   function resetDefaults() {
