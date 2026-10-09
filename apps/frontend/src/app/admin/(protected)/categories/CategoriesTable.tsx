@@ -132,6 +132,7 @@ function PaginationNav({
 export function CategoriesTable() {
   const router = useRouter();
   const organizeButtonRef = useRef<HTMLButtonElement>(null);
+  const wasOrganizingRef = useRef(false);
 
   const [items, setItems] = useState<CategoryItem[]>([]);
   const [searchInput, setSearchInput] = useState("");
@@ -146,6 +147,14 @@ export function CategoriesTable() {
   const [updatingIds, setUpdatingIds] = useState<Set<string>>(new Set());
   const [organizing, setOrganizing] = useState(false);
   const [success, setSuccess] = useState("");
+
+  // Restore focus after the editor unmounts (save or cancel).
+  useEffect(() => {
+    if (wasOrganizingRef.current && !organizing) {
+      organizeButtonRef.current?.focus();
+    }
+    wasOrganizingRef.current = organizing;
+  }, [organizing]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -313,10 +322,10 @@ export function CategoriesTable() {
           className="btn btn-outline-primary"
           aria-expanded={organizing}
           aria-controls="category-home-order-panel"
-          disabled={loading || Boolean(error && items.length === 0)}
+          disabled={loading || organizing || Boolean(error && items.length === 0)}
           onClick={() => {
             setSuccess("");
-            setOrganizing((current) => !current);
+            setOrganizing(true);
           }}
         >
           Organiser l’accueil
@@ -352,13 +361,9 @@ export function CategoriesTable() {
             setOrganizing(false);
             setError("");
             setSuccess("L’ordre des catégories de l’accueil a été enregistré.");
-            organizeButtonRef.current?.focus();
           }}
           onRefreshed={(updated) => setItems(updated)}
-          onCancel={() => {
-            setOrganizing(false);
-            organizeButtonRef.current?.focus();
-          }}
+          onCancel={() => setOrganizing(false)}
           onUnauthorized={() => router.replace("/admin/login")}
         />
       )}
