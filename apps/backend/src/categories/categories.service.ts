@@ -70,14 +70,11 @@ export class CategoriesService {
     });
   }
 
-  async reorder(
-    categoryIds: string[],
-    expectedOrder: string[],
-  ) {
+  async reorder(categoryIds: string[], expectedOrder: string[]) {
     return this.database.prisma.$transaction(
       async (tx) => {
         // Sérialise tous les changements de position entre administrateurs.
-        await tx.$queryRaw`SELECT pg_advisory_xact_lock(${CATEGORY_ORDER_LOCK_FIRST}, ${CATEGORY_ORDER_LOCK_SECOND})`;
+        await tx.$queryRaw`SELECT 1::INTEGER AS acquired FROM pg_advisory_xact_lock(${CATEGORY_ORDER_LOCK_FIRST}, ${CATEGORY_ORDER_LOCK_SECOND})`;
 
         const current = await tx.category.findMany({
           orderBy: { displayOrder: "asc" },
@@ -107,9 +104,9 @@ export class CategoriesService {
 
         if (categoryIds.every((id, index) => id === currentIds[index])) {
           return tx.category.findMany({
-          orderBy: { displayOrder: "asc" },
-          select: categoryFields,
-        });
+            orderBy: { displayOrder: "asc" },
+            select: categoryFields,
+          });
         }
 
         // L'index UNIQUE PostgreSQL est contrôlé à chaque UPDATE.
@@ -121,7 +118,9 @@ export class CategoriesService {
           0,
         );
         if (highestOrder + current.length > 2147483647) {
-          throw new ConflictException("Les positions de catégories sont saturées.");
+          throw new ConflictException(
+            "Les positions de catégories sont saturées.",
+          );
         }
 
         for (const [index, item] of current.entries()) {
@@ -160,5 +159,4 @@ export class CategoriesService {
       },
     });
   }
-
 }
