@@ -42,6 +42,7 @@ const listQuerySchema = z.object({
     .regex(/^[A-Za-z]{2}$/)
     .transform((value) => value.toLowerCase())
     .optional(),
+  categoryId: z.string().uuid().optional(),
   status: z.enum(["all", "active", "inactive"]).default("all"),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce
@@ -136,6 +137,25 @@ export class FeedsController {
     return {
       items: await this.feedsService.listLanguages(),
     };
+  }
+
+  @Get("categories")
+  @Header("Cache-Control", "no-store")
+  async categories(@Req() request: RequestLike) {
+    await this.assertAuthenticated(request);
+
+    return {
+      items: await this.feedsService.listCategories(),
+    };
+  }
+
+  @Get("export")
+  @Header("Cache-Control", "no-store")
+  @Header("Content-Type", "text/csv; charset=utf-8")
+  async exportCsv(@Req() request: RequestLike) {
+    await this.assertAuthenticated(request);
+
+    return this.feedsService.exportActiveCsv();
   }
 
   @Get("form-options")

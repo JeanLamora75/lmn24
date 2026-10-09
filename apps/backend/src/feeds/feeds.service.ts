@@ -12,6 +12,7 @@ export type FeedStatusFilter = "all" | "active" | "inactive";
 export type ListFeedsParams = {
   search?: string | undefined;
   language?: string | undefined;
+  categoryId?: string | undefined;
   status: FeedStatusFilter;
   page: number;
   pageSize: number;
@@ -48,6 +49,7 @@ export class FeedsService {
             languageIsoCode2: params.language.trim().toLowerCase(),
           }
         : {}),
+      ...(params.categoryId ? { categoryId: params.categoryId } : {}),
       ...(params.status === "active"
         ? { isActive: true }
         : params.status === "inactive"
@@ -131,6 +133,81 @@ export class FeedsService {
         isoCode2: true,
       },
     });
+  }
+
+  async listCategories() {
+    return this.database.prisma.category.findMany({
+      orderBy: [{ slug: "asc" }, { id: "asc" }],
+      select: {
+        id: true,
+        slug: true,
+      },
+    });
+  }
+
+  async exportActiveCsv(): Promise<string> {
+    const feeds = await this.database.prisma.feed.findMany({
+      where: {
+        isActive: true,
+      },
+      orderBy: [
+        {
+          source: {
+            name: "asc",
+          },
+        },
+        {
+          category: {
+            slug: "asc",
+          },
+        },
+        {
+          languageIsoCode2: "asc",
+        },
+        {
+          feedUrl: "asc",
+        },
+        {
+          id: "asc",
+        },
+      ],
+      select: {
+        feedUrl: true,
+        source: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+        category: {
+          select: {
+            slug: true,
+          },
+        },
+        language: {
+          select: {
+            isoCode2: true,
+          },
+        },
+      },
+    });
+
+    const header =
+      "sourceName,sourceSlug,category,language,feedUrl";
+
+    const rows = feeds.map((feed) =>
+      [
+        feed.source.name,
+        feed.source.slug,
+        feed.category.slug,
+        feed.language.isoCode2.trim().toLowerCase(),
+        feed.feedUrl,
+      ]
+        .map((value) => this.escapeCsv(value))
+        .join(","),
+    );
+
+    return [header, ...rows].join("\r\n") + "\r\n";
   }
 
   async listFormOptions() {
@@ -309,6 +386,14 @@ export class FeedsService {
         feedRuns: deletedRuns.count,
       };
     });
+  }
+
+  private escapeCsv(value: string): string {
+    if (!/[",\r\n]/.test(value)) {
+      return value;
+    }
+
+    return '"' + value.replace(/"/g, '""') + '"';
   }
 
   private async assertReferencesExist(input: FeedInput): Promise<void> {

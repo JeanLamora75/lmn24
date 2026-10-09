@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   FormEvent,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -32,6 +33,11 @@ type LanguageItem = {
   isoCode2: string;
 };
 
+type CategoryItem = {
+  id: string;
+  slug: string;
+};
+
 type Pagination = {
   page: number;
   pageSize: number;
@@ -47,6 +53,15 @@ type FeedResponse = {
 type StatusFilter = "all" | "active" | "inactive";
 
 const PAGE_SIZES = [5, 10, 25, 50, 100] as const;
+
+function exportFileName(): string {
+  const now = new Date();
+  const year = String(now.getFullYear());
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+
+  return "lmn24-feeds-" + year + "-" + month + "-" + day + ".csv";
+}
 
 function safeFeedUrl(value: string): string | null {
   try {
@@ -176,6 +191,7 @@ export function FeedsTable() {
 
   const [items, setItems] = useState<FeedItem[]>([]);
   const [languages, setLanguages] = useState<LanguageItem[]>([]);
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
     pageSize: 10,
@@ -185,6 +201,7 @@ export function FeedsTable() {
 
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [language, setLanguage] = useState("");
   const [status, setStatus] = useState<StatusFilter>("all");
   const [page, setPage] = useState(1);
@@ -193,45 +210,71 @@ export function FeedsTable() {
   const [reloadKey, setReloadKey] = useState(0);
 
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
   const [error, setError] = useState("");
   const [updatingIds, setUpdatingIds] = useState<Set<string>>(
     new Set(),
   );
 
+  const sortedCategories = useMemo(
+    () =>
+      [...categories].sort((a, b) =>
+        getFrenchCategoryLabel(a.slug).localeCompare(
+          getFrenchCategoryLabel(b.slug),
+          "fr",
+          { sensitivity: "base" },
+        ),
+      ),
+    [categories],
+  );
+
   useEffect(() => {
     const controller = new AbortController();
 
-    async function loadLanguages() {
+    async function loadFilters() {
       try {
-        const response = await fetch("/api/admin/feeds/languages", {
-          cache: "no-store",
-          signal: controller.signal,
-        });
+        const [languagesResponse, categoriesResponse] = await Promise.all([
+          fetch("/api/admin/feeds/languages", {
+            cache: "no-store",
+            signal: controller.signal,
+          }),
+          fetch("/api/admin/feeds/categories", {
+            cache: "no-store",
+            signal: controller.signal,
+          }),
+        ]);
 
-        if (response.status === 401) {
+        if (
+          languagesResponse.status === 401 ||
+          categoriesResponse.status === 401
+        ) {
           router.replace("/admin/login");
           return;
         }
 
-        if (!response.ok) {
-          throw new Error("load-languages-failed");
+        if (!languagesResponse.ok || !categoriesResponse.ok) {
+          throw new Error("load-filters-failed");
         }
 
-        const payload = (await response.json()) as {
+        const languagesPayload = (await languagesResponse.json()) as {
           items: LanguageItem[];
         };
+        const categoriesPayload = (await categoriesResponse.json()) as {
+          items: CategoryItem[];
+        };
 
-        setLanguages(payload.items);
+        setLanguages(languagesPayload.items);
+        setCategories(categoriesPayload.items);
       } catch (caught) {
         if (
           !(caught instanceof DOMException && caught.name === "AbortError")
         ) {
-          setError("Impossible de charger la liste des langues.");
+          setError("Impossible de charger les filtres des flux.");
         }
       }
     }
 
-    void loadLanguages();
+    void loadFilters();
 
     return () => controller.abort();
   }, [router]);
@@ -255,6 +298,10 @@ export function FeedsTable() {
 
       if (language) {
         params.set("language", language);
+      }
+
+      if (categoryId) {
+        params.set("categoryId", categoryId);
       }
 
       try {
@@ -299,13 +346,61 @@ export function FeedsTable() {
     void loadFeeds();
 
     return () => controller.abort();
-  }, [language, page, pageSize, reloadKey, router, search, status]);
+  }, [
+    categoryId,
+    language,
+    page,
+    pageSize,
+    reloadKey,
+    router,
+    search,
+    status,
+  ]);
 
   const submitSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setPage(1);
     setSearch(searchInput.trim());
     setReloadKey((value) => value + 1);
+  };
+
+  const exportActiveFeeds = async () => {
+    if (exporting) {
+      return;
+    }
+
+    setExporting(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/admin/feeds/export", {
+        cache: "no-store",
+      });
+
+      if (response.status === 401) {
+        router.replace("/admin/login");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("export-failed");
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+
+      anchor.href = url;
+      anchor.download = exportFileName();
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setError("L’export des flux RSS/XML a échoué.");
+    } finally {
+      setExporting(false);
+    }
   };
 
   const toggleFeed = async (feed: FeedItem) => {
@@ -384,6 +479,14 @@ export function FeedsTable() {
           <Link href="/admin/feeds/new" className="btn btn-primary">
             Nouveau flux RSS/XML
           </Link>
+          <button
+            type="button"
+            className="btn btn-outline-primary"
+            disabled={exporting}
+            onClick={() => void exportActiveFeeds()}
+          >
+            {exporting ? "Exportation…" : "Exporter"}
+          </button>
         </div>
 
         <form
@@ -409,7 +512,29 @@ export function FeedsTable() {
       </div>
 
       <div className="row g-2 align-items-end mb-4">
-        <div className="col-12 col-md-4">
+        <div className="col-12 col-md-6 col-lg-3">
+          <label className="form-label" htmlFor="category-filter">
+            Catégorie
+          </label>
+          <select
+            id="category-filter"
+            className="form-select"
+            value={categoryId}
+            onChange={(event) => {
+              setCategoryId(event.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">Toutes les catégories</option>
+            {sortedCategories.map((category) => (
+              <option value={category.id} key={category.id}>
+                {getFrenchCategoryLabel(category.slug)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="col-12 col-md-6 col-lg-3">
           <label className="form-label" htmlFor="language-filter">
             Langue
           </label>
@@ -434,7 +559,7 @@ export function FeedsTable() {
           </select>
         </div>
 
-        <div className="col-12 col-md-4">
+        <div className="col-12 col-md-6 col-lg-3">
           <label className="form-label" htmlFor="feed-status-filter">
             Statut
           </label>
@@ -453,7 +578,7 @@ export function FeedsTable() {
           </select>
         </div>
 
-        <div className="col-12 col-md-4">
+        <div className="col-12 col-md-6 col-lg-3">
           <label className="form-label" htmlFor="feed-page-size">
             Enregistrements par page
           </label>
