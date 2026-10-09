@@ -276,5 +276,15 @@
     "pt": "Portuguese",
     "it": "Italian",
     "ru": "Russian"
+  },
+  "home": {
+    "heading": "Latest news",
+    "description": "The latest stories, category by category.",
+    "empty": "No news available at the moment.",
+    "error": "News could not be loaded right now. Please try again later.",
+    "previous": "Scroll articles left",
+    "next": "Scroll articles right",
+    "carousel": "Scrollable articles",
+    "category": "View the {name} category"
   }
 }
