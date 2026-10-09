@@ -47,16 +47,33 @@ model Language {
   @@map("language")
 }
 
+enum CategoryHomeLayout {
+  FEATURED
+  GRID
+  LIST
+  SPLIT
+  MOSAIC
+  COMPACT
+  HEADLINES
+  CAROUSEL
+
+  @@map("category_home_layout")
+}
+
 model Category {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  slug      String   @unique(map: "category_slug_unique") @db.VarChar(255)
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug         String             @unique(map: "category_slug_unique") @db.VarChar(255)
+  isActive     Boolean            @default(true) @map("is_active")
+  displayOrder Int                @unique(map: "category_display_order_unique") @map("display_order")
+  layoutType   CategoryHomeLayout @default(GRID) @map("layout_type")
+  themeColor   String             @default("#2563EB") @map("theme_color") @db.VarChar(7)
+  createdAt    DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   feeds    Feed[]
   articles Article[]
 
+  // Positive order and canonical #RRGGBB checks are enforced by SQL migrations.
   @@map("category")
 }
 
