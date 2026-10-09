@@ -1,0 +1,333 @@
+.layoutChoices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.layoutChoice {
+  position: relative;
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.7rem;
+  background: var(--bs-body-bg);
+  padding: 0.85rem;
+  cursor: pointer;
+  min-width: 0;
+  transition: border-color 120ms, box-shadow 120ms;
+}
+
+.layoutChoice:hover {
+  border-color: var(--bs-primary-border-subtle);
+}
+
+.layoutChoice:focus-within {
+  outline: 2px solid var(--bs-primary);
+  outline-offset: 2px;
+}
+
+.layoutChoiceSelected {
+  border-color: var(--bs-primary);
+  background: var(--bs-primary-bg-subtle);
+  box-shadow: inset 0 0 0 1px var(--bs-primary);
+}
+
+.choiceDetails {
+  min-width: 0;
+  flex: 1;
+}
+
+.colorPicker {
+  width: 4.25rem;
+  min-width: 4.25rem;
+  height: 3rem;
+  padding: 0.25rem;
+  cursor: pointer;
+}
+
+.colorHex {
+  max-width: 14rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  text-transform: uppercase;
+}
+
+.previewPanel {
+  border-color: var(--bs-border-color);
+}
+
+.previewFrame {
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.85rem;
+  background: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  padding: clamp(0.75rem, 2vw, 1.4rem);
+  overflow: hidden;
+}
+
+.previewHeader {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  border-bottom: 1px solid var(--bs-border-color);
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.7rem;
+}
+
+.previewAccent {
+  width: 0.38rem;
+  height: 1.6rem;
+  border-radius: 1rem;
+  flex: none;
+  background-color: var(--home-accent);
+  border: 1px solid var(--bs-border-color);
+}
+
+.previewCards {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.demoCard {
+  border: 1px solid var(--bs-border-color);
+  border-top: 3px solid var(--home-accent);
+  border-radius: 0.55rem;
+  min-width: 0;
+  background: var(--bs-body-bg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.demoMedia {
+  min-height: 4.25rem;
+  aspect-ratio: 16 / 9;
+  background: repeating-linear-gradient(
+    -30deg,
+    var(--bs-tertiary-bg),
+    var(--bs-tertiary-bg) 10px,
+    var(--bs-secondary-bg) 10px,
+    var(--bs-secondary-bg) 20px
+  );
+  display: grid;
+  place-items: center;
+}
+
+.demoImageMark {
+  height: 1.1rem;
+  width: 1.55rem;
+  border: 2px solid var(--bs-secondary-color);
+  opacity: 0.25;
+  border-radius: 0.2rem;
+}
+
+.demoContent {
+  padding: 0.55rem 0.6rem;
+  min-width: 0;
+}
+
+.demoTitle {
+  font-size: clamp(0.73rem, 1vw, 0.87rem);
+  line-height: 1.3;
+  font-weight: 600;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.demoExcerpt {
+  font-size: 0.68rem;
+  line-height: 1.35;
+  color: var(--bs-secondary-color);
+  margin: 0.35rem 0 0;
+}
+
+.featured {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.featured > :first-child {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+}
+
+.featured > :first-child .demoTitle,
+.split > :first-child .demoTitle,
+.mosaic > :first-child .demoTitle {
+  font-size: 1rem;
+}
+
+.featured > :first-child .demoMedia {
+  aspect-ratio: auto;
+  min-height: 9rem;
+}
+
+.grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.list {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.list .demoCard {
+  display: grid;
+  grid-template-columns: minmax(6rem, 0.3fr) minmax(0, 1fr);
+}
+
+.list .demoMedia {
+  aspect-ratio: auto;
+  min-height: 4.75rem;
+}
+
+.split {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.split > :first-child {
+  grid-row: span 2;
+}
+
+.split > :first-child .demoMedia {
+  flex: 1;
+  min-height: 12rem;
+}
+
+.split > :not(:first-child) {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+}
+
+.split > :not(:first-child) .demoMedia {
+  aspect-ratio: auto;
+}
+
+.mosaic {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.mosaic > :first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.mosaic > :first-child .demoMedia {
+  flex: 1;
+  min-height: 12rem;
+}
+
+.compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.compact .demoExcerpt,
+.mosaic > :not(:first-child) .demoExcerpt {
+  display: none;
+}
+
+.compact .demoTitle {
+  font-size: 0.73rem;
+}
+
+.headlines {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.35rem;
+}
+
+.headlines .demoCard {
+  border-top: 0;
+  border-left: 3px solid var(--home-accent);
+}
+
+.headlines .demoContent {
+  display: flex;
+  gap: 0.55rem;
+  align-items: baseline;
+  padding: 0.42rem 0.65rem;
+}
+
+.headlineNumber {
+  color: var(--bs-secondary-color);
+  font-size: 0.7rem;
+  flex: none;
+}
+
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  padding-bottom: 0.6rem;
+}
+
+.carousel > .demoCard {
+  flex: 0 0 clamp(11rem, 48%, 15rem);
+  scroll-snap-align: start;
+}
+
+@media (max-width: 991.98px) {
+  .featured,
+  .compact,
+  .mosaic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mosaic > :first-child {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .mosaic > :first-child .demoMedia {
+    min-height: 7rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .layoutChoices {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .featured,
+  .grid,
+  .compact,
+  .mosaic,
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .featured > :first-child,
+  .mosaic > :first-child {
+    grid-column: auto;
+  }
+
+  .featured > :first-child {
+    display: flex;
+  }
+
+  .split {
+    grid-template-rows: auto;
+  }
+
+  .split > :first-child {
+    grid-row: auto;
+  }
+
+  .split > :not(:first-child) {
+    display: flex;
+  }
+
+  .split > :not(:first-child) .demoMedia {
+    aspect-ratio: 16 / 9;
+  }
+
+  .carousel > .demoCard {
+    flex-basis: min(83%, 16rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layoutChoice {
+    transition: none;
+  }
+}
