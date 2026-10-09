@@ -298,6 +298,35 @@ Les formulaires utilisent :
 
 La validation frontend améliore l’expérience utilisateur mais **ne remplace jamais la validation backend**.
 
+### 7.7 Page d’accueil publique configurable (cible MVP)
+
+La route localisée `/[locale]` présente les actualités par **sections de catégories**, selon la configuration administrée globalement. La conception est décrite dans les Stories Jira `SCRUM-15`, `SCRUM-24`, `SCRUM-25` et `SCRUM-26`.
+
+- L’ordre des sections suit `Category.displayOrder ASC` ; les catégories inactives sont exclues.
+- Chaque section utilise **la mise en page** `Category.layoutType` et la **couleur d’accent** `Category.themeColor`. Ces réglages sont communs à toutes les langues.
+- Le nombre maximal d’articles affichés est fixé **uniquement par la mise en page** ; l’administrateur ne saisit pas un nombre d’articles séparé et aucun champ de capacité par catégorie n’est persisté.
+- Pour chaque catégorie, les articles sont filtrés selon la **langue de l’URL**, puis sélectionnés par `Article.publishedAt DESC` (date de publication, jamais `createdAt`), avec `id DESC` comme départage stable.
+- **Si une catégorie ne contient aucun article dans la langue affichée, sa section entière est masquée** ; elle conserve néanmoins son statut et sa configuration en base. Une catégorie possédant moins d’articles que la capacité du modèle affiche uniquement les articles présents, sans faux éléments.
+- Si toutes les catégories sont vides pour une langue, afficher un **état global vide** plutôt que des sections sans contenu.
+- Les titres de catégorie proviennent de `next-intl` et des slugs. Les liens d’articles ouvrent l’URL de la source dans un nouvel onglet, avec les protections adaptées.
+- Les mises en page sont **responsives et accessibles**, notamment le carrousel au clavier ; les couleurs d’accent ne doivent pas réduire les contrastes.
+- Ces paramètres de présentation **ne s’appliquent pas aux pages dédiées à une catégorie**, dont le rendu est indépendant.
+
+#### Catalogue des huit mises en page
+
+| Valeur de `layoutType` | Structure desktop | Capacité maximale d’articles |
+| --- | --- | ---: |
+| `FEATURED` | Un grand article et quatre secondaires | 5 |
+| `GRID` | Grille de trois colonnes et deux lignes | 6 |
+| `LIST` | Cinq articles en liste verticale | 5 |
+| `SPLIT` | Un grand article et deux secondaires | 3 |
+| `MOSAIC` | Une grande vignette et quatre petites | 5 |
+| `COMPACT` | Grille de quatre colonnes et deux lignes | 8 |
+| `HEADLINES` | Dix titres en liste dense | 10 |
+| `CAROUSEL` | Six cartes dans un carrousel horizontal accessible | 6 |
+
+Les composants ajustent le nombre de colonnes et leur géométrie à la taille de l’écran **sans changer la capacité maximale** du modèle.
+
 ---
 
 ## 8. Internationalisation
@@ -378,6 +407,16 @@ Lors d’une première visite :
 
 Le choix explicite du visiteur est mémorisé dans un cookie.
 
+### 8.7 Langue des actualités
+
+Le choix de langue sur le site **filtre également les articles**, et pas seulement les traductions de l’interface :
+
+- `/fr` affiche **uniquement** les articles dont `Article.languageIsoCode2 = fr` ;
+- `/en` affiche **uniquement** les articles dont `Article.languageIsoCode2 = en` ;
+- même règle pour `de`, `es`, `pt`, `it` et `ru`.
+
+Il n’existe **aucun mélange des langues** ni repli automatique vers les articles d’une autre langue. Une catégorie peut donc être visible sur une version linguistique de l’accueil et absente sur une autre faute d’articles éligibles. L’ordre, la couleur et la mise en page configurés des catégories restent, eux, **globaux**.
+
 ---
 
 ## 9. Backend NestJS
@@ -456,6 +495,23 @@ L’API doit fournir de façon cohérente :
 - tri ;
 - filtres ;
 - recherche texte simple lorsque pertinent.
+
+### 9.6 API de configuration et de composition de l’accueil (cible)
+
+Le backend NestJS sert de point d’accès unique à PostgreSQL pour le frontend. Les contrats ci-dessous sont **à implémenter** dans `SCRUM-25` et `SCRUM-26` ; leur description ne signifie pas qu’ils existent déjà dans le code.
+
+| Méthode et endpoint | Rôle | Accès |
+| --- | --- | --- |
+| `GET /admin/categories` | Liste complète enrichie de `displayOrder`, `layoutType` et `themeColor` | Session administrateur |
+| `GET /admin/categories/:id` | Configuration d’une catégorie, même inactive | Session administrateur |
+| `PATCH /admin/categories/:id/home-display` | Modification validée de la mise en page et de la couleur | Session administrateur |
+| `PUT /admin/categories/home-order` | Réordonnancement complet et atomique, avec gestion des conflits | Session administrateur |
+| `GET /public/home/categories` | Métadonnées des catégories actives, dans l’ordre configuré, y compris éventuellement sans article | Public |
+| `GET /public/home?locale=fr` | Sections actives **non vides** et articles récents de la langue, déjà limités par le layout | Public |
+
+Les endpoints existants, notamment la modification du statut d’une catégorie, restent compatibles. L’API publique de composition doit appliquer le filtre `languageIsoCode2`, le tri `publishedAt DESC` puis `id DESC`, la capacité du modèle et le masquage des sections vides. Elle doit éviter les lectures non bornées et les requêtes inutiles répétées par catégorie, en exploitant les index de la base.
+
+La mise à jour du classement est transactionnelle et protège l’unicité et la continuité des positions. Les mises à jour des paramètres visuels n’affectent ni `isActive` ni le classement. La modification depuis l’administration doit être reflétée au prochain chargement public sans exposer un cache obsolète ; pendant le MVP, `Cache-Control: no-store` est possible pour ces lectures.
 
 ---
 
@@ -784,6 +840,8 @@ packages/database
 
 Ni le backend ni le parser ne doivent posséder leur propre historique de migrations indépendant.
 
+L’évolution prévue pour l’accueil (SCRUM-25) requiert une **migration additive non destructive** de `category` et la mise à jour coordonnée de `packages/database/schema.prisma` et `database/schema.sql`. Les catégories existantes recevront une position initiale déterministe, `GRID` et `#2563EB`, sans altérer les articles, les flux ni les clés étrangères. **La présente documentation décrit la cible, et non une migration déjà appliquée.**
+
 ---
 
 ## 14. Règles de données de référence
@@ -812,9 +870,17 @@ ru
 
 ### 14.3 Category
 
-Les catégories utilisent un slug technique stable.
+Les catégories utilisent un `slug` technique stable. Les libellés traduits résident dans `/messages/*.json` et ne sont pas enregistrés dans la table `category`.
 
-Les libellés traduits résident dans `/messages/*.json`.
+Chaque catégorie porte trois paramètres propres à l’**affichage de sa section sur la page d’accueil** :
+
+- `display_order` (Prisma : `displayOrder`), entier positif unique, position globale de 1 à N, y compris pour les catégories inactives ;
+- `layout_type` (Prisma : `layoutType`), enum parmi les huit mises en page documentées en section 7.7, valeur par défaut `GRID` ;
+- `theme_color` (Prisma : `themeColor`), couleur hexadécimale `#RRGGBB`, valeur par défaut `#2563EB`.
+
+Pour les données déjà présentes, l’ordre initial est construit à partir des `slug` alphabétiques. La configuration est commune à toutes les langues. Une catégorie inactive conserve ses réglages mais est exclue de l’accueil ; une catégorie active sans article dans la langue courante n’y est pas rendue.
+
+Ces champs appartiennent à `Category` et non à `Setting`. Ils **ne modifient pas** les pages dédiées à chaque catégorie, les relations `Article`/`Feed` ou l’ordre des articles.
 
 ### 14.4 Article
 
@@ -844,7 +910,7 @@ Les articles font exception et peuvent être supprimés physiquement.
 
 ## 15. Configuration fonctionnelle
 
-La table `Setting` est la source centrale pour les paramètres modifiables depuis l’administration.
+La table `Setting` est la source centrale pour les paramètres fonctionnels **transversaux** modifiables depuis l’administration. **Exception :** la configuration visuelle et le classement de la page d’accueil sont des propriétés métier de chaque `Category` (`displayOrder`, `layoutType`, `themeColor`), et non des entrées `Setting`.
 
 Elle doit notamment pouvoir gérer :
 
@@ -860,6 +926,8 @@ Elle doit notamment pouvoir gérer :
 - autres paramètres métier futurs.
 
 Un paramètre spécifique peut surcharger une valeur globale lorsque le modèle `Setting` le permet.
+
+**Le nombre d’articles affichés par section sur la page d’accueil est calculé exclusivement à partir de `layoutType`**, selon le catalogue de la section 7.7 : aucun paramètre indépendant de quantité n’est stocké dans `Setting` ni dans `Category`.
 
 Les paramètres nécessaires **avant le démarrage d’un processus** ne doivent pas dépendre de `Setting`.
 
@@ -1274,7 +1342,7 @@ Une distinction stricte doit être conservée.
 
 ### 34.1 Table `Setting`
 
-Utilisée pour les paramètres modifiables à chaud ou depuis l’administration.
+Utilisée pour les paramètres transversaux modifiables à chaud ou depuis l’administration. Les paramètres **propres à une entité** peuvent être stockés directement sur cette entité : pour l’accueil, `Category` porte `displayOrder`, `layoutType`, `themeColor`. La capacité d’articles est une règle du modèle de mise en page, **pas** un paramètre configurable.
 
 Exemples :
 
