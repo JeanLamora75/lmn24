@@ -245,6 +245,9 @@ importers:
       '@lmn24/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@lmn24/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       '@tanstack/react-query':
         specifier: 5.104.0
         version: 5.104.0(react@19.3.0)
