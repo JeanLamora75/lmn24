@@ -41,7 +41,7 @@ type PublicHomeRow = {
 
 /**
  * Les lignes sont retournées dans l'ordre SQL : catégorie puis publishedAt et id.
- * Le CROSS JOIN LATERAL exclut naturellement les catégories vides dans la langue.
+ * Le JOIN LATERAL exclut naturellement les catégories vides dans la langue.
  */
 export function groupPublicHomeRows(
   rows: readonly PublicHomeRow[],
@@ -108,7 +108,7 @@ export class PublicHomeService {
         recent.source_name AS "sourceName",
         recent.source_logo_url AS "sourceLogoUrl"
       FROM category AS c
-      CROSS JOIN LATERAL (
+      JOIN LATERAL (
         SELECT
           a.id,
           a.title,
