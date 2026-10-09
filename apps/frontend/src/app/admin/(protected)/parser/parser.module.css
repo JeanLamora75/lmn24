@@ -1,0 +1,10 @@
+.informationPanel {
+  min-height: 12rem;
+  border-color: var(--bs-border-color);
+}
+
+@media (max-width: 767.98px) {
+  .informationPanel {
+    min-height: 10rem;
+  }
+}

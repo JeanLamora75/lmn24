@@ -40,7 +40,7 @@ const ADMIN_FEATURES = [
       "Accéder aux principaux paramètres de configuration de l’application.",
   },
   {
-    href: "/admin/parser-run",
+    href: "/admin/parser",
     icon: "play-circle",
     title: "Lancer le parser",
     description:
