@@ -1,0 +1,82 @@
+.searchForm {
+  width: min(100%, 32rem);
+}
+
+.statusColumn {
+  width: 6rem;
+}
+
+.actionsColumn {
+  width: 8rem;
+}
+
+.activeStatus,
+.inactiveStatus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.5rem;
+  border-radius: 0.5rem;
+}
+
+.activeStatus {
+  background-color: var(--bs-success-bg-subtle);
+}
+
+.inactiveStatus {
+  background-color: var(--bs-secondary-bg-subtle);
+  opacity: 0.75;
+}
+
+.urlCell {
+  width: 34%;
+  max-width: 32rem;
+}
+
+.urlText {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileActions {
+  position: relative;
+  display: inline-block;
+}
+
+.mobileActions > summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+}
+
+.mobileActions > summary::-webkit-details-marker {
+  display: none;
+}
+
+.mobileActionsMenu {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  right: 0;
+  left: auto;
+  min-width: 10rem;
+  z-index: 1050;
+}
+
+@media (max-width: 991.98px) {
+  .searchForm {
+    width: 100%;
+  }
+
+  .actionsColumn {
+    width: 4rem;
+  }
+
+  .urlCell {
+    min-width: 18rem;
+    max-width: 22rem;
+  }
+}

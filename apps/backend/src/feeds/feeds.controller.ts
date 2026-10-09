@@ -1,8 +1,13 @@
 import {
   BadRequestException,
+  Body,
   Controller,
+  Get,
   Header,
+  Param,
+  Patch,
   Post,
+  Query,
   Req,
   UnauthorizedException,
   UploadedFile,
@@ -10,6 +15,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { z } from "zod";
 
 import {
   AUTH_FAILURE_MESSAGE,
@@ -17,10 +23,42 @@ import {
 } from "../auth/auth.constants";
 import { AuthService } from "../auth/auth.service";
 import { FeedCsvImportService } from "./feed-csv-import.service";
+import { FeedsService } from "./feeds.service";
 
 type RequestLike = {
   headers: Record<string, string | string[] | undefined>;
 };
+
+const allowedPageSizes = [5, 10, 25, 50, 100] as const;
+
+const listQuerySchema = z.object({
+  search: z.string().trim().max(255).optional(),
+  language: z
+    .string()
+    .trim()
+    .regex(/^[A-Za-z]{2}$/)
+    .transform((value) => value.toLowerCase())
+    .optional(),
+  status: z.enum(["all", "active", "inactive"]).default("all"),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce
+    .number()
+    .int()
+    .refine(
+      (value) =>
+        allowedPageSizes.includes(
+          value as (typeof allowedPageSizes)[number],
+        ),
+      "Taille de page invalide.",
+    )
+    .default(10),
+});
+
+const updateStatusSchema = z.object({
+  isActive: z.boolean(),
+});
+
+const feedIdSchema = z.string().uuid();
 
 type UploadedCsv = {
   buffer: Buffer;
@@ -34,6 +72,7 @@ export class FeedsController {
   private readonly cookieName: string;
 
   constructor(
+    private readonly feedsService: FeedsService,
     private readonly feedCsvImportService: FeedCsvImportService,
     private readonly authService: AuthService,
     configService: ConfigService,
@@ -41,6 +80,33 @@ export class FeedsController {
     this.cookieName =
       configService.get<string>("SESSION_COOKIE_NAME")?.trim() ||
       DEFAULT_SESSION_COOKIE_NAME;
+  }
+
+  @Get()
+  @Header("Cache-Control", "no-store")
+  async list(
+    @Req() request: RequestLike,
+    @Query() query: Record<string, string | undefined>,
+  ) {
+    await this.assertAuthenticated(request);
+
+    const parsed = listQuerySchema.safeParse(query);
+
+    if (!parsed.success) {
+      throw new BadRequestException("Critères de recherche invalides.");
+    }
+
+    return this.feedsService.list(parsed.data);
+  }
+
+  @Get("languages")
+  @Header("Cache-Control", "no-store")
+  async languages(@Req() request: RequestLike) {
+    await this.assertAuthenticated(request);
+
+    return {
+      items: await this.feedsService.listLanguages(),
+    };
   }
 
   @Post("csv/analyze")
@@ -90,6 +156,28 @@ export class FeedsController {
     return this.feedCsvImportService.import(
       file.buffer,
       file.originalname,
+    );
+  }
+
+  @Patch(":id/status")
+  @Header("Cache-Control", "no-store")
+  async updateStatus(
+    @Req() request: RequestLike,
+    @Param("id") rawId: string,
+    @Body() body: unknown,
+  ) {
+    await this.assertAuthenticated(request);
+
+    const id = feedIdSchema.safeParse(rawId);
+    const payload = updateStatusSchema.safeParse(body);
+
+    if (!id.success || !payload.success) {
+      throw new BadRequestException("Requête de modification invalide.");
+    }
+
+    return this.feedsService.updateStatus(
+      id.data,
+      payload.data.isActive,
     );
   }
 
