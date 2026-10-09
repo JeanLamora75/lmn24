@@ -28,20 +28,23 @@ const logger = pino({
 });
 
 const port = Number(process.env.PARSER_PORT ?? 3002);
-const sharedSecret = process.env.PARSER_SHARED_SECRET?.trim();
+const configuredSharedSecret =
+  process.env.PARSER_SHARED_SECRET?.trim();
 
-if (!sharedSecret) {
+if (!configuredSharedSecret) {
   throw new Error("PARSER_SHARED_SECRET is required.");
 }
 
 if (
   process.env.NODE_ENV === "production" &&
-  sharedSecret === "CHANGE_ME"
+  configuredSharedSecret === "CHANGE_ME"
 ) {
   throw new Error(
     "PARSER_SHARED_SECRET must be changed in production.",
   );
 }
+
+const sharedSecret: string = configuredSharedSecret;
 
 const filtersSchema = z.object({
   countryIsoCode2: z
