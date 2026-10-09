@@ -106,7 +106,10 @@ export class CategoriesService {
         }
 
         if (categoryIds.every((id, index) => id === currentIds[index])) {
-          return this.listWithinTransaction(tx);
+          return tx.category.findMany({
+          orderBy: { displayOrder: "asc" },
+          select: categoryFields,
+        });
         }
 
         // L'index UNIQUE PostgreSQL est contrôlé à chaque UPDATE.
@@ -135,7 +138,10 @@ export class CategoriesService {
           });
         }
 
-        return this.listWithinTransaction(tx);
+        return tx.category.findMany({
+          orderBy: { displayOrder: "asc" },
+          select: categoryFields,
+        });
       },
       { maxWait: 10000, timeout: 30000 },
     );
@@ -155,12 +161,4 @@ export class CategoriesService {
     });
   }
 
-  private listWithinTransaction(
-    tx: Parameters<Parameters<DatabaseService["prisma"]["$transaction"]>[0]>[0],
-  ) {
-    return tx.category.findMany({
-      orderBy: { displayOrder: "asc" },
-      select: categoryFields,
-    });
-  }
 }
