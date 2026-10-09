@@ -7,23 +7,22 @@ import { safeExternalUrl } from "./home-data";
 import styles from "./home.module.css";
 
 type Props = {
-  title: string;
   imageUrl: string | null;
   logoUrl: string | null;
 };
 
-export function HomeArticleMedia({ title, imageUrl, logoUrl }: Props) {
-  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+export function HomeArticleMedia({ imageUrl, logoUrl }: Props) {
+  const [failedUrls, setFailedUrls] = useState<string[]>([]);
   const image = safeExternalUrl(imageUrl);
   const logo = safeExternalUrl(logoUrl);
-  const current = image && failedUrl !== image
+  const current = image && !failedUrls.includes(image)
     ? image
-    : logo && failedUrl !== logo
+    : logo && !failedUrls.includes(logo)
       ? logo
       : null;
 
   useEffect(() => {
-    setFailedUrl(null);
+    setFailedUrls([]);
   }, [imageUrl, logoUrl]);
 
   return (
@@ -36,7 +35,7 @@ export function HomeArticleMedia({ title, imageUrl, logoUrl }: Props) {
           height={360}
           className={styles.mediaImage}
           alt=""
-          onError={() => setFailedUrl(current)}
+          onError={() => setFailedUrls((old) => old.includes(current) ? old : [...old, current])}
         />
       ) : (
         <span className={styles.mediaFallback}>
