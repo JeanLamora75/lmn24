@@ -7,18 +7,15 @@ import {
   FormEvent,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
 import { getFrenchCategoryLabel } from "@/lib/fr-category-labels";
 
+import { CategoryHomeOrderEditor } from "./CategoryHomeOrderEditor";
+import type { CategoryItem } from "./category-home-order";
 import styles from "./categories.module.css";
-
-type CategoryItem = {
-  id: string;
-  slug: string;
-  isActive: boolean;
-};
 
 type StatusFilter = "all" | "active" | "inactive";
 
@@ -134,6 +131,7 @@ function PaginationNav({
 
 export function CategoriesTable() {
   const router = useRouter();
+  const organizeButtonRef = useRef<HTMLButtonElement>(null);
 
   const [items, setItems] = useState<CategoryItem[]>([]);
   const [searchInput, setSearchInput] = useState("");
@@ -146,6 +144,8 @@ export function CategoriesTable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updatingIds, setUpdatingIds] = useState<Set<string>>(new Set());
+  const [organizing, setOrganizing] = useState(false);
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -307,6 +307,21 @@ export function CategoriesTable() {
           Retour à l’administration
         </Link>
 
+        <button
+          type="button"
+          ref={organizeButtonRef}
+          className="btn btn-outline-primary"
+          aria-expanded={organizing}
+          aria-controls="category-home-order-panel"
+          disabled={loading || Boolean(error && items.length === 0)}
+          onClick={() => {
+            setSuccess("");
+            setOrganizing((current) => !current);
+          }}
+        >
+          Organiser l’accueil
+        </button>
+
         <form
           className={"d-flex gap-2 ms-lg-auto " + styles.searchForm}
           role="search"
@@ -328,6 +343,25 @@ export function CategoriesTable() {
           </button>
         </form>
       </div>
+
+      {organizing && (
+        <CategoryHomeOrderEditor
+          categories={items}
+          onSaved={(updated) => {
+            setItems(updated);
+            setOrganizing(false);
+            setError("");
+            setSuccess("L’ordre des catégories de l’accueil a été enregistré.");
+            organizeButtonRef.current?.focus();
+          }}
+          onRefreshed={(updated) => setItems(updated)}
+          onCancel={() => {
+            setOrganizing(false);
+            organizeButtonRef.current?.focus();
+          }}
+          onUnauthorized={() => router.replace("/admin/login")}
+        />
+      )}
 
       <div className="row g-2 align-items-end mb-4">
         <div className="col-12 col-md-6">
@@ -379,6 +413,12 @@ export function CategoriesTable() {
         </div>
       ) : null}
 
+      {success ? (
+        <div className="alert alert-success" role="status">
+          {success}
+        </div>
+      ) : null}
+
       <div className="mb-2">
         <PaginationNav
           page={safePage}
@@ -396,6 +436,9 @@ export function CategoriesTable() {
                 Statut
               </th>
               <th scope="col">Catégorie</th>
+              <th scope="col" className={"text-center " + styles.orderColumn}>
+                Ordre d’accueil
+              </th>
               <th scope="col" className={"text-end " + styles.actionsColumn}>
                 Actions
               </th>
@@ -405,7 +448,7 @@ export function CategoriesTable() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={3} className="text-center py-5">
+                <td colSpan={4} className="text-center py-5">
                   <span
                     className="spinner-border spinner-border-sm me-2"
                     aria-hidden="true"
@@ -415,7 +458,7 @@ export function CategoriesTable() {
               </tr>
             ) : visibleItems.length === 0 ? (
               <tr>
-                <td colSpan={3} className="text-center py-5 text-body-secondary">
+                <td colSpan={4} className="text-center py-5 text-body-secondary">
                   Aucune catégorie n’a été trouvée.
                 </td>
               </tr>
@@ -471,6 +514,14 @@ export function CategoriesTable() {
                     </td>
 
                     <td className="fw-medium">{label}</td>
+                    <td className="text-center">
+                      <span
+                        className="badge rounded-pill text-bg-light border text-body"
+                        aria-label={"Position sur l’accueil : " + category.displayOrder}
+                      >
+                        {category.displayOrder}
+                      </span>
+                    </td>
 
                     <td className="text-end">
                       <div className="d-none d-lg-flex justify-content-end gap-1">
