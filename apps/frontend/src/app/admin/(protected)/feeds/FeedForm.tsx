@@ -42,7 +42,7 @@ type FeedData = {
 };
 
 type DeleteImpact = {
-  articles: number;
+  feedRuns: number;
 };
 
 type Props = Readonly<
@@ -702,11 +702,13 @@ export function FeedForm({ mode, feedId }: Props) {
                 <div className="modal-body">
                   <p className="mb-0">
                     Cette opération supprimera également{" "}
-                    <strong>{deleteImpact.articles}</strong>{" "}
-                    article
-                    {deleteImpact.articles > 1 ? "s" : ""} associé
-                    {deleteImpact.articles > 1 ? "s" : ""} à ce flux.
-                    Cette action est irréversible.
+                    <strong>{deleteImpact.feedRuns}</strong>{" "}
+                    historique
+                    {deleteImpact.feedRuns > 1 ? "s" : ""} d’exécution
+                    {" "}(FeedRun) associé
+                    {deleteImpact.feedRuns > 1 ? "s" : ""} à ce flux.
+                    Les articles existants seront conservés. Cette action
+                    est irréversible.
                   </p>
                 </div>
 

@@ -453,7 +453,6 @@ export class ParserEngine {
     )) {
       const result = await this.database.article.createMany({
         data: chunk.map((article) => ({
-          feedId: feed.id,
           sourceId: feed.sourceId,
           categoryId: feed.categoryId,
           languageIsoCode2: feed.languageIsoCode2.trim().toLowerCase(),

@@ -343,14 +343,14 @@ export class FeedsService {
       throw new NotFoundException("Flux RSS/XML introuvable.");
     }
 
-    const articles = await this.database.prisma.article.count({
+    const feedRuns = await this.database.prisma.feedRun.count({
       where: {
         feedId: id,
       },
     });
 
     return {
-      articles,
+      feedRuns,
     };
   }
 
@@ -371,18 +371,11 @@ export class FeedsService {
         },
       });
 
-      const deletedArticles = await tx.article.deleteMany({
-        where: {
-          feedId: id,
-        },
-      });
-
       await tx.feed.delete({
         where: { id },
       });
 
       return {
-        articles: deletedArticles.count,
         feedRuns: deletedRuns.count,
       };
     });
