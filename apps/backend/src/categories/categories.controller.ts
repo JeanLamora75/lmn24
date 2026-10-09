@@ -6,10 +6,12 @@ import {
   Header,
   Param,
   Patch,
+  Put,
   Req,
   UnauthorizedException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { CATEGORY_HOME_LAYOUTS } from "@lmn24/contracts";
 import { z } from "zod";
 
 import {
@@ -19,7 +21,24 @@ import {
 import { AuthService } from "../auth/auth.service";
 import { CategoriesService } from "./categories.service";
 
-const sourceIdSchema = z.string().uuid();
+const categoryIdSchema = z.string().uuid();
+
+const homeDisplaySchema = z
+  .object({
+    layoutType: z.enum(CATEGORY_HOME_LAYOUTS),
+    themeColor: z
+      .string()
+      .regex(/^#[0-9a-fA-F]{6}$/)
+      .transform((value) => value.toUpperCase()),
+  })
+  .strict();
+
+const homeOrderSchema = z
+  .object({
+    categoryIds: z.array(z.string().uuid()).max(500),
+    expectedOrder: z.array(z.string().uuid()).max(500),
+  })
+  .strict();
 
 const updateStatusSchema = z.object({
   isActive: z.boolean(),
@@ -53,6 +72,59 @@ export class CategoriesController {
     };
   }
 
+  @Put("home-order")
+  @Header("Cache-Control", "no-store")
+  async saveHomeOrder(
+    @Req() request: RequestLike,
+    @Body() body: unknown,
+  ) {
+    await this.assertAuthenticated(request);
+    const parsed = homeOrderSchema.safeParse(body);
+    if (!parsed.success) {
+      throw new BadRequestException("Classement de catégories invalide.");
+    }
+    return {
+      items: await this.categoriesService.reorder(
+        parsed.data.categoryIds,
+        parsed.data.expectedOrder,
+      ),
+    };
+  }
+
+  @Get(":id")
+  @Header("Cache-Control", "no-store")
+  async getById(
+    @Req() request: RequestLike,
+    @Param("id") rawId: string,
+  ) {
+    await this.assertAuthenticated(request);
+    const id = categoryIdSchema.safeParse(rawId);
+    if (!id.success) {
+      throw new BadRequestException("Identifiant de catégorie invalide.");
+    }
+    return this.categoriesService.getById(id.data);
+  }
+
+  @Patch(":id/home-display")
+  @Header("Cache-Control", "no-store")
+  async saveHomeDisplay(
+    @Req() request: RequestLike,
+    @Param("id") rawId: string,
+    @Body() body: unknown,
+  ) {
+    await this.assertAuthenticated(request);
+    const id = categoryIdSchema.safeParse(rawId);
+    const parsed = homeDisplaySchema.safeParse(body);
+    if (!id.success || !parsed.success) {
+      throw new BadRequestException("Configuration de catégorie invalide.");
+    }
+    return this.categoriesService.updateHomeDisplay(
+      id.data,
+      parsed.data.layoutType,
+      parsed.data.themeColor,
+    );
+  }
+
   @Patch(":id/status")
   @Header("Cache-Control", "no-store")
   async updateStatus(
@@ -62,7 +134,7 @@ export class CategoriesController {
   ) {
     await this.assertAuthenticated(request);
 
-    const id = sourceIdSchema.safeParse(rawId);
+    const id = categoryIdSchema.safeParse(rawId);
     const payload = updateStatusSchema.safeParse(body);
 
     if (!id.success || !payload.success) {
