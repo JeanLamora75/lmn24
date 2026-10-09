@@ -276,5 +276,15 @@
     "pt": "Português",
     "it": "Italiano",
     "ru": "Russo"
+  },
+  "home": {
+    "heading": "Últimas notícias",
+    "description": "As notícias mais recentes, por categoria.",
+    "empty": "Não há notícias disponíveis neste momento.",
+    "error": "Não foi possível carregar as notícias. Tente novamente mais tarde.",
+    "previous": "Deslocar artigos para a esquerda",
+    "next": "Deslocar artigos para a direita",
+    "carousel": "Artigos deslizantes",
+    "category": "Ver a categoria {name}"
   }
 }

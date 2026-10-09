@@ -276,5 +276,15 @@
     "pt": "Portugais",
     "it": "Italien",
     "ru": "Russe"
+  },
+  "home": {
+    "heading": "L’actualité en direct",
+    "description": "Les dernières informations, rubrique par rubrique.",
+    "empty": "Aucune actualité disponible pour le moment.",
+    "error": "Impossible de charger les actualités pour le moment. Réessayez ultérieurement.",
+    "previous": "Faire défiler les articles vers la gauche",
+    "next": "Faire défiler les articles vers la droite",
+    "carousel": "Articles défilants",
+    "category": "Voir la rubrique {name}"
   }
 }

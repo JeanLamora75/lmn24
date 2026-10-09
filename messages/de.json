@@ -276,5 +276,15 @@
     "pt": "Portugiesisch",
     "it": "Italienisch",
     "ru": "Russisch"
+  },
+  "home": {
+    "heading": "Aktuelle Nachrichten",
+    "description": "Die neuesten Meldungen nach Themen.",
+    "empty": "Zurzeit sind keine Nachrichten verfügbar.",
+    "error": "Die Nachrichten konnten nicht geladen werden. Bitte versuche es später erneut.",
+    "previous": "Artikel nach links scrollen",
+    "next": "Artikel nach rechts scrollen",
+    "carousel": "Scrollbare Artikel",
+    "category": "Rubrik {name} anzeigen"
   }
 }
