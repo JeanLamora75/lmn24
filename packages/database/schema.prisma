@@ -42,6 +42,7 @@ model Language {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   feeds    Feed[]
+  articles Article[]
 
   @@map("language")
 }
@@ -97,7 +98,6 @@ model Feed {
   category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   language Language @relation(fields: [languageIsoCode2], references: [isoCode2], onDelete: Restrict, onUpdate: Cascade)
   runs     FeedRun[]
-  articles Article[]
 
   @@index([sourceId], map: "idx_feed_source_id")
   @@index([categoryId], map: "idx_feed_category_id")
