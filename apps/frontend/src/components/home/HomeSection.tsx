@@ -63,7 +63,6 @@ function ArticleCard({
       >
         {layoutType !== "HEADLINES" && (
           <HomeArticleMedia
-            title={article.title}
             imageUrl={article.imageUrl}
             logoUrl={article.source.logoUrl}
           />
