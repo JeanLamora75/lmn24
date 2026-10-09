@@ -63,3 +63,55 @@
     width: 4rem;
   }
 }
+
+.orderColumn {
+  width: 9rem;
+}
+
+.organizer {
+  border-color: var(--bs-primary-border-subtle);
+}
+
+.orderList {
+  max-height: min(62vh, 34rem);
+  overflow-y: auto;
+}
+
+.orderItem {
+  cursor: grab;
+}
+
+.orderItem:active {
+  cursor: grabbing;
+}
+
+.orderLabel {
+  min-width: 0;
+}
+
+.dragHandle {
+  color: var(--bs-secondary-color);
+  font-size: 1.5rem;
+  line-height: 1;
+  letter-spacing: -0.45rem;
+  padding-right: 0.45rem;
+  user-select: none;
+}
+
+@media (max-width: 575.98px) {
+  .orderItem {
+    flex-wrap: wrap;
+  }
+
+  .orderLabel {
+    flex-basis: calc(100% - 3rem);
+  }
+
+  .orderItem > .btn-group {
+    margin-left: auto;
+  }
+
+  .orderColumn {
+    width: 6.5rem;
+  }
+}
