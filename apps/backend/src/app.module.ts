@@ -6,7 +6,7 @@ import { AuthModule } from "./auth/auth.module";
 import { CategoriesModule } from "./categories/categories.module";
 import { DatabaseModule } from "./database/database.module";
 import { FeedsModule } from "./feeds/feeds.module";
-import { HealthController } from "./health.controller";
+import { HealthController } from "./health.controller";\nimport { ParserModule } from "./parser/parser.module";
 import { SourcesModule } from "./sources/sources.module";
 
 @Module({

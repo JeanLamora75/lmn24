@@ -3,6 +3,14 @@
   border-color: var(--bs-border-color);
 }
 
+.messageLog {
+  min-height: 7rem;
+  max-height: 28rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 767.98px) {
   .informationPanel {
     min-height: 10rem;

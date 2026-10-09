@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -32,10 +33,63 @@ type FormOptionsResponse = {
   languages: LanguageItem[];
 };
 
+type ParserEvent = {
+  type:
+    | "run-started"
+    | "feed-started"
+    | "feed-success"
+    | "feed-error"
+    | "run-completed"
+    | "run-error";
+  timestamp: string;
+  message: string;
+};
+
+type UiMessage = {
+  id: number;
+  text: string;
+  isError: boolean;
+};
+
 const INITIAL_MESSAGE = "Aucune extraction n’a encore été lancée.";
+
+async function readErrorMessage(
+  response: Response,
+  fallback: string,
+): Promise<string> {
+  try {
+    const payload = (await response.json()) as {
+      message?: string | string[];
+    };
+
+    if (Array.isArray(payload.message)) {
+      return payload.message.join(" ");
+    }
+
+    return payload.message || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function timeLabel(timestamp: string): string {
+  const date = new Date(timestamp);
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return date.toLocaleTimeString("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
 
 export function ParserRunScreen() {
   const router = useRouter();
+  const eventSourceRef = useRef<EventSource | null>(null);
+  const messageSequence = useRef(0);
 
   const [countries, setCountries] = useState<CountryItem[]>([]);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
@@ -46,8 +100,14 @@ export function ParserRunScreen() {
   const [categoryId, setCategoryId] = useState("");
 
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState(INITIAL_MESSAGE);
-  const [hasError, setHasError] = useState(false);
+  const [running, setRunning] = useState(false);
+  const [messages, setMessages] = useState<UiMessage[]>([
+    {
+      id: 0,
+      text: INITIAL_MESSAGE,
+      isError: false,
+    },
+  ]);
 
   const countryLabelByCode = useMemo(
     () =>
@@ -92,7 +152,6 @@ export function ParserRunScreen() {
 
     async function loadOptions() {
       setLoading(true);
-      setHasError(false);
 
       try {
         const [countriesResponse, feedOptionsResponse] = await Promise.all([
@@ -121,7 +180,8 @@ export function ParserRunScreen() {
         const countriesPayload = (await countriesResponse.json()) as {
           items: CountryItem[];
         };
-        const feedOptions = (await feedOptionsResponse.json()) as FormOptionsResponse;
+        const feedOptions =
+          (await feedOptionsResponse.json()) as FormOptionsResponse;
 
         setCountries(countriesPayload.items);
         setCategories(feedOptions.categories);
@@ -130,10 +190,14 @@ export function ParserRunScreen() {
         if (
           !(caught instanceof DOMException && caught.name === "AbortError")
         ) {
-          setHasError(true);
-          setMessage(
-            "Impossible de charger les critères de lancement du parser.",
-          );
+          setMessages([
+            {
+              id: 1,
+              text:
+                "Impossible de charger les critères de lancement du parser.",
+              isError: true,
+            },
+          ]);
         }
       } finally {
         if (!controller.signal.aborted) {
@@ -147,34 +211,130 @@ export function ParserRunScreen() {
     return () => controller.abort();
   }, [router]);
 
-  const selectedCountryLabel =
-    countryLabelByCode.get(countryIsoCode2.toUpperCase()) ??
-    countryIsoCode2.toUpperCase();
+  useEffect(() => {
+    return () => {
+      eventSourceRef.current?.close();
+    };
+  }, []);
 
-  const selectedCategory = categories.find(
-    (category) => category.id === categoryId,
-  );
+  const appendEvent = (event: ParserEvent) => {
+    messageSequence.current += 1;
+    const prefix = timeLabel(event.timestamp);
+    const text = prefix
+      ? "[" + prefix + "] " + event.message
+      : event.message;
 
-  const launchInterface = () => {
-    setHasError(false);
+    setMessages((current) => [
+      ...current,
+      {
+        id: messageSequence.current,
+        text,
+        isError:
+          event.type === "feed-error" || event.type === "run-error",
+      },
+    ]);
+  };
 
-    const criteria = [
-      countryIsoCode2
-        ? "Pays : " + selectedCountryLabel
-        : "Pays : non sélectionné",
-      languageIsoCode2
-        ? "Langue : " + languageIsoCode2.toUpperCase()
-        : "Langue : non sélectionnée",
-      selectedCategory
-        ? "Catégorie : " + getFrenchCategoryLabel(selectedCategory.slug)
-        : "Catégorie : non sélectionnée",
-    ];
+  const launchParser = async () => {
+    if (running) {
+      return;
+    }
 
-    setMessage(
-      "Interface prête pour le lancement manuel. " +
-        criteria.join(" · ") +
-        ". Le raccordement au parser sera réalisé dans la User Story dédiée à son fonctionnement.",
-    );
+    eventSourceRef.current?.close();
+    setRunning(true);
+    setMessages([]);
+
+    const payload = {
+      ...(countryIsoCode2
+        ? { countryIsoCode2 }
+        : {}),
+      ...(languageIsoCode2
+        ? { languageIsoCode2 }
+        : {}),
+      ...(categoryId ? { categoryId } : {}),
+    };
+
+    try {
+      const response = await fetch("/api/admin/parser/runs", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.status === 401) {
+        router.replace("/admin/login");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          await readErrorMessage(
+            response,
+            "Le lancement du parser a échoué.",
+          ),
+        );
+      }
+
+      const result = (await response.json()) as {
+        runId: string;
+      };
+      const eventSource = new EventSource(
+        "/api/admin/parser/runs/" +
+          encodeURIComponent(result.runId) +
+          "/events",
+      );
+
+      eventSourceRef.current = eventSource;
+
+      eventSource.onmessage = (event) => {
+        try {
+          const payloadEvent = JSON.parse(event.data) as ParserEvent;
+          appendEvent(payloadEvent);
+
+          if (
+            payloadEvent.type === "run-completed" ||
+            payloadEvent.type === "run-error"
+          ) {
+            eventSource.close();
+            eventSourceRef.current = null;
+            setRunning(false);
+          }
+        } catch {
+          // Ignore malformed event frames without interrupting the run.
+        }
+      };
+
+      eventSource.onerror = () => {
+        eventSource.close();
+        eventSourceRef.current = null;
+        setRunning(false);
+        messageSequence.current += 1;
+        setMessages((current) => [
+          ...current,
+          {
+            id: messageSequence.current,
+            text:
+              "La connexion de suivi du parser a été interrompue.",
+            isError: true,
+          },
+        ]);
+      };
+    } catch (error) {
+      setRunning(false);
+      messageSequence.current += 1;
+      setMessages([
+        {
+          id: messageSequence.current,
+          text:
+            error instanceof Error
+              ? error.message
+              : "Le lancement du parser a échoué.",
+          isError: true,
+        },
+      ]);
+    }
   };
 
   return (
@@ -188,7 +348,7 @@ export function ParserRunScreen() {
       <header className="mb-4">
         <h1 className="h2 mb-1">Lancer le parser</h1>
         <p className="text-body-secondary mb-0">
-          Préparez les critères d’une extraction manuelle des flux RSS/XML.
+          Lancez une extraction manuelle des flux RSS/XML actifs.
         </p>
       </header>
 
@@ -210,12 +370,12 @@ export function ParserRunScreen() {
                 id="parser-country"
                 className="form-select"
                 value={countryIsoCode2}
-                disabled={loading}
+                disabled={loading || running}
                 onChange={(event) =>
                   setCountryIsoCode2(event.target.value)
                 }
               >
-                <option value="">Sélectionner un pays</option>
+                <option value="">Tous les pays</option>
                 {sortedCountries.map((country) => {
                   const code = country.isoCode2.trim().toUpperCase();
 
@@ -236,12 +396,12 @@ export function ParserRunScreen() {
                 id="parser-language"
                 className="form-select"
                 value={languageIsoCode2}
-                disabled={loading}
+                disabled={loading || running}
                 onChange={(event) =>
                   setLanguageIsoCode2(event.target.value)
                 }
               >
-                <option value="">Sélectionner une langue</option>
+                <option value="">Toutes les langues</option>
                 {languages.map((language) => {
                   const code = language.isoCode2.trim().toLowerCase();
 
@@ -262,10 +422,10 @@ export function ParserRunScreen() {
                 id="parser-category"
                 className="form-select"
                 value={categoryId}
-                disabled={loading}
+                disabled={loading || running}
                 onChange={(event) => setCategoryId(event.target.value)}
               >
-                <option value="">Sélectionner une catégorie</option>
+                <option value="">Toutes les catégories</option>
                 {sortedCategories.map((category) => (
                   <option value={category.id} key={category.id}>
                     {getFrenchCategoryLabel(category.slug)}
@@ -278,10 +438,10 @@ export function ParserRunScreen() {
               <button
                 type="button"
                 className="btn btn-primary"
-                disabled={loading}
-                onClick={launchInterface}
+                disabled={loading || running}
+                onClick={() => void launchParser()}
               >
-                Lancer l’extraction
+                {running ? "Extraction en cours…" : "Lancer l’extraction"}
               </button>
             </div>
           </div>
@@ -298,17 +458,34 @@ export function ParserRunScreen() {
           </h2>
 
           <div
-            className={
-              "mb-0 " +
-              (hasError ? "text-danger" : "text-body-secondary")
-            }
-            role={hasError ? "alert" : "status"}
+            className={styles.messageLog}
+            role="log"
             aria-live="polite"
-            aria-atomic="true"
+            aria-relevant="additions"
           >
-            {loading
-              ? "Chargement des critères disponibles…"
-              : message}
+            {loading && messages.length === 1 ? (
+              <p className="text-body-secondary mb-0">
+                Chargement des critères disponibles…
+              </p>
+            ) : messages.length === 0 ? (
+              <p className="text-body-secondary mb-0">
+                Préparation de l’extraction…
+              </p>
+            ) : (
+              messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={
+                    "mb-2 " +
+                    (message.isError
+                      ? "text-danger"
+                      : "text-body-secondary")
+                  }
+                >
+                  {message.text}
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>

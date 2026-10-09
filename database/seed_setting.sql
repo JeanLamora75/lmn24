@@ -24,20 +24,20 @@ VALUES
         'Fréquence d''exécution automatique du parser. Valeur par défaut : toutes les heures.'
     ),
     (
-        'feedTimeoutMs',
-        '15000',
-        'DURATION',
-        'GLOBAL',
-        NULL,
-        'Timeout par défaut pour récupérer et parser un feed, en millisecondes.'
-    ),
-    (
-        'feedRetryCount',
-        '3',
+        'parser.feed_timeout_seconds',
+        '5',
         'INTEGER',
         'GLOBAL',
         NULL,
-        'Nombre de nouvelles tentatives automatiques après l''échec d''un feed.'
+        'Timeout HTTP en secondes pour la récupération d''un flux RSS/XML.'
+    ),
+    (
+        'parser.feed_retry_count',
+        '2',
+        'INTEGER',
+        'GLOBAL',
+        NULL,
+        'Nombre de nouvelles tentatives après l''échec d''un flux RSS/XML.'
     ),
     (
         'parserMaxConcurrency',
