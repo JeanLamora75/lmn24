@@ -287,5 +287,15 @@
     "carousel": "Artículos desplazables",
     "category": "Ver la categoría {name}",
     "moreNews": "Ver más noticias"
+  },
+  "categoryPage": {
+    "articles": "Artículos de esta categoría",
+    "empty": "No hay noticias disponibles en esta categoría por ahora.",
+    "error": "No se pudieron cargar las noticias de esta categoría.",
+    "loadMore": "Cargar más noticias",
+    "loading": "Cargando artículos…",
+    "retry": "Reintentar",
+    "loadError": "No se pudieron cargar más artículos. Inténtalo de nuevo.",
+    "end": "Has llegado al final de esta categoría."
   }
 }
