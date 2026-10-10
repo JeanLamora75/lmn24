@@ -285,6 +285,7 @@
     "previous": "Artikel nach links scrollen",
     "next": "Artikel nach rechts scrollen",
     "carousel": "Scrollbare Artikel",
-    "category": "Rubrik {name} anzeigen"
+    "category": "Rubrik {name} anzeigen",
+    "moreNews": "Weitere Nachrichten ansehen"
   }
 }
