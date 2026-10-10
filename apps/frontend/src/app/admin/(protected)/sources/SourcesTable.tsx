@@ -10,6 +10,10 @@ import {
   useState,
 } from "react";
 
+import { CountryFlag } from "@/components/home/CountryFlag";
+import { sourceArticlesHref, sourceFeedsHref } from "@/lib/source-admin-links";
+
+import { SourceDeleteDialog } from "./SourceDeleteDialog";
 import styles from "./sources.module.css";
 
 type SourceItem = {
@@ -17,6 +21,8 @@ type SourceItem = {
   name: string;
   websiteUrl: string;
   isActive: boolean;
+  feedCount: number;
+  articleCount: number;
   country: {
     id: string;
     isoCode2: string;
@@ -191,6 +197,8 @@ export function SourcesTable() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<SourceItem | null>(null);
   const [updatingIds, setUpdatingIds] = useState<Set<string>>(new Set());
 
   const sortedCountries = useMemo(
@@ -479,6 +487,8 @@ export function SourcesTable() {
         </div>
       </div>
 
+      {notice ? <p className="alert alert-success" role="status">{notice}</p> : null}
+
       {error ? (
         <div className="alert alert-danger" role="alert">
           {error}
@@ -502,6 +512,8 @@ export function SourcesTable() {
               </th>
               <th scope="col">Source</th>
               <th scope="col">Pays</th>
+              <th scope="col" className="text-center">Flux RSS/XML</th>
+              <th scope="col" className="text-center">Articles</th>
               <th scope="col" className={"text-end " + styles.actionsColumn}>
                 Actions
               </th>
@@ -511,7 +523,7 @@ export function SourcesTable() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={4} className="text-center py-5">
+                <td colSpan={6} className="text-center py-5">
                   <span
                     className="spinner-border spinner-border-sm me-2"
                     aria-hidden="true"
@@ -521,7 +533,7 @@ export function SourcesTable() {
               </tr>
             ) : items.length === 0 ? (
               <tr>
-                <td colSpan={4} className="text-center py-5 text-body-secondary">
+                <td colSpan={6} className="text-center py-5 text-body-secondary">
                   Aucune source n’a été trouvée.
                 </td>
               </tr>
@@ -572,7 +584,34 @@ export function SourcesTable() {
 
                     <td className="fw-medium">{source.name}</td>
 
-                    <td>{countryName(source.country.isoCode2)}</td>
+                    <td>
+                      <span className={styles.countryCell}>
+                        <CountryFlag countryIsoCode2={source.country.isoCode2} locale="fr" />
+                        <span>{countryName(source.country.isoCode2)}</span>
+                      </span>
+                    </td>
+
+                    <td className="text-center">
+                      <Link
+                        href={sourceFeedsHref(source.id, source.name)}
+                        className={styles.countLink}
+                        title={"Consulter les flux de " + source.name}
+                        aria-label={source.feedCount + " flux RSS/XML pour " + source.name}
+                      >
+                        {source.feedCount}
+                      </Link>
+                    </td>
+
+                    <td className="text-center">
+                      <Link
+                        href={sourceArticlesHref(source.id)}
+                        className={styles.countLink}
+                        title={"Consulter les articles de " + source.name}
+                        aria-label={source.articleCount + " articles pour " + source.name}
+                      >
+                        {source.articleCount}
+                      </Link>
+                    </td>
 
                     <td className="text-end">
                       <div className="d-none d-lg-flex justify-content-end gap-1">
@@ -615,6 +654,23 @@ export function SourcesTable() {
                             unoptimized
                           />
                         </Link>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger"
+                          title={"Supprimer la source " + source.name}
+                          aria-label={"Supprimer la source " + source.name}
+                          disabled={updating}
+                          onClick={() => setDeleteTarget(source)}
+                        >
+                          <Image
+                            src="/bootstrap-icons/trash.svg"
+                            width={18}
+                            height={18}
+                            alt=""
+                            aria-hidden="true"
+                            unoptimized
+                          />
+                        </button>
                       </div>
 
                       <details
@@ -661,6 +717,17 @@ export function SourcesTable() {
                           >
                             Modifier
                           </Link>
+                          <button
+                            type="button"
+                            className="dropdown-item text-danger"
+                            disabled={updating}
+                            onClick={(event) => {
+                              event.currentTarget.closest("details")?.removeAttribute("open");
+                              setDeleteTarget(source);
+                            }}
+                          >
+                            Supprimer
+                          </button>
                         </div>
                       </details>
                     </td>
@@ -679,6 +746,18 @@ export function SourcesTable() {
           position="inférieure"
         />
       </div>
+
+      {deleteTarget && (
+        <SourceDeleteDialog
+          source={deleteTarget}
+          onClose={() => setDeleteTarget(null)}
+          onDeleted={() => {
+            setNotice("La source et ses données associées ont été supprimées.");
+            setDeleteTarget(null);
+            setReloadKey((value) => value + 1);
+          }}
+        />
+      )}
 
       {!loading ? (
         <p className="small text-body-secondary text-center mt-3 mb-0">
