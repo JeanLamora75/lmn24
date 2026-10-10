@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  localizedCategoryHref,
   prepareHomeSections,
   safeExternalUrl,
   type HomeArticle,
@@ -28,6 +29,25 @@ const section = (
   layoutType,
   themeColor: "#11aa22",
   articles,
+});
+
+describe("SCRUM-26 — navigation vers les actualités de la catégorie", () => {
+  it("conserve la locale sélectionnée pour chacune des sept langues", () => {
+    for (const locale of ["fr", "en", "de", "es", "pt", "it", "ru"]) {
+      expect(localizedCategoryHref(locale, "sports")).toBe(
+        "/" + locale + "/category/sports",
+      );
+    }
+  });
+
+  it("encode le slug et conserve la locale dans l'URL", () => {
+    expect(localizedCategoryHref("fr", "faits-divers")).toBe(
+      "/fr/category/faits-divers",
+    );
+    expect(localizedCategoryHref("de", "culture & société")).toBe(
+      "/de/category/culture%20%26%20soci%C3%A9t%C3%A9",
+    );
+  });
 });
 
 describe("SCRUM-26 — rendu des sections", () => {
