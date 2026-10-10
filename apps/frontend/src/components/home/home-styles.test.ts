@@ -49,3 +49,28 @@ describe("SCRUM-26 — titre de rubrique aux couleurs de la catégorie", () => {
     expect(hovered).toContain("text-decoration-color: var(--category-accent)");
   });
 });
+
+describe("SCRUM-26 / SCRUM-27 — drapeau à gauche du nom de la source", () => {
+  it("place le composant drapeau AVANT le nom dans la carte partagée", () => {
+    const component = readFileSync(new URL("./HomeSection.tsx", import.meta.url), "utf8");
+    const sourceBlock = component.match(
+      /<span className=\\{styles\\.sourceIdentity\\}>([\\s\\S]*?)<\\/span>/,
+    )?.[1];
+
+    expect(sourceBlock).toBeDefined();
+    expect(sourceBlock).toContain("<CountryFlag");
+    expect(sourceBlock).toContain("article.source.countryIsoCode2");
+    expect(sourceBlock).toContain("<span className={styles.sourceName}>");
+    expect(sourceBlock!.indexOf("<CountryFlag")).toBeLessThan(
+      sourceBlock!.indexOf("<span className={styles.sourceName}>"),
+    );
+  });
+
+  it("conserve l'ordre horizontal normal des éléments", () => {
+    const sourceStyle = rule(".sourceIdentity");
+    expect(sourceStyle).toContain("display: inline-flex");
+    expect(sourceStyle).toContain("align-items: center");
+    expect(sourceStyle).not.toContain("row-reverse");
+    expect(sourceStyle).not.toContain("direction: rtl");
+  });
+});
