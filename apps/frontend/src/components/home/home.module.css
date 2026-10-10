@@ -181,11 +181,27 @@
   line-height: 1.4;
 }
 
+.sourceIdentity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
 .sourceName {
   color: var(--bs-body-color);
   font-weight: 700;
-  max-width: 100%;
+  min-width: 0;
   overflow-wrap: anywhere;
+}
+
+.sourceFlag {
+  display: block;
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.125rem;
+  object-fit: contain;
 }
 
 .articleTitle {
