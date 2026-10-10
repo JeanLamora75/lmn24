@@ -11,7 +11,7 @@ function article(id: number): HomeArticle {
     imageUrl: null,
     articleUrl: "https://example.org/story/" + id,
     publishedAt: new Date(2026, 9, 10, 12, 0, -id).toISOString(),
-    source: { name: "Source", logoUrl: null },
+    source: { name: "Source", logoUrl: null, countryIsoCode2: "FR" },
   };
 }
 const items = (count: number) => Array.from({ length: count }, (_, i) => article(i));
