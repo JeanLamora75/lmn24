@@ -23,13 +23,12 @@ describe("SCRUM-26 — bouton Voir plus d'actualité", () => {
   });
 
   it("inverse le fond et le texte au survol et au focus clavier", () => {
-    const inverted = rule(".moreNewsLink:focus-visible");
     const hoverAndFocus = css.match(
       /\.moreNewsLink:hover,\s*\.moreNewsLink:focus-visible\s*\{([^}]+)\}/,
     )?.[1];
     expect(hoverAndFocus).toContain("background-color: var(--category-accent)");
     expect(hoverAndFocus).toContain("color: var(--bs-body-bg, #fff)");
     expect(hoverAndFocus).toContain("border-color: var(--category-accent)");
-    expect(inverted).toContain("outline: 3px solid");
+    expect(css).toMatch(/\.moreNewsLink:focus-visible\s*\{\s*outline: 3px solid/);
   });
 });
