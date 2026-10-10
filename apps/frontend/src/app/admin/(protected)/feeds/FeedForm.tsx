@@ -49,10 +49,12 @@ type Props = Readonly<
   | {
       mode: "create";
       feedId?: never;
+      initialSourceId?: string;
     }
   | {
       mode: "edit";
       feedId: string;
+      initialSourceId?: never;
     }
 >;
 
@@ -102,7 +104,7 @@ async function readErrorMessage(
   }
 }
 
-export function FeedForm({ mode, feedId }: Props) {
+export function FeedForm({ mode, feedId, initialSourceId }: Props) {
   const router = useRouter();
 
   const [values, setValues] = useState(EMPTY_FEED);
@@ -176,6 +178,21 @@ export function FeedForm({ mode, feedId }: Props) {
             feedUrl: feed.feedUrl,
             isActive: feed.isActive,
           });
+        } else {
+          // La source est validée contre les options réellement disponibles :
+          // aucun nom ni identifiant ne sont déduits de l'URL.
+          const sourceExists = formOptions.sources.some(
+            (source) => source.id === initialSourceId,
+          );
+          setValues({
+            ...EMPTY_FEED,
+            sourceId: sourceExists ? initialSourceId ?? "" : "",
+          });
+          if (initialSourceId && !sourceExists) {
+            setPageError(
+              "La source demandée est introuvable. Sélectionnez une source disponible.",
+            );
+          }
         }
       } catch (caught) {
         if (
@@ -195,7 +212,7 @@ export function FeedForm({ mode, feedId }: Props) {
     void load();
 
     return () => controller.abort();
-  }, [feedId, mode, router]);
+  }, [feedId, initialSourceId, mode, router]);
 
   const sortedCategories = useMemo(
     () =>
