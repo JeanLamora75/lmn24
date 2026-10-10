@@ -79,7 +79,11 @@
   overflow-wrap: anywhere;
 }
 
-.categoryLink:hover,
+.categoryLink:hover {
+  color: var(--category-accent);
+  text-decoration: none;
+}
+
 .categoryLink:focus-visible {
   color: var(--category-accent);
   text-decoration: underline;
@@ -226,9 +230,7 @@
 
 .articleLink:hover .articleTitle {
   color: var(--bs-primary-text-emphasis);
-  text-decoration: underline;
-  text-decoration-color: var(--category-accent);
-  text-underline-offset: 0.15rem;
+  text-decoration: none;
 }
 
 .grid {
