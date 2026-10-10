@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from "@nestjs/common";
 
@@ -29,6 +30,8 @@ export type SourceInput = {
 
 @Injectable()
 export class SourcesService {
+  private readonly logger = new Logger(SourcesService.name);
+
   constructor(
     private readonly database: DatabaseService,
     private readonly media: SourceMediaService,
@@ -315,7 +318,12 @@ export class SourcesService {
     });
 
     if (result.logoUrl) {
-      await this.media.deleteLocalImage(result.logoUrl);
+      try {
+        await this.media.deleteLocalImage(result.logoUrl);
+      } catch {
+        // La suppression transactionnelle a déjà réussi : ne pas annoncer un échec trompeur.
+        this.logger.warn("Source supprimée, mais son logo local n'a pas pu être effacé.");
+      }
     }
 
     return {
