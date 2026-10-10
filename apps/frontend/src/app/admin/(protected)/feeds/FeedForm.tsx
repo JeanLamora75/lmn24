@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { getFrenchCategoryLabel } from "@/lib/fr-category-labels";
+import { resolveInitialFeedSourceId } from "@/lib/feed-source-prefill";
 
 type SourceOption = {
   id: string;
@@ -181,14 +182,12 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
         } else {
           // La source est validée contre les options réellement disponibles :
           // aucun nom ni identifiant ne sont déduits de l'URL.
-          const sourceExists = formOptions.sources.some(
-            (source) => source.id === initialSourceId,
+          const preselectedId = resolveInitialFeedSourceId(
+            initialSourceId,
+            formOptions.sources,
           );
-          setValues({
-            ...EMPTY_FEED,
-            sourceId: sourceExists ? initialSourceId ?? "" : "",
-          });
-          if (initialSourceId && !sourceExists) {
+          setValues({ ...EMPTY_FEED, sourceId: preselectedId });
+          if (initialSourceId && !preselectedId) {
             setPageError(
               "La source demandée est introuvable. Sélectionnez une source disponible.",
             );
