@@ -6,5 +6,5 @@ type Props = Readonly<{
 
 export default async function NewFeedPage({ searchParams }: Props) {
   const { sourceId } = await searchParams;
-  return <FeedForm mode="create" initialSourceId={sourceId?.slice(0, 255)} />;
+  return <FeedForm mode="create" initialSourceId={sourceId?.slice(0, 255) ?? ""} />;
 }
