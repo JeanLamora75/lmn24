@@ -287,5 +287,15 @@
     "carousel": "Scrollable articles",
     "category": "View the {name} category",
     "moreNews": "See more news"
+  },
+  "categoryPage": {
+    "articles": "Articles in this category",
+    "empty": "No news is available in this category right now.",
+    "error": "Unable to load this category's news.",
+    "loadMore": "Load more news",
+    "loading": "Loading articles…",
+    "retry": "Try again",
+    "loadError": "Unable to load more articles. Please try again.",
+    "end": "You've reached the end of this category."
   }
 }
