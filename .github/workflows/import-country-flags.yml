@@ -1,0 +1,71 @@
+name: Import country flag images (one-time)
+
+on:
+  push:
+    paths:
+      - ".github/workflows/import-country-flags.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download and verify the exact supplied archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 3 \
+            https://flagcdn.com/w160.zip -o "$RUNNER_TEMP/w160.zip"
+          echo "37b432035a82b551f83ca8b614d3bc19b68917213d552aa95728a2da39f0f850  $RUNNER_TEMP/w160.zip" \
+            | sha256sum --check
+      - name: Extract the 254 validated PNG images
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import pathlib, re, zipfile, os
+          archive = pathlib.Path(os.environ["RUNNER_TEMP"]) / "w160.zip"
+          folder = pathlib.Path("apps/frontend/public/country-flags/w160")
+          folder.mkdir(parents=True, exist_ok=True)
+          with zipfile.ZipFile(archive) as z:
+              members = [m for m in z.infolist() if not m.is_dir()]
+              assert len(members) == 254, "Expected exactly 254 images"
+              for member in members:
+                  name = member.filename
+                  assert re.fullmatch(r"(?:[a-z]{2}|gb-(?:eng|nir|sct|wls))\.png", name), name
+                  data = z.read(member)
+                  assert data.startswith(b"\x89PNG\r\n\x1a\n"), name
+                  (folder / name).write_bytes(data)
+          print(f"Successfully imported {len(members)} original country flags.")
+          PY
+          cat > apps/frontend/public/country-flags/README.md <<'EOF'
+          # Country flags
+          - Original source: https://flagcdn.com/w160.zip
+          - Original ZIP SHA-256: `37b432035a82b551f83ca8b614d3bc19b68917213d552aa95728a2da39f0f850`
+          - Files: 254 PNG images, width 160 pixels.
+          - Paths: `/country-flags/w160/fr.png`, `/country-flags/w160/de.png`, etc.
+          - The folder `/flags/` contains separate language selectors; do not overwrite them.
+          - Country-code filenames use ISO 3166-1 alpha-2, plus `gb-*` subdivisions and `xk`.
+          - Based on Wikimedia Commons flag artwork; see https://flagpedia.net for attribution.
+          EOF
+      - name: Commit original binary assets to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/frontend/public/country-flags/
+          if git diff --cached --quiet; then
+            echo "Already imported; no changes."
+          else
+            git commit -m "assets: add 254 PNG country flags at 160px"
+            git push origin HEAD:main
+          fi
