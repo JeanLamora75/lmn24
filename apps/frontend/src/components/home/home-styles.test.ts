@@ -42,7 +42,7 @@ describe("SCRUM-26 — titre de rubrique aux couleurs de la catégorie", () => {
 
   it("conserve la couleur de catégorie et souligne le lien au survol et au focus", () => {
     const hovered = css.match(
-      /\\.categoryLink:hover,\\s*\\.categoryLink:focus-visible\\s*\\{([^}]+)\\}/,
+      /\.categoryLink:hover,\s*\.categoryLink:focus-visible\s*\{([^}]+)\}/,
     )?.[1];
     expect(hovered).toContain("color: var(--category-accent)");
     expect(hovered).toContain("text-decoration: underline");
