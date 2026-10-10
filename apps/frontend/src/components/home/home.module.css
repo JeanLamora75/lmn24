@@ -465,3 +465,26 @@
     transform: none;
   }
 }
+
+/* Action commune à tous les modèles : sous les articles, jamais dans la grille. */
+.moreNewsWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(1.1rem, 2.4vw, 1.8rem);
+}
+
+.moreNewsLink {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 1.65rem;
+  text-align: center;
+  white-space: normal;
+}
+
+.moreNewsLink:focus-visible {
+  outline: 3px solid var(--bs-focus-ring-color);
+  outline-offset: 3px;
+}
