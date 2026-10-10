@@ -34,7 +34,7 @@ type Props = {
   nextLabel: string;
 };
 
-function ArticleCard({
+export function ArticleCard({
   article,
   locale,
   layoutType,
