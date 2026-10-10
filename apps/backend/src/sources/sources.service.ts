@@ -74,11 +74,16 @@ export class SourcesService {
             isoCode2: true,
           },
         },
+        _count: { select: { feeds: true, articles: true } },
       },
     });
 
     return {
-      items,
+      items: items.map(({ _count, ...source }) => ({
+        ...source,
+        feedCount: _count.feeds,
+        articleCount: _count.articles,
+      })),
       pagination: {
         page,
         pageSize: params.pageSize,
