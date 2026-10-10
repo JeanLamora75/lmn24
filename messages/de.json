@@ -287,5 +287,15 @@
     "carousel": "Scrollbare Artikel",
     "category": "Rubrik {name} anzeigen",
     "moreNews": "Weitere Nachrichten ansehen"
+  },
+  "categoryPage": {
+    "articles": "Artikel dieser Rubrik",
+    "empty": "In dieser Rubrik gibt es derzeit keine Nachrichten.",
+    "error": "Die Nachrichten dieser Rubrik konnten nicht geladen werden.",
+    "loadMore": "Weitere Nachrichten laden",
+    "loading": "Artikel werden geladen…",
+    "retry": "Erneut versuchen",
+    "loadError": "Weitere Artikel konnten nicht geladen werden. Bitte erneut versuchen.",
+    "end": "Alle Nachrichten dieser Rubrik wurden angezeigt."
   }
 }
