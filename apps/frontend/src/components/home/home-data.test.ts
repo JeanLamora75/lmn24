@@ -15,7 +15,7 @@ const article = (id: string, publishedAt = "2026-10-09T10:00:00Z"): HomeArticle 
   summary: null,
   imageUrl: null,
   publishedAt,
-  source: { name: "Example", logoUrl: null },
+  source: { name: "Example", logoUrl: null, countryIsoCode2: "FR" },
 });
 
 const section = (
