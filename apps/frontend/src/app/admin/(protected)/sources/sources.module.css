@@ -7,7 +7,7 @@
 }
 
 .actionsColumn {
-  width: 8rem;
+  width: 11rem;
 }
 
 .activeStatus,
@@ -62,4 +62,45 @@
   .actionsColumn {
     width: 4rem;
   }
+}
+
+.countryCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.countLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.3rem;
+  min-height: 2rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.countLink:hover,
+.countLink:focus-visible {
+  border-color: currentColor;
+  text-decoration: underline;
+}
+
+.deleteDialog {
+  width: min(92vw, 33rem);
+  max-width: 33rem;
+  padding: 0;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.8rem;
+  background: var(--bs-body-bg, #fff);
+  color: var(--bs-body-color, #212529);
+  box-shadow: 0 1rem 3rem rgb(0 0 0 / 20%);
+}
+
+.deleteDialog::backdrop {
+  background: rgb(0 0 0 / 50%);
 }
