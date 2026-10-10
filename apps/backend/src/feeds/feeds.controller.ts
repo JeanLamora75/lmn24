@@ -43,6 +43,7 @@ const listQuerySchema = z.object({
     .transform((value) => value.toLowerCase())
     .optional(),
   categoryId: z.string().uuid().optional(),
+  sourceId: z.string().uuid().optional(),
   status: z.enum(["all", "active", "inactive"]).default("all"),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce
