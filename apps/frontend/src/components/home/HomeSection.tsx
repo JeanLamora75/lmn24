@@ -70,11 +70,11 @@ export function ArticleCard({
       <div className={styles.articleBody}>
         <div className={styles.articleMeta}>
           <span className={styles.sourceIdentity}>
-            <span className={styles.sourceName}>{article.source.name}</span>
             <CountryFlag
               countryIsoCode2={article.source.countryIsoCode2}
               locale={locale}
             />
+            <span className={styles.sourceName}>{article.source.name}</span>
           </span>
           {published && (
             <time dateTime={pubDate.toISOString()}>{published}</time>
