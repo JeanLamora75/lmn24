@@ -285,6 +285,7 @@
     "previous": "Scroll articles left",
     "next": "Scroll articles right",
     "carousel": "Scrollable articles",
-    "category": "View the {name} category"
+    "category": "View the {name} category",
+    "moreNews": "See more news"
   }
 }
