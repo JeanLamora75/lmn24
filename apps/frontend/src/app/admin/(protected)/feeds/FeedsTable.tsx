@@ -833,6 +833,23 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                             unoptimized
                           />
                         </Link>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger"
+                          title={"Supprimer le flux " + label}
+                          aria-label={"Supprimer le flux " + label}
+                          disabled={updating}
+                          onClick={() => setDeleteTarget(feed)}
+                        >
+                          <Image
+                            src="/bootstrap-icons/trash.svg"
+                            width={18}
+                            height={18}
+                            alt=""
+                            aria-hidden="true"
+                            unoptimized
+                          />
+                        </button>
                       </div>
 
                       <details
@@ -880,6 +897,17 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                           >
                             Modifier
                           </Link>
+                          <button
+                            type="button"
+                            className="dropdown-item text-danger"
+                            disabled={updating}
+                            onClick={(event) => {
+                              event.currentTarget.closest("details")?.removeAttribute("open");
+                              setDeleteTarget(feed);
+                            }}
+                          >
+                            Supprimer
+                          </button>
                         </div>
                       </details>
                     </td>
@@ -898,6 +926,22 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
           position="inférieure"
         />
       </div>
+
+      {deleteTarget && (
+        <FeedDeleteDialog
+          feed={{
+            id: deleteTarget.id,
+            feedUrl: deleteTarget.feedUrl,
+            sourceName: deleteTarget.source.name,
+          }}
+          onClose={() => setDeleteTarget(null)}
+          onDeleted={() => {
+            setNotice("Le flux et ses historiques ont été supprimés. Les articles ont été conservés.");
+            setDeleteTarget(null);
+            setReloadKey((value) => value + 1);
+          }}
+        />
+      )}
 
       {!loading ? (
         <p className="small text-body-secondary text-center mt-3 mb-0">
