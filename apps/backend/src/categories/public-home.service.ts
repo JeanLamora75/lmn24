@@ -11,7 +11,7 @@ export type PublicHomeArticle = {
   imageUrl: string | null;
   articleUrl: string;
   publishedAt: Date;
-  source: { name: string; logoUrl: string | null };
+  source: { name: string; logoUrl: string | null; countryIsoCode2: string | null };
 };
 
 export type PublicHomeSection = {
@@ -37,6 +37,7 @@ type PublicHomeRow = {
   publishedAt: Date;
   sourceName: string;
   sourceLogoUrl: string | null;
+  sourceCountryIsoCode2: string | null;
 };
 
 /**
@@ -77,6 +78,7 @@ export function groupPublicHomeRows(
       source: {
         name: row.sourceName,
         logoUrl: row.sourceLogoUrl,
+        countryIsoCode2: row.sourceCountryIsoCode2,
       },
     });
   }
@@ -106,7 +108,8 @@ export class PublicHomeService {
         recent.article_url AS "articleUrl",
         recent.published_at AS "publishedAt",
         recent.source_name AS "sourceName",
-        recent.source_logo_url AS "sourceLogoUrl"
+        recent.source_logo_url AS "sourceLogoUrl",
+        recent.source_country_iso_code2 AS "sourceCountryIsoCode2"
       FROM category AS c
       JOIN LATERAL (
         SELECT
@@ -117,9 +120,11 @@ export class PublicHomeService {
           a.article_url,
           a.published_at,
           s.name AS source_name,
-          s.logo_url AS source_logo_url
+          s.logo_url AS source_logo_url,
+          source_country.iso_code2::text AS source_country_iso_code2
         FROM article AS a
         INNER JOIN source AS s ON s.id = a.source_id
+        LEFT JOIN country AS source_country ON source_country.id = s.country_id
         WHERE a.category_id = c.id
           AND a.language_iso_code2 = CAST(${locale} AS CHAR(2))
           AND a.article_url ~* '^https?://[^[:space:]]+$'
