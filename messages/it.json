@@ -285,6 +285,7 @@
     "previous": "Scorri gli articoli verso sinistra",
     "next": "Scorri gli articoli verso destra",
     "carousel": "Articoli scorrevoli",
-    "category": "Visualizza la categoria {name}"
+    "category": "Visualizza la categoria {name}",
+    "moreNews": "Vedi altre notizie"
   }
 }
