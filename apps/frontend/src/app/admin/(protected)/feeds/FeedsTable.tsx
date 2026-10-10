@@ -12,12 +12,15 @@ import {
 
 import { getFrenchCategoryLabel } from "@/lib/fr-category-labels";
 
+import { FeedDeleteDialog } from "./FeedDeleteDialog";
+import { lastRunDate, lastRunDuration, lastRunErrorMessage, type FeedLastRun } from "./feed-last-run";
 import styles from "./feeds.module.css";
 
 type FeedItem = {
   id: string;
   feedUrl: string;
   isActive: boolean;
+  lastRun: FeedLastRun | null;
   source: {
     name: string;
   };
@@ -218,6 +221,8 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<FeedItem | null>(null);
   const [updatingIds, setUpdatingIds] = useState<Set<string>>(
     new Set(),
   );
@@ -634,6 +639,8 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
         </div>
       </div>
 
+      {notice ? <div className="alert alert-success" role="status">{notice}</div> : null}
+
       {error ? (
         <div className="alert alert-danger" role="alert">
           {error}
@@ -659,6 +666,11 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
               <th scope="col">Catégorie</th>
               <th scope="col">Langue</th>
               <th scope="col">URL du flux</th>
+              <th scope="col">Dernière utilisation</th>
+              <th scope="col">Dernière durée</th>
+              <th scope="col" className="text-end">Items trouvés</th>
+              <th scope="col" className="text-end">Items enregistrés</th>
+              <th scope="col">Dernier statut</th>
               <th scope="col" className={"text-end " + styles.actionsColumn}>
                 Actions
               </th>
@@ -668,7 +680,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6} className="text-center py-5">
+                <td colSpan={11} className="text-center py-5">
                   <span
                     className="spinner-border spinner-border-sm me-2"
                     aria-hidden="true"
@@ -679,7 +691,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
             ) : items.length === 0 ? (
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={11}
                   className="text-center py-5 text-body-secondary"
                 >
                   Aucun flux RSS/XML ne correspond à vos critères.
@@ -751,6 +763,33 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                       >
                         {feed.feedUrl}
                       </span>
+                    </td>
+
+                    <td className={styles.dateCell}>
+                      {lastRunDate(feed.lastRun?.startedAt ?? null)}
+                    </td>
+                    <td className={styles.metricCell}>
+                      {lastRunDuration(feed.lastRun?.durationMs ?? null)}
+                    </td>
+                    <td className="text-end">{feed.lastRun?.itemsFound ?? "—"}</td>
+                    <td className="text-end">{feed.lastRun?.articlesImported ?? "—"}</td>
+                    <td>
+                      {feed.lastRun?.status === "ERROR" ? (
+                        <span
+                          className={styles.lastStatusError}
+                          title={lastRunErrorMessage(feed.lastRun)}
+                          aria-label={"Erreur : " + lastRunErrorMessage(feed.lastRun)}
+                          tabIndex={0}
+                        >
+                          ERROR
+                        </span>
+                      ) : feed.lastRun?.status === "SUCCESS" ? (
+                        <span className={styles.lastStatusSuccess}>SUCCESS</span>
+                      ) : feed.lastRun ? (
+                        <span className={styles.lastStatusOther}>{feed.lastRun.status}</span>
+                      ) : (
+                        <span className="text-body-secondary">—</span>
+                      )}
                     </td>
 
                     <td className="text-end">
