@@ -40,13 +40,17 @@ describe("SCRUM-26 — titre de rubrique aux couleurs de la catégorie", () => {
     expect(normal).not.toContain("color: var(--bs-body-color)");
   });
 
-  it("conserve la couleur de catégorie et souligne le lien au survol et au focus", () => {
-    const hovered = css.match(
-      /\.categoryLink:hover,\s*\.categoryLink:focus-visible\s*\{([^}]+)\}/,
-    )?.[1];
+  it("garde la couleur de la rubrique sans souligner son titre au survol", () => {
+    const hovered = rule(".categoryLink:hover");
     expect(hovered).toContain("color: var(--category-accent)");
-    expect(hovered).toContain("text-decoration: underline");
-    expect(hovered).toContain("text-decoration-color: var(--category-accent)");
+    expect(hovered).toContain("text-decoration: none");
+    expect(hovered).not.toContain("text-decoration: underline");
+  });
+
+  it("préserve un repère accessible sur le titre de rubrique au focus clavier", () => {
+    const focused = rule(".categoryLink:focus-visible");
+    expect(focused).toContain("color: var(--category-accent)");
+    expect(focused).toContain("text-decoration: underline");
   });
 });
 
@@ -73,5 +77,19 @@ describe("SCRUM-26 / SCRUM-27 — drapeau à gauche du nom de la source", () => 
     expect(sourceStyle).toContain("align-items: center");
     expect(sourceStyle).not.toContain("row-reverse");
     expect(sourceStyle).not.toContain("direction: rtl");
+  });
+});
+
+describe("SCRUM-26 / SCRUM-27 — titres d'articles sans soulignement au survol", () => {
+  it("ne souligne pas les titres des cartes sur l'accueil et les pages catégories", () => {
+    const hover = rule(".articleLink:hover .articleTitle");
+    expect(hover).toContain("text-decoration: none");
+    expect(hover).not.toContain("text-decoration: underline");
+    expect(hover).toContain("color: var(--bs-primary-text-emphasis)");
+  });
+
+  it("conserve le focus visible de la carte cliquable", () => {
+    const focus = rule(".articleLink:focus-visible");
+    expect(focus).toContain("outline: 3px solid");
   });
 });
