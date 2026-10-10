@@ -100,7 +100,13 @@ export class PublicCategoryService {
         imageUrl: true,
         articleUrl: true,
         publishedAt: true,
-        source: { select: { name: true, logoUrl: true } },
+        source: {
+          select: {
+            name: true,
+            logoUrl: true,
+            country: { select: { isoCode2: true } },
+          },
+        },
       },
     });
 
@@ -120,7 +126,11 @@ export class PublicCategoryService {
         imageUrl: row.imageUrl,
         articleUrl: row.articleUrl,
         publishedAt: row.publishedAt,
-        source: { name: row.source.name, logoUrl: row.source.logoUrl },
+        source: {
+          name: row.source.name,
+          logoUrl: row.source.logoUrl,
+          countryIsoCode2: row.source.country.isoCode2,
+        },
       })),
       hasMore,
       nextCursor: hasMore && last
