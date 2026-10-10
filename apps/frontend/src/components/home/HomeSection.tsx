@@ -1,10 +1,16 @@
 import type { CSSProperties } from "react";
+import Link from "next/link";
 
 import type { CategoryHomeLayout } from "@lmn24/contracts";
 
 import { HomeArticleMedia } from "./HomeArticleMedia";
 import { HomeCarousel } from "./HomeCarousel";
-import { safeExternalUrl, type HomeArticle, type HomeSectionData } from "./home-data";
+import {
+  localizedCategoryHref,
+  safeExternalUrl,
+  type HomeArticle,
+  type HomeSectionData,
+} from "./home-data";
 import styles from "./home.module.css";
 
 const layoutStyles: Record<CategoryHomeLayout, string> = {
@@ -23,6 +29,7 @@ type Props = {
   label: string;
   locale: string;
   categoryLinkLabel: string;
+  moreNewsLabel: string;
   previousLabel: string;
   nextLabel: string;
 };
@@ -89,12 +96,14 @@ export function HomeSection({
   label,
   locale,
   categoryLinkLabel,
+  moreNewsLabel,
   previousLabel,
   nextLabel,
 }: Props) {
   const sectionStyle = {
     "--category-accent": section.themeColor,
   } as CSSProperties;
+  const categoryHref = localizedCategoryHref(locale, section.slug);
 
   const articles = section.articles.map((article) => (
     <ArticleCard
@@ -116,7 +125,7 @@ export function HomeSection({
           <span className={styles.categoryMarker} aria-hidden="true" />
           <h2 id={"home-section-" + section.id} className={styles.categoryName}>
             <a
-              href={"/" + encodeURIComponent(locale) + "/category/" + encodeURIComponent(section.slug)}
+              href={categoryHref}
               aria-label={categoryLinkLabel}
               className={styles.categoryLink}
             >
@@ -139,6 +148,16 @@ export function HomeSection({
           {articles}
         </div>
       )}
+
+      <div className={styles.moreNewsWrapper}>
+        <Link
+          href={categoryHref}
+          className={"btn btn-outline-primary rounded-pill fw-semibold " + styles.moreNewsLink}
+          aria-label={moreNewsLabel + " — " + label}
+        >
+          {moreNewsLabel}
+        </Link>
+      </div>
     </section>
   );
 }
