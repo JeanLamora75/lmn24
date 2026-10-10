@@ -285,6 +285,7 @@
     "previous": "Faire défiler les articles vers la gauche",
     "next": "Faire défiler les articles vers la droite",
     "carousel": "Articles défilants",
-    "category": "Voir la rubrique {name}"
+    "category": "Voir la rubrique {name}",
+    "moreNews": "Voir plus d'actualité"
   }
 }
