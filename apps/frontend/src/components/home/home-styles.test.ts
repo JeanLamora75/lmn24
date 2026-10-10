@@ -62,8 +62,8 @@ describe("SCRUM-26 / SCRUM-27 — drapeau à gauche du nom de la source", () => 
     expect(sourceBlock).toContain("<CountryFlag");
     expect(sourceBlock).toContain("article.source.countryIsoCode2");
     expect(sourceBlock).toContain("<span className={styles.sourceName}>");
-    expect(sourceBlock!.indexOf("<CountryFlag")).toBeLessThan(
-      sourceBlock!.indexOf("<span className={styles.sourceName}>"),
+    expect(sourceBlock.indexOf("<CountryFlag")).toBeLessThan(
+      sourceBlock.indexOf("<span className={styles.sourceName}>"),
     );
   });
 
