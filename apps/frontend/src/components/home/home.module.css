@@ -74,14 +74,14 @@
 }
 
 .categoryLink {
-  color: var(--bs-body-color);
+  color: var(--category-accent);
   text-decoration: none;
   overflow-wrap: anywhere;
 }
 
 .categoryLink:hover,
 .categoryLink:focus-visible {
-  color: var(--bs-link-color);
+  color: var(--category-accent);
   text-decoration: underline;
   text-decoration-color: var(--category-accent);
   text-underline-offset: 0.25rem;
