@@ -107,11 +107,26 @@ export class FeedsService {
             isoCode2: true,
           },
         },
+        runs: {
+          orderBy: [{ startedAt: "desc" }, { id: "desc" }],
+          take: 1,
+          select: {
+            startedAt: true,
+            durationMs: true,
+            itemsFound: true,
+            articlesImported: true,
+            status: true,
+            errorMessage: true,
+          },
+        },
       },
     });
 
     return {
-      items,
+      items: items.map(({ runs, ...feed }) => ({
+        ...feed,
+        lastRun: runs[0] ?? null,
+      })),
       pagination: {
         page,
         pageSize: params.pageSize,
