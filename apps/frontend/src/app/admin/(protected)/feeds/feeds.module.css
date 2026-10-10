@@ -7,7 +7,7 @@
 }
 
 .actionsColumn {
-  width: 8rem;
+  width: 11rem;
 }
 
 .activeStatus,
@@ -79,4 +79,69 @@
     min-width: 18rem;
     max-width: 22rem;
   }
+}
+
+/* Dashboard metrics are intentionally compact; the table remains horizontally scrollable. */
+.dateCell {
+  white-space: nowrap;
+  min-width: 8.5rem;
+}
+
+.metricCell {
+  white-space: nowrap;
+  min-width: 6rem;
+}
+
+.lastStatusSuccess,
+.lastStatusError,
+.lastStatusOther {
+  display: inline-block;
+  font-weight: 700;
+  white-space: nowrap;
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.35rem;
+}
+
+.lastStatusSuccess {
+  color: #0f5132;
+  background: #d1e7dd;
+}
+
+.lastStatusError {
+  color: #842029;
+  background: #f8d7da;
+  cursor: help;
+  text-decoration: underline dotted;
+  text-underline-offset: 0.2rem;
+}
+
+.lastStatusError:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.lastStatusOther {
+  color: var(--bs-secondary-color);
+  background: var(--bs-secondary-bg);
+}
+
+.deleteDialog {
+  width: min(92vw, 35rem);
+  max-width: 35rem;
+  padding: 0;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.75rem;
+  background: var(--bs-body-bg, #fff);
+  color: var(--bs-body-color, #212529);
+  box-shadow: 0 1rem 3rem rgb(0 0 0 / 20%);
+}
+
+.deleteDialog::backdrop {
+  background: rgb(0 0 0 / 50%);
+}
+
+.dialogUrl {
+  overflow-wrap: anywhere;
+  font-size: 0.9rem;
+  color: var(--bs-secondary-color);
 }
