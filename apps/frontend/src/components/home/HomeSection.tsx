@@ -44,8 +44,6 @@ export function ArticleCard({
   layoutType: CategoryHomeLayout;
 }) {
   const href = safeExternalUrl(article.articleUrl);
-  if (!href) return null;
-
   const pubDate = new Date(article.publishedAt);
   const validDate = !Number.isNaN(pubDate.getTime());
   const published = validDate
@@ -60,33 +58,43 @@ export function ArticleCard({
     : null;
   const compact = layoutType === "HEADLINES" || layoutType === "COMPACT";
 
-  return (
-    <article className={styles.articleCard}>
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.articleLink}
-      >
-        {layoutType !== "HEADLINES" && (
-          <HomeArticleMedia
-            imageUrl={article.imageUrl}
-            logoUrl={article.source.logoUrl}
-          />
-        )}
-        <div className={styles.articleBody}>
-          <div className={styles.articleMeta}>
-            <span className={styles.sourceName}>{article.source.name}</span>
-            {published && (
-              <time dateTime={pubDate.toISOString()}>{published}</time>
-            )}
-          </div>
-          <h3 className={styles.articleTitle}>{article.title}</h3>
-          {!compact && article.summary?.trim() && (
-            <p className={styles.articleSummary}>{article.summary.trim()}</p>
+  const content = (
+    <>
+      {layoutType !== "HEADLINES" && (
+        <HomeArticleMedia
+          imageUrl={article.imageUrl}
+          logoUrl={article.source.logoUrl}
+        />
+      )}
+      <div className={styles.articleBody}>
+        <div className={styles.articleMeta}>
+          <span className={styles.sourceName}>{article.source.name}</span>
+          {published && (
+            <time dateTime={pubDate.toISOString()}>{published}</time>
           )}
         </div>
-      </a>
+        <h3 className={styles.articleTitle}>{article.title}</h3>
+        {!compact && article.summary?.trim() && (
+          <p className={styles.articleSummary}>{article.summary.trim()}</p>
+        )}
+      </div>
+    </>
+  );
+
+  return (
+    <article className={styles.articleCard}>
+      {href ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.articleLink}
+        >
+          {content}
+        </a>
+      ) : (
+        <div className={styles.articleLink}>{content}</div>
+      )}
     </article>
   );
 }
