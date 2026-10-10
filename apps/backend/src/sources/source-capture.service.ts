@@ -11,6 +11,7 @@ import {
   type Browser,
 } from "playwright";
 
+import { prepareCookieFreeCapture } from "./source-capture-consent";
 import { SourceMediaService } from "./source-media.service";
 
 @Injectable()
@@ -71,6 +72,12 @@ export class SourceCaptureService {
       await page
         .waitForLoadState("networkidle", { timeout: 5_000 })
         .catch(() => undefined);
+
+      // Traiter les bannières de consentement sans jamais accepter
+      // automatiquement les cookies non essentiels. Une CMP inconnue ne
+      // doit pas empêcher de capturer le site de la source.
+      await prepareCookieFreeCapture(page).catch(() => undefined);
+      await page.waitForTimeout(250).catch(() => undefined);
 
       const buffer = await page.screenshot({
         type: "png",
