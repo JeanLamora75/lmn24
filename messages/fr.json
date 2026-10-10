@@ -287,5 +287,15 @@
     "carousel": "Articles défilants",
     "category": "Voir la rubrique {name}",
     "moreNews": "Voir plus d'actualité"
+  },
+  "categoryPage": {
+    "articles": "Articles de cette rubrique",
+    "empty": "Aucune actualité disponible dans cette rubrique pour le moment.",
+    "error": "Impossible de charger les actualités de cette rubrique.",
+    "loadMore": "Charger plus d'actualités",
+    "loading": "Chargement des articles…",
+    "retry": "Réessayer",
+    "loadError": "Impossible de charger les articles suivants. Réessayez.",
+    "end": "Toutes les actualités de cette rubrique ont été affichées."
   }
 }
