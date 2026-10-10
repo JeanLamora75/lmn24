@@ -20,7 +20,7 @@ const fixture = Array.from({ length: 125 }, (_, i) => ({
   imageUrl: null,
   articleUrl: "https://example.org/" + i,
   publishedAt: new Date(Date.UTC(2026, 9, 10) - i * 60_000),
-  source: { name: "Exemple", logoUrl: null },
+  source: { name: "Exemple", logoUrl: null, country: { isoCode2: "FR" } },
 }));
 
 describe("SCRUM-27 — pagination par curseur", () => {
@@ -60,6 +60,7 @@ describe("SCRUM-27 — pagination par curseur", () => {
     do {
       const page = await service.getArticles("sports", "fr", cursor, cursor ? 14 : 19);
       expect(page.category.themeColor).toBe("#198754");
+      expect(page.items[0]?.source.countryIsoCode2).toBe("FR");
       ids.push(...page.items.map((article) => article.id));
       cursor = page.nextCursor ?? undefined;
       rounds++;
@@ -73,6 +74,9 @@ describe("SCRUM-27 — pagination par curseur", () => {
       orderBy: [{ publishedAt: "desc" }, { id: "desc" }],
     });
     expect(findMany.mock.calls[1]?.[0]).toMatchObject({ take: 15 });
+    expect(findMany.mock.calls[0]?.[0]).toMatchObject({
+      select: { source: { select: { country: { select: { isoCode2: true } } } } },
+    });
   });
 
   it("distingue une catégorie inactive d'une catégorie active mais vide", async () => {
