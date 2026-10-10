@@ -25,6 +25,7 @@ type HomeTranslations = {
   next: string;
   carousel: string;
   category: string;
+  moreNews: string;
 };
 
 async function loadHome(locale: string): Promise<HomeSectionData[]> {
@@ -83,6 +84,7 @@ export default async function HomePage({ params }: Props) {
               label={label}
               locale={locale}
               categoryLinkLabel={t.category.replace("{name}", label)}
+              moreNewsLabel={t.moreNews}
               previousLabel={t.previous}
               nextLabel={t.next}
             />
