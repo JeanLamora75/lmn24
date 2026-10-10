@@ -53,11 +53,12 @@ describe("SCRUM-26 — titre de rubrique aux couleurs de la catégorie", () => {
 describe("SCRUM-26 / SCRUM-27 — drapeau à gauche du nom de la source", () => {
   it("place le composant drapeau AVANT le nom dans la carte partagée", () => {
     const component = readFileSync(new URL("./HomeSection.tsx", import.meta.url), "utf8");
-    const sourceBlock = component.match(
-      /<span className=\\{styles\\.sourceIdentity\\}>([\\s\\S]*?)<\\/span>/,
-    )?.[1];
+    const start = component.indexOf("<span className={styles.sourceIdentity}>");
+    const end = component.indexOf("</span>", start);
+    expect(start).toBeGreaterThanOrEqual(0);
+    expect(end).toBeGreaterThan(start);
+    const sourceBlock = component.slice(start, end);
 
-    expect(sourceBlock).toBeDefined();
     expect(sourceBlock).toContain("<CountryFlag");
     expect(sourceBlock).toContain("article.source.countryIsoCode2");
     expect(sourceBlock).toContain("<span className={styles.sourceName}>");
