@@ -6,6 +6,7 @@ import type { CategoryHomeLayout } from "@lmn24/contracts";
 import { HomeArticleMedia } from "./HomeArticleMedia";
 import { HomeCarousel } from "./HomeCarousel";
 import {
+  getContrastingTextColor,
   localizedCategoryHref,
   safeExternalUrl,
   type HomeArticle,
@@ -102,6 +103,7 @@ export function HomeSection({
 }: Props) {
   const sectionStyle = {
     "--category-accent": section.themeColor,
+    "--category-button-text": getContrastingTextColor(section.themeColor),
   } as CSSProperties;
   const categoryHref = localizedCategoryHref(locale, section.slug);
 
@@ -152,7 +154,7 @@ export function HomeSection({
       <div className={styles.moreNewsWrapper}>
         <Link
           href={categoryHref}
-          className={"btn btn-outline-primary rounded-pill fw-semibold " + styles.moreNewsLink}
+          className={styles.moreNewsLink}
           aria-label={moreNewsLabel + " — " + label}
         >
           {moreNewsLabel}
