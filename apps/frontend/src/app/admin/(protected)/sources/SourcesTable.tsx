@@ -11,7 +11,7 @@ import {
 } from "react";
 
 import { CountryFlag } from "@/components/home/CountryFlag";
-import { sourceArticlesHref, sourceFeedsHref } from "@/lib/source-admin-links";
+import { newFeedForSourceHref, sourceArticlesHref, sourceFeedsHref } from "@/lib/source-admin-links";
 
 import { SourceDeleteDialog } from "./SourceDeleteDialog";
 import styles from "./sources.module.css";
@@ -636,6 +636,22 @@ export function SourcesTable() {
                         ) : null}
 
                         <Link
+                          href={newFeedForSourceHref(source.id)}
+                          className="btn btn-sm btn-outline-success"
+                          title={"Ajouter un flux RSS/XML à " + source.name}
+                          aria-label={"Ajouter un flux RSS/XML à " + source.name}
+                        >
+                          <Image
+                            src="/bootstrap-icons/plus-circle.svg"
+                            width={18}
+                            height={18}
+                            alt=""
+                            aria-hidden="true"
+                            unoptimized
+                          />
+                        </Link>
+
+                        <Link
                           href={
                             "/admin/sources/" +
                             encodeURIComponent(source.id) +
@@ -706,6 +722,14 @@ export function SourcesTable() {
                               Ouvrir le site
                             </a>
                           ) : null}
+
+                          <Link
+                            href={newFeedForSourceHref(source.id)}
+                            className="dropdown-item"
+                            aria-label={"Ajouter un flux RSS/XML à " + source.name}
+                          >
+                            Ajouter un flux RSS/XML
+                          </Link>
 
                           <Link
                             href={
