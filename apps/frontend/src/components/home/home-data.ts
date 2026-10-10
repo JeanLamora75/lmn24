@@ -24,6 +24,15 @@ export type HomeSectionData = {
   articles: HomeArticle[];
 };
 
+/**
+ * Conserve explicitement la locale de consultation lors de la navigation
+ * vers la page dédiée de la catégorie. Les slugs sont encodés par segment.
+ */
+export function localizedCategoryHref(locale: string, slug: string): string {
+  return "/" + encodeURIComponent(locale) +
+    "/category/" + encodeURIComponent(slug);
+}
+
 export function safeExternalUrl(value: string | null): string | null {
   if (!value) return null;
   try {
