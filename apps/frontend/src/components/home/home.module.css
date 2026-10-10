@@ -482,8 +482,8 @@
   padding: 0.65rem 1.65rem;
   border: 1px solid var(--category-accent);
   border-radius: 0.6rem;
-  background-color: var(--category-accent);
-  color: var(--category-button-text);
+  background-color: var(--bs-body-bg, #fff);
+  color: var(--category-accent);
   font-weight: 600;
   text-decoration: none;
   text-align: center;
@@ -491,14 +491,16 @@
   transition: box-shadow 150ms ease, transform 150ms ease;
 }
 
-.moreNewsLink:hover {
-  color: var(--category-button-text);
+.moreNewsLink:hover,
+.moreNewsLink:focus-visible {
+  background-color: var(--category-accent);
+  color: var(--bs-body-bg, #fff);
+  border-color: var(--category-accent);
   box-shadow: 0 4px 14px rgb(0 0 0 / 14%);
   transform: translateY(-1px);
 }
 
 .moreNewsLink:focus-visible {
-  color: var(--category-button-text);
   outline: 3px solid var(--bs-body-color);
   outline-offset: 3px;
 }
