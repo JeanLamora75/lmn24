@@ -186,7 +186,12 @@ function PaginationNav({
   );
 }
 
-export function FeedsTable() {
+type Props = {
+  initialSourceId?: string;
+  initialSourceName?: string;
+};
+
+export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Props) {
   const router = useRouter();
 
   const [items, setItems] = useState<FeedItem[]>([]);
@@ -199,8 +204,9 @@ export function FeedsTable() {
     totalPages: 0,
   });
 
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState(initialSourceName);
   const [search, setSearch] = useState("");
+  const [sourceId, setSourceId] = useState(initialSourceId);
   const [categoryId, setCategoryId] = useState("");
   const [language, setLanguage] = useState("");
   const [status, setStatus] = useState<StatusFilter>("all");
@@ -295,6 +301,9 @@ export function FeedsTable() {
       if (search) {
         params.set("search", search);
       }
+      if (sourceId) {
+        params.set("sourceId", sourceId);
+      }
 
       if (language) {
         params.set("language", language);
@@ -354,12 +363,14 @@ export function FeedsTable() {
     reloadKey,
     router,
     search,
+    sourceId,
     status,
   ]);
 
   const submitSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setPage(1);
+    setSourceId("");
     setSearch(searchInput.trim());
     setReloadKey((value) => value + 1);
   };
@@ -510,6 +521,27 @@ export function FeedsTable() {
           </button>
         </form>
       </div>
+
+      {sourceId && (
+        <div className="d-flex align-items-center gap-2 mb-3" role="status">
+          <span className="small text-body-secondary">
+            Source sélectionnée : <strong>{initialSourceName || sourceId}</strong>
+          </span>
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-secondary"
+            onClick={() => {
+              setSourceId("");
+              setSearchInput("");
+              setSearch("");
+              setPage(1);
+              router.replace("/admin/feeds");
+            }}
+          >
+            Retirer le filtre
+          </button>
+        </div>
+      )}
 
       <div className="row g-2 align-items-end mb-4">
         <div className="col-12 col-md-6 col-lg-3">
