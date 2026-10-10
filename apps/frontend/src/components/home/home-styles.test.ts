@@ -32,3 +32,20 @@ describe("SCRUM-26 — bouton Voir plus d'actualité", () => {
     expect(css).toMatch(/\.moreNewsLink:focus-visible\s*\{\s*outline: 3px solid/);
   });
 });
+
+describe("SCRUM-26 — titre de rubrique aux couleurs de la catégorie", () => {
+  it("utilise la couleur administrée plutôt que le noir par défaut", () => {
+    const normal = rule(".categoryLink");
+    expect(normal).toContain("color: var(--category-accent)");
+    expect(normal).not.toContain("color: var(--bs-body-color)");
+  });
+
+  it("conserve la couleur de catégorie et souligne le lien au survol et au focus", () => {
+    const hovered = css.match(
+      /\\.categoryLink:hover,\\s*\\.categoryLink:focus-visible\\s*\\{([^}]+)\\}/,
+    )?.[1];
+    expect(hovered).toContain("color: var(--category-accent)");
+    expect(hovered).toContain("text-decoration: underline");
+    expect(hovered).toContain("text-decoration-color: var(--category-accent)");
+  });
+});
