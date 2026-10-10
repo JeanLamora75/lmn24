@@ -33,6 +33,30 @@ export function localizedCategoryHref(locale: string, slug: string): string {
     "/category/" + encodeURIComponent(slug);
 }
 
+/**
+ * Choisit la couleur du texte d'un bouton dont le fond reprend exactement
+ * la couleur de la catégorie. Le seuil WCAG garantit >= 4,5:1 de contraste.
+ */
+export function getContrastingTextColor(themeColor: string): "#000000" | "#FFFFFF" {
+  const color = /^#[0-9a-fA-F]{6}$/.test(themeColor)
+    ? themeColor
+    : DEFAULT_CATEGORY_HOME_COLOR;
+
+  const linearChannel = (hex: string): number => {
+    const channel = Number.parseInt(hex, 16) / 255;
+    return channel <= 0.04045
+      ? channel / 12.92
+      : ((channel + 0.055) / 1.055) ** 2.4;
+  };
+
+  const luminance =
+    0.2126 * linearChannel(color.slice(1, 3)) +
+    0.7152 * linearChannel(color.slice(3, 5)) +
+    0.0722 * linearChannel(color.slice(5, 7));
+
+  return luminance > 0.179 ? "#000000" : "#FFFFFF";
+}
+
 export function safeExternalUrl(value: string | null): string | null {
   if (!value) return null;
   try {
