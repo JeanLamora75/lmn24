@@ -285,6 +285,7 @@
     "previous": "Desplazar artículos a la izquierda",
     "next": "Desplazar artículos a la derecha",
     "carousel": "Artículos desplazables",
-    "category": "Ver la categoría {name}"
+    "category": "Ver la categoría {name}",
+    "moreNews": "Ver más noticias"
   }
 }
