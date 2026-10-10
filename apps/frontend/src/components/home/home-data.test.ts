@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  getContrastingTextColor,
   localizedCategoryHref,
   prepareHomeSections,
   safeExternalUrl,
@@ -47,6 +48,25 @@ describe("SCRUM-26 — navigation vers les actualités de la catégorie", () => 
     expect(localizedCategoryHref("de", "culture & société")).toBe(
       "/de/category/culture%20%26%20soci%C3%A9t%C3%A9",
     );
+  });
+});
+
+describe("SCRUM-26 — bouton coloré de la catégorie", () => {
+  it("choisit le blanc pour une couleur sombre", () => {
+    expect(getContrastingTextColor("#000000")).toBe("#FFFFFF");
+    expect(getContrastingTextColor("#2563EB")).toBe("#FFFFFF");
+    expect(getContrastingTextColor("#101828")).toBe("#FFFFFF");
+  });
+
+  it("choisit le noir pour une couleur claire", () => {
+    expect(getContrastingTextColor("#FFFFFF")).toBe("#000000");
+    expect(getContrastingTextColor("#FFFF00")).toBe("#000000");
+    expect(getContrastingTextColor("#FF0000")).toBe("#000000");
+  });
+
+  it("utilise la couleur par défaut si la valeur de catégorie est incorrecte", () => {
+    expect(getContrastingTextColor("red")).toBe("#FFFFFF");
+    expect(getContrastingTextColor("#fff")).toBe("#FFFFFF");
   });
 });
 
