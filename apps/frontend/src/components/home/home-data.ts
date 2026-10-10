@@ -12,7 +12,7 @@ export type HomeArticle = {
   imageUrl: string | null;
   articleUrl: string;
   publishedAt: string;
-  source: { name: string; logoUrl: string | null };
+  source: { name: string; logoUrl: string | null; countryIsoCode2: string | null };
 };
 
 export type HomeSectionData = {
