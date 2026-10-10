@@ -97,4 +97,26 @@ describe("SCRUM-14 — prévisualisation et suppression transactionnelle", () =>
     const prisma = { $transaction: vi.fn().mockImplementation(async (callback) => callback(tx)) };
     await expect(service(prisma).delete(sourceId)).rejects.toThrow(NotFoundException);
   });
+  it("n'annonce pas un faux échec si le logo local est verrouillé après la transaction", async () => {
+    const tx = {
+      source: {
+        findUnique: vi.fn().mockResolvedValue({ id: sourceId, logoUrl: "/api/admin/sources/image/old.png" }),
+        delete: vi.fn().mockResolvedValue({ id: sourceId }),
+      },
+      feed: {
+        findMany: vi.fn().mockResolvedValue([]),
+        deleteMany: vi.fn().mockResolvedValue({ count: 0 }),
+      },
+      article: {
+        deleteMany: vi.fn().mockResolvedValue({ count: 3 }),
+      },
+    };
+    const prisma = { $transaction: vi.fn().mockImplementation(async (callback) => callback(tx)) };
+    const media = { deleteLocalImage: vi.fn().mockRejectedValue(new Error("EACCES")) };
+    await expect(service(prisma, media).delete(sourceId)).resolves.toEqual({
+      feeds: 0, articles: 3,
+    });
+    expect(tx.source.delete).toHaveBeenCalledOnce();
+  });
+
 });
