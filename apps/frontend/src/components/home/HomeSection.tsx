@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import type { CategoryHomeLayout } from "@lmn24/contracts";
 
+import { CountryFlag } from "./CountryFlag";
 import { HomeArticleMedia } from "./HomeArticleMedia";
 import { HomeCarousel } from "./HomeCarousel";
 import {
@@ -68,7 +69,13 @@ export function ArticleCard({
       )}
       <div className={styles.articleBody}>
         <div className={styles.articleMeta}>
-          <span className={styles.sourceName}>{article.source.name}</span>
+          <span className={styles.sourceIdentity}>
+            <span className={styles.sourceName}>{article.source.name}</span>
+            <CountryFlag
+              countryIsoCode2={article.source.countryIsoCode2}
+              locale={locale}
+            />
+          </span>
           {published && (
             <time dateTime={pubDate.toISOString()}>{published}</time>
           )}
