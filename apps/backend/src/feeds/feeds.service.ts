@@ -11,6 +11,7 @@ export type FeedStatusFilter = "all" | "active" | "inactive";
 
 export type ListFeedsParams = {
   search?: string | undefined;
+  sourceId?: string | undefined;
   language?: string | undefined;
   categoryId?: string | undefined;
   status: FeedStatusFilter;
@@ -34,6 +35,7 @@ export class FeedsService {
     const search = params.search?.trim();
 
     const where = {
+      ...(params.sourceId ? { sourceId: params.sourceId } : {}),
       ...(search
         ? {
             source: {
