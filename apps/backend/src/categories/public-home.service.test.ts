@@ -33,6 +33,7 @@ function articleRow(input: {
     publishedAt: new Date(input.publishedAt ?? "2026-10-09T12:00:00.000Z"),
     sourceName: "Média exemple",
     sourceLogoUrl: null,
+    sourceCountryIsoCode2: "FR",
   };
 }
 
@@ -60,6 +61,7 @@ describe("SCRUM-26 — composition des sections", () => {
     expect(result[0]?.articles[0]?.source).toEqual({
       name: "Média exemple",
       logoUrl: null,
+      countryIsoCode2: "FR",
     });
   });
 
@@ -87,6 +89,8 @@ describe("SCRUM-26 — composition des sections", () => {
     const sql = sqlPieces.join("?");
     expect(locale).toBe("fr");
     expect(sql).toContain("JOIN LATERAL");
+    expect(sql).toContain("LEFT JOIN country AS source_country ON source_country.id = s.country_id");
+    expect(sql).toContain('recent.source_country_iso_code2 AS "sourceCountryIsoCode2"');
     expect(sql).toContain("a.language_iso_code2 = CAST(");
     expect(sql).toContain("ORDER BY a.published_at DESC, a.id DESC");
     expect(sql).toContain("WHERE c.is_active = TRUE");
