@@ -95,7 +95,7 @@ describe("SCRUM-30 — recherche authentifiée, bornée et protégée côté nav
 
   it("intercepte aussi les ressources et bloque les requêtes internes", async () => {
     await service().discoverSocialLinks(site);
-    const callback = context.route.mock.calls[0]?.[1] as
+    const callback = (context.route.mock.calls[0] as unknown[] | undefined)?.[1] as
       ((route: { request: () => { url: () => string; resourceType: () => string }; abort: (reason: string) => Promise<void>; continue: () => Promise<void> }) => Promise<void>) | undefined;
     expect(callback).toBeDefined();
     const abort = vi.fn(async () => undefined);
