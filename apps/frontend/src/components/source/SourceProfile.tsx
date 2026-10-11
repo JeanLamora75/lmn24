@@ -4,7 +4,8 @@ import { isValidSourceProfileUrl } from "@lmn24/contracts";
 import Image from "next/image";
 import { useState } from "react";
 
-import { safeExternalUrl } from "@/components/home/home-data";
+import { safeExternalUrl } from "../home/home-data";
+import { safeSourceLogo } from "./source-image";
 
 import styles from "./source.module.css";
 
@@ -26,11 +27,6 @@ const NETWORKS = [
   { field: "instagramUrl", name: "Instagram", icon: "/social-icons/instagram.svg" },
   { field: "youtubeUrl", name: "YouTube", icon: "/social-icons/youtube.svg" },
 ] as const;
-
-export function safeSourceLogo(value: string | null): string | null {
-  if (value && /^\/source-media\/[0-9a-f-]{36}\.(?:png|jpg|jpeg|webp)$/i.test(value)) return value;
-  return safeExternalUrl(value);
-}
 
 export function SourceProfile({ source }: { source: PublicSource }) {
   const [imageFailed, setImageFailed] = useState(false);
