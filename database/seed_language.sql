@@ -9,7 +9,8 @@ VALUES
     ('es', TRUE),
     ('pt', TRUE),
     ('it', TRUE),
-    ('ru', TRUE)
+    ('ru', TRUE),
+    ('nl', TRUE)
 ON CONFLICT (iso_code2)
 DO UPDATE SET
     is_active = EXCLUDED.is_active,
