@@ -126,6 +126,12 @@ Représente un journal ou média fournissant des actualités via un ou plusieurs
 | `slug` | String | Oui | Identifiant URL, ex. `le-monde` |
 | `websiteUrl` | String | Oui | Site officiel du journal |
 | `logoUrl` | String | Non | URL du logo |
+| `rssPageUrl` | String | Non | URL informative de la page RSS du média (différente des flux `Feed`) |
+| `facebookUrl` | String | Non | Lien vers le compte/page Facebook |
+| `xUrl` | String | Non | Lien vers le compte X/Twitter |
+| `instagramUrl` | String | Non | Lien vers le compte Instagram |
+| `youtubeUrl` | String | Non | Lien vers la chaîne/compte YouTube |
+| `description` | Text | Non | Présentation textuelle du média, 5 000 caractères maximum |
 | `countryId` | UUID | Oui | Pays principal du journal |
 | `isActive` | Boolean | Oui | Active ou désactive la source |
 | `createdAt` | DateTime | Oui | Date de création |
@@ -140,6 +146,10 @@ Représente un journal ou média fournissant des actualités via un ou plusieurs
 
 - `slug` doit être unique.
 - `websiteUrl` doit être une URL valide.
+- Les cinq URL additionnelles sont facultatives et limitées à 2 048 caractères ; les URLs sociales doivent appartenir au domaine de la plateforme correspondante.
+- `description` est un texte libre de 5 000 caractères maximum, sans interprétation HTML.
+- La page RSS est informative et n'entraîne aucune création automatique d'un `Feed`.
+- Les six nouvelles colonnes sont facultatives afin de conserver les sources existantes sans perte de données.
 
 ---
 
