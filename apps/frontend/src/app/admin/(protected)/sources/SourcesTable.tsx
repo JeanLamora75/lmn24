@@ -19,6 +19,7 @@ import styles from "./sources.module.css";
 type SourceItem = {
   id: string;
   name: string;
+  slug: string;
   websiteUrl: string;
   isActive: boolean;
   feedCount: number;
@@ -604,7 +605,7 @@ export function SourcesTable() {
 
                     <td className="text-center">
                       <Link
-                        href={sourceArticlesHref(source.id)}
+                        href={sourceArticlesHref(source.slug)}
                         className={styles.countLink}
                         title={"Consulter les articles de " + source.name}
                         aria-label={source.articleCount + " articles pour " + source.name}
