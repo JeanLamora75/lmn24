@@ -88,6 +88,8 @@ describe("SCRUM-32 — API publique d'une source", () => {
     expect(new Set(articleIds).size).toBe(fixture.length);
     expect(findMany.mock.calls[0]?.[0].where.languageIsoCode2).toBe("nl");
     expect(findMany).toHaveBeenCalledTimes(4);
+    await expect(service.getArticles("le-monde", "nl", "not a cursor"))
+      .rejects.toThrow(BadRequestException);
   });
 
   it("renvoie 404 pour une source absente ou inactive", async () => {
@@ -122,7 +124,7 @@ describe("SCRUM-32 — API publique d'une source", () => {
     await expect(controller.list("Le-Monde", "fr")).rejects.toThrow(BadRequestException);
     await expect(controller.list("le-monde", "xx")).rejects.toThrow(BadRequestException);
     await expect(controller.list("le-monde", "fr", undefined, "10000")).rejects.toThrow(BadRequestException);
-    await expect(controller.list("le-monde", "fr", "not a cursor")).rejects.toThrow(BadRequestException);
+    await expect(controller.list("le-monde", "fr", "x".repeat(300))).rejects.toThrow(BadRequestException);
     await controller.list("le-monde", "nl", undefined, "14");
     expect(getArticles).toHaveBeenCalledWith("le-monde", "nl", undefined, 14);
   });
