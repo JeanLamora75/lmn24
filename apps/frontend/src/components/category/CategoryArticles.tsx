@@ -5,11 +5,11 @@ import { useRef, useState } from "react";
 
 import { ArticleCard } from "@/components/home/HomeSection";
 import homeStyles from "@/components/home/home.module.css";
+import type { HomeArticle } from "@/components/home/home-data";
 
 import {
   appendUniqueArticles,
   arrangeCategoryBlocks,
-  type CategoryPageResponse,
 } from "./category-page-data";
 import styles from "./category.module.css";
 
@@ -23,7 +23,8 @@ type Labels = {
 };
 
 type Props = {
-  initialPage: CategoryPageResponse;
+  initialPage: { items: HomeArticle[]; nextCursor: string | null; hasMore: boolean };
+  paginationPath: string;
   locale: string;
   labels: Labels;
 };
@@ -34,7 +35,7 @@ const layouts = {
   COMPACT: homeStyles.compact,
 } as const;
 
-export function CategoryArticles({ initialPage, locale, labels }: Props) {
+export function CategoryArticles({ initialPage, paginationPath, locale, labels }: Props) {
   const [articles, setArticles] = useState(initialPage.items);
   const [cursor, setCursor] = useState(initialPage.nextCursor);
   const [hasMore, setHasMore] = useState(initialPage.hasMore);
@@ -54,12 +55,10 @@ export function CategoryArticles({ initialPage, locale, labels }: Props) {
         cursor,
         limit: String(CATEGORY_NEXT_PAGE_SIZE),
       });
-      const url = "/api/public/categories/" +
-        encodeURIComponent(initialPage.category.slug) +
-        "/articles?" + query.toString();
+      const url = paginationPath + "?" + query.toString();
       const response = await fetch(url, { cache: "no-store" });
       if (!response.ok) throw new Error("category-next-page-failed");
-      const data = (await response.json()) as CategoryPageResponse;
+      const data = (await response.json()) as Props["initialPage"];
       if (
         !Array.isArray(data.items) ||
         typeof data.hasMore !== "boolean" ||
