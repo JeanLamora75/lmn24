@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { isValidSourceProfileUrl } from "@lmn24/contracts";
 
-import { safeSourceLogo } from "./SourceProfile";
+import { safeSourceLogo } from "./source-image";
 
 const profile = readFileSync(new URL("./SourceProfile.tsx", import.meta.url), "utf8");
 const css = readFileSync(new URL("./source.module.css", import.meta.url), "utf8");
