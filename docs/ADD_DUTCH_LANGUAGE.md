@@ -9,7 +9,7 @@ Le changement de référence SQL **n'est pas appliqué automatiquement par un `g
 Dans le dossier racine du projet, exécuter :
 
 ```powershell
-psql -U <utilisateur_postgresql> -d <nom_de_la_base> -f database/migrations/007_add_dutch_language.sql
+psql -U "VOTRE_UTILISATEUR_POSTGRESQL" -d "VOTRE_NOM_DE_BASE" -f database/migrations/007_add_dutch_language.sql
 ```
 
 Si le binaire `psql` n'est pas dans le PATH, utiliser son chemin complet.
