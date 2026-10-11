@@ -79,8 +79,17 @@ describe("SCRUM-29 — création et mise à jour des métadonnées Source", () =
     };
     source.findUnique.mockResolvedValue(original);
     const result = await service.getById(sourceId);
-    expect(result).toMatchObject(original);
-    expect(result.countryIsoCode2).toBe("FR");
+    expect(result).toMatchObject({
+      id: original.id,
+      name: original.name,
+      rssPageUrl: original.rssPageUrl,
+      facebookUrl: original.facebookUrl,
+      xUrl: original.xUrl,
+      instagramUrl: original.instagramUrl,
+      youtubeUrl: original.youtubeUrl,
+      description: original.description,
+      countryIsoCode2: "FR",
+    });
     expect(source.findUnique.mock.calls[0]?.[0].select).toMatchObject({
       rssPageUrl: true, facebookUrl: true, xUrl: true,
       instagramUrl: true, youtubeUrl: true, description: true,
