@@ -35,6 +35,17 @@ describe("SCRUM-30 — extraction de profils de médias", () => {
     });
   });
 
+  it("préserve l'identifiant d'un profil Facebook et simplifie les onglets YouTube", () => {
+    expect(resolveSocialProfile("https://facebook.com/profile.php?id=123456789&ref=homepage")).toEqual({
+      field: "facebookUrl",
+      url: "https://facebook.com/profile.php?id=123456789",
+    });
+    expect(resolveSocialProfile("https://youtube.com/@journal/videos")).toEqual({
+      field: "youtubeUrl", url: "https://youtube.com/@journal",
+    });
+    expect(resolveSocialProfile("https://facebook.com/profile.php?ref=homepage")).toBeNull();
+  });
+
   it("rejette les liens de partage, les publications et les domaines usurpés", () => {
     for (const url of [
       "https://facebook.com/sharer/sharer.php?u=https://example.com",
