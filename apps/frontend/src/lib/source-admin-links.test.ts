@@ -11,8 +11,9 @@ describe("SCRUM-14 — liens depuis les compteurs", () => {
     expect(url.searchParams.get("sourceName")).toBe("Le Monde & vous");
   });
 
-  it("réserve la route de détail des articles à la Story future", () => {
-    expect(sourceArticlesHref("abc-123")).toBe("/admin/sources/abc-123");
+  it("ouvre la fiche publique de la source depuis le compteur d'articles", () => {
+    expect(sourceArticlesHref("le-monde")).toBe("/fr/source/le-monde");
+    expect(sourceArticlesHref("le-monde", "nl")).toBe("/nl/source/le-monde");
   });
   it("ouvre le formulaire de création et transmet exactement l'identifiant source", () => {
     const sourceId = "11111111-1111-4111-8111-111111111111";
