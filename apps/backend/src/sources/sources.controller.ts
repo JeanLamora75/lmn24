@@ -228,6 +228,21 @@ export class SourcesController {
     );
   }
 
+  @Post("social-links/discover")
+  @Header("Cache-Control", "no-store")
+  async discoverSocialLinks(
+    @Req() request: RequestLike,
+    @Body() body: unknown,
+  ) {
+    await this.assertAuthenticated(request);
+
+    const parsed = captureSchema.safeParse(body);
+    if (!parsed.success) {
+      throw new BadRequestException("URL du site invalide pour la recherche des réseaux sociaux.");
+    }
+    return this.captureService.discoverSocialLinks(parsed.data.websiteUrl);
+  }
+
   @Post("capture")
   @Header("Cache-Control", "no-store")
   async capture(
