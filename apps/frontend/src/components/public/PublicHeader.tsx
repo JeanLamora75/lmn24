@@ -17,6 +17,7 @@ const LANGUAGE_FLAGS: Record<SupportedLocale, string> = {
   pt: "/flags/pt.png",
   it: "/flags/it.png",
   ru: "/flags/ru.png",
+  nl: "/flags/nl.png",
 };
 
 function isSupportedLocale(locale: string): locale is SupportedLocale {
