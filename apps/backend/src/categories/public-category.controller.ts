@@ -11,7 +11,7 @@ import { z } from "zod";
 
 import { PublicCategoryService } from "./public-category.service";
 
-const localeSchema = z.enum(["fr", "en", "de", "es", "pt", "it", "ru"]);
+const localeSchema = z.enum(["fr", "en", "de", "es", "pt", "it", "ru", "nl"]);
 const slugSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(255);
 const cursorSchema = z.string().min(1).max(256).optional();
 const limitSchema = z.coerce.number().int().min(1).max(CATEGORY_MAX_PAGE_SIZE);
