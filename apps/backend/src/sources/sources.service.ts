@@ -26,6 +26,12 @@ export type SourceInput = {
   countryIsoCode2: string;
   isActive: boolean;
   logoUrl?: string | null | undefined;
+  rssPageUrl?: string | null | undefined;
+  facebookUrl?: string | null | undefined;
+  xUrl?: string | null | undefined;
+  instagramUrl?: string | null | undefined;
+  youtubeUrl?: string | null | undefined;
+  description?: string | null | undefined;
 };
 
 @Injectable()
@@ -137,6 +143,12 @@ export class SourcesService {
         slug: true,
         websiteUrl: true,
         logoUrl: true,
+        rssPageUrl: true,
+        facebookUrl: true,
+        xUrl: true,
+        instagramUrl: true,
+        youtubeUrl: true,
+        description: true,
         country: {
           select: {
             isoCode2: true,
@@ -156,6 +168,12 @@ export class SourcesService {
       slug: source.slug,
       websiteUrl: source.websiteUrl,
       logoUrl: source.logoUrl,
+      rssPageUrl: source.rssPageUrl,
+      facebookUrl: source.facebookUrl,
+      xUrl: source.xUrl,
+      instagramUrl: source.instagramUrl,
+      youtubeUrl: source.youtubeUrl,
+      description: source.description,
       countryIsoCode2: source.country.isoCode2.trim(),
       isActive: source.isActive,
     };
@@ -173,6 +191,12 @@ export class SourcesService {
         countryId,
         isActive: input.isActive,
         logoUrl: input.logoUrl ?? null,
+        rssPageUrl: input.rssPageUrl ?? null,
+        facebookUrl: input.facebookUrl ?? null,
+        xUrl: input.xUrl ?? null,
+        instagramUrl: input.instagramUrl ?? null,
+        youtubeUrl: input.youtubeUrl ?? null,
+        description: input.description ?? null,
       },
       select: {
         id: true,
@@ -205,6 +229,12 @@ export class SourcesService {
         countryId,
         isActive: input.isActive,
         logoUrl: input.logoUrl ?? null,
+        ...(input.rssPageUrl !== undefined ? { rssPageUrl: input.rssPageUrl } : {}),
+        ...(input.facebookUrl !== undefined ? { facebookUrl: input.facebookUrl } : {}),
+        ...(input.xUrl !== undefined ? { xUrl: input.xUrl } : {}),
+        ...(input.instagramUrl !== undefined ? { instagramUrl: input.instagramUrl } : {}),
+        ...(input.youtubeUrl !== undefined ? { youtubeUrl: input.youtubeUrl } : {}),
+        ...(input.description !== undefined ? { description: input.description } : {}),
       },
       select: {
         id: true,
