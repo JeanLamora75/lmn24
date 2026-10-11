@@ -10,7 +10,7 @@ import { z } from "zod";
 import { PublicHomeService } from "./public-home.service";
 
 // Identiques aux préfixes de langue autorisés par next-intl.
-const localeSchema = z.enum(["fr", "en", "de", "es", "pt", "it", "ru"]);
+const localeSchema = z.enum(["fr", "en", "de", "es", "pt", "it", "ru", "nl"]);
 
 @Controller("public/home")
 export class PublicHomeController {
