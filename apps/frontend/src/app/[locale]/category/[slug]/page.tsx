@@ -90,7 +90,7 @@ export default async function CategoryPage({ params }: Props) {
       ) : page.items.length === 0 ? (
         <p className={styles.empty} role="status">{t.empty}</p>
       ) : (
-        <CategoryArticles initialPage={page} locale={locale} labels={t} />
+        <CategoryArticles initialPage={page} paginationPath={"/api/public/categories/" + encodeURIComponent(slug) + "/articles"} locale={locale} labels={t} />
       )}
     </main>
   );
