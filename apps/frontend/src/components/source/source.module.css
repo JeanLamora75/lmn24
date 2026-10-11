@@ -1,0 +1,118 @@
+.page {
+  max-width: 1380px;
+  padding-top: clamp(1.3rem, 3vw, 2.5rem);
+  padding-bottom: 3rem;
+}
+
+.profile {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: clamp(1rem, 2.4vw, 2rem);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 1rem;
+  background: var(--bs-body-bg);
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgb(0 0 0 / 5%);
+  min-height: 18rem;
+  margin-bottom: clamp(1.6rem, 3vw, 2.6rem);
+}
+
+.imagePanel {
+  min-width: 0;
+  background: var(--bs-tertiary-bg);
+  min-height: 17rem;
+  overflow: hidden;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 0.9rem;
+}
+
+.imageFallback {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--bs-secondary-color);
+  background: repeating-linear-gradient(135deg,
+    var(--bs-tertiary-bg), var(--bs-tertiary-bg) 18px,
+    var(--bs-secondary-bg) 18px, var(--bs-secondary-bg) 36px);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(1.1rem, 2vw, 1.8rem);
+}
+
+.name {
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 750;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  margin: 0 0 0.95rem;
+}
+
+.description {
+  color: var(--bs-secondary-color);
+  line-height: 1.65;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+  margin: 0 0 1rem;
+}
+
+.networks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.networkActive, .networkDisabled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.85rem;
+  height: 2.85rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.65rem;
+  background: var(--bs-body-bg);
+}
+
+.networkActive {
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+
+.networkActive:hover {
+  box-shadow: 0 3px 12px rgb(0 0 0 / 12%);
+  transform: translateY(-2px);
+}
+
+.networkActive:focus-visible {
+  outline: 3px solid var(--bs-primary);
+  outline-offset: 2px;
+}
+
+.networkDisabled {
+  opacity: 0.36;
+  filter: grayscale(1);
+  cursor: default;
+  background: var(--bs-secondary-bg);
+}
+
+@media (max-width: 767px) {
+  .profile { grid-template-columns: minmax(0, 1fr); }
+  .imagePanel { min-height: 13rem; max-height: 18rem; }
+  .details { min-height: 13rem; }
+}
