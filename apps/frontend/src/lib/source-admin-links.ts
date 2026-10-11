@@ -9,7 +9,7 @@ export function newFeedForSourceHref(sourceId: string): string {
   return "/admin/feeds/new?" + new URLSearchParams({ sourceId }).toString();
 }
 
-/** Future source articles detail, currently a clearly identified placeholder. */
-export function sourceArticlesHref(sourceId: string): string {
-  return "/admin/sources/" + encodeURIComponent(sourceId);
+/** SCRUM-32 — public source page, defaulting to French from admin. */
+export function sourceArticlesHref(sourceSlug: string, locale = "fr"): string {
+  return "/" + encodeURIComponent(locale) + "/source/" + encodeURIComponent(sourceSlug);
 }
