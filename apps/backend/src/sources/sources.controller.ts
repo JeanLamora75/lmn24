@@ -18,6 +18,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { sourceProfileSchema } from "@lmn24/contracts";
 import { z } from "zod";
 
 import {
@@ -75,7 +76,7 @@ const sourceInputSchema = z.object({
     .transform((value) => value.toUpperCase()),
   isActive: z.boolean(),
   logoUrl: z.string().trim().max(2048).nullable().optional(),
-});
+}).extend(sourceProfileSchema.shape);
 
 const captureSchema = z.object({
   websiteUrl: httpUrlSchema,
