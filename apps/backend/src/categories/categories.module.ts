@@ -8,6 +8,8 @@ import { PublicCategoryService } from "./public-category.service";
 import { PublicHomeCategoriesController } from "./public-home-categories.controller";
 import { PublicHomeController } from "./public-home.controller";
 import { PublicHomeService } from "./public-home.service";
+import { PublicSourceController } from "./public-source.controller";
+import { PublicSourceService } from "./public-source.service";
 
 @Module({
   imports: [AuthModule],
@@ -16,7 +18,8 @@ import { PublicHomeService } from "./public-home.service";
     PublicHomeCategoriesController,
     PublicHomeController,
     PublicCategoryController,
+    PublicSourceController,
   ],
-  providers: [CategoriesService, PublicHomeService, PublicCategoryService],
+  providers: [CategoriesService, PublicHomeService, PublicCategoryService, PublicSourceService],
 })
 export class CategoriesModule {}
