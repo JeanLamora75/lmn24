@@ -39,13 +39,13 @@ export function resolveSocialProfile(raw: string): { field: SocialField; url: st
     (host === "youtube.com" || host.endsWith(".youtube.com")) ? "youtubeUrl" : undefined;
   if (!field || !isValidSourceProfileUrl(url.toString(), field)) return null;
   const path = url.pathname.replace(/\/+$/, "") || "/";
-  if (path === "/" || forbiddenPaths.test(path)) return null;
   // Avoid article/video links that are not profiles; YouTube only uses known channel shapes.
   if (field === "youtubeUrl") {
     const channel = path.match(/^\/(@[^/]+|channel\/[^/]+|user\/[^/]+|c\/[^/]+)(?:\/(?:videos|featured|streams|playlists|shorts))?$/i);
     if (!channel) return null;
     url.pathname = "/" + channel[1];
   }
+  if (path === "/" || (forbiddenPaths.test(path) && field !== "youtubeUrl")) return null;
   if (field === "facebookUrl" && path.toLowerCase() === "/profile.php") {
     const id = url.searchParams.get("id");
     if (!id || !/^\d{3,30}$/.test(id)) return null;
