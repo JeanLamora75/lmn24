@@ -34,3 +34,9 @@
   background: var(--bs-warning-bg-subtle);
   font-size: 1.05rem;
 }
+
+.discoveredLink {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
