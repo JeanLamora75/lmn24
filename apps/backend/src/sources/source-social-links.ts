@@ -41,7 +41,19 @@ export function resolveSocialProfile(raw: string): { field: SocialField; url: st
   const path = url.pathname.replace(/\/+$/, "") || "/";
   if (path === "/" || forbiddenPaths.test(path)) return null;
   // Avoid article/video links that are not profiles; YouTube only uses known channel shapes.
-  if (field === "youtubeUrl" && !/^\/(?:@[^/]+|channel\/[^/]+|user\/[^/]+|c\/[^/]+)(?:\/)?$/i.test(path)) return null;
+  if (field === "youtubeUrl") {
+    const channel = path.match(/^\/(@[^/]+|channel\/[^/]+|user\/[^/]+|c\/[^/]+)(?:\/(?:videos|featured|streams|playlists|shorts))?$/i);
+    if (!channel) return null;
+    url.pathname = "/" + channel[1];
+  }
+  if (field === "facebookUrl" && path.toLowerCase() === "/profile.php") {
+    const id = url.searchParams.get("id");
+    if (!id || !/^\d{3,30}$/.test(id)) return null;
+    url.search = "";
+    url.searchParams.set("id", id);
+    url.hash = "";
+    return { field, url: url.toString() };
+  }
   if (field === "xUrl" && !/^\/[^/]+\/?$/i.test(path)) return null;
   if (field === "instagramUrl" && !/^\/[^/]+\/?$/i.test(path)) return null;
   if (field === "facebookUrl" && path.split("/").filter(Boolean).length > 2) return null;
