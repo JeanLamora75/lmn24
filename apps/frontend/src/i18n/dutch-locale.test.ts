@@ -7,7 +7,7 @@ import de from "../../../../messages/de.json";
 import en from "../../../../messages/en.json";
 import es from "../../../../messages/es.json";
 import fr from "../../../../messages/fr.json";
-import it from "../../../../messages/it.json";
+import italianMessages from "../../../../messages/it.json";
 import nl from "../../../../messages/nl.json";
 import pt from "../../../../messages/pt.json";
 import ru from "../../../../messages/ru.json";
@@ -31,7 +31,7 @@ describe("SCRUM-28 — néerlandais (nl) dans LMN24", () => {
   });
 
   it("rend le néerlandais identifiable dans les huit sélecteurs linguistiques", () => {
-    const labels = [fr, en, de, es, pt, it, ru, nl].map(messages => messages.languages.nl);
+    const labels = [fr, en, de, es, pt, italianMessages, ru, nl].map(messages => messages.languages.nl);
     expect(labels).toEqual([
       "Néerlandais", "Dutch", "Niederländisch", "Neerlandés",
       "Neerlandês", "Olandese", "Нидерландский", "Nederlands",
