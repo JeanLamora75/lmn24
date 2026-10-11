@@ -14,6 +14,7 @@ import {
 import { sourceProfileSchema, SOURCE_PROFILE_URL_FIELDS, type SourceProfileField } from "@lmn24/contracts";
 
 import { FRENCH_COUNTRY_OPTIONS } from "@/lib/fr-country-options";
+import { mergeSocialDiscovery, SOCIAL_KEYS, SOCIAL_LABELS, type SocialKey, type SocialLinkValues } from "@/lib/source-social-discovery";
 
 import styles from "./source-form.module.css";
 
@@ -119,6 +120,9 @@ export function SourceForm({ mode, sourceId }: Props) {
   const [loading, setLoading] = useState(mode === "edit");
   const [saving, setSaving] = useState(false);
   const [capturing, setCapturing] = useState(false);
+  const [discoveringSocial, setDiscoveringSocial] = useState(false);
+  const [socialNotice, setSocialNotice] = useState("");
+  const [socialConflicts, setSocialConflicts] = useState<Partial<SocialLinkValues>>({});
   const [loadingDeleteImpact, setLoadingDeleteImpact] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteImpact, setDeleteImpact] = useState<DeleteImpact | null>(
@@ -127,6 +131,9 @@ export function SourceForm({ mode, sourceId }: Props) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const valuesRef = useRef(values);
+
+  useEffect(() => { valuesRef.current = values; }, [values]);
 
   const localPreview = useMemo(
     () => (selectedFile ? URL.createObjectURL(selectedFile) : null),
@@ -477,6 +484,94 @@ export function SourceForm({ mode, sourceId }: Props) {
     }
   };
 
+  const discoverSocialLinks = async () => {
+    if (discoveringSocial) return;
+    const websiteUrl = values.websiteUrl.trim();
+    if (!websiteUrl) {
+      showToast("Renseigner l'url du site");
+      return;
+    }
+    if (!isValidHttpUrl(websiteUrl)) {
+      showToast("Renseignez une URL HTTP ou HTTPS valide.");
+      return;
+    }
+
+    setDiscoveringSocial(true);
+    setSocialNotice("");
+    setSocialConflicts({});
+    setPageError("");
+    try {
+      const response = await fetch("/api/admin/sources/social-links/discover", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ websiteUrl }),
+      });
+      if (response.status === 401) {
+        router.replace("/admin/login");
+        return;
+      }
+      if (!response.ok) {
+        throw new Error(await readErrorMessage(
+          response, "Impossible de rechercher les réseaux sociaux sur ce site.",
+        ));
+      }
+      const raw = (await response.json()) as Record<string, unknown>;
+      const parsed = sourceProfileSchema.safeParse({
+        facebookUrl: raw.facebookUrl ?? null,
+        xUrl: raw.xUrl ?? null,
+        instagramUrl: raw.instagramUrl ?? null,
+        youtubeUrl: raw.youtubeUrl ?? null,
+      });
+      if (!parsed.success) throw new Error("Les liens détectés ne sont pas valides.");
+
+      // An administrator may edit the form while a slow site is being scanned.
+      // Never apply discoveries to a different website.
+      const latest = valuesRef.current;
+      if (latest.websiteUrl.trim() !== websiteUrl) {
+        setSocialNotice("L’URL du site a changé : relancez la recherche pour ce nouveau site.");
+        return;
+      }
+      const discovered: SocialLinkValues = {
+        facebookUrl: parsed.data.facebookUrl ?? null,
+        xUrl: parsed.data.xUrl ?? null,
+        instagramUrl: parsed.data.instagramUrl ?? null,
+        youtubeUrl: parsed.data.youtubeUrl ?? null,
+      };
+      const outcome = mergeSocialDiscovery(latest, discovered);
+      setValues(current => {
+        // Protect changes made since the response was received.
+        if (current.websiteUrl.trim() !== websiteUrl) return current;
+        const merge = mergeSocialDiscovery(current, discovered);
+        return { ...current, ...merge.next };
+      });
+      setSocialConflicts(outcome.conflicts);
+      setSocialNotice(
+        outcome.found === 0
+          ? "Aucun compte de réseau social n’a été trouvé sur ce site."
+          : outcome.added + " lien(s) ajouté(s), " +
+            Object.keys(outcome.conflicts).length + " conflit(s). Les liens existants ont été conservés.",
+      );
+    } catch (error) {
+      setSocialNotice(
+        error instanceof Error ? error.message :
+        "La recherche des réseaux sociaux a échoué. Réessayez.",
+      );
+    } finally {
+      setDiscoveringSocial(false);
+    }
+  };
+
+  const replaceDiscoveredLink = (key: SocialKey) => {
+    const link = socialConflicts[key];
+    if (!link) return;
+    setValues(current => ({ ...current, [key]: link }));
+    setSocialConflicts(current => {
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
+  };
+
   const openDeleteDialog = async () => {
     if (mode !== "edit" || loadingDeleteImpact) {
       return;
@@ -798,6 +893,24 @@ export function SourceForm({ mode, sourceId }: Props) {
                     "Capturer"
                   )}
                 </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary w-100 mt-2"
+                  disabled={discoveringSocial}
+                  onClick={() => void discoverSocialLinks()}
+                >
+                  {discoveringSocial ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" aria-hidden="true" />
+                      Recherche des réseaux sociaux…
+                    </>
+                  ) : "Réseaux sociaux"}
+                </button>
+                {socialNotice ? (
+                  <p className="small mt-3 mb-0" role="status" aria-live="polite">
+                    {socialNotice}
+                  </p>
+                ) : null}
               </div>
             </div>
           </div>
@@ -835,6 +948,28 @@ export function SourceForm({ mode, sourceId }: Props) {
                   ) : null}
                 </div>
               ))}
+              {SOCIAL_KEYS.some(key => Boolean(socialConflicts[key])) ? (
+                <div className="col-12">
+                  <div className="alert alert-info mb-0" role="group" aria-label="Liens détectés différents">
+                    <strong>Autres comptes détectés</strong>
+                    <p className="small mb-2">Les liens existants ne sont pas remplacés sans votre confirmation.</p>
+                    {SOCIAL_KEYS.filter(key => Boolean(socialConflicts[key])).map(key => (
+                      <div key={key} className="d-flex flex-column flex-md-row align-items-md-center gap-2 mb-2">
+                        <span className="small">
+                          {SOCIAL_LABELS[key]} : <code className={styles.discoveredLink}>{socialConflicts[key]}</code>
+                        </span>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-primary"
+                          onClick={() => replaceDiscoveredLink(key)}
+                        >
+                          Remplacer le lien {SOCIAL_LABELS[key]}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
               <div className="col-12">
                 <label className="form-label" htmlFor="source-description">
                   Description
