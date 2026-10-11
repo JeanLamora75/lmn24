@@ -11,6 +11,8 @@ import {
   useState,
 } from "react";
 
+import { sourceProfileSchema, SOURCE_PROFILE_URL_FIELDS, type SourceProfileField } from "@lmn24/contracts";
+
 import { FRENCH_COUNTRY_OPTIONS } from "@/lib/fr-country-options";
 
 import styles from "./source-form.module.css";
@@ -20,6 +22,12 @@ type SourceData = {
   name: string;
   slug: string;
   websiteUrl: string;
+  rssPageUrl: string | null;
+  facebookUrl: string | null;
+  xUrl: string | null;
+  instagramUrl: string | null;
+  youtubeUrl: string | null;
+  description: string | null;
   logoUrl: string | null;
   countryIsoCode2: string;
   isActive: boolean;
@@ -43,7 +51,7 @@ type Props = Readonly<
 
 type FieldErrors = Partial<
   Record<
-    "name" | "slug" | "websiteUrl" | "countryIsoCode2" | "image",
+    "name" | "slug" | "websiteUrl" | "countryIsoCode2" | "image" | SourceProfileField,
     string
   >
 >;
@@ -52,10 +60,24 @@ const EMPTY_SOURCE: Omit<SourceData, "id"> = {
   name: "",
   slug: "",
   websiteUrl: "",
+  rssPageUrl: "",
+  facebookUrl: "",
+  xUrl: "",
+  instagramUrl: "",
+  youtubeUrl: "",
+  description: "",
   logoUrl: null,
   countryIsoCode2: "",
   isActive: true,
 };
+
+const PROFILE_LINK_FIELDS = [
+  { key: "rssPageUrl", label: "Page RSS", placeholder: "https://exemple.com/rss" },
+  { key: "facebookUrl", label: "Facebook", placeholder: "https://www.facebook.com/votrejournal" },
+  { key: "xUrl", label: "X (Twitter)", placeholder: "https://x.com/votrejournal" },
+  { key: "instagramUrl", label: "Instagram", placeholder: "https://www.instagram.com/votrejournal" },
+  { key: "youtubeUrl", label: "YouTube", placeholder: "https://www.youtube.com/@votrejournal" },
+] as const satisfies ReadonlyArray<{ key: (typeof SOURCE_PROFILE_URL_FIELDS)[number]; label: string; placeholder: string }>;
 
 function isValidHttpUrl(value: string): boolean {
   try {
@@ -163,6 +185,12 @@ export function SourceForm({ mode, sourceId }: Props) {
           name: source.name,
           slug: source.slug,
           websiteUrl: source.websiteUrl,
+          rssPageUrl: source.rssPageUrl ?? "",
+          facebookUrl: source.facebookUrl ?? "",
+          xUrl: source.xUrl ?? "",
+          instagramUrl: source.instagramUrl ?? "",
+          youtubeUrl: source.youtubeUrl ?? "",
+          description: source.description ?? "",
           logoUrl: source.logoUrl,
           countryIsoCode2: source.countryIsoCode2,
           isActive: source.isActive,
@@ -228,6 +256,21 @@ export function SourceForm({ mode, sourceId }: Props) {
 
     if (!values.countryIsoCode2) {
       errors.countryIsoCode2 = "Le pays est obligatoire.";
+    }
+
+    const profile = sourceProfileSchema.safeParse({
+      rssPageUrl: values.rssPageUrl,
+      facebookUrl: values.facebookUrl,
+      xUrl: values.xUrl,
+      instagramUrl: values.instagramUrl,
+      youtubeUrl: values.youtubeUrl,
+      description: values.description,
+    });
+    if (!profile.success) {
+      for (const issue of profile.error.issues) {
+        const key = issue.path[0] as SourceProfileField | undefined;
+        if (key && !errors[key]) errors[key] = issue.message;
+      }
     }
 
     setFieldErrors(errors);
@@ -315,6 +358,12 @@ export function SourceForm({ mode, sourceId }: Props) {
         name: values.name.trim(),
         slug: values.slug.trim(),
         websiteUrl: values.websiteUrl.trim(),
+        rssPageUrl: values.rssPageUrl?.trim() || null,
+        facebookUrl: values.facebookUrl?.trim() || null,
+        xUrl: values.xUrl?.trim() || null,
+        instagramUrl: values.instagramUrl?.trim() || null,
+        youtubeUrl: values.youtubeUrl?.trim() || null,
+        description: values.description?.trim() || null,
         countryIsoCode2: values.countryIsoCode2,
         isActive: values.isActive,
         logoUrl,
@@ -548,7 +597,7 @@ export function SourceForm({ mode, sourceId }: Props) {
             : "Modifier la source"}
         </h1>
         <p className="text-body-secondary mb-0">
-          Renseignez les informations générales et l’image de la source.
+          Renseignez les informations générales, la présentation et les liens de la source.
         </p>
       </header>
 
@@ -753,6 +802,64 @@ export function SourceForm({ mode, sourceId }: Props) {
             </div>
           </div>
         </div>
+
+        <section className="card border-0 shadow-sm mt-4" aria-labelledby="source-profile-heading">
+          <div className="card-body p-4">
+            <h2 className="h5 mb-2" id="source-profile-heading">
+              Présentation et réseaux sociaux
+            </h2>
+            <p className="text-body-secondary small mb-4">
+              Ces informations sont facultatives. Le lien vers la page RSS ne crée pas de flux RSS/XML.
+            </p>
+            <div className="row g-3">
+              {PROFILE_LINK_FIELDS.map(({ key, label, placeholder }) => (
+                <div className="col-12 col-lg-6" key={key}>
+                  <label className="form-label" htmlFor={"source-" + key}>
+                    {label}
+                  </label>
+                  <input
+                    type="url"
+                    id={"source-" + key}
+                    className={"form-control " + (fieldErrors[key] ? "is-invalid" : "")}
+                    placeholder={placeholder}
+                    maxLength={2048}
+                    value={values[key] ?? ""}
+                    aria-invalid={Boolean(fieldErrors[key])}
+                    aria-describedby={fieldErrors[key] ? "error-" + key : undefined}
+                    onChange={(event) => updateValue(key, event.target.value)}
+                  />
+                  {fieldErrors[key] ? (
+                    <div className="invalid-feedback" id={"error-" + key}>
+                      {fieldErrors[key]}
+                    </div>
+                  ) : null}
+                </div>
+              ))}
+              <div className="col-12">
+                <label className="form-label" htmlFor="source-description">
+                  Description
+                </label>
+                <textarea
+                  id="source-description"
+                  className={"form-control " + (fieldErrors.description ? "is-invalid" : "")}
+                  rows={5}
+                  value={values.description ?? ""}
+                  aria-invalid={Boolean(fieldErrors.description)}
+                  aria-describedby={fieldErrors.description ? "source-description-error" : "source-description-help"}
+                  onChange={(event) => updateValue("description", event.target.value)}
+                />
+                {fieldErrors.description ? (
+                  <div className="invalid-feedback" id="source-description-error">
+                    {fieldErrors.description}
+                  </div>
+                ) : null}
+                <div className="form-text" id="source-description-help">
+                  Texte brut, jusqu’à 5 000 caractères. {(values.description ?? "").length}/5 000.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <div className="d-flex flex-column flex-sm-row gap-2 mt-4">
           <button
