@@ -75,6 +75,7 @@ export class SourcesService {
       select: {
         id: true,
         name: true,
+        slug: true,
         websiteUrl: true,
         rssPageUrl: true,
         facebookUrl: true,
