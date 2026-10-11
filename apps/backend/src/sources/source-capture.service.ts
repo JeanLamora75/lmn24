@@ -13,6 +13,8 @@ import {
 
 import { prepareCookieFreeCapture } from "./source-capture-consent";
 import { SourceMediaService } from "./source-media.service";
+import { inspectSocialPage } from "./source-social-page";
+import { findSocialLinks, type SocialCandidate, type SocialLinks } from "./source-social-links";
 
 @Injectable()
 export class SourceCaptureService {
@@ -90,6 +92,101 @@ export class SourceCaptureService {
     } catch {
       throw new BadRequestException(
         "La page du site n’a pas pu être capturée.",
+      );
+    } finally {
+      await browser.close();
+    }
+  }
+
+  /**
+   * SCRUM-30: search only public source pages. Social network URLs are
+   * read from the DOM but NEVER followed. Nothing is saved to PostgreSQL.
+   */
+  async discoverSocialLinks(rawUrl: string): Promise<SocialLinks> {
+    const url = await this.assertPublicHttpUrl(rawUrl);
+    const browser = await this.launchBrowser();
+    const candidates: SocialCandidate[] = [];
+
+    try {
+      const context = await browser.newContext({
+        viewport: { width: 1365, height: 768 },
+        serviceWorkers: "block",
+        acceptDownloads: false,
+      });
+      // The SSRF rules are the same as for Capturer, checked per request.
+      // Images/fonts/media are unnecessary for social link discovery.
+      await context.route("**/*", async route => {
+        const request = route.request();
+        const target = request.url();
+        if (["image", "media", "font"].includes(request.resourceType())) {
+          await route.abort("blockedbyclient");
+          return;
+        }
+        if (/^(?:data:|blob:|about:)/.test(target)) {
+          await route.continue();
+          return;
+        }
+        try {
+          await this.assertPublicHttpUrl(target);
+          await route.continue();
+        } catch {
+          await route.abort("blockedbyclient");
+        }
+      });
+      const page = await context.newPage();
+      page.setDefaultTimeout(2500);
+
+      // Time-box the whole discovery, including at most two internal pages.
+      const timeout = new Promise<never>((_, reject) => {
+        const timer = setTimeout(() => reject(new Error("social-discovery-timeout")), 29_000);
+        void timer.unref?.();
+      });
+      const run = async (): Promise<void> => {
+        const response = await page.goto(url.toString(), {
+          waitUntil: "domcontentloaded", timeout: 15_000,
+        });
+        if (!response || response.status() >= 400) throw new Error("social-discovery-http-error");
+
+        const finalUrl = new URL(page.url());
+        await this.assertPublicHttpUrl(finalUrl.toString());
+        // Refuse off-site redirects (except www <-> apex).
+        const host = (value: URL) => value.hostname.toLowerCase().replace(/^www\./, "");
+        if (host(finalUrl) !== host(url)) throw new Error("social-discovery-off-site");
+
+        await page.waitForTimeout(350);
+        const home = await inspectSocialPage(page);
+        candidates.push(...home.candidates);
+        let remaining = 2;
+        for (const rawLink of home.internalPages) {
+          if (remaining <= 0) break;
+          const internalUrl = new URL(rawLink);
+          if (internalUrl.origin !== finalUrl.origin) continue;
+          remaining -= 1;
+          try {
+            await this.assertPublicHttpUrl(internalUrl.toString());
+            const subResponse = await page.goto(internalUrl.toString(), {
+              waitUntil: "domcontentloaded", timeout: 6_000,
+            });
+            if (!subResponse || subResponse.status() >= 400) continue;
+            const landed = new URL(page.url());
+            if (landed.origin !== finalUrl.origin) continue;
+            const detail = await inspectSocialPage(page);
+            candidates.push(...detail.candidates.map(candidate => ({
+              ...candidate,
+              origin: "secondary" as const,
+            })));
+          } catch {
+            // A broken contact/about page must not discard homepage links.
+          }
+        }
+      };
+      await Promise.race([run(), timeout]);
+      await context.close();
+      return findSocialLinks(candidates);
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      throw new BadRequestException(
+        "Impossible d’analyser le site pour ses réseaux sociaux. Réessayez plus tard.",
       );
     } finally {
       await browser.close();
