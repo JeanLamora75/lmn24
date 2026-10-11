@@ -81,8 +81,14 @@ model Source {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name       String   @db.VarChar(255)
   slug       String   @unique(map: "source_slug_unique") @db.VarChar(255)
-  websiteUrl String   @map("website_url") @db.Text
-  logoUrl    String?  @map("logo_url") @db.Text
+  websiteUrl   String   @map("website_url") @db.Text
+  logoUrl      String?  @map("logo_url") @db.Text
+  rssPageUrl   String?  @map("rss_page_url") @db.Text
+  facebookUrl  String?  @map("facebook_url") @db.Text
+  xUrl         String?  @map("x_url") @db.Text
+  instagramUrl String?  @map("instagram_url") @db.Text
+  youtubeUrl   String?  @map("youtube_url") @db.Text
+  description  String?  @db.Text
   countryId  String   @map("country_id") @db.Uuid
   isActive   Boolean  @default(true) @map("is_active")
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
