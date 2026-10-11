@@ -76,6 +76,12 @@ export class SourcesService {
         id: true,
         name: true,
         websiteUrl: true,
+        rssPageUrl: true,
+        facebookUrl: true,
+        xUrl: true,
+        instagramUrl: true,
+        youtubeUrl: true,
+        description: true,
         isActive: true,
         country: {
           select: {
