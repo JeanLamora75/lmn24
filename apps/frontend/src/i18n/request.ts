@@ -15,6 +15,7 @@ const messageLoaders: Record<
   pt: () => import("../../../../messages/pt.json"),
   it: () => import("../../../../messages/it.json"),
   ru: () => import("../../../../messages/ru.json"),
+  nl: () => import("../../../../messages/nl.json"),
 };
 
 export default getRequestConfig(async ({ requestLocale }) => {
