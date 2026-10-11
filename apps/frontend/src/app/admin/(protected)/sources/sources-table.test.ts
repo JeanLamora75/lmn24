@@ -15,7 +15,7 @@ describe("SCRUM-14 — colonnes et actions de la liste des journaux", () => {
     expect(table).toContain("{source.feedCount}");
     expect(table).toContain("{source.articleCount}");
     expect(table).toContain("sourceFeedsHref(source.id, source.name)");
-    expect(table).toContain("sourceArticlesHref(source.id)");
+    expect(table).toContain("sourceArticlesHref(source.slug)");
   });
 
   it("affiche la suppression sur desktop et mobile", () => {
