@@ -19,6 +19,12 @@ const ADMIN_FEATURES = [
       "Configurer les flux associés aux sources et leurs paramètres de collecte.",
   },
   {
+    href: "/admin/video-feeds",
+    icon: "youtube",
+    title: "Flux vidéo YouTube",
+    description: "Administrer les chaînes et leurs flux Atom XML.",
+  },
+  {
     href: "/admin/categories",
     icon: "tags",
     title: "Catégories",
