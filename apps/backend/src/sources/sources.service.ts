@@ -59,7 +59,7 @@ export class SourcesService {
         "1-5": [1, 5], "6-10": [6, 10], "11+": [11, null],
         "1-25": [1, 25], "26-100": [26, 100], "101+": [101, null],
       };
-      const [minimum, maximum] = bounds[range];
+      const [minimum, maximum] = bounds[range] ?? [1, null];
       const groups = relation === "feed"
         ? await this.database.prisma.feed.groupBy({
             by: ["sourceId"],
