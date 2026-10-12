@@ -9,6 +9,7 @@ import { FeedsModule } from "./feeds/feeds.module";
 import { HealthController } from "./health.controller";
 import { ParserModule } from "./parser/parser.module";
 import { SourcesModule } from "./sources/sources.module";
+import { StatisticsModule } from "./statistics/statistics.module";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SourcesModule } from "./sources/sources.module";
     FeedsModule,
     CategoriesModule,
     ParserModule,
+    StatisticsModule,
   ],
   controllers: [HealthController],
 })
