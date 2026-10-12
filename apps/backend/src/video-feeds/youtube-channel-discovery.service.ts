@@ -41,7 +41,7 @@ export function normalizeYouTubeLookup(raw: string): { channelId?: string; url?:
 export class YoutubeChannelDiscoveryService {
   constructor(private readonly database: DatabaseService) {}
 
-  async resolve(input: { sourceId?: string; query?: string }): Promise<{ channelId: string; feedUrl: string }> {
+  async resolve(input: { sourceId?: string | undefined; query?: string | undefined }): Promise<{ channelId: string; feedUrl: string }> {
     let candidate = input.query?.trim();
     if (!candidate && input.sourceId) {
       const source = await this.database.prisma.source.findUnique({ where: { id: input.sourceId }, select: { youtubeUrl: true } });
