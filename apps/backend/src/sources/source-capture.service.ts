@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpException,
   Injectable,
   ServiceUnavailableException,
 } from "@nestjs/common";
@@ -12,6 +13,7 @@ import {
 } from "playwright";
 
 import { prepareCookieFreeCapture } from "./source-capture-consent";
+import { assertSiteAccessible } from "./source-access-diagnostics";
 import { SourceMediaService } from "./source-media.service";
 import { inspectSocialPage } from "./source-social-page";
 import { findSocialLinks, type SocialCandidate, type SocialLinks } from "./source-social-links";
@@ -66,10 +68,11 @@ export class SourceCaptureService {
 
       const page = await context.newPage();
 
-      await page.goto(url.toString(), {
+      const response = await page.goto(url.toString(), {
         waitUntil: "domcontentloaded",
         timeout: 20_000,
       });
+      await assertSiteAccessible(page, response, "capture");
 
       await page
         .waitForLoadState("networkidle", { timeout: 5_000 })
@@ -89,9 +92,10 @@ export class SourceCaptureService {
       await context.close();
 
       return this.media.storeImage(buffer, "image/png");
-    } catch {
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new BadRequestException(
-        "La page du site n’a pas pu être capturée.",
+        "La page du site n’a pas pu être capturée. Vérifiez l’URL ou utilisez la pièce jointe depuis Chrome.",
       );
     } finally {
       await browser.close();
@@ -114,11 +118,12 @@ export class SourceCaptureService {
         acceptDownloads: false,
       });
       // The SSRF rules are the same as for Capturer, checked per request.
-      // Images/fonts/media are unnecessary for social link discovery.
+      // Avoid video downloads, but allow CSS, images and fonts used by legitimate site layouts.
+      const safetyCache = new Map<string, boolean>();
       await context.route("**/*", async route => {
         const request = route.request();
         const target = request.url();
-        if (["image", "media", "font"].includes(request.resourceType())) {
+        if (request.resourceType() === "media") {
           await route.abort("blockedbyclient");
           return;
         }
@@ -127,7 +132,7 @@ export class SourceCaptureService {
           return;
         }
         try {
-          await this.assertPublicHttpUrl(target);
+          await this.assertPublicHttpUrl(target, safetyCache);
           await route.continue();
         } catch {
           await route.abort("blockedbyclient");
@@ -145,7 +150,7 @@ export class SourceCaptureService {
         const response = await page.goto(url.toString(), {
           waitUntil: "domcontentloaded", timeout: 15_000,
         });
-        if (!response || response.status() >= 400) throw new Error("social-discovery-http-error");
+        await assertSiteAccessible(page, response, "social");
 
         const finalUrl = new URL(page.url());
         await this.assertPublicHttpUrl(finalUrl.toString());
@@ -184,9 +189,9 @@ export class SourceCaptureService {
       await context.close();
       return findSocialLinks(candidates);
     } catch (error) {
-      if (error instanceof BadRequestException) throw error;
+      if (error instanceof HttpException) throw error;
       throw new BadRequestException(
-        "Impossible d’analyser le site pour ses réseaux sociaux. Réessayez plus tard.",
+        "Impossible d’analyser le site pour ses réseaux sociaux. Si le site bloque les robots, ouvrez-le dans Chrome et renseignez les liens manuellement.",
       );
     } finally {
       await browser.close();
@@ -194,34 +199,26 @@ export class SourceCaptureService {
   }
 
   private async launchBrowser(): Promise<Browser> {
-    const baseOptions = {
-      headless: true,
-      ...(this.chromiumExecutablePath
-        ? { executablePath: this.chromiumExecutablePath }
-        : {}),
-    };
-
-    try {
-      return await chromium.launch(baseOptions);
-    } catch (firstError) {
-      if (this.chromiumExecutablePath) {
-        throw new ServiceUnavailableException(
-          "Le navigateur de capture n’est pas disponible.",
-        );
-      }
-
+    if (this.chromiumExecutablePath) {
       try {
         return await chromium.launch({
           headless: true,
-          channel: "chrome",
+          executablePath: this.chromiumExecutablePath,
         });
       } catch {
-        throw new ServiceUnavailableException(
-          "Le navigateur de capture n’est pas disponible.",
-          {
-            cause: firstError,
-          },
-        );
+        throw new ServiceUnavailableException("Le navigateur de capture n’est pas disponible.");
+      }
+    }
+
+    // Prefer installed stable Chrome, matching the supported browser engine.
+    // The automation still runs in an isolated context (no personal cookies).
+    try {
+      return await chromium.launch({ headless: true, channel: "chrome" });
+    } catch {
+      try {
+        return await chromium.launch({ headless: true });
+      } catch {
+        throw new ServiceUnavailableException("Chrome/Chromium n’est pas disponible pour la capture.");
       }
     }
   }

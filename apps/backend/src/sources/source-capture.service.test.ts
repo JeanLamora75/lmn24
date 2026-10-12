@@ -16,7 +16,8 @@ vi.mock("./source-capture-consent", () => ({
 describe("SCRUM-16 — ordre de la capture après consentement", () => {
   const steps: string[] = [];
   const page = {
-    goto: vi.fn(async () => { steps.push("navigation"); }),
+    goto: vi.fn(async () => { steps.push("navigation"); return { status: () => 200 }; }),
+    evaluate: vi.fn(async () => ({ title: "Journal", body: "Actualités locales" })),
     waitForLoadState: vi.fn(async () => { steps.push("page stable"); }),
     waitForTimeout: vi.fn(async () => { steps.push("post-consent"); }),
     screenshot: vi.fn(async () => {
@@ -66,6 +67,7 @@ describe("SCRUM-16 — ordre de la capture après consentement", () => {
       "store",
     ]);
     expect(context.route).toHaveBeenCalledOnce();
+    expect(chromium.launch).toHaveBeenCalledWith({ headless: true, channel: "chrome" });
     expect(media.storeImage).toHaveBeenCalledWith(
       Buffer.from("png-test"), "image/png",
     );
