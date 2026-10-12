@@ -109,7 +109,8 @@
 .paginationNav {
   width: 100%;
   min-width: 0;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 .paginationList {
   width: 100%;
@@ -119,7 +120,7 @@
 }
 .paginationList > li {
   flex: 1 1 0;
-  min-width: 0;
+  min-width: 2.4rem;
 }
 .paginationList > li > button,
 .paginationList > li > span {
