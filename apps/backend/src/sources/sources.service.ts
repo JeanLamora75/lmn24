@@ -15,6 +15,9 @@ export type ListSourcesParams = {
   search?: string | undefined;
   countryId?: string | undefined;
   status: SourceStatusFilter;
+  feedRange?: "all" | "0" | "1-5" | "6-10" | "11+";
+  articleRange?: "all" | "0" | "1-25" | "26-100" | "101+";
+  missingSocial?: "all" | "x" | "facebook" | "instagram" | "youtube";
   page: number;
   pageSize: number;
 };
@@ -46,6 +49,46 @@ export class SourcesService {
   async list(params: ListSourcesParams) {
     const search = params.search?.trim();
 
+    // Aggregate over the whole dataset so filtering happens before pagination.
+    const rangeIds = async (
+      relation: "feed" | "article",
+      range: string | undefined,
+    ): Promise<string[] | null> => {
+      if (!range || range === "all" || range === "0") return null;
+      const bounds: Record<string, [number, number | null]> = {
+        "1-5": [1, 5], "6-10": [6, 10], "11+": [11, null],
+        "1-25": [1, 25], "26-100": [26, 100], "101+": [101, null],
+      };
+      const [minimum, maximum] = bounds[range];
+      const groups = relation === "feed"
+        ? await this.database.prisma.feed.groupBy({
+            by: ["sourceId"],
+            _count: { _all: true },
+            having: { sourceId: { _count: { gte: minimum, ...(maximum === null ? {} : { lte: maximum }) } } },
+          })
+        : await this.database.prisma.article.groupBy({
+            by: ["sourceId"],
+            _count: { _all: true },
+            having: { sourceId: { _count: { gte: minimum, ...(maximum === null ? {} : { lte: maximum }) } } },
+          });
+      return groups.map((group) => group.sourceId);
+    };
+
+    // SQL BTRIM ensures whitespace-only legacy URLs are treated as missing.
+    const missingSocialIds = async () => {
+      switch (params.missingSocial) {
+        case "x": return this.database.prisma.$queryRaw<Array<{ id: string }>>`SELECT id FROM source WHERE NULLIF(BTRIM(x_url), '') IS NULL`;
+        case "facebook": return this.database.prisma.$queryRaw<Array<{ id: string }>>`SELECT id FROM source WHERE NULLIF(BTRIM(facebook_url), '') IS NULL`;
+        case "instagram": return this.database.prisma.$queryRaw<Array<{ id: string }>>`SELECT id FROM source WHERE NULLIF(BTRIM(instagram_url), '') IS NULL`;
+        case "youtube": return this.database.prisma.$queryRaw<Array<{ id: string }>>`SELECT id FROM source WHERE NULLIF(BTRIM(youtube_url), '') IS NULL`;
+        default: return null;
+      }
+    };
+    const [feedIds, articleIds, socialIds] = await Promise.all([
+      rangeIds("feed", params.feedRange),
+      rangeIds("article", params.articleRange),
+      missingSocialIds(),
+    ]);
     const where = {
       ...(search
         ? {
@@ -56,6 +99,11 @@ export class SourcesService {
           }
         : {}),
       ...(params.countryId ? { countryId: params.countryId } : {}),
+      AND: [
+        ...(params.feedRange === "0" ? [{ feeds: { none: {} } }] : feedIds !== null ? [{ id: { in: feedIds } }] : []),
+        ...(params.articleRange === "0" ? [{ articles: { none: {} } }] : articleIds !== null ? [{ id: { in: articleIds } }] : []),
+        ...(socialIds !== null ? [{ id: { in: socialIds.map((item) => item.id) } }] : []),
+      ],
       ...(params.status === "active"
         ? { isActive: true }
         : params.status === "inactive"
