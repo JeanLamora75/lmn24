@@ -78,6 +78,7 @@ export function StatisticsDashboard() {
     if (categoryId) params.set("categoryId", categoryId);
     if (language) params.set("language", language);
     if (sourceId) params.set("sourceId", sourceId);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     setError("");
     fetch("/api/admin/statistics?" + params.toString(), { cache: "no-store", signal: abort.signal })
@@ -122,7 +123,7 @@ export function StatisticsDashboard() {
     {error ? <div className="alert alert-danger" role="alert">{error} <button type="button" className="btn btn-sm btn-outline-danger ms-2" onClick={refresh}>Réessayer</button></div> : null}
     {loading ? <div className="alert alert-info" role="status">Actualisation des statistiques…</div> : null}
     {!data ? null : <>
-      <h2 className="h4 mb-3">Vue d'ensemble</h2>
+      <h2 className="h4 mb-3">Vue d’ensemble</h2>
       <div className="row g-3 mb-4">
         <Kpi name="Sources" value={number(o!.sources)} sub={number(o!.activeSources) + " actives"} href="/admin/sources" />
         <Kpi name="Flux RSS/XML" value={number(o!.feeds)} sub={number(o!.activeFeeds) + " actifs"} href="/admin/feeds" />
