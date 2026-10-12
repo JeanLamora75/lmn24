@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-const sources = readFileSync(new URL("../../../../app/admin/(protected)/sources/SourcesTable.tsx", import.meta.url), "utf8");
+const sources = readFileSync(new URL("../../app/admin/(protected)/sources/SourcesTable.tsx", import.meta.url), "utf8");
 const form = readFileSync(new URL("./VideoFeedsAdmin.tsx", import.meta.url), "utf8");
 const creation = readFileSync(new URL("../../app/admin/(protected)/video-feeds/new/page.tsx", import.meta.url), "utf8");
 describe("SCRUM-39 YouTube creation from a source", () => {
