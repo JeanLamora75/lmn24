@@ -4,7 +4,7 @@
 
 Ce document décrit le modèle de données fonctionnel du projet **LMN24**.
 
-Le site agrège des flux XML/RSS provenant de journaux du monde entier, les parse automatiquement, stocke les articles récupérés et les présente par langue et par catégorie.
+Le site agrège des flux XML/RSS provenant de journaux du monde entier, les parse automatiquement, stocke les articles récupérés et les présente par langue et par catégorie. **Extension cible (non encore migrée)** : collecte de métadonnées de vidéos YouTube via Atom XML, sans hébergement des fichiers vidéo.
 
 ---
 
@@ -141,6 +141,7 @@ Représente un journal ou média fournissant des actualités via un ou plusieurs
 
 - Une `Source` appartient à un `Country`.
 - Une `Source` peut posséder plusieurs `Feed`.
+- **Extension vidéo cible :** une `Source` peut posséder plusieurs `FeedVideo` et plusieurs `Video`.
 
 ### Contraintes
 
@@ -363,15 +364,22 @@ Country
   └── Source
         ├── Feed
         │    └── FeedRun
-        └── Article
+        ├── Article
+        ├── FeedVideo
+        │    └── FeedVideoRun
+        └── Video (avec lien optionnel vers FeedVideo)
 
 Language
   ├── Feed
-  └── Article
+  ├── Article
+  ├── FeedVideo
+  └── Video
 
 Category
   ├── Feed
-  └── Article
+  ├── Article
+  ├── FeedVideo
+  └── Video
 
 Setting
   ├── GLOBAL
@@ -395,5 +403,124 @@ User
 - La page d’accueil présente uniquement les articles de la langue sélectionnée, triés par date de publication (`publishedAt DESC`), et masque les catégories sans articles éligibles.
 - Les traductions de l’interface, des pays, des catégories et des langues sont stockées dans des fichiers multilingues séparés sous `/messages`.
 - Les données de dernier état du parseur sont stockées sur `Feed` et l’historique des exécutions est conservé dans `FeedRun`.
+- **Extension vidéo cible :** `FeedVideo` conserve le dernier état de collecte, `FeedVideoRun` son historique et `Video` les métadonnées publiées. Le flux d'origine est tracé, sans confondre flux et contenu.
 - Les mots de passe sont stockés uniquement sous forme de hash.
 - Les sessions d’administration sont persistées dans PostgreSQL. Le navigateur conserve uniquement le jeton de session et la base stocke son hash.
+
+
+---
+
+# 13. Extension vidéo YouTube — modèle cible (à implémenter)
+
+> **Statut : conception validée, documentation uniquement.** Les entités ci-dessous ne sont pas encore présentes dans `packages/database/schema.prisma` ni dans PostgreSQL. Leur création nécessite une future User Story, une migration Prisma/SQL et des tests. Le périmètre initial est **YouTube via Atom XML**, sans recours obligatoire à YouTube Data API ni hébergement des vidéos.
+
+## 13.1. FeedVideo (table PostgreSQL `feed_video`)
+
+Représente un flux de publications vidéo associé à une source. Une même `Source` peut gérer plusieurs chaînes/flux. La structure suit celle de `Feed`, tout en conservant une identité propre pour la collecte vidéo.
+
+| Champ Prisma | Type | Obligatoire | Description |
+|---|---|---:|---|
+| `id` | UUID | Oui | Identifiant unique |
+| `sourceId` | UUID | Oui | Référence vers `Source.id` |
+| `categoryId` | UUID | Oui | Catégorie principale attribuée aux vidéos de ce flux |
+| `languageIsoCode2` | String(2) | Oui | Langue principale ISO 639-1, référence à `Language.isoCode2` |
+| `platform` | Enum | Oui | Plateforme vidéo ; valeur initiale `YOUTUBE` |
+| `channelId` | String | Oui | Identifiant technique de chaîne YouTube (forme `UC...`), non son `@handle` |
+| `feedUrl` | Text | Oui | URL Atom XML, ex. `https://www.youtube.com/feeds/videos.xml?channel_id=UC...` |
+| `isActive` | Boolean | Oui | Collecte autorisée, valeur initiale `true` |
+| `lastFetchedAt` | DateTime | Non | Dernière tentative de récupération |
+| `lastFetchDurationMs` | Integer | Non | Durée de la dernière tentative (ms) |
+| `lastFetchStatus` | String(32) | Non | `SUCCESS`, `ERROR`, etc. |
+| `lastError` | Text | Non | Dernière erreur technique |
+| `createdAt` | DateTime | Oui | Création, valeur initiale courante |
+| `updatedAt` | DateTime | Oui | Dernière modification |
+
+**Relations :** `FeedVideo → Source`, `FeedVideo → Category`, `FeedVideo → Language`, `FeedVideo → FeedVideoRun[]` et `FeedVideo → Video[]` (relation nullable côté vidéo).
+
+**Contraintes :** `feedUrl` unique ; couple `(platform, channelId)` unique pour éviter d'importer la même chaîne plusieurs fois ; URL HTTPS YouTube autorisée et identifiant de chaîne cohérent avec l'URL ; durée positive ou nulle. Index sur `sourceId`, `categoryId`, `languageIsoCode2`, `isActive`, `lastFetchedAt`. Les clés étrangères de référentiels sont protégées contre la suppression accidentelle (`Restrict`). La désactivation d'un flux arrête seulement ses futures collectes, sans effacer les vidéos existantes.
+
+**Convention :** la plateforme est modélisée comme un enum extensible ultérieurement ; ajouter une plateforme implique de définir un nouveau parseur et des règles de validation, pas simplement de changer `platform`.
+
+## 13.2. Video (table PostgreSQL `video`)
+
+Représente **les métadonnées d'une vidéo**, et non un fichier vidéo hébergé par LMN24. La vidéo appartient directement à une source et à une seule catégorie et langue pour le MVP ; elle conserve aussi, si disponible, le flux ayant permis sa découverte.
+
+| Champ Prisma | Type | Obligatoire | Description |
+|---|---|---:|---|
+| `id` | UUID | Oui | Identifiant technique LMN24 |
+| `sourceId` | UUID | Oui | Référence directe `Source.id` (même principe que `Article.sourceId`) |
+| `feedVideoId` | UUID | Non | Flux à l'origine de la découverte, référence `FeedVideo.id` |
+| `categoryId` | UUID | Oui | Catégorie unique pour le MVP |
+| `languageIsoCode2` | String(2) | Oui | Langue de la vidéo |
+| `platform` | Enum | Oui | `YOUTUBE` initialement |
+| `platformVideoId` | String | Oui | Identifiant de vidéo renvoyé par la plateforme (`yt:videoId`) |
+| `title` | Text | Oui | Titre fourni par le flux |
+| `description` | Text | Non | Description provenant de la publication |
+| `thumbnailUrl` | Text | Non | URL de vignette issue du flux, si disponible |
+| `videoUrl` | Text | Oui | URL canonique publique de lecture YouTube |
+| `publishedAt` | DateTime | Oui | Date/heure de publication (`published`) |
+| `updatedOnPlatformAt` | DateTime | Non | Date de mise à jour signalée par le flux (`updated`) |
+| `isPublished` | Boolean | Oui | Visibilité sur LMN24, valeur initiale `true` |
+| `createdAt` | DateTime | Oui | Date de première importation dans LMN24 |
+| `updatedAt` | DateTime | Oui | Date de dernière modification en base |
+
+**Relations :** `Video → Source`, `Video → Category`, `Video → Language`, `Video → FeedVideo?`.
+
+**Contraintes :** couple `(platform, platformVideoId)` unique afin de dédupliquer les vidéos indépendamment du flux d'origine ; index `sourceId`, `feedVideoId`, `categoryId`, `languageIsoCode2`, `publishedAt DESC` et `isPublished`. Une vidéo déjà présente ne doit pas être recréée lors d'une collecte ; ses métadonnées modifiées peuvent être mises à jour. Les URL doivent être HTTP(S) valides, et les liens de lecture doivent respecter les domaines de la plateforme. La suppression d'un flux référencé ne doit pas supprimer les vidéos : `feedVideoId` peut être mis à `NULL` si le flux est supprimé. La suppression d'une source/catégorie/langue référencée reste restreinte.
+
+**Visibilité :** `FeedVideo.isActive` pilote la **collecte** ; `Video.isPublished` pilote la **publication**. Les vidéos restent en base si le flux est désactivé, et peuvent être masquées indépendamment dans l'administration.
+
+## 13.3. FeedVideoRun (table PostgreSQL `feed_video_run`)
+
+Historise chaque tentative du parser vidéo, indépendamment de `FeedRun` (articles).
+
+| Champ Prisma | Type | Obligatoire | Description |
+|---|---|---:|---|
+| `id` | UUID | Oui | Identifiant unique |
+| `feedVideoId` | UUID | Oui | Référence vers `FeedVideo.id` |
+| `startedAt` | DateTime | Oui | Début d'exécution |
+| `finishedAt` | DateTime | Non | Fin d'exécution (nulle si `RUNNING`) |
+| `durationMs` | Integer | Non | Durée en millisecondes |
+| `status` | String(32) | Oui | `RUNNING`, `SUCCESS`, `ERROR`, etc. |
+| `itemsFound` | Integer | Oui | Entrées vidéo découvertes, défaut 0 |
+| `videosImported` | Integer | Oui | Nouvelles vidéos enregistrées, défaut 0 |
+| `videosSkipped` | Integer | Oui | Entrées ignorées/déjà connues, défaut 0 |
+| `errorMessage` | Text | Non | Message d'échec, le cas échéant |
+| `createdAt` | DateTime | Oui | Création de l'enregistrement |
+
+**Relations :** `FeedVideoRun → FeedVideo` (obligatoire).
+
+**Contraintes :** compteurs et durées non négatifs ; index `feedVideoId`, `startedAt DESC`, `status` et `(feedVideoId, startedAt DESC)`. L'historique permet de diagnostiquer les erreurs sans écraser le détail de l'exécution précédente.
+
+## 13.4. Règles d'importation et limites de YouTube
+
+1. Le parser vidéo récupère le flux Atom XML depuis `FeedVideo.feedUrl`, en respectant les délais, les erreurs HTTP/XML et les limites réseau.
+2. Chaque entrée est identifiée par `yt:videoId` et dédupliquée via `(platform, platformVideoId)` ; l'appartenance à la source est dérivée du flux configuré, jamais d'un paramètre non fiable du XML.
+3. `Category` et `Language` sont initialement héritées de `FeedVideo` ; un reclassement éditorial ultérieur doit pouvoir préserver la décision de l'administrateur.
+4. Un flux YouTube n'expose qu'une fenêtre récente de publications : la récupération est **incrémentale**, non une reconstitution exhaustive de la chaîne. Prévoir un parser automatique périodique et un lancement manuel.
+5. Les Shorts, directs et autres formats présents dans le flux sont éligibles par défaut ; aucune classification fiable n'est supposée sans métadonnées explicites.
+6. La récupération ne stocke ni ne télécharge les fichiers vidéo. Le site public affiche une miniature et ouvre/embarque uniquement le lecteur officiel, en respectant les règles d'intégration et la confidentialité.
+7. La valeur de `Source.youtubeUrl` reste un **lien social informatif** ; elle ne crée pas automatiquement de `FeedVideo`. Une fonction d'assistance pourra découvrir `channelId` puis proposer le flux à confirmer.
+8. Le journal d'exécution renseigne toujours `FeedVideoRun` ; les champs `lastFetch*` de `FeedVideo` constituent seulement la vue du dernier état.
+
+## 13.5. Impacts et séquencement de mise en œuvre
+
+1. Établir la migration PostgreSQL / Prisma des trois tables, de l'enum et de leurs relations aux référentiels existants, avec vérification des index et contraintes SQL ; **aucune migration appliquée par cette modification documentaire**.
+2. Développer les endpoints NestJS d'administration et les validations de flux vidéo.
+3. Réaliser les écrans d'administration des flux vidéo, puis le parser Atom YouTube et l'historique des runs.
+4. Ajouter l'administration des vidéos, leur dépublication et les interfaces publiques dédiées (rubrique Vidéos, onglets Source/Catégorie) avec pagination.
+5. Étendre la page Statistiques, la supervision et les tests de fiabilité.
+
+## 13.6. Vue des relations cible
+
+```text
+Country 1 ── N Source
+               ├── N Feed ── N FeedRun       (articles, existant)
+               ├── N Article               (existant)
+               ├── N FeedVideo ── N FeedVideoRun
+               └── N Video
+                        └── 0..1 FeedVideo (flux d'origine, nullable)
+
+Category 1 ── N FeedVideo ; Category 1 ── N Video
+Language 1 ── N FeedVideo ; Language 1 ── N Video
+```
