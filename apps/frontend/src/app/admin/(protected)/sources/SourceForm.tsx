@@ -121,6 +121,7 @@ export function SourceForm({ mode, sourceId }: Props) {
   const [saving, setSaving] = useState(false);
   const [capturing, setCapturing] = useState(false);
   const [discoveringSocial, setDiscoveringSocial] = useState(false);
+  const [blockedAction, setBlockedAction] = useState<"capture" | "social" | null>(null);
   const [socialNotice, setSocialNotice] = useState("");
   const [socialConflicts, setSocialConflicts] = useState<Partial<SocialLinkValues>>({});
   const [loadingDeleteImpact, setLoadingDeleteImpact] = useState(false);
@@ -435,6 +436,7 @@ export function SourceForm({ mode, sourceId }: Props) {
     }
 
     setCapturing(true);
+    setBlockedAction(null);
     setPageError("");
 
     try {
@@ -452,6 +454,7 @@ export function SourceForm({ mode, sourceId }: Props) {
       }
 
       if (!response.ok) {
+        if (response.status === 422) setBlockedAction("capture");
         if (response.status === 503) {
           throw new Error(
             "Le service de capture n’est pas disponible. Redémarrez le backend LMN24 puis réessayez.",
@@ -497,6 +500,7 @@ export function SourceForm({ mode, sourceId }: Props) {
     }
 
     setDiscoveringSocial(true);
+    setBlockedAction(null);
     setSocialNotice("");
     setSocialConflicts({});
     setPageError("");
@@ -511,6 +515,7 @@ export function SourceForm({ mode, sourceId }: Props) {
         return;
       }
       if (!response.ok) {
+        if (response.status === 422) setBlockedAction("social");
         throw new Error(await readErrorMessage(
           response, "Impossible de rechercher les réseaux sociaux sur ce site.",
         ));
@@ -906,6 +911,18 @@ export function SourceForm({ mode, sourceId }: Props) {
                     </>
                   ) : "Réseaux sociaux"}
                 </button>
+                {blockedAction ? (
+                  <div className="alert alert-warning small mt-3 mb-0" role="status">
+                    Ce site limite les accès automatisés, même s’il s’ouvre normalement
+                    dans Chrome. Ouvrez-le dans votre navigateur :
+                    {isValidHttpUrl(values.websiteUrl) ? (
+                      <> <a href={values.websiteUrl} target="_blank" rel="noopener noreferrer">Consulter le site</a>.</>
+                    ) : null}
+                    {blockedAction === "capture"
+                      ? " Pour son image, réalisez une capture d’écran dans Chrome puis utilisez « Pièce jointe » ci-dessus."
+                      : " Pour les réseaux sociaux, copiez les liens depuis le site et saisissez-les dans les champs ci-dessous."}
+                  </div>
+                ) : null}
                 {socialNotice ? (
                   <p className="small mt-3 mb-0" role="status" aria-live="polite">
                     {socialNotice}
