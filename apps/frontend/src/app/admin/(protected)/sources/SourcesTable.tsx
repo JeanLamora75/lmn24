@@ -692,6 +692,22 @@ export function SourcesTable() {
                         </Link>
 
                         <Link
+                          href={"/admin/video-feeds/new?sourceId=" + encodeURIComponent(source.id)}
+                          className="btn btn-sm btn-outline-danger"
+                          title={"Ajouter un flux vidéo YouTube à " + source.name}
+                          aria-label={"Ajouter un flux vidéo YouTube à " + source.name}
+                        >
+                          <Image
+                            src="/bootstrap-icons/youtube.svg"
+                            width={18}
+                            height={18}
+                            alt=""
+                            aria-hidden="true"
+                            unoptimized
+                          />
+                        </Link>
+
+                        <Link
                           href={
                             "/admin/sources/" +
                             encodeURIComponent(source.id) +
@@ -769,6 +785,14 @@ export function SourcesTable() {
                             aria-label={"Ajouter un flux RSS/XML à " + source.name}
                           >
                             Ajouter un flux RSS/XML
+                          </Link>
+
+                          <Link
+                            href={"/admin/video-feeds/new?sourceId=" + encodeURIComponent(source.id)}
+                            className="dropdown-item"
+                            aria-label={"Ajouter un flux vidéo YouTube à " + source.name}
+                          >
+                            Ajouter un flux vidéo YouTube
                           </Link>
 
                           <Link
