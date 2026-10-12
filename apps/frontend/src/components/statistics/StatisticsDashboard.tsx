@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { CountryFlag } from "@/components/home/CountryFlag";
+import { countryName } from "@/components/home/country-flag";
 
 type Item = { name: string; count: number; id?: string };
 type Dashboard = {
@@ -25,15 +27,35 @@ type Dashboard = {
     languages: { isoCode2: string }[]; sources: { id: string; name: string }[] };
 };
 
+const languageNames = typeof Intl !== "undefined" ? new Intl.DisplayNames(["fr"], { type: "language" }) : null;
+const languageFlags: Record<string, string> = {
+  fr: "FR", en: "GB", de: "DE", es: "ES", it: "IT", pt: "PT", nl: "NL",
+  ar: "SA", zh: "CN", ja: "JP", ko: "KR", ru: "RU", uk: "UA", pl: "PL",
+  tr: "TR", sv: "SE", da: "DK", no: "NO", fi: "FI", el: "GR", cs: "CZ",
+  ro: "RO", hu: "HU", hi: "IN", he: "IL",
+};
+function languageName(code: string): string {
+  try { return languageNames?.of(code.trim().toLowerCase()) ?? code.toUpperCase(); }
+  catch { return code.toUpperCase(); }
+}
+function FlaggedName({ code, kind }: { code: string; kind: "country" | "language" }) {
+  const iso = code.trim().toUpperCase();
+  const flagCode = kind === "country" ? iso : languageFlags[iso.toLowerCase()];
+  const name = kind === "country" ? countryName(iso, "fr") : languageName(iso);
+  return <span className="d-inline-flex align-items-center gap-2" style={{ minWidth: 0 }}>
+    {flagCode ? <CountryFlag countryIsoCode2={flagCode} locale="fr" /> : null}
+    <span>{name}</span>
+  </span>;
+}
 const number = (value: number) => new Intl.NumberFormat("fr-FR").format(value);
 const percentage = (value: number | null) => value === null ? "N/A" : value + " %";
 
-function Histogram({ items, maxItems = 10 }: { items: Item[]; maxItems?: number }) {
+function Histogram({ items, maxItems = 10, kind }: { items: Item[]; maxItems?: number; kind?: "country" | "language" }) {
   const top = items.slice(0, maxItems);
   const maximum = Math.max(1, ...top.map((x) => x.count));
   if (!top.length) return <p className="text-body-secondary">Aucune donnée sur cette période.</p>;
-  return <div className="d-grid gap-2">{top.map((item) => <div key={item.name}>
-    <div className="d-flex justify-content-between small gap-2"><span className="text-truncate">{item.name}</span><strong>{number(item.count)}</strong></div>
+  return <div className="d-grid gap-2" style={{ minWidth: 0 }}>{top.map((item) => <div key={item.name} style={{ minWidth: 0 }}>
+    <div className="d-flex justify-content-between align-items-start small gap-2" style={{ minWidth: 0 }}><span className="text-break" style={{ minWidth: 0, overflowWrap: "anywhere", flex: "1 1 0" }}>{kind ? <FlaggedName code={item.name} kind={kind} /> : item.name}</span><strong className="flex-shrink-0">{number(item.count)}</strong></div>
     <div className="progress" style={{ height: 9 }} role="progressbar" aria-label={item.name}
       aria-valuemin={0} aria-valuemax={maximum} aria-valuenow={item.count}>
       <div className="progress-bar" style={{ width: (item.count / maximum * 100) + "%" }} />
@@ -42,7 +64,7 @@ function Histogram({ items, maxItems = 10 }: { items: Item[]; maxItems?: number 
 }
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
-  return <section className="card shadow-sm h-100"><div className="card-body p-4">
+  return <section className="card shadow-sm h-100" style={{ minWidth: 0 }}><div className="card-body p-4" style={{ minWidth: 0, overflowWrap: "anywhere" }}>
     <h2 className="h5 mb-4">{title}</h2>{children}
   </div></section>;
 }
@@ -112,11 +134,11 @@ export function StatisticsDashboard() {
       {period === "custom" ? <><div className="col-6 col-md-2"><label htmlFor="stats-from" className="form-label">Du</label><input id="stats-from" type="date" className="form-control" value={from} onChange={(e) => setFrom(e.target.value)} /></div>
         <div className="col-6 col-md-2"><label htmlFor="stats-to" className="form-label">Au</label><input id="stats-to" type="date" className="form-control" value={to} onChange={(e) => setTo(e.target.value)} /></div></> : null}
       <div className="col-6 col-md-2"><label htmlFor="stats-country" className="form-label">Pays</label><select id="stats-country" className="form-select" value={countryId} onChange={(e) => setCountryId(e.target.value)}>
-        <option value="">Tous</option>{filters?.countries.map((x) => <option key={x.id} value={x.id}>{x.isoCode2.trim()}</option>)}</select></div>
+        <option value="">Tous</option>{[...(filters?.countries ?? [])].sort((a, b) => countryName(a.isoCode2, "fr").localeCompare(countryName(b.isoCode2, "fr"), "fr", { sensitivity: "base" })).map((x) => <option key={x.id} value={x.id}>{countryName(x.isoCode2, "fr")} ({x.isoCode2.trim().toUpperCase()})</option>)}</select></div>
       <div className="col-6 col-md-2"><label htmlFor="stats-category" className="form-label">Catégorie</label><select id="stats-category" className="form-select" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
         <option value="">Toutes</option>{filters?.categories.map((x) => <option key={x.id} value={x.id}>{x.slug}</option>)}</select></div>
       <div className="col-6 col-md-2"><label htmlFor="stats-language" className="form-label">Langue</label><select id="stats-language" className="form-select" value={language} onChange={(e) => setLanguage(e.target.value)}>
-        <option value="">Toutes</option>{filters?.languages.map((x) => <option key={x.isoCode2} value={x.isoCode2.trim()}>{x.isoCode2.trim()}</option>)}</select></div>
+        <option value="">Toutes</option>{[...(filters?.languages ?? [])].sort((a, b) => languageName(a.isoCode2).localeCompare(languageName(b.isoCode2), "fr")).map((x) => <option key={x.isoCode2} value={x.isoCode2.trim()}>{languageFlags[x.isoCode2.trim().toLowerCase()] ? String.fromCodePoint(...[...languageFlags[x.isoCode2.trim().toLowerCase()]].map((letter) => letter.charCodeAt(0) + 127397)) + " " : ""}{languageName(x.isoCode2)} ({x.isoCode2.trim().toUpperCase()})</option>)}</select></div>
       <div className="col-6 col-md-2"><label htmlFor="stats-source" className="form-label">Source</label><select id="stats-source" className="form-select" value={sourceId} onChange={(e) => setSourceId(e.target.value)}>
         <option value="">Toutes</option>{filters?.sources.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</select></div>
     </div></div></div>
@@ -142,13 +164,13 @@ export function StatisticsDashboard() {
       </div>
       <h2 className="h4 mb-3">Couverture géographique et thématique</h2>
       <div className="row g-3 mb-4">
-        <div className="col-12 col-lg-4"><Panel title="Articles par pays"><Histogram items={data.distribution.byCountry}/></Panel></div>
+        <div className="col-12 col-lg-4"><Panel title="Articles par pays"><Histogram kind="country" items={data.distribution.byCountry}/></Panel></div>
         <div className="col-12 col-lg-4"><Panel title="Articles par catégorie"><Histogram items={data.distribution.byCategory}/></Panel></div>
-        <div className="col-12 col-lg-4"><Panel title="Articles par langue"><Histogram items={data.distribution.byLanguage}/></Panel></div>
+        <div className="col-12 col-lg-4"><Panel title="Articles par langue"><Histogram kind="language" items={data.distribution.byLanguage}/></Panel></div>
         <div className="col-12"><Panel title="Matrice Pays × Catégories">
           {data.distribution.matrix.length ? <div className="table-responsive"><table className="table table-striped table-sm">
             <thead><tr><th>Pays</th>{data.distribution.matrix[0]?.categories.map((x) => <th key={x.name} className="text-end">{x.name}</th>)}</tr></thead>
-            <tbody>{data.distribution.matrix.map((row) => <tr key={row.country}><th>{row.country}</th>{row.categories.map((x) => <td key={x.name} className="text-end">{number(x.count)}</td>)}</tr>)}</tbody>
+            <tbody>{data.distribution.matrix.map((row) => <tr key={row.country}><th><FlaggedName code={row.country} kind="country" /></th>{row.categories.map((x) => <td key={x.name} className="text-end">{number(x.count)}</td>)}</tr>)}</tbody>
           </table></div> : <p className="text-body-secondary">Aucune donnée sur la période.</p>}
         </Panel></div>
       </div>
