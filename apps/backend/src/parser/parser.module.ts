@@ -8,5 +8,6 @@ import { ParserGatewayService } from "./parser-gateway.service";
   imports: [AuthModule],
   controllers: [ParserController],
   providers: [ParserGatewayService],
+  exports: [ParserGatewayService],
 })
 export class ParserModule {}

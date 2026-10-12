@@ -12,6 +12,7 @@ import pino from "pino";
 import { z } from "zod";
 
 import { ParserEngine } from "./parser-engine.js";
+import { VideoParserEngine } from "./video-parser-engine.js";
 import {
   ActiveRunError,
   RunManager,
@@ -136,6 +137,8 @@ async function bootstrap(): Promise<void> {
 
   const engine = new ParserEngine(database);
   const runs = new RunManager(engine);
+  const videoEngine = new VideoParserEngine(database);
+  let videoRunActive = false;
 
   const server = createServer(async (request, response) => {
     try {
@@ -161,6 +164,27 @@ async function bootstrap(): Promise<void> {
           "UNAUTHORIZED",
           "Parser authentication failed.",
         );
+        return;
+      }
+
+      if (request.method === "POST" && url.pathname === "/video-runs") {
+        if (videoRunActive) {
+          writeApiError(response, 409, "VIDEO_RUN_ACTIVE", "Video extraction already in progress.");
+          return;
+        }
+        const body = await readJson(request);
+        const parsedVideo = z.object({ feedId: z.string().uuid().optional() }).safeParse(body);
+        if (!parsedVideo.success) {
+          writeApiError(response, 400, "INVALID_VIDEO_FILTER", "Invalid video parser filter.");
+          return;
+        }
+        videoRunActive = true;
+        writeJson(response, 202, { accepted: true });
+        void videoEngine.run(parsedVideo.data.feedId).then(result => {
+          logger.info({ result }, "YouTube video extraction completed");
+        }).catch(error => {
+          logger.error({ error }, "YouTube video extraction failed");
+        }).finally(() => { videoRunActive = false; });
         return;
       }
 
