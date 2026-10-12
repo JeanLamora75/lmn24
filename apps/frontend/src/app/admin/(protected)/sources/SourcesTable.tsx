@@ -75,18 +75,16 @@ function safeWebsiteUrl(value: string): string | null {
   }
 }
 
-function pageItems(current: number, total: number, slots: number): Array<number | string> {
-  if (total <= slots) return Array.from({ length: total }, (_, index) => index + 1);
-  const inner = Math.max(1, slots - 2);
-  let first = Math.max(2, current - Math.floor((inner - 1) / 2));
-  first = Math.min(first, Math.max(2, total - inner));
-  const last = Math.min(total - 1, first + inner - 1);
-  const values: Array<number | string> = [1];
-  if (first > 2) values.push("left-ellipsis");
-  for (let n = first; n <= last; n++) values.push(n);
-  if (last < total - 1) values.push("right-ellipsis");
-  values.push(total);
-  return values;
+function pageItems(current: number, total: number, slots: number): number[] {
+  // At most 10 preceding and 10 following pages, with the current page centered.
+  const capacity = Math.max(1, Math.min(21, slots));
+  let start = Math.max(1, current - 10);
+  let end = Math.min(total, current + 10);
+  while (end - start + 1 > capacity) {
+    if (current - start > end - current) start++;
+    else end--;
+  }
+  return Array.from({ length: end - start + 1 }, (_, index) => start + index);
 }
 
 const socialNetworks = [
@@ -127,6 +125,10 @@ function PaginationNav({
     >
       <ul className={"pagination pagination-sm mb-0 " + styles.paginationList}>
         <li className={"page-item " + (pagination.page === 1 ? "disabled" : "")}>
+          <button type="button" className="page-link" aria-label="Première page"
+            disabled={pagination.page === 1} onClick={() => onPageChange(1)}>«</button>
+        </li>
+        <li className={"page-item " + (pagination.page === 1 ? "disabled" : "")}>
           <button
             type="button"
             className="page-link"
@@ -138,32 +140,13 @@ function PaginationNav({
           </button>
         </li>
 
-        {pageItems(pagination.page, pagination.totalPages, Math.max(3, Math.floor((width - 105) / 43) - 2)).map((item) =>
-          typeof item === "number" ? (
-            <li
-              className={
-                "page-item " +
-                (item === pagination.page ? "active" : "")
-              }
-              key={item}
-            >
-              <button
-                type="button"
-                className="page-link"
-                aria-current={item === pagination.page ? "page" : undefined}
-                onClick={() => onPageChange(item)}
-              >
-                {item}
-              </button>
-            </li>
-          ) : (
-            <li className="page-item disabled" key={item}>
-              <span className="page-link" aria-hidden="true">
-                …
-              </span>
-            </li>
-          ),
-        )}
+        {pageItems(pagination.page, pagination.totalPages, Math.max(1, Math.floor(width / 43) - 4)).map((item) => (
+          <li className={"page-item " + (item === pagination.page ? "active" : "")} key={item}>
+            <button type="button" className="page-link"
+              aria-current={item === pagination.page ? "page" : undefined}
+              onClick={() => onPageChange(item)}>{item}</button>
+          </li>
+        ))}
 
         <li
           className={
@@ -180,6 +163,11 @@ function PaginationNav({
           >
             ›
           </button>
+        </li>
+        <li className={"page-item " + (pagination.page === pagination.totalPages ? "disabled" : "")}>
+          <button type="button" className="page-link" aria-label="Dernière page"
+            disabled={pagination.page === pagination.totalPages}
+            onClick={() => onPageChange(pagination.totalPages)}>»</button>
         </li>
       </ul>
     </nav>
