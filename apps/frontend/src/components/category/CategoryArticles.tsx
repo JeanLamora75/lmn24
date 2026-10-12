@@ -1,7 +1,7 @@
 "use client";
 
 import { CATEGORY_NEXT_PAGE_SIZE } from "@lmn24/contracts";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ArticleCard } from "@/components/home/HomeSection";
 import homeStyles from "@/components/home/home.module.css";
@@ -42,9 +42,11 @@ export function CategoryArticles({ initialPage, paginationPath, locale, labels }
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const busy = useRef(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [supportsObserver, setSupportsObserver] = useState(true);
   const blocks = arrangeCategoryBlocks(articles);
 
-  async function loadNext() {
+  const loadNext = useCallback(async () => {
     if (busy.current || !hasMore || !cursor) return;
     busy.current = true;
     setLoading(true);
@@ -75,7 +77,25 @@ export function CategoryArticles({ initialPage, paginationPath, locale, labels }
       busy.current = false;
       setLoading(false);
     }
-  }
+  }, [hasMore, cursor, locale, paginationPath]);
+
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") {
+      setSupportsObserver(false);
+      return;
+    }
+    if (!hasMore || !cursor || error || loading) return;
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) void loadNext();
+      },
+      { rootMargin: "0px 0px 300px 0px", threshold: 0 },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasMore, cursor, error, loading, loadNext]);
 
   return (
     <>
@@ -100,16 +120,18 @@ export function CategoryArticles({ initialPage, paginationPath, locale, labels }
         <p className="alert alert-danger mt-4" role="alert">{labels.loadError}</p>
       )}
       {hasMore ? (
-        <div className={homeStyles.moreNewsWrapper}>
-          <button
-            type="button"
-            onClick={() => void loadNext()}
-            disabled={loading}
-            aria-busy={loading}
-            className={homeStyles.moreNewsLink}
-          >
-            {loading ? labels.loading : error ? labels.retry : labels.loadMore}
-          </button>
+        <div ref={sentinelRef} className={homeStyles.moreNewsWrapper} aria-busy={loading}>
+          {loading ? (
+            <p role="status" aria-live="polite">{labels.loading}</p>
+          ) : error || !supportsObserver ? (
+            <button
+              type="button"
+              onClick={() => void loadNext()}
+              className={homeStyles.moreNewsLink}
+            >
+              {error ? labels.retry : labels.loadMore}
+            </button>
+          ) : null}
         </div>
       ) : (
         <p role="status" className={styles.endMessage}>{labels.end}</p>
