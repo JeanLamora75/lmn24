@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMessages } from "next-intl";
+import frMessages from "../../../../messages/fr.json";
 
 type Options = { sources: { id: string; name: string; youtubeUrl: string | null }[]; categories: { id: string; slug: string }[]; languages: { isoCode2: string }[] };
 type Feed = { id: string; sourceId: string; categoryId: string; languageIsoCode2: string; channelId: string; feedUrl: string; isActive: boolean };
@@ -97,8 +97,7 @@ export function VideoFeedsTable() {
 
 export function VideoFeedForm({ id, initialSourceId = "" }: { id?: string; initialSourceId?: string }) {
   const router=useRouter();
-  const messages = useMessages();
-  const categoryNames = messages.categories as Record<string, string> | undefined;
+  const categoryNames: Record<string, string> = frMessages.categories;
   const categoryName = (slug: string) => categoryNames?.[slug] ?? slug.replace(/-/g, " ");
   const [resolving, setResolving] = useState(false);
   const [lookupMessage, setLookupMessage] = useState("");
