@@ -11,6 +11,7 @@ import { ParserModule } from "./parser/parser.module";
 import { SourcesModule } from "./sources/sources.module";
 import { StatisticsModule } from "./statistics/statistics.module";
 import { VideoFeedsModule } from "./video-feeds/video-feeds.module";
+import { VideosModule } from "./videos/videos.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { VideoFeedsModule } from "./video-feeds/video-feeds.module";
     ParserModule,
     StatisticsModule,
     VideoFeedsModule,
+    VideosModule,
   ],
   controllers: [HealthController],
 })
