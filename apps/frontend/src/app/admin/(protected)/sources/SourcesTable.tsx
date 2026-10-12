@@ -7,7 +7,6 @@ import {
   FormEvent,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 
@@ -75,16 +74,12 @@ function safeWebsiteUrl(value: string): string | null {
   }
 }
 
-function pageItems(current: number, total: number, slots: number): number[] {
-  // At most 10 preceding and 10 following pages, with the current page centered.
-  const capacity = Math.max(1, Math.min(21, slots));
-  let start = Math.max(1, current - 10);
-  let end = Math.min(total, current + 10);
-  while (end - start + 1 > capacity) {
-    if (current - start > end - current) start++;
-    else end--;
-  }
-  return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+function pageItems(current: number, total: number): number[] {
+  // Keep a 21-page sliding window. At the beginning/end, fill the
+  // available places from the other side rather than hiding nearby pages.
+  const visibleCount = Math.min(21, total);
+  const first = Math.max(1, Math.min(current - 10, total - visibleCount + 1));
+  return Array.from({ length: visibleCount }, (_, index) => first + index);
 }
 
 const socialNetworks = [
@@ -103,19 +98,6 @@ function PaginationNav({
   onPageChange: (page: number) => void;
   position: "supérieure" | "inférieure";
 }) {
-  const navRef = useRef<HTMLElement>(null);
-  const [width, setWidth] = useState(0);
-  useEffect(() => {
-    const node = navRef.current;
-    if (!node) return;
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (entry) setWidth(entry.contentRect.width);
-    });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
   if (pagination.totalPages <= 1) {
     return null;
   }
@@ -123,7 +105,6 @@ function PaginationNav({
   return (
     <nav
       aria-label={"Pagination " + position + " des sources"}
-      ref={navRef}
       className={styles.paginationNav}
     >
       <ul className={"pagination pagination-sm mb-0 " + styles.paginationList}>
@@ -143,7 +124,7 @@ function PaginationNav({
           </button>
         </li>
 
-        {pageItems(pagination.page, pagination.totalPages, Math.max(1, Math.floor(width / 43) - 4)).map((item) => (
+        {pageItems(pagination.page, pagination.totalPages).map((item) => (
           <li className={"page-item " + (item === pagination.page ? "active" : "")} key={item}>
             <button type="button" className="page-link"
               aria-current={item === pagination.page ? "page" : undefined}
