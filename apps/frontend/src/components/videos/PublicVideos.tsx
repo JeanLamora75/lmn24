@@ -54,7 +54,7 @@ function VideoCard({video}:{video:PublicVideo}){
   </article>;
 }
 export function PublicVideos({locale,initialPage,initialFilters}:Props){
-  const t=labels[locale]??labels.fr;
+  const t=labels[locale]??labels.fr!;
   const [filters,setFilters]=useState<VideosFilters|null>(initialFilters);
   const [items,setItems]=useState<PublicVideo[]>(initialPage?.items??[]);
   const [cursor,setCursor]=useState<string|null>(initialPage?.nextCursor??null);
