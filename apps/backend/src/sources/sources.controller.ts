@@ -37,6 +37,9 @@ const listQuerySchema = z.object({
   search: z.string().trim().max(255).optional(),
   countryId: z.string().uuid().optional(),
   status: z.enum(["all", "active", "inactive"]).default("all"),
+  feedRange: z.enum(["all", "0", "1-5", "6-10", "11+"]).default("all"),
+  articleRange: z.enum(["all", "0", "1-25", "26-100", "101+"]).default("all"),
+  missingSocial: z.enum(["all", "x", "facebook", "instagram", "youtube"]).default("all"),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce
     .number()
