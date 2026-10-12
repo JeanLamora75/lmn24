@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import frMessages from "../../../messages/fr.json";
+import frMessages from "../../../../../messages/fr.json";
 
 type Options = { sources: { id: string; name: string; youtubeUrl: string | null }[]; categories: { id: string; slug: string }[]; languages: { isoCode2: string }[] };
 type Feed = { id: string; sourceId: string; categoryId: string; languageIsoCode2: string; channelId: string; feedUrl: string; isActive: boolean };
