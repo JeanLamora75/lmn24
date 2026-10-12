@@ -10,6 +10,7 @@ import { HealthController } from "./health.controller";
 import { ParserModule } from "./parser/parser.module";
 import { SourcesModule } from "./sources/sources.module";
 import { StatisticsModule } from "./statistics/statistics.module";
+import { VideoFeedsModule } from "./video-feeds/video-feeds.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { StatisticsModule } from "./statistics/statistics.module";
     CategoriesModule,
     ParserModule,
     StatisticsModule,
+    VideoFeedsModule,
   ],
   controllers: [HealthController],
 })
