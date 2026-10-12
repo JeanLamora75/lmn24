@@ -487,7 +487,7 @@ export function SourcesTable() {
           </select>
         </div>
         <div className="col-12 col-md-4">
-          <label className="form-label" htmlFor="article-range-filter">Nombre d'articles</label>
+          <label className="form-label" htmlFor="article-range-filter">Nombre d’articles</label>
           <select id="article-range-filter" className="form-select" value={articleRange} onChange={(event) => { setArticleRange(event.target.value); setPage(1); }}>
             <option value="all">Tous</option><option value="0">Aucun article</option>
             <option value="1-25">1 à 25 articles</option><option value="26-100">26 à 100 articles</option>
