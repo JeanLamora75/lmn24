@@ -1,6 +1,7 @@
 .header {
   z-index: 1030;
   min-height: 72px;
+  background-color: var(--bs-primary);
 }
 
 .logoLink {
@@ -19,6 +20,93 @@
   width: 60px;
   height: 60px;
   object-fit: contain;
+}
+
+.primaryNavigation {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  margin-left: 0.25rem;
+}
+
+.navigationLink {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 60px;
+  width: 60px;
+  height: 60px;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: transparent;
+  text-decoration: none;
+  border-radius: 0.45rem;
+}
+
+.navigationLink:hover,
+.navigationLink:focus-visible {
+  color: #fff;
+  background: transparent;
+}
+
+.navigationLink:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -3px;
+}
+
+.navigationLink[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  bottom: 1px;
+  width: 28px;
+  height: 3px;
+  background-color: #fff;
+  border-radius: 2px;
+}
+
+.navigationIcon {
+  display: block;
+  width: 48px;
+  height: 48px;
+  color: #fff;
+  transition: transform 150ms ease;
+}
+
+.navigationLink:hover .navigationIcon {
+  transform: scale(1.06);
+}
+
+.navigationTooltip {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  left: 50%;
+  z-index: 1050;
+  transform: translate(-50%, -0.3rem);
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.4rem;
+  background: var(--bs-body-color);
+  color: var(--bs-body-bg);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
+}
+
+.navigationLink:hover .navigationTooltip,
+.navigationLink:focus-visible .navigationTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navigationIcon,
+  .navigationTooltip {
+    transition: none;
+  }
 }
 
 .languageDropdown {
@@ -80,6 +168,22 @@
   .logo {
     width: 50px;
     height: 50px;
+  }
+
+  .primaryNavigation {
+    gap: 0;
+    margin-left: 0.125rem;
+  }
+
+  .navigationLink {
+    width: 50px;
+    height: 50px;
+    flex-basis: 50px;
+  }
+
+  .navigationIcon {
+    width: 42px;
+    height: 42px;
   }
 
   .languageButton {
