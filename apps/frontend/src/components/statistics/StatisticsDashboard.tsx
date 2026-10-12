@@ -34,6 +34,10 @@ const languageFlags: Record<string, string> = {
   tr: "TR", sv: "SE", da: "DK", no: "NO", fi: "FI", el: "GR", cs: "CZ",
   ro: "RO", hu: "HU", hi: "IN", he: "IL",
 };
+function languageFlagEmoji(code: string): string {
+  const country = languageFlags[code.trim().toLowerCase()];
+  return country ? String.fromCodePoint(...Array.from(country, (letter) => letter.charCodeAt(0) + 127397)) + " " : "";
+}
 function languageName(code: string): string {
   try { return languageNames?.of(code.trim().toLowerCase()) ?? code.toUpperCase(); }
   catch { return code.toUpperCase(); }
@@ -138,7 +142,7 @@ export function StatisticsDashboard() {
       <div className="col-6 col-md-2"><label htmlFor="stats-category" className="form-label">Catégorie</label><select id="stats-category" className="form-select" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
         <option value="">Toutes</option>{filters?.categories.map((x) => <option key={x.id} value={x.id}>{x.slug}</option>)}</select></div>
       <div className="col-6 col-md-2"><label htmlFor="stats-language" className="form-label">Langue</label><select id="stats-language" className="form-select" value={language} onChange={(e) => setLanguage(e.target.value)}>
-        <option value="">Toutes</option>{[...(filters?.languages ?? [])].sort((a, b) => languageName(a.isoCode2).localeCompare(languageName(b.isoCode2), "fr")).map((x) => <option key={x.isoCode2} value={x.isoCode2.trim()}>{languageFlags[x.isoCode2.trim().toLowerCase()] ? String.fromCodePoint(...[...languageFlags[x.isoCode2.trim().toLowerCase()]].map((letter) => letter.charCodeAt(0) + 127397)) + " " : ""}{languageName(x.isoCode2)} ({x.isoCode2.trim().toUpperCase()})</option>)}</select></div>
+        <option value="">Toutes</option>{[...(filters?.languages ?? [])].sort((a, b) => languageName(a.isoCode2).localeCompare(languageName(b.isoCode2), "fr")).map((x) => <option key={x.isoCode2} value={x.isoCode2.trim()}>{languageFlagEmoji(x.isoCode2)}{languageName(x.isoCode2)} ({x.isoCode2.trim().toUpperCase()})</option>)}</select></div>
       <div className="col-6 col-md-2"><label htmlFor="stats-source" className="form-label">Source</label><select id="stats-source" className="form-select" value={sourceId} onChange={(e) => setSourceId(e.target.value)}>
         <option value="">Toutes</option>{filters?.sources.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</select></div>
     </div></div></div>
