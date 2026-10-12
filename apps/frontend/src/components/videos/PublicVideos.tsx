@@ -1,6 +1,10 @@
 "use client";
 
 import Link from "next/link";
+
+import { CountryFlag } from "@/components/home/CountryFlag";
+import { VideoPlayerModal } from "./VideoPlayerModal";
+import styles from "./public-videos.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export type PublicVideo = {
@@ -31,25 +35,24 @@ function countryName(code:string,locale:string):string{
   try{return new Intl.DisplayNames([locale],{type:"region"}).of(code.trim().toUpperCase())??code;}
   catch{return code;}
 }
-function VideoCard({video}:{video:PublicVideo}){
+function VideoCard({video,locale,onPlay}:{video:PublicVideo;locale:string;onPlay:(video:PublicVideo)=>void}){
   const [failed,setFailed]=useState(false);
-  return <article className="card h-100 shadow-sm overflow-hidden">
-    <a href={video.videoUrl} target="_blank" rel="noopener noreferrer" aria-label={video.title+" — YouTube"}
-      className="position-relative d-block" style={{aspectRatio:"16 / 9",background:"#e9ecef"}}>
+  return <article className={styles.videoCard}>
+    <button type="button" className={styles.thumbnailButton}
+      onClick={()=>onPlay(video)}
+      aria-label={video.title}>
       {video.thumbnailUrl&&!failed?
-        // Remote YouTube thumbnail URLs are obtained from the publisher; no download by LMN24.
+        // Thumbnails are fetched only from the source URL supplied by LMN24.
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={video.thumbnailUrl} alt="" loading="lazy" onError={()=>setFailed(true)}
-          style={{width:"100%",height:"100%",objectFit:"cover"}}/>:
-        <span className="d-flex align-items-center justify-content-center h-100 text-body-secondary">▶ Vidéo</span>}
-      <span className="position-absolute bottom-0 end-0 m-2 px-2 py-1 rounded text-white"
-        style={{background:"rgba(0,0,0,.8)"}} aria-hidden="true">▶</span>
-    </a>
-    <div className="card-body">
-      <h3 className="h6 card-title"><a className="text-decoration-none text-body" href={video.videoUrl}
-        target="_blank" rel="noopener noreferrer">{video.title}</a></h3>
-      <p className="text-body-secondary small mb-1">{video.source.name} · {countryName(video.source.country.isoCode2,"fr")}</p>
-      <time className="small text-body-secondary" dateTime={video.publishedAt}>{new Date(video.publishedAt).toLocaleDateString("fr-FR")}</time>
+        <img className={styles.thumbnail} src={video.thumbnailUrl} alt="" loading="lazy"
+          onError={()=>setFailed(true)}/>:
+        <span className={styles.imageFallback} aria-hidden="true">▶</span>}
+      <span className={styles.playMark} aria-hidden="true">▶</span>
+      <span className={styles.titleOverlay}><span>{video.title}</span></span>
+    </button>
+    <div className={styles.sourceLine}>
+      <CountryFlag countryIsoCode2={video.source.country.isoCode2} locale={locale}/>
+      <span>{video.source.name}</span>
     </div>
   </article>;
 }
@@ -68,6 +71,8 @@ export function PublicVideos({locale,initialPage,initialFilters}:Props){
   const busy=useRef(false);
   const sentinel=useRef<HTMLDivElement>(null);
   const [observerSupported,setObserverSupported]=useState(true);
+  const [selectedVideo,setSelectedVideo]=useState<PublicVideo|null>(null);
+  const closePlayer=useCallback(()=>setSelectedVideo(null),[]);
   const initialized=useRef(false);
   const request=useCallback(async(nextCursor:string|null,replace:boolean)=>{
     if(busy.current)return;
@@ -145,7 +150,7 @@ export function PublicVideos({locale,initialPage,initialFilters}:Props){
     {ordered.map(([category,group])=><section className="mb-5" key={category}>
       <h2 className="h4 pb-2 mb-3 border-bottom" style={{borderColor:group[0]!.category.themeColor}}>
         {categoryLabel(group[0]!.category.slug,locale)}</h2>
-      <div className="row g-3">{group.map(video=><div key={video.id} className="col-12 col-sm-6 col-lg-4 col-xl-3"><VideoCard video={video}/></div>)}</div>
+      <div className={styles.gallery}>{group.map(video=><VideoCard key={video.id} video={video} locale={locale} onPlay={setSelectedVideo}/>)}</div>
     </section>)}
     {!items.length&&!loading&&!error&&<p role="status" className="text-body-secondary">{t.empty}</p>}
     {error&&<p role="alert" className="alert alert-danger">{t.error} <button type="button" className="btn btn-outline-danger btn-sm" onClick={()=>setRevision(x=>x+1)}>Réessayer</button></p>}
@@ -153,6 +158,7 @@ export function PublicVideos({locale,initialPage,initialFilters}:Props){
       {loading?<p role="status">{t.loading}</p>:<button className="btn btn-outline-primary"
         onClick={loadMore} disabled={!observerSupported&&loading}>{t.more}</button>}</div>}
     {!hasMore&&!loading&&items.length>0&&<p role="status" className="text-center text-body-secondary">{t.end}</p>}
-    <p className="small text-body-secondary">Les vidéos s’ouvrent sur YouTube. <Link href={"/"+locale}>Retour aux actualités</Link></p>
+    <p className="small text-body-secondary"><Link href={"/"+locale}>Retour aux actualités</Link></p>
+    {selectedVideo&&<VideoPlayerModal video={selectedVideo} locale={locale} onClose={closePlayer}/>}
   </main>;
 }
