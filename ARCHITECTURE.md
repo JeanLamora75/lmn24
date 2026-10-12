@@ -1461,3 +1461,90 @@ Toute modification significative concernant :
 doit entraîner une mise à jour de `ARCHITECTURE.md`.
 
 Le document doit toujours refléter l’architecture réellement utilisée par le code.
+
+
+---
+
+## Extension cible — Agrégation des vidéos YouTube (documentation préalable)
+
+> **Statut : architecture cible, non implémentée.** Cette section complète `docs/DATA_MODEL.md` (§13). Aucun changement du schéma Prisma, aucune migration, aucun nouveau parser ni écran ne résulte de cette mise à jour documentaire.
+
+### Objectif et périmètre du MVP vidéo
+
+LMN24 pourra référencer des vidéos publiées par ses sources de presse via les **flux Atom XML publics des chaînes YouTube**, sans télécharger ni héberger les fichiers vidéo. L'objectif est une rubrique publique **Vidéos**, complétée ultérieurement par des entrées ou onglets « Articles / Vidéos » sur les pages publiques des sources et des catégories. La page d'accueil éditoriale existante reste inchangée lors du premier incrément.
+
+- Une `Source` peut référencer **plusieurs flux vidéo** / chaînes YouTube.
+- Une `Video` possède une source, une catégorie et une langue principales pour le MVP.
+- Shorts et directs sont traités comme des vidéos lorsqu'ils figurent dans le flux ; le parser ne déduit pas leur type sans information fiable.
+- Désactiver un `FeedVideo` suspend la collecte et **ne masque pas** ses vidéos ; la publication d'une vidéo est contrôlée séparément par `Video.isPublished`.
+
+### Architecture logique
+
+```text
+YouTube (flux Atom XML publics par channel_id)
+                      |
+                      | HTTPS (récupération périodique et manuelle)
+                      v
+             apps/parser (module vidéo)
+               | validation XML / namespace yt: et media:
+               | normalisation / déduplication / journalisation
+               v
+     packages/database (Prisma commun)
+               |
+               v
+            PostgreSQL
+      feed_video / video / feed_video_run
+               ^
+               | Prisma
+               |
+       apps/backend (NestJS)
+       | API admin vidéo + déclenchement contrôlé du parser
+       | API publique vidéo filtrée/paginée
+               ^
+               | REST via backend
+               |
+       apps/frontend (Next.js)
+       | Admin : flux vidéo, vidéos, états et exécutions
+       | Public : Vidéos, filtres, onglets Source/Catégorie
+```
+
+L'architecture **conserve les trois applications existantes**. Le traitement vidéo est un module indépendant du traitement des articles au sein de `apps/parser`, et **non** un quatrième service ou une nouvelle base. Le navigateur ne contacte jamais directement le parser ni PostgreSQL. Le backend applique les validations et autorisations existantes ; l'API interne backend → parser reste protégée par son mécanisme de secret partagé.
+
+### Modèle et conventions techniques
+
+- Trois tables nouvelles, documentées dans `docs/DATA_MODEL.md` : `feed_video` (configuration et état), `video` (métadonnées éditoriales), `feed_video_run` (historique technique).
+- Même convention que les entités existantes : **PostgreSQL `snake_case`**, **Prisma / TypeScript `camelCase`**, UUID et timestamps UTC.
+- `FeedVideo` est rattaché à `Source`, `Category` et `Language` ; `Video` est directement rattaché à ces trois référentiels et comporte également `feedVideoId` **nullable** pour tracer son flux d'origine.
+- Identité du flux : `feedUrl` unique et couple `(platform, channelId)` unique. Identité de la vidéo : couple `(platform, platformVideoId)` unique ; la contrainte en base constitue la dernière défense contre les imports concurrents.
+- Un enum `platform` démarre à `YOUTUBE`, avec possibilité d'extension seulement après implémentation d'un adaptateur spécifique à la nouvelle plateforme.
+- Une modification de classification (catégorie/langue) par un éditeur devra être préservée lors des synchronisations suivantes ; prévoir la distinction entre métadonnées de plateforme et décisions éditoriales avant le développement des mises à jour automatiques.
+- `Source.youtubeUrl` reste un **lien social informatif** : aucune création automatique de flux. L'identification de la chaîne `channelId` depuis un `@handle` est une étape d'assistance nécessitant confirmation par l'administrateur.
+
+### Parser vidéo et exploitation
+
+- Exploiter `apps/parser`, sa planification, sa configuration via `Setting`, ses logs Pino et ses protections de timeout, retry et concurrence. Les réglages propres au traitement vidéo devront être distincts de ceux des flux d'articles quand les comportements divergent.
+- Télécharger le XML Atom YouTube avec contrôles de sécurité des URLs sortantes (HTTPS, domaine YouTube attendu, redirections limitées, refus des hôtes internes, taille de réponse bornée, timeout) et parser les espaces de noms `yt:` et `media:` de manière explicite.
+- Identifier chaque entrée via `yt:videoId`, prendre `Source`, `Category` et `Language` initiales depuis le flux configuré, puis enregistrer les métadonnées vidéo (titre, description, miniature, date, URL). **Ne jamais télécharger la vidéo**.
+- Effectuer des **upserts** idempotents. Les doublons ne génèrent pas de nouvelles lignes ; les mises à jour des champs issus de YouTube ne doivent pas écraser la décision de publication ou les reclassements éditoriaux.
+- Écrire un `FeedVideoRun` à chaque tentative avec statut, durées, compteurs et erreur éventuelle ; maintenir également les champs `lastFetch*` de `FeedVideo`.
+- Les flux YouTube ne fournissent qu'une **fenêtre récente limitée** et ne garantissent pas l'historique complet. Une collecte périodique sera nécessaire pour réduire les omissions ; la fréquence exacte sera définie dans Jira et `Setting`.
+- Un échec isolé de flux vidéo n'empêche pas le traitement des autres flux (articles ou vidéos). Un lancement manuel depuis l'administration utilise le circuit sécurisé frontend → backend → API interne parser.
+
+### APIs, interfaces et publication
+
+- **Administration** : gérer les flux vidéo (CRUD, validation, activation, collecte manuelle), consulter les vidéos et leur état de publication, examiner les exécutions et erreurs, filtrer par source, pays, langue, catégorie et date.
+- **Public** : endpoints dédiés aux vidéos publiées, avec pagination par curseur et tri stable `publishedAt DESC, id DESC` ; respecter la langue sélectionnée et les catégories/sources pertinentes.
+- **Présentation** : miniatures 16:9, titre, date et identité du média ; ouvrir YouTube ou intégrer son lecteur officiel uniquement sur action du visiteur, avec option de confidentialité renforcée lorsque disponible. Éviter tout script ou lecteur chargé avant nécessité ; prévoir un repli accessible.
+- Étendre les statistiques et la supervision aux collectes vidéo sans mélanger implicitement leurs compteurs avec les collectes d'articles.
+- Conserver les URLs externes en HTTP(S) autorisé, échapper les métadonnées non fiables, appliquer les protections d'intégration et ne pas exposer les messages techniques sensibles côté public.
+
+### Ordre de réalisation et contrôles qualité
+
+1. Créer la Story Jira de migration, puis modifier `packages/database/schema.prisma` et créer une migration **additive et non destructive** depuis `packages/database` ; valider contraintes/index et compatibilité avec les données en place.
+2. Développer contrats Zod partagés, services et routes NestJS de gestion des flux vidéo, avec tests de validation et d'authentification.
+3. Créer l'interface d'administration des flux et le déclenchement manuel.
+4. Implémenter le parsing Atom YouTube, le stockage transactionnel/idempotent, l'historique `FeedVideoRun`, les reprises sur erreurs et les tests sur des flux d'exemple.
+5. Construire l'administration des vidéos, la publication/dépublication et les pages publiques dédiées, puis enrichir les pages Source/Catégorie.
+6. Intégrer les statistiques et les tests bout-en-bout, vérifier sécurité, performances et CI.
+
+Les conventions existantes de ce document restent applicables (Prisma partagé, authentification, logs, REST, PostgreSQL, UTC, tests et revue GitHub). Aucune migration n'est considérée exécutée tant qu'elle n'a pas été développée, testée et appliquée explicitement.
