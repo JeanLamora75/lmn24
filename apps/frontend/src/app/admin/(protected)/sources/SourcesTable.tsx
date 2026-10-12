@@ -108,7 +108,10 @@ function PaginationNav({
   useEffect(() => {
     const node = navRef.current;
     if (!node) return;
-    const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) setWidth(entry.contentRect.width);
+    });
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
