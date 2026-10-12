@@ -9,7 +9,6 @@ export function youtubeChannelFromHtml(html: string): string | null {
     /<meta\s+[^>]*itemprop=["']channelId["'][^>]*content=["'](UC[A-Za-z0-9_-]{22})["']/i,
     /"externalId"\s*:\s*"(UC[A-Za-z0-9_-]{22})"/,
     /"channelId"\s*:\s*"(UC[A-Za-z0-9_-]{22})"/,
-    /https:\\/\\/www\.youtube\.com\\/channel\\/(UC[A-Za-z0-9_-]{22})/,
   ]) {
     const found = html.match(pattern)?.[1];
     if (found && CHANNEL.test(found)) return found;
