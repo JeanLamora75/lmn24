@@ -6,13 +6,14 @@ import { AuthService } from "../auth/auth.service";
 import { ParserGatewayService } from "../parser/parser-gateway.service";
 import { videoFeedIdSchema, videoFeedInputSchema, videoFeedListSchema, videoFeedStatusSchema } from "./video-feeds.schemas";
 import { VideoFeedsService } from "./video-feeds.service";
+import { YoutubeChannelDiscoveryService } from "./youtube-channel-discovery.service";
 
 type RequestLike = { headers: Record<string, string | string[] | undefined> };
 
 @Controller("admin/video-feeds")
 export class VideoFeedsController {
   private readonly cookieName: string;
-  constructor(private readonly service: VideoFeedsService, private readonly auth: AuthService, private readonly parserGateway: ParserGatewayService, config: ConfigService) {
+  constructor(private readonly service: VideoFeedsService, private readonly discovery: YoutubeChannelDiscoveryService, private readonly auth: AuthService, private readonly parserGateway: ParserGatewayService, config: ConfigService) {
     this.cookieName = config.get<string>("SESSION_COOKIE_NAME")?.trim() || DEFAULT_SESSION_COOKIE_NAME;
   }
   private async requireAuth(request: RequestLike) {
@@ -42,6 +43,16 @@ export class VideoFeedsController {
     const parsed = z.object({ feedId: z.string().uuid().optional() }).safeParse(body);
     if (!parsed.success) throw new BadRequestException("Filtre de collecte invalide.");
     return this.parserGateway.startVideoRun(parsed.data.feedId);
+  }
+  @Post("resolve-channel") @Header("Cache-Control", "no-store")
+  async resolveChannel(@Req() request: RequestLike, @Body() body: unknown) {
+    await this.requireAuth(request);
+    const parsed = z.object({
+      sourceId: z.string().uuid().optional(),
+      query: z.string().trim().max(2048).optional(),
+    }).strict().safeParse(body);
+    if (!parsed.success) throw new BadRequestException("Requête de recherche YouTube invalide.");
+    return this.discovery.resolve(parsed.data);
   }
   @Get(":id") @Header("Cache-Control", "no-store")
   async get(@Req() request: RequestLike, @Param("id") raw: string) {
