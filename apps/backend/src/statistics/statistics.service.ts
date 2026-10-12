@@ -3,12 +3,12 @@ import { DatabaseService } from "../database/database.service";
 
 export type StatisticsFilters = {
   period: "24h" | "7d" | "30d" | "90d" | "custom";
-  from?: string;
-  to?: string;
-  countryId?: string;
-  categoryId?: string;
-  language?: string;
-  sourceId?: string;
+  from?: string | undefined;
+  to?: string | undefined;
+  countryId?: string | undefined;
+  categoryId?: string | undefined;
+  language?: string | undefined;
+  sourceId?: string | undefined;
 };
 
 @Injectable()
