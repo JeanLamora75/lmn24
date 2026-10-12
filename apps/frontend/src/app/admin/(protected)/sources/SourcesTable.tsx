@@ -7,6 +7,7 @@ import {
   FormEvent,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -24,6 +25,10 @@ type SourceItem = {
   isActive: boolean;
   feedCount: number;
   articleCount: number;
+  facebookUrl?: string | null;
+  xUrl?: string | null;
+  instagramUrl?: string | null;
+  youtubeUrl?: string | null;
   country: {
     id: string;
     isoCode2: string;
@@ -70,31 +75,26 @@ function safeWebsiteUrl(value: string): string | null {
   }
 }
 
-function pageItems(current: number, total: number) {
-  if (total <= 7) {
-    return Array.from({ length: total }, (_, index) => index + 1);
-  }
-
-  const result: Array<number | string> = [1];
-
-  const start = Math.max(2, current - 1);
-  const end = Math.min(total - 1, current + 1);
-
-  if (start > 2) {
-    result.push("left-ellipsis");
-  }
-
-  for (let page = start; page <= end; page += 1) {
-    result.push(page);
-  }
-
-  if (end < total - 1) {
-    result.push("right-ellipsis");
-  }
-
-  result.push(total);
-  return result;
+function pageItems(current: number, total: number, slots: number): Array<number | string> {
+  if (total <= slots) return Array.from({ length: total }, (_, index) => index + 1);
+  const inner = Math.max(1, slots - 2);
+  let first = Math.max(2, current - Math.floor((inner - 1) / 2));
+  first = Math.min(first, Math.max(2, total - inner));
+  const last = Math.min(total - 1, first + inner - 1);
+  const values: Array<number | string> = [1];
+  if (first > 2) values.push("left-ellipsis");
+  for (let n = first; n <= last; n++) values.push(n);
+  if (last < total - 1) values.push("right-ellipsis");
+  values.push(total);
+  return values;
 }
+
+const socialNetworks = [
+  { key: "xUrl", label: "X", icon: "X", color: "#14171a" },
+  { key: "facebookUrl", label: "Facebook", icon: "f", color: "#1877f2" },
+  { key: "instagramUrl", label: "Instagram", icon: "◎", color: "#c13584" },
+  { key: "youtubeUrl", label: "YouTube", icon: "▶", color: "#ff0033" },
+] as const;
 
 function PaginationNav({
   pagination,
@@ -105,6 +105,16 @@ function PaginationNav({
   onPageChange: (page: number) => void;
   position: "supérieure" | "inférieure";
 }) {
+  const navRef = useRef<HTMLElement>(null);
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const node = navRef.current;
+    if (!node) return;
+    const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   if (pagination.totalPages <= 1) {
     return null;
   }
@@ -112,9 +122,10 @@ function PaginationNav({
   return (
     <nav
       aria-label={"Pagination " + position + " des sources"}
-      className="d-flex justify-content-center"
+      ref={navRef}
+      className={styles.paginationNav}
     >
-      <ul className="pagination pagination-sm mb-0">
+      <ul className={"pagination pagination-sm mb-0 " + styles.paginationList}>
         <li className={"page-item " + (pagination.page === 1 ? "disabled" : "")}>
           <button
             type="button"
@@ -127,7 +138,7 @@ function PaginationNav({
           </button>
         </li>
 
-        {pageItems(pagination.page, pagination.totalPages).map((item) =>
+        {pageItems(pagination.page, pagination.totalPages, Math.max(3, Math.floor((width - 105) / 43) - 2)).map((item) =>
           typeof item === "number" ? (
             <li
               className={
@@ -192,6 +203,9 @@ export function SourcesTable() {
   const [countryId, setCountryId] = useState("");
   const [status, setStatus] = useState<"all" | "active" | "inactive">("all");
   const [page, setPage] = useState(1);
+  const [feedRange, setFeedRange] = useState("all");
+  const [articleRange, setArticleRange] = useState("all");
+  const [missingSocial, setMissingSocial] = useState("all");
   const [pageSize, setPageSize] =
     useState<(typeof PAGE_SIZES)[number]>(10);
   const [reloadKey, setReloadKey] = useState(0);
@@ -259,6 +273,9 @@ export function SourcesTable() {
 
       const params = new URLSearchParams({
         status,
+        feedRange,
+        articleRange,
+        missingSocial,
         page: String(page),
         pageSize: String(pageSize),
       });
@@ -311,7 +328,7 @@ export function SourcesTable() {
     void loadSources();
 
     return () => controller.abort();
-  }, [countryId, page, pageSize, reloadKey, router, search, status]);
+  }, [countryId, page, pageSize, reloadKey, router, search, status, feedRange, articleRange, missingSocial]);
 
   const submitSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -488,6 +505,39 @@ export function SourcesTable() {
         </div>
       </div>
 
+      <div className="row g-2 align-items-end mb-4">
+        <div className="col-12 col-md-4">
+          <label className="form-label" htmlFor="feed-range-filter">Nombre de flux RSS</label>
+          <select id="feed-range-filter" className="form-select" value={feedRange} onChange={(event) => { setFeedRange(event.target.value); setPage(1); }}>
+            <option value="all">Tous</option><option value="0">Aucun flux RSS</option>
+            <option value="1-5">1 à 5 flux RSS</option><option value="6-10">6 à 10 flux RSS</option>
+            <option value="11+">Plus de 10 flux RSS</option>
+          </select>
+        </div>
+        <div className="col-12 col-md-4">
+          <label className="form-label" htmlFor="article-range-filter">Nombre d'articles</label>
+          <select id="article-range-filter" className="form-select" value={articleRange} onChange={(event) => { setArticleRange(event.target.value); setPage(1); }}>
+            <option value="all">Tous</option><option value="0">Aucun article</option>
+            <option value="1-25">1 à 25 articles</option><option value="26-100">26 à 100 articles</option>
+            <option value="101+">Plus de 100 articles</option>
+          </select>
+        </div>
+        <div className="col-12 col-md-4">
+          <label className="form-label" htmlFor="missing-social-filter">Réseaux sociaux manquants</label>
+          <select id="missing-social-filter" className="form-select" value={missingSocial} onChange={(event) => { setMissingSocial(event.target.value); setPage(1); }}>
+            <option value="all">Tous</option><option value="x">Sans compte X</option>
+            <option value="facebook">Sans compte Facebook</option>
+            <option value="instagram">Sans compte Instagram</option>
+            <option value="youtube">Sans compte YouTube</option>
+          </select>
+        </div>
+        <div className="col-12 text-end">
+          <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => {
+            setFeedRange("all"); setArticleRange("all"); setMissingSocial("all"); setPage(1);
+          }}>Réinitialiser les nouveaux filtres</button>
+        </div>
+      </div>
+
       {notice ? <p className="alert alert-success" role="status">{notice}</p> : null}
 
       {error ? (
@@ -513,6 +563,7 @@ export function SourcesTable() {
               </th>
               <th scope="col">Source</th>
               <th scope="col">Pays</th>
+              <th scope="col">Réseaux sociaux</th>
               <th scope="col" className="text-center">Flux RSS/XML</th>
               <th scope="col" className="text-center">Articles</th>
               <th scope="col" className={"text-end " + styles.actionsColumn}>
@@ -524,7 +575,7 @@ export function SourcesTable() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6} className="text-center py-5">
+                <td colSpan={7} className="text-center py-5">
                   <span
                     className="spinner-border spinner-border-sm me-2"
                     aria-hidden="true"
@@ -583,13 +634,29 @@ export function SourcesTable() {
                       </button>
                     </td>
 
-                    <td className="fw-medium">{source.name}</td>
+                    <td className="fw-medium">
+                      <a href={"/fr/source/" + encodeURIComponent(source.slug)} target="_blank" rel="noopener noreferrer" className={styles.publicSourceLink}>{source.name}</a>
+                    </td>
 
                     <td>
                       <span className={styles.countryCell}>
                         <CountryFlag countryIsoCode2={source.country.isoCode2} locale="fr" />
                         <span>{countryName(source.country.isoCode2)}</span>
                       </span>
+                    </td>
+
+                    <td>
+                      <div className={styles.socialIcons}>
+                        {socialNetworks.map((network) => {
+                          const url = safeWebsiteUrl(source[network.key] ?? "");
+                          const icon = <span className={styles.socialGlyph} style={url ? { color: network.color } : undefined}>{network.icon}</span>;
+                          return url ? (
+                            <a key={network.key} href={url} target="_blank" rel="noopener noreferrer" title={network.label + " — " + source.name} aria-label={"Ouvrir " + network.label + " de " + source.name}>{icon}</a>
+                          ) : (
+                            <span key={network.key} className={styles.socialMissing} title={"Aucun lien " + network.label} aria-label={"Aucun lien " + network.label}>{icon}</span>
+                          );
+                        })}
+                      </div>
                     </td>
 
                     <td className="text-center">
