@@ -15,6 +15,7 @@ const site = "https://8.8.8.8/";
 describe("SCRUM-30 — recherche authentifiée, bornée et protégée côté navigateur", () => {
   const page = {
     goto: vi.fn(async () => ({ status: () => 200 })),
+    evaluate: vi.fn(async () => ({ title: "Journal", body: "Actualités locales" })),
     url: vi.fn(() => site),
     setDefaultTimeout: vi.fn(),
     waitForTimeout: vi.fn(async () => undefined),
