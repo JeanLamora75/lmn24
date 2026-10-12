@@ -60,6 +60,26 @@ export class ParserGatewayService {
     return (await response.json()) as { runId: string };
   }
 
+  async startVideoRun(feedId?: string): Promise<{ accepted: boolean }> {
+    let response: Response;
+    try {
+      response = await fetch(this.parserUrl + "/video-runs", {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-parser-secret": this.sharedSecret },
+        body: JSON.stringify(feedId ? { feedId } : {}),
+        signal: AbortSignal.timeout(10_000),
+      });
+    } catch {
+      throw new BadGatewayException("Le service du parser vidéo est indisponible.");
+    }
+    if (!response.ok) {
+      const message = await this.readMessage(response, "Le lancement du parser vidéo a échoué.");
+      if (response.status === 409) throw new ConflictException(message);
+      throw new BadGatewayException(message);
+    }
+    return await response.json() as { accepted: boolean };
+  }
+
   async openEvents(runId: string): Promise<Response> {
     let response: Response;
 
