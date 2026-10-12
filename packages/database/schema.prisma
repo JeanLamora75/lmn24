@@ -41,8 +41,10 @@ model Language {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  feeds    Feed[]
-  articles Article[]
+  feeds      Feed[]
+  articles   Article[]
+  videoFeeds FeedVideo[]
+  videos     Video[]
 
   @@map("language")
 }
@@ -70,8 +72,10 @@ model Category {
   createdAt    DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  feeds    Feed[]
-  articles Article[]
+  feeds      Feed[]
+  articles   Article[]
+  videoFeeds FeedVideo[]
+  videos     Video[]
 
   // Positive order and canonical #RRGGBB checks are enforced by SQL migrations.
   @@map("category")
@@ -95,8 +99,10 @@ model Source {
   updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   country  Country   @relation(fields: [countryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  feeds    Feed[]
-  articles Article[]
+  feeds      Feed[]
+  articles   Article[]
+  videoFeeds FeedVideo[]
+  videos     Video[]
 
   @@index([countryId], map: "idx_source_country_id")
   @@index([isActive], map: "idx_source_is_active")
@@ -235,4 +241,98 @@ model Session {
   @@index([expiresAt], map: "idx_session_expires_at")
   @@index([revokedAt], map: "idx_session_revoked_at")
   @@map("session")
+}
+
+
+enum VideoPlatform {
+  YOUTUBE
+
+  @@map("video_platform")
+}
+
+model FeedVideo {
+  id                  String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceId            String        @map("source_id") @db.Uuid
+  categoryId          String        @map("category_id") @db.Uuid
+  languageIsoCode2    String        @map("language_iso_code2") @db.Char(2)
+  platform            VideoPlatform @default(YOUTUBE)
+  channelId           String        @map("channel_id") @db.VarChar(255)
+  feedUrl             String        @unique(map: "feed_video_feed_url_unique") @map("feed_url") @db.Text
+  isActive            Boolean       @default(true) @map("is_active")
+  lastFetchedAt       DateTime?     @map("last_fetched_at") @db.Timestamptz(6)
+  lastFetchDurationMs Int?          @map("last_fetch_duration_ms")
+  lastFetchStatus     String?       @map("last_fetch_status") @db.VarChar(32)
+  lastError           String?       @map("last_error") @db.Text
+  createdAt           DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  source   Source         @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  category Category       @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  language Language       @relation(fields: [languageIsoCode2], references: [isoCode2], onDelete: Restrict, onUpdate: Cascade)
+  videos   Video[]
+  runs     FeedVideoRun[]
+
+  @@unique([platform, channelId], map: "feed_video_platform_channel_unique")
+  @@index([sourceId], map: "idx_feed_video_source_id")
+  @@index([categoryId], map: "idx_feed_video_category_id")
+  @@index([languageIsoCode2], map: "idx_feed_video_language_iso_code2")
+  @@index([isActive], map: "idx_feed_video_is_active")
+  @@index([lastFetchedAt], map: "idx_feed_video_last_fetched_at")
+  @@map("feed_video")
+}
+
+model Video {
+  id                  String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceId            String        @map("source_id") @db.Uuid
+  feedVideoId         String?       @map("feed_video_id") @db.Uuid
+  categoryId          String        @map("category_id") @db.Uuid
+  languageIsoCode2    String        @map("language_iso_code2") @db.Char(2)
+  platform            VideoPlatform @default(YOUTUBE)
+  platformVideoId     String        @map("platform_video_id") @db.VarChar(255)
+  title               String        @db.Text
+  description         String?       @db.Text
+  thumbnailUrl        String?       @map("thumbnail_url") @db.Text
+  videoUrl            String        @map("video_url") @db.Text
+  publishedAt         DateTime      @map("published_at") @db.Timestamptz(6)
+  updatedOnPlatformAt DateTime?     @map("updated_on_platform_at") @db.Timestamptz(6)
+  isPublished         Boolean       @default(true) @map("is_published")
+  createdAt           DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  source    Source     @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  feedVideo FeedVideo? @relation(fields: [feedVideoId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  category  Category   @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  language  Language   @relation(fields: [languageIsoCode2], references: [isoCode2], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([platform, platformVideoId], map: "video_platform_id_unique")
+  @@index([sourceId], map: "idx_video_source_id")
+  @@index([feedVideoId], map: "idx_video_feed_video_id")
+  @@index([categoryId], map: "idx_video_category_id")
+  @@index([languageIsoCode2], map: "idx_video_language_iso_code2")
+  @@index([publishedAt(sort: Desc)], map: "idx_video_published_at")
+  @@index([isPublished], map: "idx_video_is_published")
+  @@index([languageIsoCode2, categoryId, publishedAt(sort: Desc)], map: "idx_video_language_category_published")
+  @@map("video")
+}
+
+model FeedVideoRun {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  feedVideoId    String    @map("feed_video_id") @db.Uuid
+  startedAt      DateTime  @default(now()) @map("started_at") @db.Timestamptz(6)
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(6)
+  durationMs     Int?      @map("duration_ms")
+  status         String    @db.VarChar(32)
+  itemsFound     Int       @default(0) @map("items_found")
+  videosImported Int       @default(0) @map("videos_imported")
+  videosSkipped  Int       @default(0) @map("videos_skipped")
+  errorMessage   String?   @map("error_message") @db.Text
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  feedVideo FeedVideo @relation(fields: [feedVideoId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([feedVideoId], map: "idx_feed_video_run_feed_video_id")
+  @@index([startedAt(sort: Desc)], map: "idx_feed_video_run_started_at")
+  @@index([status], map: "idx_feed_video_run_status")
+  @@index([feedVideoId, startedAt(sort: Desc)], map: "idx_feed_video_run_feed_started_at")
+  @@map("feed_video_run")
 }
