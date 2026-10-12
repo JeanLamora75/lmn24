@@ -25,6 +25,12 @@ const ADMIN_FEATURES = [
     description: "Administrer les chaînes et leurs flux Atom XML.",
   },
   {
+    href: "/admin/videos",
+    icon: "camera-video",
+    title: "Vidéos collectées",
+    description: "Consulter, classer et modérer les vidéos YouTube importées.",
+  },
+  {
     href: "/admin/categories",
     icon: "tags",
     title: "Catégories",
