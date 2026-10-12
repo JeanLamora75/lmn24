@@ -96,6 +96,10 @@ export function PublicHeader() {
           />
         </Link>
 
+        <nav className="d-flex gap-3 align-items-center ms-auto me-3" aria-label="Navigation principale">
+          <Link href="/" className="text-decoration-none text-body">Actualités</Link>
+          <Link href="/videos" className="text-decoration-none text-body">Vidéos</Link>
+        </nav>
         <div className={`dropdown ${styles.languageDropdown}`} ref={dropdownRef}>
           <button
             ref={toggleRef}
