@@ -89,10 +89,10 @@ export function VideoFeedsTable() {
   </main>;
 }
 
-export function VideoFeedForm({ id }: { id?: string }) {
+export function VideoFeedForm({ id, initialSourceId = "" }: { id?: string; initialSourceId?: string }) {
   const router=useRouter();
   const [options,setOptions]=useState<Options|null>(null);
-  const [sourceId,setSourceId]=useState("");
+  const [sourceId,setSourceId]=useState(initialSourceId);
   const [categoryId,setCategoryId]=useState("");
   const [languageIsoCode2,setLanguage]=useState("fr");
   const [channelId,setChannelId]=useState("");
@@ -104,11 +104,11 @@ export function VideoFeedForm({ id }: { id?: string }) {
   useEffect(()=>{
     const c=new AbortController();
     Promise.all([json<Options>(base+"/form-options",{signal:c.signal}),id?json<Feed>(base+"/"+id,{signal:c.signal}):Promise.resolve(null)])
-    .then(([o,item])=>{if(c.signal.aborted)return;setOptions(o);if(item){setSourceId(item.sourceId);setCategoryId(item.categoryId);setLanguage(item.languageIsoCode2.trim());setChannelId(item.channelId);setFeedUrl(item.feedUrl);setActive(item.isActive);}})
+    .then(([o,item])=>{if(c.signal.aborted)return;setOptions(o);if(item){setSourceId(item.sourceId);setCategoryId(item.categoryId);setLanguage(item.languageIsoCode2.trim());setChannelId(item.channelId);setFeedUrl(item.feedUrl);setActive(item.isActive);}else{if(initialSourceId&&!o.sources.some(source=>source.id===initialSourceId))setSourceId("");const news=o.categories.find(category=>["actualite","actualites","news","actuality"].includes(category.slug.toLowerCase()));if(news)setCategoryId(news.id);}})
     .catch(e=>{if(!c.signal.aborted)setError(e instanceof Error?e.message:"Chargement impossible");})
     .finally(()=>{if(!c.signal.aborted)setLoading(false);});
     return ()=>c.abort();
-  },[id]);
+  },[id,initialSourceId]);
   function updateChannel(value:string){const found=getChannelId(value);const next=found||value.trim();setChannelId(next);if(channelPattern.test(next))setFeedUrl("https://www.youtube.com/feeds/videos.xml?channel_id="+next);}
   async function submit(e:React.FormEvent<HTMLFormElement>){
     e.preventDefault();if(!channelPattern.test(channelId)){setError("L’identifiant de chaîne doit commencer par UC et contenir 24 caractères.");return;}
