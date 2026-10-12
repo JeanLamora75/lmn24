@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { DatabaseService } from "../database/database.service";
 
-type ListQuery = { search?: string; sourceId?: string; categoryId?: string; language?: string;
+type ListQuery = { search?: string | undefined; sourceId?: string | undefined; categoryId?: string | undefined; language?: string | undefined;
   status: "all" | "published" | "hidden"; page: number; pageSize: number };
 @Injectable()
 export class VideosService {
