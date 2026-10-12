@@ -1,7 +1,9 @@
 import { BadRequestException, Body, Controller, Delete, Get, Header, HttpCode, Param, Patch, Post, Put, Query, Req, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { z } from "zod";
 import { AUTH_FAILURE_MESSAGE, DEFAULT_SESSION_COOKIE_NAME } from "../auth/auth.constants";
 import { AuthService } from "../auth/auth.service";
+import { ParserGatewayService } from "../parser/parser-gateway.service";
 import { videoFeedIdSchema, videoFeedInputSchema, videoFeedListSchema, videoFeedStatusSchema } from "./video-feeds.schemas";
 import { VideoFeedsService } from "./video-feeds.service";
 
@@ -10,7 +12,7 @@ type RequestLike = { headers: Record<string, string | string[] | undefined> };
 @Controller("admin/video-feeds")
 export class VideoFeedsController {
   private readonly cookieName: string;
-  constructor(private readonly service: VideoFeedsService, private readonly auth: AuthService, config: ConfigService) {
+  constructor(private readonly service: VideoFeedsService, private readonly auth: AuthService, private readonly parserGateway: ParserGatewayService, config: ConfigService) {
     this.cookieName = config.get<string>("SESSION_COOKIE_NAME")?.trim() || DEFAULT_SESSION_COOKIE_NAME;
   }
   private async requireAuth(request: RequestLike) {
@@ -34,6 +36,13 @@ export class VideoFeedsController {
   }
   @Get("form-options") @Header("Cache-Control", "no-store")
   async options(@Req() request: RequestLike) { await this.requireAuth(request); return this.service.formOptions(); }
+  @Post("collect") @Header("Cache-Control", "no-store")
+  async collect(@Req() request: RequestLike, @Body() body: unknown) {
+    await this.requireAuth(request);
+    const parsed = z.object({ feedId: z.string().uuid().optional() }).safeParse(body);
+    if (!parsed.success) throw new BadRequestException("Filtre de collecte invalide.");
+    return this.parserGateway.startVideoRun(parsed.data.feedId);
+  }
   @Get(":id") @Header("Cache-Control", "no-store")
   async get(@Req() request: RequestLike, @Param("id") raw: string) {
     await this.requireAuth(request); return this.service.get(this.id(raw));
