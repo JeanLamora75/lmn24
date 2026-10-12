@@ -104,3 +104,48 @@
 .deleteDialog::backdrop {
   background: rgb(0 0 0 / 50%);
 }
+
+/* SCRUM-33 — full-width, adaptive source pagination. */
+.paginationNav {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+.paginationList {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.15rem;
+}
+.paginationList > li {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.paginationList > li > button,
+.paginationList > li > span {
+  width: 100%;
+  text-align: center;
+  padding-left: 0.15rem;
+  padding-right: 0.15rem;
+}
+.publicSourceLink,
+.publicSourceLink:hover {
+  color: inherit;
+  text-decoration: none;
+}
+.publicSourceLink:hover { color: var(--bs-primary); }
+.publicSourceLink:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: 3px; }
+.socialIcons {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  white-space: nowrap;
+}
+.socialIcons a { display: inline-flex; align-items: center; }
+.socialIcons a:hover { opacity: 0.75; }
+.socialMissing {
+  display: inline-flex;
+  align-items: center;
+  filter: grayscale(1);
+  opacity: 0.25;
+}
