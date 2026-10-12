@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const ui = readFileSync(new URL("./SourcesTable.tsx", import.meta.url), "utf8");
-const controller = readFileSync(new URL("../../../../../backend/src/sources/sources.controller.ts", import.meta.url), "utf8");
+const controller = readFileSync(new URL("../../../../../../backend/src/sources/sources.controller.ts", import.meta.url), "utf8");
 
 describe("SCRUM-33 — liste des sources", () => {
   it("expose les trois filtres et leurs bornes non chevauchantes", () => {
