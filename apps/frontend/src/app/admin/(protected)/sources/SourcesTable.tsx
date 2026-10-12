@@ -90,10 +90,10 @@ function pageItems(current: number, total: number, slots: number): Array<number 
 }
 
 const socialNetworks = [
-  { key: "xUrl", label: "X", icon: "X", color: "#14171a" },
-  { key: "facebookUrl", label: "Facebook", icon: "f", color: "#1877f2" },
-  { key: "instagramUrl", label: "Instagram", icon: "◎", color: "#c13584" },
-  { key: "youtubeUrl", label: "YouTube", icon: "▶", color: "#ff0033" },
+  { key: "xUrl", label: "X", icon: "/social-icons/x.svg" },
+  { key: "facebookUrl", label: "Facebook", icon: "/social-icons/facebook.svg" },
+  { key: "instagramUrl", label: "Instagram", icon: "/social-icons/instagram.svg" },
+  { key: "youtubeUrl", label: "YouTube", icon: "/social-icons/youtube.svg" },
 ] as const;
 
 function PaginationNav({
@@ -649,7 +649,7 @@ export function SourcesTable() {
                       <div className={styles.socialIcons}>
                         {socialNetworks.map((network) => {
                           const url = safeWebsiteUrl(source[network.key] ?? "");
-                          const icon = <span className={styles.socialGlyph} style={url ? { color: network.color } : undefined}>{network.icon}</span>;
+                          const icon = <Image src={network.icon} width={20} height={20} alt="" aria-hidden="true" unoptimized />;
                           return url ? (
                             <a key={network.key} href={url} target="_blank" rel="noopener noreferrer" title={network.label + " — " + source.name} aria-label={"Ouvrir " + network.label + " de " + source.name}>{icon}</a>
                           ) : (
