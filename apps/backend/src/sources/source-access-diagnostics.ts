@@ -46,11 +46,11 @@ export async function assertSiteAccessible(
   }
   // Some anti-bot pages return 200 and must not be saved as a legitimate capture.
   // Read only visible page signals; no CAPTCHA/challenge solving is attempted.
-  const document = await page.evaluate(() => ({
+  const pageSignals = await page.evaluate(() => ({
     title: document.title.slice(0, 200),
     body: (document.body?.innerText ?? "").slice(0, 5000),
   }));
-  if (isAccessChallenge(document.title, document.body)) {
+  if (isAccessChallenge(pageSignals.title, pageSignals.body)) {
     throw new UnprocessableEntityException(
       "Le site affiche une protection anti-bot (Access denied / Bot detected). " +
       "La collecte automatisée est bloquée. Utilisez Chrome et la saisie manuelle.",
