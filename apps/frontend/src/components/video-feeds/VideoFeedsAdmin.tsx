@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useMessages } from "next-intl";
 
 type Options = { sources: { id: string; name: string; youtubeUrl: string | null }[]; categories: { id: string; slug: string }[]; languages: { isoCode2: string }[] };
 type Feed = { id: string; sourceId: string; categoryId: string; languageIsoCode2: string; channelId: string; feedUrl: string; isActive: boolean };
@@ -22,6 +23,11 @@ async function json<T>(path: string, init?: RequestInit): Promise<T> {
   const r = await fetch(path, { cache: "no-store", ...init });
   if (!r.ok) throw new Error(r.status === 409 ? "Ce flux existe déjà ou possède des vidéos / exécutions. Désactivez-le plutôt." : "Erreur serveur (" + r.status + ").");
   return r.json() as Promise<T>;
+}
+function readableLanguage(value: string): string {
+  try {
+    return new Intl.DisplayNames(["fr"], { type: "language" }).of(value.trim().toLowerCase()) ?? value;
+  } catch { return value; }
 }
 const formatDate = (s: string | undefined) => s ? new Date(s).toLocaleString("fr-FR") : "Jamais";
 
@@ -91,6 +97,11 @@ export function VideoFeedsTable() {
 
 export function VideoFeedForm({ id, initialSourceId = "" }: { id?: string; initialSourceId?: string }) {
   const router=useRouter();
+  const messages = useMessages();
+  const categoryNames = messages.categories as Record<string, string> | undefined;
+  const categoryName = (slug: string) => categoryNames?.[slug] ?? slug.replace(/-/g, " ");
+  const [resolving, setResolving] = useState(false);
+  const [lookupMessage, setLookupMessage] = useState("");
   const [options,setOptions]=useState<Options|null>(null);
   const [sourceId,setSourceId]=useState(initialSourceId);
   const [categoryId,setCategoryId]=useState("");
@@ -110,6 +121,23 @@ export function VideoFeedForm({ id, initialSourceId = "" }: { id?: string; initi
     return ()=>c.abort();
   },[id,initialSourceId]);
   function updateChannel(value:string){const found=getChannelId(value);const next=found||value.trim();setChannelId(next);if(channelPattern.test(next))setFeedUrl("https://www.youtube.com/feeds/videos.xml?channel_id="+next);}
+  async function resolveChannel() {
+    setResolving(true);
+    setLookupMessage("");
+    setError("");
+    try {
+      const query = channelId.trim();
+      const payload = await json<{channelId:string;feedUrl:string}>(base+"/resolve-channel", {
+        method:"POST",headers:{"content-type":"application/json"},
+        body:JSON.stringify({sourceId, ...(query ? {query} : {})}),
+      });
+      setChannelId(payload.channelId);
+      setFeedUrl(payload.feedUrl);
+      setLookupMessage("Identifiant YouTube trouvé. URL Atom renseignée automatiquement.");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Recherche YouTube impossible.");
+    } finally { setResolving(false); }
+  }
   async function submit(e:React.FormEvent<HTMLFormElement>){
     e.preventDefault();if(!channelPattern.test(channelId)){setError("L’identifiant de chaîne doit commencer par UC et contenir 24 caractères.");return;}
     setBusy(true);setError("");
@@ -119,9 +147,9 @@ export function VideoFeedForm({ id, initialSourceId = "" }: { id?: string; initi
   return <main className="container py-4" style={{maxWidth:900}}><Link href="/admin/video-feeds" className="btn btn-outline-secondary btn-sm mb-4">← Flux vidéo</Link><h1 className="h2 mb-4">{id?"Modifier un flux vidéo":"Ajouter un flux vidéo YouTube"}</h1>
     {error&&<div className="alert alert-danger" role="alert">{error}</div>}{loading?<p>Chargement…</p>:<form onSubmit={e=>void submit(e)} className="card shadow-sm"><div className="card-body row g-3">
     <div className="col-12"><label htmlFor="vf-source" className="form-label">Source / Journal *</label><select id="vf-source" className="form-select" required value={sourceId} onChange={e=>setSourceId(e.target.value)}><option value="">Sélectionner une source</option>{options?.sources.map(x=><option key={x.id} value={x.id}>{x.name}</option>)}</select>{options?.sources.find(x=>x.id===sourceId)?.youtubeUrl&&<p className="form-text">Chaîne renseignée sur la source : <a href={options.sources.find(x=>x.id===sourceId)?.youtubeUrl??"#"} target="_blank" rel="noopener noreferrer">Ouvrir YouTube</a></p>}</div>
-    <div className="col-md-6"><label htmlFor="vf-category" className="form-label">Catégorie *</label><select id="vf-category" className="form-select" required value={categoryId} onChange={e=>setCategoryId(e.target.value)}><option value="">Sélectionner</option>{options?.categories.map(x=><option key={x.id} value={x.id}>{x.slug}</option>)}</select></div>
-    <div className="col-md-6"><label htmlFor="vf-language" className="form-label">Langue *</label><select id="vf-language" className="form-select" required value={languageIsoCode2} onChange={e=>setLanguage(e.target.value)}>{options?.languages.map(x=><option key={x.isoCode2} value={x.isoCode2.trim()}>{x.isoCode2.trim()}</option>)}</select></div>
-    <div className="col-12"><label htmlFor="vf-channel" className="form-label">Identifiant de chaîne YouTube (channel_id) *</label><input id="vf-channel" className="form-control" required value={channelId} onChange={e=>updateChannel(e.target.value)} placeholder="UCxxxxxxxxxxxxxxxxxxxxxx" maxLength={255}/><p className="form-text">Colle un identifiant UC… ou une URL youtube.com/channel/UC… ; les liens @handle devront d’abord être résolus en identifiant de chaîne.</p></div>
+    <div className="col-md-6"><label htmlFor="vf-category" className="form-label">Catégorie *</label><select id="vf-category" className="form-select" required value={categoryId} onChange={e=>setCategoryId(e.target.value)}><option value="">Sélectionner</option>{options?.categories.map(x=><option key={x.id} value={x.id}>{categoryName(x.slug)}</option>)}</select></div>
+    <div className="col-md-6"><label htmlFor="vf-language" className="form-label">Langue *</label><select id="vf-language" className="form-select" required value={languageIsoCode2} onChange={e=>setLanguage(e.target.value)}>{options?.languages.map(x=><option key={x.isoCode2} value={x.isoCode2.trim()}>{readableLanguage(x.isoCode2)}</option>)}</select></div>
+    <div className="col-12"><label htmlFor="vf-channel" className="form-label">Identifiant de chaîne YouTube (channel_id) *</label><div className="input-group"><input id="vf-channel" className="form-control" required value={channelId} onChange={e=>{setLookupMessage("");updateChannel(e.target.value);}} placeholder="UC… ou @handle YouTube" maxLength={255}/><button type="button" className="btn btn-outline-primary" disabled={resolving||busy} onClick={()=>void resolveChannel()}>{resolving?"Recherche…":"Rechercher"}</button></div>{lookupMessage&&<p className="form-text text-success" role="status">{lookupMessage}</p>}<p className="form-text">Colle un identifiant UC… ou une URL youtube.com/channel/UC… ; les liens @handle devront d’abord être résolus en identifiant de chaîne.</p></div>
     <div className="col-12"><label htmlFor="vf-url" className="form-label">URL du flux Atom XML *</label><input id="vf-url" className="form-control" required type="url" value={feedUrl} onChange={e=>setFeedUrl(e.target.value)} maxLength={2048}/></div>
     <div className="col-12 form-check ms-3"><input id="vf-active" type="checkbox" className="form-check-input" checked={isActive} onChange={e=>setActive(e.target.checked)}/><label htmlFor="vf-active" className="form-check-label">Flux actif</label></div>
     </div><div className="card-footer d-flex justify-content-end gap-2"><Link href="/admin/video-feeds" className="btn btn-outline-secondary">Annuler</Link><button disabled={busy} className="btn btn-primary" type="submit">{busy?"Enregistrement…":"Enregistrer"}</button></div></form>}
