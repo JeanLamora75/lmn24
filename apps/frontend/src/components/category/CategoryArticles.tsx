@@ -81,6 +81,7 @@ export function CategoryArticles({ initialPage, paginationPath, locale, labels }
 
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSupportsObserver(false);
       return;
     }
