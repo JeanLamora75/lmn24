@@ -5,7 +5,7 @@ const backend = readFileSync(new URL("../../../../backend/src/statistics/statist
 
 describe("SCRUM-35 dashboard", () => {
   it("contains all six statistical areas", () => {
-    for (const title of ["Vue d'ensemble", "Activité éditoriale", "Couverture géographique",
+    for (const title of ["Vue d’ensemble", "Activité éditoriale", "Couverture géographique",
       "Santé des flux", "Qualité des fiches", "Actions prioritaires"]) expect(ui).toContain(title);
   });
   it("supports date and editorial filters", () => {
