@@ -153,6 +153,6 @@ export function PublicVideos({locale,initialPage,initialFilters}:Props){
       {loading?<p role="status">{t.loading}</p>:<button className="btn btn-outline-primary"
         onClick={loadMore} disabled={!observerSupported&&loading}>{t.more}</button>}</div>}
     {!hasMore&&!loading&&items.length>0&&<p role="status" className="text-center text-body-secondary">{t.end}</p>}
-    <p className="small text-body-secondary">Les vidéos s'ouvrent sur YouTube. <Link href={"/"+locale}>Retour aux actualités</Link></p>
+    <p className="small text-body-secondary">Les vidéos s’ouvrent sur YouTube. <Link href={"/"+locale}>Retour aux actualités</Link></p>
   </main>;
 }
