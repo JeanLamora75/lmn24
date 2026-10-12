@@ -62,7 +62,7 @@ export async function parseYouTubeAtom(xml: string, expectedChannelId: string): 
     const group = record(item.mediaGroup);
     const description = nestedText(mediaValue(group, "media:description"));
     const thumbnail = record(mediaValue(group, "media:thumbnail"));
-    const thumbnailUrl = safeUrl(thumbnail?.url ?? thumbnail?.["$"] && record(thumbnail["$"])?.url,
+    const thumbnailUrl = safeUrl(thumbnail?.url ?? record(thumbnail?.["$"])?.url,
       ["i.ytimg.com", "img.youtube.com", "i1.ytimg.com", "i2.ytimg.com", "i3.ytimg.com", "i4.ytimg.com"]);
     const updated = raw(item.updated);
     videos.push({
