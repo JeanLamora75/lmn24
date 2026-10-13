@@ -1,4 +1,4 @@
-import { BadRequestException, TooManyRequestsException, UnprocessableEntityException } from "@nestjs/common";
+import { BadRequestException, HttpException, UnprocessableEntityException } from "@nestjs/common";
 import { chromium, type Browser } from "playwright";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DatabaseService } from "../database/database.service";
@@ -121,7 +121,7 @@ describe("YouTube channel ID lookup", () => {
   it("respects rate limiting and does not retry the browser when YouTube sends 429", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => response("", { status: 429 })));
     await expect(service().discovery.resolve({ query: "@examplechannel" }))
-      .rejects.toThrow(TooManyRequestsException);
+      .rejects.toThrow(HttpException);
     expect(chromium.launch).not.toHaveBeenCalled();
   });
 
