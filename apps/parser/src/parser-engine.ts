@@ -377,7 +377,7 @@ export class ParserEngine {
         return {
           ok: true,
           itemsFound: parsed.itemsFound,
-          articlesImported: imported,
+          articlesImported: imported.imported,
           articlesSkipped: skipped,
           articlesWithHashtags: imported.matched,
         };
