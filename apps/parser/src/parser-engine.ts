@@ -424,9 +424,10 @@ export class ParserEngine {
     parsedArticles: Awaited<
       ReturnType<typeof parseFeedXml>
     >["articles"],
-  ): Promise<number> {
+    hashtags: readonly CompiledHashtag[],
+  ): Promise<{ imported: number; matched: number }> {
     if (parsedArticles.length === 0) {
-      return 0;
+      return { imported: 0, matched: 0 };
     }
 
     const uniqueByUrl = new Map(
@@ -460,12 +461,13 @@ export class ParserEngine {
     );
 
     let imported = 0;
+    let matched = 0;
 
     for (const chunk of splitIntoChunks(
       newArticles,
       INSERT_CHUNK_SIZE,
     )) {
-      const result = await this.database.article.createMany({
+      const inserted = await this.database.article.createManyAndReturn({
         data: chunk.map((article) => ({
           sourceId: feed.sourceId,
           categoryId: feed.categoryId,
@@ -477,11 +479,17 @@ export class ParserEngine {
           publishedAt: article.publishedAt,
         })),
         skipDuplicates: true,
+        select: { id: true, title: true, summary: true, publishedAt: true },
       });
 
-      imported += result.count;
+      imported += inserted.length;
+      // Only confirmed inserts, never every parsed or duplicate RSS entry.
+      // Atomic persistent hourly counters are implemented in SCRUM-52.
+      for (const article of inserted) {
+        if (matchArticleHashtags(article, hashtags).length > 0) matched += 1;
+      }
     }
 
-    return imported;
+    return { imported, matched };
   }
 }
