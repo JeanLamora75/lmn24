@@ -15,7 +15,7 @@ describe("SCRUM-43 public video isolation", () => {
       source: { id: "source-id", name: "Media", country: { isoCode2: "DE" } },
       category: { id: "category-id", slug: "news", displayOrder: 1, themeColor: "#112233" },
     };
-    const findMany = vi.fn(async (_query: unknown) => [video]);
+    const findMany = vi.fn(async (query: unknown) => { void query; return [video]; });
     const db = { prisma: { video: { findMany } } };
     const service = new PublicVideosService(db as never);
     const result = await service.list({ locale, limit: 24 });
