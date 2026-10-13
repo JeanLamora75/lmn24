@@ -336,3 +336,58 @@ model FeedVideoRun {
   @@index([feedVideoId, startedAt(sort: Desc)], map: "idx_feed_video_run_feed_started_at")
   @@map("feed_video_run")
 }
+
+// -----------------------------------------------------------------------------
+// SCRUM-48 — Hashtags (MVP)
+// No ArticleHashtag table: an article is counted at most once per hashtag.
+// Normalized alias keys are produced by the application and checked by the DB.
+// -----------------------------------------------------------------------------
+
+model Hashtag {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @db.VarChar(255)
+  slug      String   @unique(map: "hashtag_slug_unique") @db.VarChar(255)
+  imageUrl  String?  @map("image_url") @db.Text
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  aliases      HashtagAlias[]
+  hourlyCounts HashtagHourlyCount[]
+
+  @@index([isActive], map: "idx_hashtag_is_active")
+  @@map("hashtag")
+}
+
+model HashtagAlias {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  hashtagId        String   @map("hashtag_id") @db.Uuid
+  name             String   @db.VarChar(255)
+  // NFKC + Unicode case folding + Latin accent removal + space normalization.
+  // The backend/parser must share one canonicalization function for this value.
+  normalizedName   String   @map("normalized_name") @db.VarChar(255)
+  // Optional descriptive ISO code; no FK to Language: aliases may use languages
+  // not enabled for publishing LMN24 articles.
+  languageIsoCode2 String?  @map("language_iso_code2") @db.Char(2)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  hashtag Hashtag @relation(fields: [hashtagId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "hashtag_alias_hashtag_id_fkey")
+
+  @@unique([hashtagId, normalizedName], map: "hashtag_alias_hashtag_normalized_unique")
+  @@index([hashtagId], map: "idx_hashtag_alias_hashtag_id")
+  @@map("hashtag_alias")
+}
+
+model HashtagHourlyCount {
+  hashtagId   String   @map("hashtag_id") @db.Uuid
+  hourUtc     DateTime @map("hour_utc") @db.Timestamptz(6)
+  articleCount Int     @default(0) @map("article_count")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  hashtag Hashtag @relation(fields: [hashtagId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "hashtag_hourly_count_hashtag_id_fkey")
+
+  @@id([hashtagId, hourUtc], map: "hashtag_hourly_count_pkey")
+  @@index([hourUtc], map: "idx_hashtag_hourly_count_hour_utc")
+  @@map("hashtag_hourly_count")
+}
+
