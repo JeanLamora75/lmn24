@@ -374,7 +374,6 @@ model HashtagAlias {
   hashtag Hashtag @relation(fields: [hashtagId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "hashtag_alias_hashtag_id_fkey")
 
   @@unique([hashtagId, normalizedName], map: "hashtag_alias_hashtag_normalized_unique")
-  @@index([hashtagId], map: "idx_hashtag_alias_hashtag_id")
   @@map("hashtag_alias")
 }
 
