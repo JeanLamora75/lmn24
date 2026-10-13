@@ -257,7 +257,76 @@ export function HashtagForm({ mode, hashtagId }: Props) {
           {count} heure(s) de statistiques associées. Une modification des noms ou alias
           nécessitera une reconstruction des compteurs (prévue dans SCRUM-52).
         </p>}
-        <p className="form-text mt-3">L&apos;illustration du hashtag (upload et import d&apos;image) sera ajoutée dans SCRUM-50.</p>
+
+        <hr />
+        <h2 className="h5 mb-3">Image du hashtag</h2>
+        <div className="row g-3">
+          <div className="col-md-4">
+            {imageUrl ? (
+              <Image src={imageUrl} alt={"Illustration de " + values.name}
+                width={320} height={180} unoptimized className="img-fluid rounded border" />
+            ) : (
+              <div className="bg-body-tertiary border rounded d-flex align-items-center justify-content-center text-body-secondary"
+                style={{ aspectRatio: "16/9" }}>Aucune image</div>
+            )}
+            {imageUrl && (
+              <button type="button" className="btn btn-sm btn-outline-danger mt-2"
+                disabled={removingImage || saving} onClick={() => void removeImage()}>
+                {removingImage ? "Suppression…" : "Supprimer l’image"}
+              </button>
+            )}
+          </div>
+          <div className="col-md-8">
+            <fieldset>
+              <legend className="fs-6">Source de l’image</legend>
+              <div className="d-flex flex-wrap gap-3 mb-3">
+                <label className="form-check-label">
+                  <input type="radio" className="form-check-input me-2" name="imageSource"
+                    checked={mediaMode === "file"} onChange={() => setMediaMode("file")} />
+                  Fichier local
+                </label>
+                <label className="form-check-label">
+                  <input type="radio" className="form-check-input me-2" name="imageSource"
+                    checked={mediaMode === "url"} onChange={() => setMediaMode("url")} />
+                  Importer depuis une URL
+                </label>
+              </div>
+            </fieldset>
+            {mediaMode === "file" ? (
+              <div>
+                <label className="form-label" htmlFor="hashtag-image-file">Choisir une image</label>
+                <input id="hashtag-image-file" className="form-control" type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)} />
+                {selectedFile && <div className="form-text">Fichier choisi : {selectedFile.name}</div>}
+              </div>
+            ) : (
+              <div>
+                <label htmlFor="hashtag-image-url" className="form-label">URL HTTPS de l’image</label>
+                <input type="url" id="hashtag-image-url" className="form-control"
+                  value={remoteImageUrl} placeholder="https://example.org/photo.jpg"
+                  onChange={(e) => setRemoteImageUrl(e.target.value)} />
+                <p className="form-text">L’image sera téléchargée, convertie en WebP et enregistrée sur LMN24.</p>
+              </div>
+            )}
+            <p className="form-text mb-2">JPEG, PNG ou WebP, maximum 8 Mo. Conversion et optimisation WebP automatiques.</p>
+            <div className="d-flex flex-wrap gap-2">
+              <a className="btn btn-sm btn-outline-primary" target="_blank" rel="noopener noreferrer"
+                href={"https://www.google.com/search?tbm=isch&q=" + encodeURIComponent(values.name)}>
+                Rechercher sur Google Images ↗
+              </a>
+              <a className="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener noreferrer"
+                href={"https://commons.wikimedia.org/w/index.php?search=" + encodeURIComponent(values.name) +
+                  "&title=Special:MediaSearch&type=image"}>
+                Rechercher sur Wikimedia Commons ↗
+              </a>
+            </div>
+            <p className="form-text mt-2">
+              Vérifiez les droits de réutilisation et les crédits avant l’import.
+              Ces boutons ne téléchargent aucune image automatiquement.
+            </p>
+          </div>
+        </div>
         <div className="d-flex gap-2 justify-content-end mt-3">
           <Link className="btn btn-outline-secondary" href="/admin/hashtags">Annuler</Link>
           <button type="submit" disabled={saving} className="btn btn-primary">
