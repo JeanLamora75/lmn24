@@ -71,3 +71,60 @@ verrou de transaction PostgreSQL `pg_advisory_xact_lock(241024, 1)`.
 
 > La configuration de la page d'accueil réside dans `Category`. La capacité
 > d'articles est déterminée par `layoutType`, et non par une valeur `Setting`.
+
+## SCRUM-48 — Modèle Hashtags (migration SQL 008)
+
+Trois modèles sont ajoutés dans `schema.prisma` : `Hashtag`,
+`HashtagAlias` et `HashtagHourlyCount`. Ils ne créent **aucune**
+association `ArticleHashtag` ; l'image d'un hashtag reste un chemin vers un
+fichier, jamais un binaire en base.
+
+### Base existante (installation historique LMN24)
+
+**Ne lancez pas `prisma migrate dev` / `prisma migrate deploy`** sur une base
+préexistante non baselinée. Le dossier Prisma Migrate n'est pas initialisé :
+la migration est fournie explicitement dans
+`database/migrations/008_hashtag_data_model.sql`, comme les scripts historiques.
+
+1. Sauvegarder PostgreSQL et vérifier que les tables historiques de LMN24 sont présentes.
+2. Depuis la racine du monorepo sous PowerShell, appliquer **une seule fois** :
+
+```powershell
+psql -v ON_ERROR_STOP=1 -d "postgresql://USER:PASSWORD@localhost:5432/lmn24" -f database/migrations/008_hashtag_data_model.sql
+```
+
+3. Tester les contraintes sans conserver les lignes de test (transaction avec `ROLLBACK`) :
+
+```powershell
+psql -v ON_ERROR_STOP=1 -d "postgresql://USER:PASSWORD@localhost:5432/lmn24" -f database/tests/scrum_48_hashtag_schema_smoke.sql
+pnpm db:validate
+pnpm db:generate
+```
+
+4. Vérifier la présence de `hashtag`, `hashtag_alias` et
+   `hashtag_hourly_count` dans Prisma Studio.
+
+### Base neuve
+
+`database/schema.sql` inclut déjà ces trois tables : **ne pas exécuter la
+migration 008 après ce bootstrap**, car les tables existent. Les autres
+extensions du schéma LMN24 (notamment les vidéos) conservent leurs propres
+procédures de création/migration.
+
+### Contraintes et limites
+
+- `Hashtag.slug` est unique, en minuscules avec traits d'union.
+- `HashtagAlias.normalizedName` (stocké `normalized_name`) est **obligatoire**,
+  et unique avec `hashtagId`. Il sera calculé par un même helper de normalisation
+  dans le backend/parser (NFKC, casse, accents latins, espaces) lors de SCRUM-49/51.
+  La contrainte empêche les écritures concurrentes de clés équivalentes ;
+  l'API doit aussi refuser un alias équivalent au nom principal du hashtag.
+- `HashtagHourlyCount` a une clé primaire composite (`hashtagId`, `hourUtc`),
+  un compteur non négatif et une contrainte d'alignement de l'heure UTC.
+- Suppression d'un hashtag : cascade uniquement vers ses alias et ses compteurs,
+  jamais vers les articles.
+- Les index sur `hour_utc` servent à la purge ; l'index unique composite des
+  alias couvre déjà la recherche par `hashtag_id` (pas d'index redondant).
+- La création de schéma ne remplit pas les compteurs ; l'ingestion et le
+  recalcul appartiennent aux Stories SCRUM-51/52.
+- Aucun script n'a été exécuté sur la base PostgreSQL locale lors de ce changement.
