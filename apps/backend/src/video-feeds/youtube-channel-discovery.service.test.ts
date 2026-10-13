@@ -177,6 +177,30 @@ describe("YouTube channel ID lookup", () => {
     expect(browser.browser.close).toHaveBeenCalledOnce();
   });
 
+  it("resolves a pasted App Link tag without network access even if a source is selected", async () => {
+    const channelId = "UCZIJs433Z7v-DmCMNYS-GLg";
+    const meta = '<meta property="al:ios:url" content="vnd.youtube://www.youtube.com/channel/' + channelId + '">';
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+    const { discovery, findUnique } = service(null);
+    await expect(discovery.resolve({ sourceId, query: meta })).resolves.toEqual({
+      channelId,
+      feedUrl: "https://www.youtube.com/feeds/videos.xml?channel_id=" + channelId,
+    });
+    expect(findUnique).not.toHaveBeenCalled();
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(chromium.launch).not.toHaveBeenCalled();
+  });
+
+  it("rejects pasted App Links with spoofed domains rather than falling back to source", async () => {
+    const malicious = '<meta property="al:ios:url" content="vnd.youtube://www.youtube.com.evil.test/channel/' + channel + '">';
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+    await expect(service().discovery.resolve({ sourceId, query: malicious }))
+      .rejects.toThrow(BadRequestException);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
   it("explains missing Youtube URL instead of returning a generic 422", async () => {
     await expect(service(null).discovery.resolve({ sourceId }))
       .rejects.toThrow(BadRequestException);
