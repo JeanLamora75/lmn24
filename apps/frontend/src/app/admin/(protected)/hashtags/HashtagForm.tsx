@@ -187,12 +187,12 @@ export function HashtagForm({ mode, hashtagId }: Props) {
           {warnings.map((message) => <p className="mb-1" key={message}>{message}</p>)}
         </div>}
         <button type="button" className="btn btn-sm btn-outline-info align-self-start mt-2"
-          onClick={() => void checkWarnings()}>Analyser les risques d'homonymes</button>
+          onClick={() => void checkWarnings()}>Analyser les risques d&apos;homonymes</button>
         {mode === "edit" && <p className="form-text mt-3">
           {count} heure(s) de statistiques associées. Une modification des noms ou alias
           nécessitera une reconstruction des compteurs (prévue dans SCRUM-52).
         </p>}
-        <p className="form-text mt-3">L'illustration du hashtag (upload et import d'image) sera ajoutée dans SCRUM-50.</p>
+        <p className="form-text mt-3">L&apos;illustration du hashtag (upload et import d&apos;image) sera ajoutée dans SCRUM-50.</p>
         <div className="d-flex gap-2 justify-content-end mt-3">
           <Link className="btn btn-outline-secondary" href="/admin/hashtags">Annuler</Link>
           <button type="submit" disabled={saving} className="btn btn-primary">
