@@ -54,9 +54,16 @@ const ADMIN_FEATURES = [
   {
     href: "/admin/parser",
     icon: "play-circle",
-    title: "Lancer le parser",
+    title: "Lancer le Parser Infos",
     description:
-      "Déclencher manuellement une exécution du parser.",
+      "Déclencher la collecte des flux RSS/XML d’actualités.",
+  },
+  {
+    href: "/admin/video-parser",
+    icon: "play-circle",
+    title: "Lancer le Parser Vidéos",
+    description:
+      "Déclencher la collecte des flux XML YouTube et suivre son avancement.",
   },
   {
     href: "/admin/parser-monitoring",

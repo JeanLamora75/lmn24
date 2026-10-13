@@ -12,7 +12,7 @@ import pino from "pino";
 import { z } from "zod";
 
 import { ParserEngine } from "./parser-engine.js";
-import { VideoParserEngine } from "./video-parser-engine.js";
+import { VideoParserEngine, type VideoParserFilters } from "./video-parser-engine.js";
 import {
   ActiveRunError,
   RunManager,
@@ -138,7 +138,7 @@ async function bootstrap(): Promise<void> {
   const engine = new ParserEngine(database);
   const runs = new RunManager(engine);
   const videoEngine = new VideoParserEngine(database);
-  let videoRunActive = false;
+  const videoRuns = new RunManager<VideoParserFilters>(videoEngine);
 
   const server = createServer(async (request, response) => {
     try {
@@ -168,23 +168,22 @@ async function bootstrap(): Promise<void> {
       }
 
       if (request.method === "POST" && url.pathname === "/video-runs") {
-        if (videoRunActive) {
-          writeApiError(response, 409, "VIDEO_RUN_ACTIVE", "Video extraction already in progress.");
-          return;
-        }
         const body = await readJson(request);
-        const parsedVideo = z.object({ feedId: z.string().uuid().optional() }).safeParse(body);
+        const parsedVideo = filtersSchema.extend({ feedId: z.string().uuid().optional() }).strict().safeParse(body);
         if (!parsedVideo.success) {
-          writeApiError(response, 400, "INVALID_VIDEO_FILTER", "Invalid video parser filter.");
+          writeApiError(response, 400, "INVALID_VIDEO_FILTER", "Critères du parser vidéo invalides.");
           return;
         }
-        videoRunActive = true;
-        writeJson(response, 202, { accepted: true });
-        void videoEngine.run(parsedVideo.data.feedId).then(result => {
-          logger.info({ result }, "YouTube video extraction completed");
-        }).catch(error => {
-          logger.error({ error }, "YouTube video extraction failed");
-        }).finally(() => { videoRunActive = false; });
+        try {
+          const runId = videoRuns.start(parsedVideo.data);
+          writeJson(response, 202, { accepted: true, runId });
+        } catch (error) {
+          if (error instanceof ActiveRunError) {
+            writeApiError(response, 409, "VIDEO_RUN_ACTIVE", "Une extraction vidéo est déjà en cours.");
+            return;
+          }
+          throw error;
+        }
         return;
       }
 
@@ -224,11 +223,12 @@ async function bootstrap(): Promise<void> {
       }
 
       const eventMatch = url.pathname.match(
-        /^\/runs\/([0-9a-f-]+)\/events$/,
+        /^\/(runs|video-runs)\/([0-9a-f-]+)\/events$/,
       );
 
-      if (request.method === "GET" && eventMatch?.[1]) {
-        const runId = eventMatch[1];
+      if (request.method === "GET" && eventMatch?.[2]) {
+        const runId = eventMatch[2];
+        const manager = eventMatch[1] === "video-runs" ? videoRuns : runs;
 
         response.writeHead(200, {
           "content-type": "text/event-stream; charset=utf-8",
@@ -237,7 +237,7 @@ async function bootstrap(): Promise<void> {
           "x-accel-buffering": "no",
         });
 
-        const subscription = runs.subscribe(runId, (event) => {
+        const subscription = manager.subscribe(runId, (event) => {
           response.write("data: " + JSON.stringify(event) + "\n\n");
 
           if (

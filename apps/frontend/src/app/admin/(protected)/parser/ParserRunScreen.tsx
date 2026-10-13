@@ -86,8 +86,10 @@ function timeLabel(timestamp: string): string {
   });
 }
 
-export function ParserRunScreen() {
+export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" }) {
   const router = useRouter();
+  const videoMode = mode === "videos";
+  const endpoint = videoMode ? "/api/admin/parser/video-runs" : "/api/admin/parser/runs";
   const eventSourceRef = useRef<EventSource | null>(null);
   const messageSequence = useRef(0);
 
@@ -159,7 +161,7 @@ export function ParserRunScreen() {
             cache: "no-store",
             signal: controller.signal,
           }),
-          fetch("/api/admin/feeds/form-options", {
+          fetch(videoMode ? "/api/admin/video-feeds/form-options" : "/api/admin/feeds/form-options", {
             cache: "no-store",
             signal: controller.signal,
           }),
@@ -194,7 +196,7 @@ export function ParserRunScreen() {
             {
               id: 1,
               text:
-                "Impossible de charger les critères de lancement du parser.",
+                "Impossible de charger les critères de lancement du " + (videoMode ? "parser vidéos." : "parser infos."),
               isError: true,
             },
           ]);
@@ -209,7 +211,7 @@ export function ParserRunScreen() {
     void loadOptions();
 
     return () => controller.abort();
-  }, [router]);
+  }, [router, videoMode]);
 
   useEffect(() => {
     return () => {
@@ -255,7 +257,7 @@ export function ParserRunScreen() {
     };
 
     try {
-      const response = await fetch("/api/admin/parser/runs", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -264,6 +266,7 @@ export function ParserRunScreen() {
       });
 
       if (response.status === 401) {
+        setRunning(false);
         router.replace("/admin/login");
         return;
       }
@@ -272,7 +275,7 @@ export function ParserRunScreen() {
         throw new Error(
           await readErrorMessage(
             response,
-            "Le lancement du parser a échoué.",
+            "Le lancement du " + (videoMode ? "parser vidéos" : "parser infos") + " a échoué.",
           ),
         );
       }
@@ -281,7 +284,7 @@ export function ParserRunScreen() {
         runId: string;
       };
       const eventSource = new EventSource(
-        "/api/admin/parser/runs/" +
+        endpoint + "/" +
           encodeURIComponent(result.runId) +
           "/events",
       );
@@ -316,7 +319,7 @@ export function ParserRunScreen() {
           {
             id: messageSequence.current,
             text:
-              "La connexion de suivi du parser a été interrompue.",
+              "La connexion de suivi du " + (videoMode ? "parser vidéos" : "parser infos") + " a été interrompue.",
             isError: true,
           },
         ]);
@@ -330,7 +333,7 @@ export function ParserRunScreen() {
           text:
             error instanceof Error
               ? error.message
-              : "Le lancement du parser a échoué.",
+              : "Le lancement du " + (videoMode ? "parser vidéos" : "parser infos") + " a échoué.",
           isError: true,
         },
       ]);
@@ -346,9 +349,11 @@ export function ParserRunScreen() {
       </div>
 
       <header className="mb-4">
-        <h1 className="h2 mb-1">Lancer le parser</h1>
+        <h1 className="h2 mb-1">{videoMode ? "Lancer le Parser Vidéos" : "Lancer le Parser Infos"}</h1>
         <p className="text-body-secondary mb-0">
-          Lancez une extraction manuelle des flux RSS/XML actifs.
+          {videoMode
+            ? "Lancez une extraction manuelle des flux Atom/XML YouTube actifs."
+            : "Lancez une extraction manuelle des flux RSS/XML d’actualités actifs."}
         </p>
       </header>
 
