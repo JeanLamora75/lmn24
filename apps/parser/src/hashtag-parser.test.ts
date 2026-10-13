@@ -18,8 +18,8 @@ const entries = [
 const matches = compileHashtags([
   { id: "moscou", name: "Moscou", aliases: [{ name: "Москва" }] },
 ]);
-type ImportArticles = (feed: typeof feed, entries: typeof entries,
-  matches: typeof matches) => Promise<{ imported: number; matched: number }>;
+type ImportArticles = (inputFeed: typeof feed, inputEntries: typeof entries,
+  activeHashtags: typeof matches) => Promise<{ imported: number; matched: number }>;
 
 describe("SCRUM-51 — parser only counts committed, unique inserted articles", () => {
   it("never attributes a duplicate feed item to newly imported hashtag matches", async () => {
