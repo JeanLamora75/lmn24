@@ -41,12 +41,11 @@ export function validatePublicImageUrl(raw: string): URL {
 }
 
 async function approvedAddress(hostname: string): Promise<string> {
-  let records: Awaited<ReturnType<typeof lookup>>;
   try {
     // Pin the validated IPv4 address in the actual TLS connection; do not
     // let the HTTPS client resolve DNS a second time (DNS rebinding).
-    const addresses = await lookup(hostname, { all: true, verbatim: true });
-    if (!addresses.length || addresses.some((r) => r.family !== 4 || !isPublicIPv4(r.address))) {
+    const addresses = await lookup(hostname, { family: 4, all: true });
+    if (!addresses.length || addresses.some((r) => !isPublicIPv4(r.address))) {
       throw new Error("blocked");
     }
     return addresses[0]!.address;
