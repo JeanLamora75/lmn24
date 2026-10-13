@@ -6,6 +6,7 @@ import { AuthModule } from "./auth/auth.module";
 import { CategoriesModule } from "./categories/categories.module";
 import { DatabaseModule } from "./database/database.module";
 import { FeedsModule } from "./feeds/feeds.module";
+import { HashtagsModule } from "./hashtags/hashtags.module";
 import { HealthController } from "./health.controller";
 import { ParserModule } from "./parser/parser.module";
 import { SourcesModule } from "./sources/sources.module";
@@ -25,6 +26,7 @@ import { VideosModule } from "./videos/videos.module";
     SourcesModule,
     FeedsModule,
     CategoriesModule,
+    HashtagsModule,
     ParserModule,
     StatisticsModule,
     VideoFeedsModule,
