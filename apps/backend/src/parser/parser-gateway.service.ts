@@ -60,13 +60,17 @@ export class ParserGatewayService {
     return (await response.json()) as { runId: string };
   }
 
-  async startVideoRun(feedId?: string): Promise<{ accepted: boolean }> {
+  async startVideoRun(feedId?: string): Promise<{ accepted: boolean; runId: string }> {
+    return this.startVideoBatch(feedId ? { feedId } : {});
+  }
+
+  async startVideoBatch(payload: ParserStartPayload & { feedId?: string }): Promise<{ accepted: boolean; runId: string }> {
     let response: Response;
     try {
       response = await fetch(this.parserUrl + "/video-runs", {
         method: "POST",
         headers: { "content-type": "application/json", "x-parser-secret": this.sharedSecret },
-        body: JSON.stringify(feedId ? { feedId } : {}),
+        body: JSON.stringify(payload),
         signal: AbortSignal.timeout(10_000),
       });
     } catch {
@@ -77,16 +81,24 @@ export class ParserGatewayService {
       if (response.status === 409) throw new ConflictException(message);
       throw new BadGatewayException(message);
     }
-    return await response.json() as { accepted: boolean };
+    return await response.json() as { accepted: boolean; runId: string };
   }
 
   async openEvents(runId: string): Promise<Response> {
+    return this.openRunEvents(runId, "runs");
+  }
+
+  async openVideoEvents(runId: string): Promise<Response> {
+    return this.openRunEvents(runId, "video-runs");
+  }
+
+  private async openRunEvents(runId: string, resource: "runs" | "video-runs"): Promise<Response> {
     let response: Response;
 
     try {
       response = await fetch(
         this.parserUrl +
-          "/runs/" +
+          "/" + resource + "/" +
           encodeURIComponent(runId) +
           "/events",
         {
