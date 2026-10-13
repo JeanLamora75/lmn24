@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -9,6 +10,7 @@ type Values = {
   name: string; slug: string; isActive: boolean; aliases: AliasInput[];
 };
 type HashtagFromApi = {
+  id: string; imageUrl: string | null;
   name: string; slug: string; isActive: boolean;
   aliases: Array<{ name: string; languageIsoCode2: string | null }>;
   hourlyCountRows: number;
@@ -39,6 +41,14 @@ export function HashtagForm({ mode, hashtagId }: Props) {
   const [error, setError] = useState("");
   const [warnings, setWarnings] = useState<string[]>([]);
   const [count, setCount] = useState(0);
+  const [createdId, setCreatedId] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [mediaMode, setMediaMode] = useState<"file" | "url">("file");
+  const [remoteImageUrl, setRemoteImageUrl] = useState("");
+  const [removingImage, setRemovingImage] = useState(false);
+  const [notice, setNotice] = useState("");
+  const currentId = hashtagId ?? createdId;
 
   useEffect(() => {
     if (mode !== "edit") return;
@@ -59,6 +69,7 @@ export function HashtagForm({ mode, hashtagId }: Props) {
             })),
           });
           setCount(item.hourlyCountRows);
+          setImageUrl(item.imageUrl);
           setSlugEdited(true);
         }
       } catch (e) {
