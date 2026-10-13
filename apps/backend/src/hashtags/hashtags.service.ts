@@ -1,8 +1,9 @@
 import {
-  BadRequestException, ConflictException, Injectable, NotFoundException,
+  BadRequestException, ConflictException, Injectable, NotFoundException, Optional,
 } from "@nestjs/common";
 import { normalizeHashtagTerm } from "@lmn24/contracts";
 import { DatabaseService } from "../database/database.service";
+import { HashtagMediaService } from "./hashtag-media.service";
 
 export type HashtagAliasInput = { name: string; languageIsoCode2?: string | null | undefined };
 export type HashtagInput = {
@@ -35,7 +36,10 @@ function isUniqueConstraint(error: unknown): boolean {
 
 @Injectable()
 export class HashtagsService {
-  constructor(private readonly database: DatabaseService) {}
+  constructor(
+    private readonly database: DatabaseService,
+    @Optional() private readonly media?: HashtagMediaService,
+  ) {}
 
   async list(params: HashtagListInput) {
     const where = {
@@ -170,9 +174,57 @@ export class HashtagsService {
     return this.getById(id);
   }
 
+  /** Persist a new managed image only after the hashtag exists.
+   * Conditional update prevents a concurrent edit from orphaning an image.
+   */
+  private async attachImage(id: string, url: string) {
+    try {
+      const current = await this.getById(id);
+      const updated = await this.database.prisma.hashtag.updateMany({
+        where: { id, imageUrl: current.imageUrl }, data: { imageUrl: url },
+      });
+      if (updated.count !== 1) {
+        throw new ConflictException("Le hashtag a été modifié. Réessayez après rechargement.");
+      }
+      await this.media?.deleteLocalImage(current.imageUrl);
+      return this.getById(id);
+    } catch (error) {
+      await this.media?.deleteLocalImage(url);
+      throw error;
+    }
+  }
+
+  async uploadImage(id: string, buffer: Buffer) {
+    if (!this.media) throw new Error("HashtagMediaService is required.");
+    await this.getById(id);
+    const url = await this.media.storeImage(buffer);
+    return this.attachImage(id, url);
+  }
+
+  async importImage(id: string, url: string) {
+    if (!this.media) throw new Error("HashtagMediaService is required.");
+    await this.getById(id);
+    const stored = await this.media.importFromUrl(url);
+    return this.attachImage(id, stored);
+  }
+
+  async removeImage(id: string) {
+    const current = await this.getById(id);
+    if (current.imageUrl === null) return current;
+    const updated = await this.database.prisma.hashtag.updateMany({
+      where: { id, imageUrl: current.imageUrl }, data: { imageUrl: null },
+    });
+    if (updated.count !== 1) {
+      throw new ConflictException("Le hashtag a été modifié. Réessayez après rechargement.");
+    }
+    await this.media?.deleteLocalImage(current.imageUrl);
+    return this.getById(id);
+  }
+
   async delete(id: string) {
     const existing = await this.getById(id);
     await this.database.prisma.hashtag.delete({ where: { id } });
+    await this.media?.deleteLocalImage(existing.imageUrl);
     // Alias and hourly counts are removed by database CASCADE.
     // Image cleanup will be introduced by SCRUM-50.
     return { deleted: true, aliasCount: existing.aliases.length,
