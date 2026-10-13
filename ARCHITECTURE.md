@@ -743,39 +743,29 @@ Le détail exact du modèle doit être synchronisé avec `DATA_MODEL.md`.
 
 ---
 
-## 12. Nettoyage des articles
+## 12. Nettoyage des contenus et politique de rétention
 
-### 12.1 Conservation
+### 12.1. Principes
 
-Les articles sont des données temporaires d’agrégation.
+Les contenus sont des données temporaires d'agrégation. Les durées sont **indépendantes par famille** et configurables depuis l'administration via des clés `Setting` globales de type `INTEGER` (valeurs positives, en jours). La conservation par défaut des articles devient **60 jours**, en remplacement de l'ancienne valeur de 3 jours. La conservation des vidéos est distincte ; la rétention des logs et des compteurs de hashtags ne se confond pas avec celle des contenus.
 
-La durée de conservation est paramétrable via l’administration.
+Clés de référence : `retentionArticlesDays`, `retentionVideosDays`, `retentionInfoParserRunsDays`, `retentionVideoParserRunsDays`, `retentionInfoParserLogsDays`, `retentionVideoParserLogsDays`, `retentionBackendLogsDays`, `retentionHashtagHourlyCountsDays`. Défauts, types et périmètres sont décrits dans `docs/DATA_MODEL.md` §8 et `database/seed_retention_settings.sql`.
 
-Valeur initiale :
+### 12.2. Dates de référence
 
-```text
-3 jours
-```
+- Articles : `Article.publishedAt`, et non la date d'import `createdAt`.
+- Vidéos : `Video.publishedAt`, et non `createdAt`.
+- Historiques du parser infos et du parser vidéo : `FeedRun.startedAt` et `FeedVideoRun.startedAt`, sans suppression prématurée d'une exécution `RUNNING`.
+- Compteurs horaires hashtags : `HashtagHourlyCount.hourUtc`, en UTC, bornés par la période pendant laquelle les articles demeurent disponibles.
+- Journaux techniques Pino : dates des fichiers, **uniquement** si le service gère effectivement leur stockage local. Pour stdout ou les systèmes de logs de l'hébergeur, une politique de rétention externe est indispensable.
 
-### 12.2 Date de référence
+### 12.3. Exécution et fiabilité
 
-La date utilisée pour calculer l’expiration est paramétrable côté backend.
+Un **module de maintenance planifié dédié**, indépendant des cycles d'extraction RSS/YouTube mais hébergé dans l'application `apps/parser` pour le MVP, lit périodiquement les paramètres via Prisma. Prévoir une exécution quotidienne (heure effective paramétrée par l'ordonnanceur), une seule exécution active grâce à une protection de concurrence, des suppressions **par lots** et un récapitulatif (quantités purgées, durée, erreurs). Le parser continue à fonctionner en cas d'échec d'une purge.
 
-Valeur initiale :
+Les paramètres ne produisent **aucune suppression par leur seul enregistrement** : le code de maintenance et les migrations nécessaires doivent être développés, validés et déployés. Il est possible de supprimer physiquement les lignes expirées, y compris les articles supprimés manuellement. Un changement de rétention n'est pas rétroactif : il ne restaure pas les données détruites. La cohérence avec les compteurs de hashtags doit être assurée avant/après les purges ; les compteurs concernés sont recalculés ou expirés, jamais laissés obsolètes.
 
-```text
-createdAt
-```
-
-Le système doit permettre ultérieurement d’utiliser `publishedAt` sans modification du code métier principal.
-
-### 12.3 Suppression
-
-La purge est réalisée par une tâche planifiée distincte du parser.
-
-Les articles expirés peuvent être supprimés physiquement de PostgreSQL.
-
-La suppression manuelle d’un article depuis l’administration est également autorisée.
+L'API d'administration refuse les nombres négatifs, zéro, valeurs non entières et durées incohérentes avec les périodes publiques des tendances. L'interface affiche les unités en jours, les valeurs courantes et un avertissement sur l'irréversibilité des purges. L'activation du job nécessite tests de sécurité et de performance, ainsi qu'une gestion documentée de VACUUM et des sauvegardes PostgreSQL.
 
 ---
 
@@ -920,8 +910,7 @@ Elle doit notamment pouvoir gérer :
 - timeout spécifique d’un feed ;
 - nombre de retries ;
 - concurrence maximale du parser ;
-- durée de conservation des articles ;
-- date de référence de conservation ;
+- durées de conservation **distinctes** des articles, vidéos, historiques d'exécution des parsers infos/vidéos, logs techniques et agrégats horaires de hashtags (voir §12) ;
 - durée du cache backend ;
 - autres paramètres métier futurs.
 
@@ -1413,14 +1402,15 @@ Admin
   → PostgreSQL
 ```
 
-### 35.4 Purge des articles
+### 35.4 Maintenance et purges indépendantes
 
 ```text
-Tâche planifiée parser
-  → Lecture paramètres de rétention
-  → Sélection articles expirés
-  → Suppression physique
-  → Logs
+Module de maintenance planifié (apps/parser)
+  → Lecture de chaque clé de rétention (Setting / scope GLOBAL)
+  → Purges distinctes : article / video / feed_run / feed_video_run
+  → Expiration et cohérence des compteurs hashtag_hourly_count
+  → Rotation / purge des fichiers de logs gérés par LMN24, le cas échéant
+  → Bilan journalisé, métriques et reprise sur échec
 ```
 
 ---
@@ -1548,3 +1538,39 @@ L'architecture **conserve les trois applications existantes**. Le traitement vid
 6. Intégrer les statistiques et les tests bout-en-bout, vérifier sécurité, performances et CI.
 
 Les conventions existantes de ce document restent applicables (Prisma partagé, authentification, logs, REST, PostgreSQL, UTC, tests et revue GitHub). Aucune migration n'est considérée exécutée tant qu'elle n'a pas été développée, testée et appliquée explicitement.
+
+---
+
+## Extension cible — Hashtags et tendances (documentation préalable)
+
+> **Statut : conception cible, à développer par les User Stories Jira.** Ce document ne crée ni migrations Prisma ni tâches planifiées. Les tables et contraintes détaillées figurent dans `docs/DATA_MODEL.md` §14.
+
+### Administration et médias
+
+- Gestion des sujets `Hashtag` : création, modification, suppression contrôlée, activation, nom de référence, slug et alias multilingues `HashtagAlias`.
+- Image illustrative facultative : upload depuis l'administration ou import depuis une URL validée, convertie en WebP et enregistrée dans un **répertoire persistant** distinct de PostgreSQL, avec contrôles de type, taille et contenu. Ne pas écrire dans un répertoire éphémère du build Next.js ; la sauvegarde des images doit être prévue par l'hébergement.
+- Boutons de recherche externe (Google Images et, facultativement, Wikimedia Commons) dans un nouvel onglet. Les droits de réutilisation et les éventuelles obligations d'attribution restent à vérifier avant import.
+
+### Détection et comptabilisation
+
+- Recherche d'un hashtag dans `Article.title` et `Article.summary` via son nom et ses alias ; recherche tolérante à la casse/aux accents tout en évitant les sous-chaînes non pertinentes. Les mêmes règles de normalisation s'appliquent au calcul et à la page de détail.
+- **Une seule mention par article et par hashtag**, même en présence de plusieurs alias. Les mentions sont rattachées à l'heure UTC de `Article.publishedAt`, pas à la date d'import.
+- Le module d'ingestion actualise les agrégats horaires `HashtagHourlyCount` sans table persistante `ArticleHashtag`. Les imports tardifs, modifications, suppressions et nouveaux alias entraînent une remise à niveau des créneaux affectés ou une reconstruction bornée et idempotente depuis les articles conservés ; ne pas simplement incrémenter à chaque tentative d'import.
+- Un automate horaire calcule/met en cache les classements publics sur **24 heures / 7 jours / 30 jours**, limités à la période de rétention disponible. Le classement peut proposer le volume de mentions et sa progression ; ces critères seront précisés dans Jira.
+- Sur PostgreSQL, étudier les index de recherche textuelle (notamment `pg_trgm`) en tenant compte des langues et de la normalisation. Les requêtes publiques doivent être paginées et testées sur les volumes attendus (500 flux et ~250 hashtags).
+
+### Présentation publique et APIs
+
+- La route localisée de classement Hashtags affiche les images, les noms, les nombres de mentions et la période sélectionnée ; seul un hashtag actif est public.
+- Un clic sur le nom ou l'image ouvre la page du hashtag, qui affiche les articles correspondants **toutes langues confondues**, contrairement à la règle habituelle de filtre linguistique des pages catégories. Cette exception s'applique exclusivement à la page détail d'un hashtag.
+- La composition de cette page réemploie celle d'une page catégorie : premier bloc « À la Une + grille », puis alternance des grilles 3×2 et 4×2 ; tri `publishedAt DESC` et départage `id DESC`, liens vers les sources d'origine, drapeaux et respect du responsive.
+- Le frontend ne consulte jamais directement PostgreSQL : NestJS fournit des APIs d'administration authentifiées et des APIs publiques paginées et protégées contre les recherches excessives.
+- Les tableaux horaires sont soumis à `retentionHashtagHourlyCountsDays` et aux limites des données articles encore disponibles. Les définitions et images de hashtags sont conservées tant qu'un administrateur ne les supprime pas.
+
+### Administration des durées de rétention
+
+- Ajouter une page ou section administrative « Conservation des données » avec **un champ numérique en jours pour chaque famille** : articles, vidéos, historiques parser infos et parser vidéos, fichiers logs parser infos et parser vidéos, fichiers logs backend, compteurs horaires hashtags.
+- Une API NestJS réservée à `ADMIN` lit/modifie exclusivement ces clés autorisées, vérifie leur existence, le type `INTEGER`, les bornes autorisées et `scope=GLOBAL`, puis renvoie les valeurs effectives. Les modifications prennent effet au prochain cycle de maintenance.
+- Les paramètres d'historique `FeedRun`/`FeedVideoRun` sont séparés des journaux techniques Pino ; un réglage de logs locaux n'est applicable que si des fichiers réellement gérés par LMN24 existent. Les journaux stdout/externalisés et les sauvegardes nécessitent une politique indépendante côté hébergeur.
+- La création initiale des huit clés est fournie dans `database/seed_retention_settings.sql`. Les valeurs sont installées en base uniquement si l'administrateur exécute ce SQL (ou une procédure de seed dédiée). Tant que les jobs ne sont pas développés, elles n'entraînent **aucune purge**.
+
