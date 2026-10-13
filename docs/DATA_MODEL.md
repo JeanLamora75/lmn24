@@ -574,11 +574,12 @@ Termes ou orthographes alternatifs d'un sujet (ex. « Moscou », « Moscow », �
 |---|---|---:|---|
 | `id` | UUID | Oui | Identifiant |
 | `hashtagId` | UUID | Oui | Référence `Hashtag` |
-| `name` | String(255) | Oui | Variante recherchée |
-| `languageIsoCode2` | String(2) | Non | Langue indicative, si connue |
+| `name` | String(255) | Oui | Variante visible et recherchée |
+| `normalizedName` | String(255) | Oui | Clé canonique produite par le moteur partagé (Unicode NFKC, casse, accents latins, espaces) |
+| `languageIsoCode2` | String(2) | Non | Langue indicative, si connue ; aucune FK à `Language` pour autoriser les alias d'autres langues |
 | `createdAt` | DateTime | Oui | Date de création |
 
-**Contraintes :** unicité des variantes normalisées au sein d'un hashtag ; index `hashtagId`. Le nom principal est également un terme recherché. Les frontières de mots, casse, accents et variantes Unicode doivent être traités sans faux positifs évidents.
+**Contraintes :** unicité `(hashtagId, normalizedName)` ; l'index unique couvre aussi le parcours des alias par `hashtagId` sans doublon d'index. Le nom principal est également un terme recherché. L'API devra refuser un alias équivalent à ce nom principal. Les frontières de mots, casse, accents et variantes Unicode doivent être traités sans faux positifs évidents.
 
 ## 14.3. HashtagHourlyCount (table `hashtag_hourly_count`)
 
@@ -591,7 +592,7 @@ Compteur agrégé du nombre **d'articles distincts** évoquant un hashtag, calcu
 | `articleCount` | Integer | Oui | Nombre d'articles distincts correspondants |
 | `updatedAt` | DateTime | Oui | Dernier recalcul / ajustement |
 
-**Contraintes :** clé composite `(hashtagId, hourUtc)`, compteur non négatif, index chronologique. Suppression en cascade des compteurs lors de la suppression d'un hashtag. **Aucune table `article_hashtag` persistante** pour le MVP.
+**Contraintes :** clé primaire composite `(hashtagId, hourUtc)`, compteur non négatif, **heure UTC alignée au début de l'heure** et index chronologique.  Suppression en cascade des compteurs lors de la suppression d'un hashtag. **Aucune table `article_hashtag` persistante** pour le MVP.
 
 ## 14.4. Règles de cohérence des tendances
 
