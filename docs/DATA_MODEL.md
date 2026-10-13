@@ -602,6 +602,46 @@ Compteur agrégé du nombre **d'articles distincts** évoquant un hashtag, calcu
 - La purge des articles (`retentionArticlesDays`) et des compteurs (`retentionHashtagHourlyCountsDays`) est cohérente ; un changement de durée peut nécessiter une reconstruction. Il n'est pas possible de recréer des statistiques plus anciennes que les articles déjà purgés.
 - Les statistiques sont indicatives et reflètent les articles **actuellement présents** en base, non l'historique complet de l'actualité.
 
+## 14.5. Règles fonctionnelles du MVP — proposition pour validation
+
+Ces règles précisent la conception du MVP avant création des Stories Jira. Elles restent modifiables lors de la validation fonctionnelle ; les choix numériques sont des **valeurs initiales proposées**, non des performances garanties.
+
+### Périmètre des mentions
+
+1. Seuls les **articles d'actualité enregistrés** dans `Article` sont pris en compte, jamais les vidéos YouTube, les descriptions de sources ni le contenu intégral des pages externes.
+2. Un article est une unité de comptage : une mention au moins dans `title` ou `summary` compte **1** pour le hashtag concerné. Répétitions dans le titre/résumé et correspondance de plusieurs alias du même hashtag ne multiplient pas ce nombre.
+3. Les articles de **toutes les langues** et de **toutes les sources** sont pris en compte ; aucun filtre de langue de l'interface ne modifie le classement. Deux articles distincts sur le même événement sont comptés séparément, sauf s'ils ont été dédupliqués dans la table `Article`.
+4. Seuls les articles dont `publishedAt` est dans la fenêtre analysée et non dans le futur y contribuent. Les flux inactifs n'entraînent pas une suppression rétroactive des articles déjà conservés. Les hashtags désactivés ne sont pas publiés.
+5. La définition d'un sujet repose sur **son nom principal + ses alias saisis manuellement**. Pas de traduction automatique, d'extraction de nouveaux sujets ni de désambiguïsation sémantique par IA dans le MVP.
+
+### Correspondance multilingue et termes ambigus
+
+- Normaliser Unicode, espaces, casse et accents latins pour les comparaisons ; traiter les mots entiers et les séquences de mots, en évitant les simples inclusions de sous-chaînes (« Rome » ne doit pas trouver « promenade »).
+- Les variantes translittérées ou dans une autre écriture (ex. `Moscow` / `Москва`) exigent un **alias explicite**. Aucun rapprochement phonétique ni synonymie automatiques.
+- Un alias pouvant avoir plusieurs sens (ex. « Orange ») ne permet pas de déterminer l'intention de l'article : afficher un **avertissement dans l'administration** pour les termes courts/ambigus et permettre à l'administrateur d'affiner ou de retirer les alias. Le moteur MVP fait une correspondance lexicale, pas une classification sémantique.
+- Un même alias normalisé sur plusieurs hashtags déclenche un avertissement de recouvrement, sans bloquer par défaut. Un article peut compter pour deux sujets distincts s'il correspond à chacun de leurs définitions.
+- Les termes vides, doublons normalisés **au sein du même hashtag** et alias ne contenant pas de caractères utiles sont refusés.
+
+### Fenêtres d'analyse et classement
+
+- Le rafraîchissement des classements est **horaire**. À l'instant `T` (dernière heure UTC complète), les périodes sont les intervalles semi-ouverts : 24 h `[T-24h, T)`, 7 j `[T-7j, T)`, 30 j `[T-30j, T)`. `T` et la date de dernière mise à jour sont affichés au public.
+- Pour une période `P`, la comparaison est effectuée avec la **période précédente de même durée** : `[T-2P, T-P)`. Les fenêtres sont communes à tous les hashtags, sans avantage lié à la date de création d'un sujet. Lorsqu'un nouveau hashtag est créé, un backfill sur les articles conservés alimente les fenêtres disponibles.
+- **« Plus cités »** : classement décroissant par nombre d'articles de la fenêtre, à partir de 1 mention ; départager par nom puis slug.
+- **« Tendances » (proposition MVP)** : seuls les hashtags avec **au moins 10 articles dans la fenêtre** et **au moins 5 mentions de plus** que la période précédente y figurent ; score = `(mentions_courantes - mentions_précédentes) / max(mentions_précédentes, 5)`. Tri décroissant sur le score, puis nombre de mentions, puis slug. Le plancher de 5 évite une division par zéro et atténue les pointes sur de très petits volumes. Les seuils sont à confirmer dans Jira et pourront évoluer sans changer le schéma.
+- **Variation affichée** : lorsque le dénominateur précédent est strictement positif, `100 × (Nactuel - Nprécédent) / Nprécédent`, arrondie à l'entier ; lorsque `Nprécédent = 0` et `Nactuel > 0`, afficher **« Nouveau »** au lieu d'un pourcentage infini. Une absence de données précédentes (historique insuffisant) affiche **« — »**, jamais `+∞ %`.
+- Si la rétention disponible est trop courte pour la fenêtre courante **et sa période précédente**, la progression et le mode « Tendances » pour cette durée sont indisponibles. Pour une comparaison 30 j / 30 j, il faut donc **60 jours réellement disponibles**. Le classement « Plus cités » peut toujours porter sur les seules données disponibles, avec une mention explicite de leur couverture.
+- Les compteurs horaires reflètent **les heures closes** ; les nouveaux articles reçus dans l'heure en cours peuvent déjà figurer sur la page détaillée, mais ne figurent dans le classement qu'à la mise à jour suivante. Le nombre affiché sur le classement ne doit pas être présenté comme un total historique des 60 jours.
+
+## 14.6. Parcours publics et administration — MVP
+
+- Routes publiques prévues : `/[locale]/hashtags` (classement) et `/[locale]/hashtags/[slug]` (détail). La langue de l'URL traduit l'interface, **pas** les articles de la page de hashtag.
+- Le classement présente les sujets actifs avec image de couverture (fallback en l'absence d'image), nom, mentions sur la période, progression ou « Nouveau »/« — », sélection 24 h / 7 j / 30 j et tri « Plus cités » / « Tendances ». Les liens de l'image et du nom ouvrent la page détail, pas un site externe.
+- La page détail reprend la présentation des pages catégories : « À la Une + grille », puis grille 3×2 et grille compacte 4×2 en alternance ; articles paginés, tri `publishedAt DESC, id DESC`, drapeaux et ouverture de l'article original dans un nouvel onglet. Recherche sur le nom et tous les alias, toutes langues.
+- L'administration propose CRUD / activation des hashtags, gestion des alias, upload d'image et import contrôlé d'image par URL, ouverture de recherches Google Images / Wikimedia Commons dans un nouvel onglet. Ne jamais télécharger automatiquement une image depuis Google Images ni présumer de son droit de réutilisation.
+- L'image est conservée hors PostgreSQL, sur un stockage **persistant** sauvegardé avec l'application, convertie en WebP ; la base contient uniquement `imageUrl`. Les suppressions et remplacements d'images doivent retirer les fichiers devenus orphelins après confirmation de l'opération.
+- En cas de suppression, de modification d'un alias, d'un article ou d'un hashtag, les compteurs concernés sont reconstruits/reconciliés afin de ne pas conserver d'anciens résultats. L'historique horaire est limité aux articles effectivement disponibles : **aucune statistique ne doit survivre comme si un article purgé était encore consultable**.
+
+
 # 15. Durées de conservation indépendantes — modèle cible
 
 La table `Setting` existante porte les huit durées décrites en section 8. Les nettoyages sont des traitements applicatifs séparés, planifiés, idempotents et observables :
