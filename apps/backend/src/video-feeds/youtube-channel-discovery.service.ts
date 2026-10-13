@@ -62,7 +62,7 @@ export function youtubeChannelFromHtml(html: string): string | null {
 
 export function normalizeYouTubeLookup(raw: string): { channelId?: string; url?: string } {
   const value = raw.trim();
-  if (value.startsWith("<meta") || value.startsWith("<META")) {
+  if (/^<meta\b/i.test(value)) {
     const channelId = youtubeChannelFromHtml(value);
     if (channelId) return { channelId };
     throw new BadRequestException("La balise HTML collée ne contient pas de channel_id YouTube valide. Copiez la balise al:ios:url ou al:android:url de la page de chaîne.");
