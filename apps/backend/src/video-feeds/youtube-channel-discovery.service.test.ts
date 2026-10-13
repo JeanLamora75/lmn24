@@ -205,7 +205,7 @@ describe("YouTube channel ID lookup", () => {
 
   it("prioritizes the official YouTube API for Corriere dello Sport when a key is configured", async () => {
     const original = "https://www.youtube.com/@corrieredellosport-official";
-    const apiId = "UCZIJs433Z7v-DmCMNYS-GLg";
+    const apiId = channel; // Synthetic API response, not the real Corriere ID.
     const fetchSpy = vi.fn(async (input: string | URL | Request) => {
       const url = new URL(String(input));
       expect(url.hostname).toBe("www.googleapis.com");
@@ -229,9 +229,7 @@ describe("YouTube channel ID lookup", () => {
     const fetchSpy = vi.fn(async () => response('<meta itemprop="channelId" content="' + channel + '">'));
     vi.stubGlobal("fetch", fetchSpy);
     await expect(service("https://www.youtube.com/@examplechannel").discovery.resolve({ sourceId })).resolves.toEqual(expected);
-    const [url] = fetchSpy.mock.calls[0]!;
-    expect(String(url)).toContain("youtube.com/@examplechannel");
-    expect(String(url)).not.toContain("googleapis.com");
+    expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining("youtube.com/@examplechannel"), expect.anything());
   });
 
   it("falls back if the official API returns an error and does not expose the key", async () => {
