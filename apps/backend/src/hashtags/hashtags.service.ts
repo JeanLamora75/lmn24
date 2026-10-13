@@ -4,7 +4,7 @@ import {
 import { normalizeHashtagTerm } from "@lmn24/contracts";
 import { DatabaseService } from "../database/database.service";
 
-export type HashtagAliasInput = { name: string; languageIsoCode2?: string | null };
+export type HashtagAliasInput = { name: string; languageIsoCode2?: string | null | undefined };
 export type HashtagInput = {
   name: string;
   slug: string;
@@ -12,7 +12,7 @@ export type HashtagInput = {
   aliases: HashtagAliasInput[];
 };
 export type HashtagListInput = {
-  search?: string;
+  search?: string | undefined;
   status: "all" | "active" | "inactive";
   page: number;
   pageSize: number;
