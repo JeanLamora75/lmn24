@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -160,7 +161,20 @@ export function HashtagsAdmin() {
               : items.length === 0 ? <tr><td colSpan={4}>Aucun hashtag trouvé.</td></tr>
               : items.map((item) => (
                 <tr key={item.id}>
-                  <td><strong>{item.name}</strong><div className="small text-body-secondary">#{item.slug}</div></td>
+                  <td>
+                    <div className="d-flex align-items-center gap-2">
+                      {item.imageUrl ? (
+                        <Image src={item.imageUrl} alt="" width={64} height={36}
+                          unoptimized className="rounded border" style={{ objectFit: "cover" }} />
+                      ) : (
+                        <span className="d-inline-flex bg-body-secondary rounded border align-items-center justify-content-center text-body-secondary"
+                          aria-hidden="true" style={{ width: 64, height: 36 }}>#</span>
+                      )}
+                      <div><strong>{item.name}</strong>
+                        <div className="small text-body-secondary">#{item.slug}</div>
+                      </div>
+                    </div>
+                  </td>
                   <td className="small">{item.aliases.length ?
                     item.aliases.map((a) => a.name + (a.languageIsoCode2 ?
                       " (" + a.languageIsoCode2 + ")" : "")).join(", ") : "—"}</td>

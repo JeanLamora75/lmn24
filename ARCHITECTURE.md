@@ -1595,3 +1595,16 @@ Les conventions existantes de ce document restent applicables (Prisma partagé, 
 - Les paramètres d'historique `FeedRun`/`FeedVideoRun` sont séparés des journaux techniques Pino ; un réglage de logs locaux n'est applicable que si des fichiers réellement gérés par LMN24 existent. Les journaux stdout/externalisés et les sauvegardes nécessitent une politique indépendante côté hébergeur.
 - La création initiale des huit clés est fournie dans `database/seed_retention_settings.sql`. Les valeurs sont installées en base uniquement si l'administrateur exécute ce SQL (ou une procédure de seed dédiée). Tant que les jobs ne sont pas développés, elles n'entraînent **aucune purge**.
 
+
+
+### SCRUM-50 — Stockage d’images des hashtags (implémenté)
+
+Le backend NestJS assure l’import contrôlé et la publication des images de hashtags. `HASHTAG_MEDIA_DIR` définit un répertoire en lecture/écriture **persistant et sauvegardé**, distinct du build Next.js et de PostgreSQL. À défaut, le stockage local par défaut est `apps/backend/uploads/hashtags`, réservé aux tests et développements ; en production OVH, monter/configurer explicitement un volume durable.
+
+- Upload ADMIN : `POST /admin/hashtags/:id/image` (multipart, champ `file`), 8 Mo au maximum, formats JPEG/PNG/WebP réellement décodables.
+- Import HTTPS ADMIN : `POST /admin/hashtags/:id/image/import` (`{url}`), adresses IP publiques uniquement, DNS épinglé sur l’IP validée, contrôle de chaque redirection, délai et taille bornés, refus des contenus non-images.
+- Transformation serveur `sharp` : orientation, conversion WebP, taille maximale 1200 × 675, qualité 78 ; nom de fichier aléatoire UUID, pas de fichiers stockés en base.
+- Lecture publique : `/api/media/hashtags/:filename` via proxy Next.js vers `GET /media/hashtags/:filename` ; contrôle strict du nom de fichier, type `image/webp`, cache côté navigateur.
+- Remplacement/suppression : mise à jour conditionnelle de `Hashtag.imageUrl`, nettoyage de l’ancienne image après confirmation de la sauvegarde ; conservation de l’ancienne image en cas d’échec de la conversion, du téléchargement ou de la mise à jour.
+- Les boutons Google Images et Wikimedia Commons ouvrent des recherches externes dans un nouvel onglet, **sans téléchargement automatisé** ; l’administrateur est responsable des licences et crédits.
+- Ne jamais stocker `HASHTAG_MEDIA_DIR` dans un répertoire éphémère OVH. Prévoir permissions minimales, sauvegarde et supervision de l’espace disque ; le remplacement physique du volume doit être coordonné avec les fichiers déjà référencés en base.

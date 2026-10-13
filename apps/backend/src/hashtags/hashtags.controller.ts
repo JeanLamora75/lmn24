@@ -1,9 +1,10 @@
 import {
   BadRequestException, Body, Controller, Delete, ForbiddenException,
   Get, Header, HttpCode, Param, Patch, Post, Put, Query,
-  Req, UnauthorizedException,
+  Req, UnauthorizedException, UploadedFile, UseInterceptors,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { z } from "zod";
 import { AuthService } from "../auth/auth.service";
 import { AUTH_FAILURE_MESSAGE, DEFAULT_SESSION_COOKIE_NAME } from "../auth/auth.constants";
@@ -93,6 +94,41 @@ export class HashtagsController {
     return { warnings: await this.hashtags.getWarnings(
       parsed.data.hashtag, parsed.data.exceptId,
     ) };
+  }
+
+  @Post(":id/image")
+  @UseInterceptors(FileInterceptor("file", { limits: { fileSize: 8 * 1024 * 1024 } }))
+  @Header("Cache-Control", "no-store")
+  async uploadImage(
+    @Req() request: RequestLike,
+    @Param("id") rawId: string,
+    @UploadedFile() file?: { buffer: Buffer },
+  ) {
+    await this.assertAdmin(request);
+    const id = this.parseId(rawId);
+    if (!file?.buffer) throw new BadRequestException("Aucune image n'a été fournie.");
+    return this.hashtags.uploadImage(id, file.buffer);
+  }
+
+  @Post(":id/image/import")
+  @Header("Cache-Control", "no-store")
+  async importImage(
+    @Req() request: RequestLike, @Param("id") rawId: string, @Body() body: unknown,
+  ) {
+    await this.assertAdmin(request);
+    const id = this.parseId(rawId);
+    const parsed = z.object({
+      url: z.string().trim().url().max(2048),
+    }).strict().safeParse(body);
+    if (!parsed.success) throw new BadRequestException("URL de l'image invalide.");
+    return this.hashtags.importImage(id, parsed.data.url);
+  }
+
+  @Delete(":id/image")
+  @Header("Cache-Control", "no-store")
+  async removeImage(@Req() request: RequestLike, @Param("id") rawId: string) {
+    await this.assertAdmin(request);
+    return this.hashtags.removeImage(this.parseId(rawId));
   }
 
   @Get(":id")

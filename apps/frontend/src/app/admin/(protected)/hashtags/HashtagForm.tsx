@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -9,6 +10,7 @@ type Values = {
   name: string; slug: string; isActive: boolean; aliases: AliasInput[];
 };
 type HashtagFromApi = {
+  id: string; imageUrl: string | null;
   name: string; slug: string; isActive: boolean;
   aliases: Array<{ name: string; languageIsoCode2: string | null }>;
   hourlyCountRows: number;
@@ -39,6 +41,14 @@ export function HashtagForm({ mode, hashtagId }: Props) {
   const [error, setError] = useState("");
   const [warnings, setWarnings] = useState<string[]>([]);
   const [count, setCount] = useState(0);
+  const [createdId, setCreatedId] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [mediaMode, setMediaMode] = useState<"file" | "url">("file");
+  const [remoteImageUrl, setRemoteImageUrl] = useState("");
+  const [removingImage, setRemovingImage] = useState(false);
+  const [notice, setNotice] = useState("");
+  const currentId = hashtagId ?? createdId;
 
   useEffect(() => {
     if (mode !== "edit") return;
@@ -59,6 +69,7 @@ export function HashtagForm({ mode, hashtagId }: Props) {
             })),
           });
           setCount(item.hourlyCountRows);
+          setImageUrl(item.imageUrl);
           setSlugEdited(true);
         }
       } catch (e) {
@@ -94,23 +105,76 @@ export function HashtagForm({ mode, hashtagId }: Props) {
     setWarnings(result.warnings);
   };
 
+
   const save = async (event: FormEvent) => {
     event.preventDefault();
     setError("");
+    setNotice("");
     setSaving(true);
+    let persisted = false;
     try {
+      const id = currentId;
       const response = await fetch(
-        mode === "edit" ? "/api/admin/hashtags/" + encodeURIComponent(hashtagId) : "/api/admin/hashtags",
-        { method: mode === "edit" ? "PUT" : "POST",
-          headers: { "content-type": "application/json" }, body: JSON.stringify(payload()) },
+        id ? "/api/admin/hashtags/" + encodeURIComponent(id) : "/api/admin/hashtags",
+        {
+          method: id ? "PUT" : "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload()),
+        },
       );
       if (response.status === 401) { router.replace("/admin/login"); return; }
       if (!response.ok) throw new Error(await errorMessage(response));
+      const saved = await response.json() as HashtagFromApi;
+      setCreatedId(saved.id);
+      persisted = true;
+      const url = "/api/admin/hashtags/" + encodeURIComponent(saved.id) + "/image";
+      if (mediaMode === "file" && selectedFile) {
+        const form = new FormData();
+        form.append("file", selectedFile);
+        const imgResponse = await fetch(url, { method: "POST", body: form });
+        if (!imgResponse.ok) throw new Error(await errorMessage(imgResponse));
+        const result = await imgResponse.json() as HashtagFromApi;
+        setImageUrl(result.imageUrl);
+      } else if (mediaMode === "url" && remoteImageUrl.trim()) {
+        const imgResponse = await fetch(url + "/import", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ url: remoteImageUrl.trim() }),
+        });
+        if (!imgResponse.ok) throw new Error(await errorMessage(imgResponse));
+        const result = await imgResponse.json() as HashtagFromApi;
+        setImageUrl(result.imageUrl);
+      }
+      setSelectedFile(null);
+      setRemoteImageUrl("");
       router.push("/admin/hashtags");
       router.refresh();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Enregistrement impossible.");
+      const reason = e instanceof Error ? e.message : "Enregistrement impossible.";
+      setError(persisted
+        ? "Hashtag enregistré, mais image non importée : " + reason +
+          " Vous pouvez corriger l'image et réessayer sans recréer le hashtag."
+        : reason);
     } finally { setSaving(false); }
+  };
+
+  const removeImage = async () => {
+    if (!currentId || !imageUrl || !window.confirm("Supprimer l’image du hashtag ?")) return;
+    setRemovingImage(true);
+    setError("");
+    setNotice("");
+    try {
+      const response = await fetch("/api/admin/hashtags/" + encodeURIComponent(currentId) + "/image", {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error(await errorMessage(response));
+      setImageUrl(null);
+      setSelectedFile(null);
+      setRemoteImageUrl("");
+      setNotice("Image supprimée.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Suppression de l’image impossible.");
+    } finally { setRemovingImage(false); }
   };
 
   if (loading) return <main className="container py-4"><p>Chargement du hashtag…</p></main>;
@@ -123,6 +187,7 @@ export function HashtagForm({ mode, hashtagId }: Props) {
       </div>
       <form className="card shadow-sm p-4" onSubmit={(event) => void save(event)}>
         {error && <div role="alert" className="alert alert-danger">{error}</div>}
+        {notice && <div role="status" className="alert alert-success">{notice}</div>}
         <div className="row g-3">
           <div className="col-md-7">
             <label className="form-label" htmlFor="hashtagName">Nom du hashtag *</label>
@@ -192,7 +257,76 @@ export function HashtagForm({ mode, hashtagId }: Props) {
           {count} heure(s) de statistiques associées. Une modification des noms ou alias
           nécessitera une reconstruction des compteurs (prévue dans SCRUM-52).
         </p>}
-        <p className="form-text mt-3">L&apos;illustration du hashtag (upload et import d&apos;image) sera ajoutée dans SCRUM-50.</p>
+
+        <hr />
+        <h2 className="h5 mb-3">Image du hashtag</h2>
+        <div className="row g-3">
+          <div className="col-md-4">
+            {imageUrl ? (
+              <Image src={imageUrl} alt={"Illustration de " + values.name}
+                width={320} height={180} unoptimized className="img-fluid rounded border" />
+            ) : (
+              <div className="bg-body-tertiary border rounded d-flex align-items-center justify-content-center text-body-secondary"
+                style={{ aspectRatio: "16/9" }}>Aucune image</div>
+            )}
+            {imageUrl && (
+              <button type="button" className="btn btn-sm btn-outline-danger mt-2"
+                disabled={removingImage || saving} onClick={() => void removeImage()}>
+                {removingImage ? "Suppression…" : "Supprimer l’image"}
+              </button>
+            )}
+          </div>
+          <div className="col-md-8">
+            <fieldset>
+              <legend className="fs-6">Source de l’image</legend>
+              <div className="d-flex flex-wrap gap-3 mb-3">
+                <label className="form-check-label">
+                  <input type="radio" className="form-check-input me-2" name="imageSource"
+                    checked={mediaMode === "file"} onChange={() => setMediaMode("file")} />
+                  Fichier local
+                </label>
+                <label className="form-check-label">
+                  <input type="radio" className="form-check-input me-2" name="imageSource"
+                    checked={mediaMode === "url"} onChange={() => setMediaMode("url")} />
+                  Importer depuis une URL
+                </label>
+              </div>
+            </fieldset>
+            {mediaMode === "file" ? (
+              <div>
+                <label className="form-label" htmlFor="hashtag-image-file">Choisir une image</label>
+                <input id="hashtag-image-file" className="form-control" type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)} />
+                {selectedFile && <div className="form-text">Fichier choisi : {selectedFile.name}</div>}
+              </div>
+            ) : (
+              <div>
+                <label htmlFor="hashtag-image-url" className="form-label">URL HTTPS de l’image</label>
+                <input type="url" id="hashtag-image-url" className="form-control"
+                  value={remoteImageUrl} placeholder="https://example.org/photo.jpg"
+                  onChange={(e) => setRemoteImageUrl(e.target.value)} />
+                <p className="form-text">L’image sera téléchargée, convertie en WebP et enregistrée sur LMN24.</p>
+              </div>
+            )}
+            <p className="form-text mb-2">JPEG, PNG ou WebP, maximum 8 Mo. Conversion et optimisation WebP automatiques.</p>
+            <div className="d-flex flex-wrap gap-2">
+              <a className="btn btn-sm btn-outline-primary" target="_blank" rel="noopener noreferrer"
+                href={"https://www.google.com/search?tbm=isch&q=" + encodeURIComponent(values.name)}>
+                Rechercher sur Google Images ↗
+              </a>
+              <a className="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener noreferrer"
+                href={"https://commons.wikimedia.org/w/index.php?search=" + encodeURIComponent(values.name) +
+                  "&title=Special:MediaSearch&type=image"}>
+                Rechercher sur Wikimedia Commons ↗
+              </a>
+            </div>
+            <p className="form-text mt-2">
+              Vérifiez les droits de réutilisation et les crédits avant l’import.
+              Ces boutons ne téléchargent aucune image automatiquement.
+            </p>
+          </div>
+        </div>
         <div className="d-flex gap-2 justify-content-end mt-3">
           <Link className="btn btn-outline-secondary" href="/admin/hashtags">Annuler</Link>
           <button type="submit" disabled={saving} className="btn btn-primary">
