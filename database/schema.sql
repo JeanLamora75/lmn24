@@ -96,7 +96,8 @@ CREATE TABLE category (
     CONSTRAINT category_display_order_unique UNIQUE (display_order),
     CONSTRAINT category_display_order_positive CHECK (display_order > 0),
     CONSTRAINT category_theme_color_format
-        CHECK (theme_color ~ '^#[0-9A-F]{6}
+        CHECK (theme_color ~ '^#[0-9A-F]{6}$')
+);
 
 CREATE TRIGGER trg_category_updated_at
 BEFORE UPDATE ON category
@@ -423,7 +424,6 @@ CREATE TRIGGER trg_session_updated_at
 BEFORE UPDATE ON session
 FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
-
 
 -- ---------------------------------------------------------------------------
 -- HASHTAGS / SCRUM-48
