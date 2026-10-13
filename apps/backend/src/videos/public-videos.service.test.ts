@@ -15,7 +15,7 @@ describe("SCRUM-43 public video isolation", () => {
       source: { id: "source-id", name: "Media", country: { isoCode2: "DE" } },
       category: { id: "category-id", slug: "news", displayOrder: 1, themeColor: "#112233" },
     };
-    const findMany = vi.fn().mockResolvedValue([video]);
+    const findMany = vi.fn(async (_query: unknown) => [video]);
     const db = { prisma: { video: { findMany } } };
     const service = new PublicVideosService(db as never);
     const result = await service.list({ locale, limit: 24 });
@@ -30,7 +30,8 @@ describe("SCRUM-43 public video isolation", () => {
     }));
     // No source.isActive clause: an explicit publication decision takes priority,
     // matching the public articles homepage.
-    expect(findMany.mock.calls[0]?.[0]?.where?.source).toBeUndefined();
+    const query = findMany.mock.calls[0]?.[0] as { where: { source?: unknown } } | undefined;
+    expect(query?.where.source).toBeUndefined();
   });
 
   it("keeps country filtering available at API level without excluding inactive sources", async () => {
