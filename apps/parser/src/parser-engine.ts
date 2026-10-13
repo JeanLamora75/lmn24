@@ -1,4 +1,5 @@
 import type { DatabaseClient } from "@lmn24/database";
+import { compileHashtags, matchArticleHashtags, type CompiledHashtag } from "@lmn24/contracts";
 
 import { parseFeedXml } from "./feed-parser.js";
 
@@ -24,6 +25,7 @@ export type ParserEvent = {
   itemsFound?: number | undefined;
   articlesImported?: number | undefined;
   articlesSkipped?: number | undefined;
+  articlesWithHashtags?: number | undefined;
 };
 
 type FeedRow = {
@@ -40,6 +42,7 @@ type FeedResult =
       itemsFound: number;
       articlesImported: number;
       articlesSkipped: number;
+      articlesWithHashtags: number;
     }
   | {
       ok: false;
@@ -82,6 +85,11 @@ export class ParserEngine {
   ): Promise<void> {
     const settings = await this.loadSettings();
     const feeds = await this.loadFeeds(filters);
+    // Load active subjects once per run. Alias edits take effect next run.
+    const activeHashtags = compileHashtags(await this.database.hashtag.findMany({
+      where: { isActive: true },
+      select: { id: true, name: true, aliases: { select: { name: true } } },
+    }));
 
     emit({
       type: "run-started",
@@ -98,6 +106,7 @@ export class ParserEngine {
     let totalItemsFound = 0;
     let totalImported = 0;
     let totalSkipped = 0;
+    let totalMatched = 0;
 
     for (let index = 0; index < feeds.length; index += 1) {
       const feed = feeds[index]!;
@@ -118,13 +127,14 @@ export class ParserEngine {
       });
 
       try {
-        const result = await this.processFeed(feed, settings);
+        const result = await this.processFeed(feed, settings, activeHashtags);
 
         if (result.ok) {
           successfulFeeds += 1;
           totalItemsFound += result.itemsFound;
           totalImported += result.articlesImported;
           totalSkipped += result.articlesSkipped;
+          totalMatched += result.articlesWithHashtags;
 
           emit({
             type: "feed-success",
@@ -136,13 +146,14 @@ export class ParserEngine {
               result.articlesImported +
               " ajoutés — " +
               result.articlesSkipped +
-              " ignorés",
+              " ignorés — " + result.articlesWithHashtags + " nouveaux articles mentionnant un hashtag",
             feedUrl: feed.feedUrl,
             feedIndex: index + 1,
             feedTotal: feeds.length,
             itemsFound: result.itemsFound,
             articlesImported: result.articlesImported,
             articlesSkipped: result.articlesSkipped,
+            articlesWithHashtags: result.articlesWithHashtags,
           });
         } else {
           failedFeeds += 1;
@@ -187,11 +198,12 @@ export class ParserEngine {
         totalImported +
         " nouveaux articles enregistrés\n" +
         totalSkipped +
-        " articles ignorés",
+        " articles ignorés\n" + totalMatched + " nouveaux articles mentionnant un hashtag",
       feedTotal: feeds.length,
       itemsFound: totalItemsFound,
       articlesImported: totalImported,
       articlesSkipped: totalSkipped,
+      articlesWithHashtags: totalMatched,
     });
   }
 
@@ -290,6 +302,7 @@ export class ParserEngine {
   private async processFeed(
     feed: FeedRow,
     settings: ParserSettings,
+    hashtags: readonly CompiledHashtag[],
   ): Promise<FeedResult> {
     const startedAt = new Date();
     const feedRun = await this.database.feedRun.create({
@@ -329,13 +342,13 @@ export class ParserEngine {
 
         const xml = await response.text();
         const parsed = await parseFeedXml(xml, response.url || feed.feedUrl);
-        const imported = await this.importArticles(feed, parsed.articles);
+        const imported = await this.importArticles(feed, parsed.articles, hashtags);
         const finishedAt = new Date();
         const durationMs = Math.max(
           0,
           finishedAt.getTime() - startedAt.getTime(),
         );
-        const skipped = Math.max(0, parsed.itemsFound - imported);
+        const skipped = Math.max(0, parsed.itemsFound - imported.imported);
 
         await this.database.$transaction([
           this.database.feed.update({
@@ -354,7 +367,7 @@ export class ParserEngine {
               durationMs,
               status: "SUCCESS",
               itemsFound: parsed.itemsFound,
-              articlesImported: imported,
+              articlesImported: imported.imported,
               articlesSkipped: skipped,
               errorMessage: null,
             },
@@ -366,6 +379,7 @@ export class ParserEngine {
           itemsFound: parsed.itemsFound,
           articlesImported: imported,
           articlesSkipped: skipped,
+          articlesWithHashtags: imported.matched,
         };
       } catch (error) {
         finalError = errorMessage(error);
