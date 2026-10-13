@@ -30,7 +30,7 @@ export function validatePublicImageUrl(raw: string): URL {
   let url: URL;
   try { url = new URL(raw); } catch { throw new BadRequestException("URL de l'image invalide."); }
   if (url.protocol !== "https:" || url.username || url.password || url.port && url.port !== "443" ||
-      !url.hostname || url.hostname.endsWith(".local") || url.hostname === "localhost" ||
+      !url.hostname || url.hostname.includes(":") || url.hostname.includes("[") || url.hostname.endsWith(".local") || url.hostname === "localhost" ||
       url.hostname.endsWith(".localhost") || isIP(url.hostname) === 6) {
     throw new BadRequestException("Utilisez une URL HTTPS publique sans identifiants.");
   }
@@ -67,7 +67,8 @@ async function downloadStep(url: URL): Promise<{ buffer?: Buffer; redirect?: str
         const target = res.headers.location;
         res.resume();
         if (!target) { rejectRequest(new BadRequestException("Redirection de l'image invalide.")); return; }
-        resolveRequest({ redirect: new URL(target, url).toString() });
+        try { resolveRequest({ redirect: new URL(target, url).toString() }); }
+        catch { rejectRequest(new BadRequestException("Redirection invalide.")); }
         return;
       }
       if (status !== 200) {
