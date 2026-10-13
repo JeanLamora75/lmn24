@@ -26,7 +26,7 @@ function api(subjectValue: typeof subject | null = subject) {
 describe("SCRUM-51 — analysis of retained articles", () => {
   it("returns one hit per article despite multiple matching aliases", async () => {
     const { service, prisma } = api();
-    const result = await service.scanPage(id, { asOf: "2026-10-13T09:00:00.000Z" });
+    const result = await service.scanPage(id, { asOf: new Date().toISOString() });
     expect(result).toMatchObject({
       scannedArticles: 2, matchingArticles: 1, nextCursor: null, retentionDays: 60,
       hourlyMatches: [{ hourUtc: "2026-10-13T08:00:00.000Z", articleCount: 1 }],
