@@ -6,6 +6,7 @@ import {
   HttpStatus,
   UnprocessableEntityException,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { chromium } from "playwright";
 import { DatabaseService } from "../database/database.service";
 
@@ -122,6 +123,62 @@ function resolveRedirect(from: string, location: string): string | null {
   }
 }
 
+type OfficialChannelLookup = { filter: "forHandle" | "forUsername"; value: string };
+
+function officialChannelLookup(url: string): OfficialChannelLookup | null {
+  const path = new URL(url).pathname;
+  const handle = path.match(/^\/(@[A-Za-z0-9._-]{3,100})(?:\/(?:videos|featured|about|shorts|streams|playlists))?\/?$/);
+  if (handle?.[1]) return { filter: "forHandle", value: handle[1] };
+  const username = path.match(/^\/user\/([A-Za-z0-9._-]{1,100})(?:\/(?:videos|featured|about|shorts|streams|playlists))?\/?$/);
+  if (username?.[1]) return { filter: "forUsername", value: username[1] };
+  return null;
+}
+
+/**
+ * Supported by YouTube Data API v3: channels.list(part=id, forHandle=...).
+ * Unlike channel HTML scraping, this endpoint explicitly resolves handles.
+ * The key is read only on the backend; never send it to a client or log it.
+ */
+async function lookupWithOfficialApi(
+  lookup: OfficialChannelLookup,
+  apiKey: string,
+): Promise<{ channelId: string | null; error: string | null }> {
+  const url = new URL("https://www.googleapis.com/youtube/v3/channels");
+  url.searchParams.set("part", "id");
+  url.searchParams.set(lookup.filter, lookup.value);
+  url.searchParams.set("key", apiKey);
+  try {
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(9_000),
+      redirect: "error",
+      headers: { accept: "application/json" },
+    });
+    if (!response.ok) {
+      const hint = response.status === 400 || response.status === 401 || response.status === 403
+        ? " Vérifiez la clé YOUTUBE_API_KEY, l'activation de YouTube Data API v3 et les quotas Google Cloud."
+        : " Réessayez ultérieurement.";
+      return { channelId: null, error: "API officielle YouTube (HTTP " + response.status + ")." + hint };
+    }
+    const data: unknown = await response.json();
+    if (!data || typeof data !== "object" || !("items" in data)) {
+      return { channelId: null, error: "L'API YouTube a renvoyé une réponse inattendue." };
+    }
+    const items = (data as { items: unknown }).items;
+    if (!Array.isArray(items) || items.length === 0) return { channelId: null, error: null };
+    const first: unknown = items[0];
+    if (!first || typeof first !== "object" || !("id" in first) ||
+      typeof (first as { id: unknown }).id !== "string") {
+      return { channelId: null, error: "L'API YouTube n'a pas renvoyé d'identifiant valide." };
+    }
+    const id = (first as { id: string }).id;
+    return CHANNEL.test(id)
+      ? { channelId: id, error: null }
+      : { channelId: null, error: "L'identifiant de chaîne renvoyé par YouTube est invalide." };
+  } catch {
+    return { channelId: null, error: "Impossible de contacter l'API YouTube (réseau ou délai dépassé)." };
+  }
+}
+
 async function lookupWithFetch(url: string): Promise<string | null> {
   let target = url;
   for (let redirects = 0; redirects < 3; redirects++) {
@@ -205,7 +262,10 @@ async function lookupWithBrowser(url: string): Promise<string | null> {
 
 @Injectable()
 export class YoutubeChannelDiscoveryService {
-  constructor(private readonly database: DatabaseService) {}
+  constructor(
+    private readonly database: DatabaseService,
+    private readonly config: ConfigService,
+  ) {}
 
   async resolve(input: { sourceId?: string | undefined; query?: string | undefined }): Promise<{ channelId: string; feedUrl: string }> {
     let candidate = input.query?.trim();
@@ -221,8 +281,16 @@ export class YoutubeChannelDiscoveryService {
     }
     const normalized = normalizeYouTubeLookup(candidate);
     let channelId = normalized.channelId;
+    let officialError: string | null = null;
     if (!channelId && normalized.url) {
-      try {
+      const apiKey = this.config.get<string>("YOUTUBE_API_KEY")?.trim();
+      const lookup = officialChannelLookup(normalized.url);
+      if (apiKey && lookup) {
+        const result = await lookupWithOfficialApi(lookup, apiKey);
+        channelId = result.channelId ?? undefined;
+        officialError = result.error;
+      }
+      if (!channelId) try {
         channelId = await lookupWithFetch(normalized.url) ?? undefined;
       } catch (error) {
         if (error instanceof HttpException && error.getStatus() === HttpStatus.TOO_MANY_REQUESTS) throw error;
@@ -232,7 +300,8 @@ export class YoutubeChannelDiscoveryService {
     }
     if (!channelId) {
       throw new UnprocessableEntityException(
-        "YouTube ne fournit pas l’identifiant de cette chaîne via l’accès public automatisé. " + MANUAL_HINT,
+        "La recherche automatique n'a pas pu obtenir le channel_id de cette chaîne. " +
+        (officialError ? officialError + " " : "") + MANUAL_HINT,
       );
     }
     return {
