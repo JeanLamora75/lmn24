@@ -9,6 +9,7 @@ import { z } from "zod";
 import { AuthService } from "../auth/auth.service";
 import { AUTH_FAILURE_MESSAGE, DEFAULT_SESSION_COOKIE_NAME } from "../auth/auth.constants";
 import { HashtagsService } from "./hashtags.service";
+import { HashtagHistoryService } from "./hashtag-history.service";
 
 const uuid = z.string().uuid();
 const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(255);
@@ -36,6 +37,7 @@ export class HashtagsController {
   private readonly cookieName: string;
   constructor(
     private readonly hashtags: HashtagsService,
+    private readonly history: HashtagHistoryService,
     private readonly auth: AuthService,
     config: ConfigService,
   ) {
@@ -129,6 +131,23 @@ export class HashtagsController {
   async removeImage(@Req() request: RequestLike, @Param("id") rawId: string) {
     await this.assertAdmin(request);
     return this.hashtags.removeImage(this.parseId(rawId));
+  }
+
+  @Post(":id/analyze")
+  @HttpCode(200)
+  @Header("Cache-Control", "no-store")
+  async analyze(
+    @Req() request: RequestLike, @Param("id") rawId: string, @Body() body: unknown,
+  ) {
+    await this.assertAdmin(request);
+    const id = this.parseId(rawId);
+    const parsed = z.object({
+      cursor: uuid.optional(),
+      asOf: z.string().datetime({ offset: true }).optional(),
+      version: z.string().datetime({ offset: true }).optional(),
+    }).strict().safeParse(body);
+    if (!parsed.success) throw new BadRequestException("Paramètres d'analyse invalides.");
+    return this.history.scanPage(id, parsed.data);
   }
 
   @Get(":id")

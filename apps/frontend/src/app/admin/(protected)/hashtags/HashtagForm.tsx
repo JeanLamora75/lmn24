@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 type AliasInput = { name: string; languageIsoCode2: string };
 type Values = {
@@ -49,6 +49,11 @@ export function HashtagForm({ mode, hashtagId }: Props) {
   const [removingImage, setRemovingImage] = useState(false);
   const [notice, setNotice] = useState("");
   const currentId = hashtagId ?? createdId;
+  const cancelScan = useRef(false);
+  const [scanRunning, setScanRunning] = useState(false);
+  const [scanResult, setScanResult] = useState<{
+    scanned: number; matched: number; complete: boolean;
+  } | null>(null);
 
   useEffect(() => {
     if (mode !== "edit") return;
@@ -177,6 +182,49 @@ export function HashtagForm({ mode, hashtagId }: Props) {
     } finally { setRemovingImage(false); }
   };
 
+  const analyzeHistory = async () => {
+    if (!currentId) return;
+    cancelScan.current = false;
+    setScanRunning(true);
+    setScanResult({ scanned: 0, matched: 0, complete: false });
+    setError("");
+    try {
+      let cursor: string | null = null;
+      let asOf: string | undefined;
+      let version: string | undefined;
+      let scanned = 0;
+      let matched = 0;
+      do {
+        if (cancelScan.current) break;
+        const response = await fetch(
+          "/api/admin/hashtags/" + encodeURIComponent(currentId) + "/analyze",
+          { method: "POST", headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              ...(cursor ? { cursor } : {}),
+              ...(asOf ? { asOf } : {}),
+              ...(version ? { version } : {}),
+            }) },
+        );
+        if (response.status === 401) { router.replace("/admin/login"); return; }
+        if (!response.ok) throw new Error(await errorMessage(response));
+        const batch = await response.json() as {
+          asOf: string; definitionVersion: string;
+          scannedArticles: number; matchingArticles: number; nextCursor: string | null;
+        };
+        asOf = batch.asOf;
+        version = batch.definitionVersion;
+        cursor = batch.nextCursor;
+        scanned += batch.scannedArticles;
+        matched += batch.matchingArticles;
+        setScanResult({ scanned, matched, complete: !cursor });
+      } while (cursor);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Analyse historique impossible.");
+    } finally {
+      setScanRunning(false);
+    }
+  };
+
   if (loading) return <main className="container py-4"><p>Chargement du hashtag…</p></main>;
 
   return (
@@ -253,6 +301,35 @@ export function HashtagForm({ mode, hashtagId }: Props) {
         </div>}
         <button type="button" className="btn btn-sm btn-outline-info align-self-start mt-2"
           onClick={() => void checkWarnings()}>Analyser les risques d&apos;homonymes</button>
+        {mode === "edit" && (
+          <section className="border rounded p-3 mt-3" aria-label="Analyse des articles existants">
+            <h2 className="h6">Analyser les articles déjà enregistrés</h2>
+            <p className="small text-body-secondary">
+              Recherche le nom et les alias dans les titres et descriptions de tous les articles
+              conservés, quelle que soit leur langue. Analyse progressive par lots de 500,
+              sans création de liens article-hashtag en base.
+            </p>
+            <button type="button" className="btn btn-outline-primary btn-sm"
+              disabled={scanRunning} onClick={() => void analyzeHistory()}>
+              {scanRunning ? "Analyse en cours…" : "Analyser les articles conservés"}
+            </button>
+            {scanRunning && (
+              <button type="button" className="btn btn-outline-secondary btn-sm ms-2"
+                onClick={() => { cancelScan.current = true; }}>Arrêter</button>
+            )}
+            {scanResult && (
+              <p className="mt-2 mb-1 small" role="status">
+                {scanResult.scanned.toLocaleString("fr-FR")} articles examinés —
+                {" "}{scanResult.matched.toLocaleString("fr-FR")} mentionnant ce hashtag.
+                {scanResult.complete ? " Analyse terminée." : " Résultat provisoire."}
+              </p>
+            )}
+            <p className="form-text mb-0">
+              Ceci est un diagnostic. L&apos;enregistrement des statistiques horaires
+              et leur reconstruction automatique seront développés dans SCRUM-52.
+            </p>
+          </section>
+        )}
         {mode === "edit" && <p className="form-text mt-3">
           {count} heure(s) de statistiques associées. Une modification des noms ou alias
           nécessitera une reconstruction des compteurs (prévue dans SCRUM-52).
