@@ -627,10 +627,22 @@ Ces règles précisent la conception du MVP avant création des Stories Jira. El
 - Le rafraîchissement des classements est **horaire**. À l'instant `T` (dernière heure UTC complète), les périodes sont les intervalles semi-ouverts : 24 h `[T-24h, T)`, 7 j `[T-7j, T)`, 30 j `[T-30j, T)`. `T` et la date de dernière mise à jour sont affichés au public.
 - Pour une période `P`, la comparaison est effectuée avec la **période précédente de même durée** : `[T-2P, T-P)`. Les fenêtres sont communes à tous les hashtags, sans avantage lié à la date de création d'un sujet. Lorsqu'un nouveau hashtag est créé, un backfill sur les articles conservés alimente les fenêtres disponibles.
 - **« Plus cités »** : classement décroissant par nombre d'articles de la fenêtre, à partir de 1 mention ; départager par nom puis slug.
-- **« Tendances » (proposition MVP)** : seuls les hashtags avec **au moins 10 articles dans la fenêtre** et **au moins 5 mentions de plus** que la période précédente y figurent ; score = `(mentions_courantes - mentions_précédentes) / max(mentions_précédentes, 5)`. Tri décroissant sur le score, puis nombre de mentions, puis slug. Le plancher de 5 évite une division par zéro et atténue les pointes sur de très petits volumes. Les seuils sont à confirmer dans Jira et pourront évoluer sans changer le schéma.
+- **« Tendances »** : les seuils sont administrables dans `Setting` (scope `GLOBAL`, type `INTEGER`) : `hashtagTrendMinMentions` (valeur initiale `10`, minimum de mentions courantes), `hashtagTrendMinIncrease` (valeur initiale `5`, minimum de mentions supplémentaires) et `hashtagTrendScoreFloor` (valeur initiale `5`, plancher de dénominateur). Un hashtag est éligible si `Nactuel >= hashtagTrendMinMentions` ET `Nactuel - Nprécédent >= hashtagTrendMinIncrease`. Score = `(Nactuel - Nprécédent) / max(Nprécédent, hashtagTrendScoreFloor)`. Tri par score décroissant, puis nombre de mentions décroissant, puis slug croissant. Ces seuils s'appliquent aux trois périodes (24 h, 7 j, 30 j) et ne sont pas codés en dur.
 - **Variation affichée** : lorsque le dénominateur précédent est strictement positif, `100 × (Nactuel - Nprécédent) / Nprécédent`, arrondie à l'entier ; lorsque `Nprécédent = 0` et `Nactuel > 0`, afficher **« Nouveau »** au lieu d'un pourcentage infini. Une absence de données précédentes (historique insuffisant) affiche **« — »**, jamais `+∞ %`.
 - Si la rétention disponible est trop courte pour la fenêtre courante **et sa période précédente**, la progression et le mode « Tendances » pour cette durée sont indisponibles. Pour une comparaison 30 j / 30 j, il faut donc **60 jours réellement disponibles**. Le classement « Plus cités » peut toujours porter sur les seules données disponibles, avec une mention explicite de leur couverture.
 - Les compteurs horaires reflètent **les heures closes** ; les nouveaux articles reçus dans l'heure en cours peuvent déjà figurer sur la page détaillée, mais ne figurent dans le classement qu'à la mise à jour suivante. Le nombre affiché sur le classement ne doit pas être présenté comme un total historique des 60 jours.
+
+### Paramètres de détection des tendances (cible MVP)
+
+Ces lignes de `Setting` sont de portée `GLOBAL` (`scopeId = NULL`) et de type `INTEGER` ; elles sont administrables depuis une rubrique « Paramètres des tendances » et initialisées par un script SQL idempotent.
+
+| `Setting.key` | Défaut | Validation |
+|---|---:|---|
+| `hashtagTrendMinMentions` | 10 | entier >= 1 |
+| `hashtagTrendMinIncrease` | 5 | entier >= 1 |
+| `hashtagTrendScoreFloor` | 5 | entier >= 1 |
+
+Les trois valeurs sont **communes aux périodes** 24 h, 7 j et 30 j. L'enregistrement par un administrateur exige une validation côté NestJS, et la modification invalide le cache des classements ; les compteurs horaires bruts `HashtagHourlyCount` n'ont pas à être recalculés du seul fait d'un changement de seuil. Les nouvelles valeurs s'appliquent à la prochaine génération des classements ; l'administration peut proposer une actualisation immédiate contrôlée.
 
 ## 14.6. Parcours publics et administration — MVP
 
