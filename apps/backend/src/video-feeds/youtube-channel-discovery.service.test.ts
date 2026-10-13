@@ -133,6 +133,50 @@ describe("YouTube channel ID lookup", () => {
     expect(browser.browser.close).toHaveBeenCalledOnce();
   });
 
+  it("extracts the exact iOS App Links meta tag provided by an editor", () => {
+    const channelId = "UCZIJs433Z7v-DmCMNYS-GLg";
+    const html = '<meta property="al:ios:url" content="vnd.youtube://www.youtube.com/channel/' + channelId + '">';
+    expect(youtubeChannelFromHtml(html)).toBe(channelId);
+  });
+
+  it("supports Android/iOS App Links regardless of attribute order and quoting", () => {
+    const ios = '<meta content="vnd.youtube://www.youtube.com/channel/' + channel + '" property="al:ios:url">';
+    const android = "<META CONTENT='vnd.youtube://youtube.com/channel/" + channel + "' PROPERTY='al:android:url'>";
+    const web = '<meta property="al:web:url" content="https://www.youtube.com/channel/' + channel + '/videos">';
+    const twitter = '<meta name="twitter:app:url:googleplay" content="vnd.youtube://www.youtube.com/channel/' + channel + '">';
+    for (const html of [ios, android, web, twitter]) {
+      expect(youtubeChannelFromHtml(html)).toBe(channel);
+    }
+  });
+
+  it("rejects spoofed App Link hosts, video deep links, and invalid channel IDs", () => {
+    for (const content of [
+      "vnd.youtube://www.youtube.com.evil.test/channel/" + channel,
+      "vnd.youtube://evil.test/channel/" + channel,
+      "vnd.youtube://www.youtube.com/watch?v=abcdefghijk",
+      "vnd.youtube://www.youtube.com/channel/UCshort",
+      "vnd.youtube://www.youtube.com/channel/" + channel + "extrachar",
+    ]) {
+      expect(youtubeChannelFromHtml('<meta property="al:ios:url" content="' + content + '">')).toBeNull();
+    }
+    expect(youtubeChannelFromHtml('<meta property="al:ios:app_name" content="vnd.youtube://www.youtube.com/channel/' + channel + '">')).toBeNull();
+  });
+
+  it("resolves App Links from the normal HTML request without needing Chromium", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () =>
+      response('<meta property="al:ios:url" content="vnd.youtube://www.youtube.com/channel/' + channel + '">'),
+    ));
+    await expect(service().discovery.resolve({ query: "@examplechannel" })).resolves.toEqual(expected);
+    expect(chromium.launch).not.toHaveBeenCalled();
+  });
+
+  it("resolves App Links from Chromium's HTML when the HTTP fetch is blocked", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => response("Forbidden", { status: 403 })));
+    const browser = mockBrowser('<meta property="al:android:url" content="vnd.youtube://www.youtube.com/channel/' + channel + '">');
+    await expect(service().discovery.resolve({ query: "@examplechannel" })).resolves.toEqual(expected);
+    expect(browser.browser.close).toHaveBeenCalledOnce();
+  });
+
   it("explains missing Youtube URL instead of returning a generic 422", async () => {
     await expect(service(null).discovery.resolve({ sourceId }))
       .rejects.toThrow(BadRequestException);
