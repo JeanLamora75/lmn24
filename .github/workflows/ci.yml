@@ -54,3 +54,38 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+
+  hashtag-schema:
+    name: PostgreSQL hashtag schema
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: lmn24_schema_test
+        options: >-
+          --health-cmd "pg_isready -U postgres -d lmn24_schema_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Test fresh bootstrap and hashtag constraints
+        run: |
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/schema.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/tests/scrum_48_hashtag_schema_smoke.sql
+
+      - name: Test additive migration from pre-hashtag schema
+        run: |
+          # Test database only: reconstruct the pre-SCRUM-48 state by
+          # dropping the three new tables before applying migration 008.
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test -c 'DROP TABLE hashtag_hourly_count, hashtag_alias, hashtag;'
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/migrations/008_hashtag_data_model.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/tests/scrum_48_hashtag_schema_smoke.sql
