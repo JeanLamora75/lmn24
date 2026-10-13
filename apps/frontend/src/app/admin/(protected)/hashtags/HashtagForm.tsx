@@ -105,23 +105,76 @@ export function HashtagForm({ mode, hashtagId }: Props) {
     setWarnings(result.warnings);
   };
 
+
   const save = async (event: FormEvent) => {
     event.preventDefault();
     setError("");
+    setNotice("");
     setSaving(true);
+    let persisted = false;
     try {
+      const id = currentId;
       const response = await fetch(
-        mode === "edit" ? "/api/admin/hashtags/" + encodeURIComponent(hashtagId) : "/api/admin/hashtags",
-        { method: mode === "edit" ? "PUT" : "POST",
-          headers: { "content-type": "application/json" }, body: JSON.stringify(payload()) },
+        id ? "/api/admin/hashtags/" + encodeURIComponent(id) : "/api/admin/hashtags",
+        {
+          method: id ? "PUT" : "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload()),
+        },
       );
       if (response.status === 401) { router.replace("/admin/login"); return; }
       if (!response.ok) throw new Error(await errorMessage(response));
+      const saved = await response.json() as HashtagFromApi;
+      setCreatedId(saved.id);
+      persisted = true;
+      const url = "/api/admin/hashtags/" + encodeURIComponent(saved.id) + "/image";
+      if (mediaMode === "file" && selectedFile) {
+        const form = new FormData();
+        form.append("file", selectedFile);
+        const imgResponse = await fetch(url, { method: "POST", body: form });
+        if (!imgResponse.ok) throw new Error(await errorMessage(imgResponse));
+        const result = await imgResponse.json() as HashtagFromApi;
+        setImageUrl(result.imageUrl);
+      } else if (mediaMode === "url" && remoteImageUrl.trim()) {
+        const imgResponse = await fetch(url + "/import", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ url: remoteImageUrl.trim() }),
+        });
+        if (!imgResponse.ok) throw new Error(await errorMessage(imgResponse));
+        const result = await imgResponse.json() as HashtagFromApi;
+        setImageUrl(result.imageUrl);
+      }
+      setSelectedFile(null);
+      setRemoteImageUrl("");
       router.push("/admin/hashtags");
       router.refresh();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Enregistrement impossible.");
+      const reason = e instanceof Error ? e.message : "Enregistrement impossible.";
+      setError(persisted
+        ? "Hashtag enregistré, mais image non importée : " + reason +
+          " Vous pouvez corriger l'image et réessayer sans recréer le hashtag."
+        : reason);
     } finally { setSaving(false); }
+  };
+
+  const removeImage = async () => {
+    if (!currentId || !imageUrl || !window.confirm("Supprimer l’image du hashtag ?")) return;
+    setRemovingImage(true);
+    setError("");
+    setNotice("");
+    try {
+      const response = await fetch("/api/admin/hashtags/" + encodeURIComponent(currentId) + "/image", {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error(await errorMessage(response));
+      setImageUrl(null);
+      setSelectedFile(null);
+      setRemoteImageUrl("");
+      setNotice("Image supprimée.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Suppression de l’image impossible.");
+    } finally { setRemovingImage(false); }
   };
 
   if (loading) return <main className="container py-4"><p>Chargement du hashtag…</p></main>;
@@ -134,6 +187,7 @@ export function HashtagForm({ mode, hashtagId }: Props) {
       </div>
       <form className="card shadow-sm p-4" onSubmit={(event) => void save(event)}>
         {error && <div role="alert" className="alert alert-danger">{error}</div>}
+        {notice && <div role="status" className="alert alert-success">{notice}</div>}
         <div className="row g-3">
           <div className="col-md-7">
             <label className="form-label" htmlFor="hashtagName">Nom du hashtag *</label>
