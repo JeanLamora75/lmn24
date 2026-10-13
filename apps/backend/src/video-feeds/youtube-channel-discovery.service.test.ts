@@ -1,5 +1,6 @@
 import { BadRequestException, HttpException, UnprocessableEntityException } from "@nestjs/common";
 import { chromium, type Browser } from "playwright";
+import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DatabaseService } from "../database/database.service";
 import {
@@ -15,11 +16,12 @@ const feedUrl = "https://www.youtube.com/feeds/videos.xml?channel_id=" + channel
 const expected = { channelId: channel, feedUrl };
 const sourceId = "11111111-1111-4111-8111-111111111111";
 
-function service(youtubeUrl: string | null = "https://www.youtube.com/@examplechannel") {
+function service(youtubeUrl: string | null = "https://www.youtube.com/@examplechannel", apiKey?: string) {
   const findUnique = vi.fn(async () => ({ youtubeUrl }));
-  const discovery = new YoutubeChannelDiscoveryService({
-    prisma: { source: { findUnique } },
-  } as unknown as DatabaseService);
+  const discovery = new YoutubeChannelDiscoveryService(
+    { prisma: { source: { findUnique } } } as unknown as DatabaseService,
+    { get: vi.fn((key: string) => key === "YOUTUBE_API_KEY" ? apiKey : undefined) } as unknown as ConfigService,
+  );
   return { discovery, findUnique };
 }
 
@@ -198,6 +200,73 @@ describe("YouTube channel ID lookup", () => {
     vi.stubGlobal("fetch", fetchSpy);
     await expect(service().discovery.resolve({ sourceId, query: malicious }))
       .rejects.toThrow(BadRequestException);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("prioritizes the official YouTube API for Corriere dello Sport when a key is configured", async () => {
+    const original = "https://www.youtube.com/@corrieredellosport-official";
+    const apiId = "UCZIJs433Z7v-DmCMNYS-GLg";
+    const fetchSpy = vi.fn(async (input: string | URL | Request) => {
+      const url = new URL(String(input));
+      expect(url.hostname).toBe("www.googleapis.com");
+      expect(url.pathname).toBe("/youtube/v3/channels");
+      expect(url.searchParams.get("part")).toBe("id");
+      expect(url.searchParams.get("forHandle")).toBe("@corrieredellosport-official");
+      expect(url.searchParams.get("key")).toBe("dummy-test-key");
+      return response(JSON.stringify({ items: [{ id: apiId }] }), {
+        headers: { "content-type": "application/json" },
+      });
+    });
+    vi.stubGlobal("fetch", fetchSpy);
+    await expect(service(original, "dummy-test-key").discovery.resolve({ sourceId })).resolves.toEqual({
+      channelId: apiId, feedUrl: "https://www.youtube.com/feeds/videos.xml?channel_id=" + apiId,
+    });
+    expect(fetchSpy).toHaveBeenCalledOnce();
+    expect(chromium.launch).not.toHaveBeenCalled();
+  });
+
+  it("preserves the existing scraper when there is no YOUTUBE_API_KEY", async () => {
+    const fetchSpy = vi.fn(async () => response('<meta itemprop="channelId" content="' + channel + '">'));
+    vi.stubGlobal("fetch", fetchSpy);
+    await expect(service("https://www.youtube.com/@examplechannel").discovery.resolve({ sourceId })).resolves.toEqual(expected);
+    const [url] = fetchSpy.mock.calls[0]!;
+    expect(String(url)).toContain("youtube.com/@examplechannel");
+    expect(String(url)).not.toContain("googleapis.com");
+  });
+
+  it("falls back if the official API returns an error and does not expose the key", async () => {
+    const fetchSpy = vi.fn(async (input: string | URL | Request) => {
+      if (String(input).includes("googleapis.com")) return response("", { status: 403 });
+      return response("<html>no meta</html>", { status: 200 });
+    });
+    vi.stubGlobal("fetch", fetchSpy);
+    vi.mocked(chromium.launch).mockRejectedValue(new Error("Browser unavailable"));
+    const privateKey = "private-test-key";
+    await expect(service("https://www.youtube.com/@examplechannel", privateKey).discovery.resolve({ sourceId }))
+      .rejects.toThrow("Vérifiez la clé YOUTUBE_API_KEY");
+    try {
+      await service("https://www.youtube.com/@examplechannel", privateKey).discovery.resolve({ sourceId });
+    } catch (error) {
+      expect(String(error)).not.toContain(privateKey);
+    }
+  });
+
+  it("keeps the manual fallback when the API returns no matching channel", async () => {
+    const fetchSpy = vi.fn(async (input: string | URL | Request) =>
+      String(input).includes("googleapis.com")
+        ? response(JSON.stringify({ items: [] }))
+        : response('<meta property="al:ios:url" content="vnd.youtube://www.youtube.com/channel/' + channel + '">'),
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+    await expect(service("https://www.youtube.com/@examplechannel", "dummy-test-key").discovery.resolve({ sourceId }))
+      .resolves.toEqual(expected);
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it("never calls the official API for direct UC IDs", async () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+    await expect(service(null, "dummy-test-key").discovery.resolve({ query: channel })).resolves.toEqual(expected);
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
