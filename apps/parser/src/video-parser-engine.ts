@@ -1,4 +1,9 @@
 import type { DatabaseClient } from "@lmn24/database";
+import type { ParserEvent, ParserFilters } from "./parser-engine.js";
+
+export type VideoParserFilters = ParserFilters & { feedId?: string | undefined };
+type VideoSummary = { feeds: number; successful: number; failed: number; imported: number; skipped: number };
+type VideoEmitter = (event: ParserEvent) => void;
 import { parseYouTubeAtom } from "./youtube-atom.js";
 
 const MAX_BYTES = 2_000_000;
@@ -37,14 +42,36 @@ async function boundedResponse(response: Response): Promise<string> {
 export class VideoParserEngine {
   constructor(private readonly database: DatabaseClient) {}
 
-  async run(feedId?: string): Promise<{ feeds: number; successful: number; failed: number; imported: number; skipped: number }> {
+  async run(filters: VideoParserFilters = {}, emit?: VideoEmitter): Promise<VideoSummary> {
     const feeds = await this.database.feedVideo.findMany({
-      where: { isActive: true, ...(feedId ? { id: feedId } : {}) },
-      orderBy: { id: "asc" },
+      where: {
+        isActive: true,
+        ...(filters.feedId ? { id: filters.feedId } : {}),
+        ...(filters.categoryId ? { categoryId: filters.categoryId } : {}),
+        ...(filters.languageIsoCode2 ? { languageIsoCode2: filters.languageIsoCode2.trim().toLowerCase() } : {}),
+        ...(filters.countryIsoCode2 ? {
+          source: { country: { isoCode2: filters.countryIsoCode2.trim().toUpperCase() } },
+        } : {}),
+      },
+      orderBy: [{ source: { name: "asc" } }, { feedUrl: "asc" }, { id: "asc" }],
       select: { id: true, sourceId: true, categoryId: true, languageIsoCode2: true, channelId: true, feedUrl: true },
     });
-    const result = { feeds: feeds.length, successful: 0, failed: 0, imported: 0, skipped: 0 };
-    for (const feed of feeds) {
+    const result: VideoSummary = { feeds: feeds.length, successful: 0, failed: 0, imported: 0, skipped: 0 };
+    emit?.({
+      type: "run-started",
+      timestamp: new Date().toISOString(),
+      message: "Extraction vidéo démarrée — " + feeds.length + " flux à traiter.",
+      feedTotal: feeds.length,
+    });
+    for (const [index, feed] of feeds.entries()) {
+      emit?.({
+        type: "feed-started",
+        timestamp: new Date().toISOString(),
+        message: "Traitement " + (index + 1) + "/" + feeds.length + " — " + feed.feedUrl,
+        feedIndex: index + 1,
+        feedTotal: feeds.length,
+        feedUrl: feed.feedUrl,
+      });
       const startedAt = new Date();
       const run = await this.database.feedVideoRun.create({ data: { feedVideoId: feed.id, startedAt, status: "RUNNING" }, select: { id: true } });
       let error: string | null = null;
@@ -88,7 +115,30 @@ export class VideoParserEngine {
         this.database.feedVideoRun.update({ where: { id: run.id },
           data: { finishedAt, durationMs, status, itemsFound, videosImported, videosSkipped, errorMessage: error } }),
       ]);
+      emit?.({
+        type: error ? "feed-error" : "feed-success",
+        timestamp: new Date().toISOString(),
+        message: error
+          ? "Échec — " + feed.feedUrl + " — " + error
+          : "Succès — " + itemsFound + " vidéos détectées — " + videosImported +
+            " ajoutées — " + videosSkipped + " ignorées",
+        feedUrl: feed.feedUrl,
+        feedIndex: index + 1,
+        feedTotal: feeds.length,
+        itemsFound,
+      });
     }
+    emit?.({
+      type: "run-completed",
+      timestamp: new Date().toISOString(),
+      message: "Extraction vidéo terminée.\n\n" +
+        result.feeds + " flux traités\n" +
+        result.successful + " flux réussis\n" +
+        result.failed + " flux en erreur\n" +
+        result.imported + " nouvelles vidéos enregistrées\n" +
+        result.skipped + " vidéos ignorées",
+      feedTotal: result.feeds,
+    });
     return result;
   }
 }
