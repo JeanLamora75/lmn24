@@ -23,11 +23,11 @@ export class PublicVideosService {
   async filters(locale:string) {
     const [categories,sources] = await Promise.all([
       this.db.prisma.category.findMany({
-        where:{isActive:true,videos:{some:{languageIsoCode2:locale,isPublished:true,source:{isActive:true}}}},
+        where:{isActive:true,videos:{some:{languageIsoCode2:locale,isPublished:true}}},
         orderBy:{displayOrder:"asc"},select:{id:true,slug:true,displayOrder:true,themeColor:true},
       }),
       this.db.prisma.source.findMany({
-        where:{isActive:true,videos:{some:{languageIsoCode2:locale,isPublished:true,category:{isActive:true}}}},
+        where:{videos:{some:{languageIsoCode2:locale,isPublished:true,category:{isActive:true}}}},
         orderBy:{name:"asc"}, select:{id:true,name:true,country:{select:{isoCode2:true}}},
       }),
     ]);
@@ -38,7 +38,9 @@ export class PublicVideosService {
     const cursor=filters.cursor?decodeVideoCursor(filters.cursor):null;
     const where={
       languageIsoCode2:filters.locale,isPublished:true,
-      source:{isActive:true,...(filters.country?{country:{isoCode2:filters.country}}:{})},
+      // A video explicitly published in an active category is public even if
+      // its source has been administratively disabled, like homepage articles.
+      ...(filters.country?{source:{country:{isoCode2:filters.country}}}:{}),
       category:{isActive:true},
       ...(filters.categoryId?{categoryId:filters.categoryId}:{}),
       ...(filters.sourceId?{sourceId:filters.sourceId}:{}),
