@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 
 import {
-  ParserEngine,
   type ParserEvent,
   type ParserFilters,
 } from "./parser-engine.js";
@@ -23,13 +22,17 @@ export class ActiveRunError extends Error {
   }
 }
 
-export class RunManager {
+type RunEngine<Filters extends ParserFilters> = {
+  run(filters: Filters, emit: (event: ParserEvent) => void): Promise<unknown>;
+};
+
+export class RunManager<Filters extends ParserFilters = ParserFilters> {
   private readonly runs = new Map<string, RunRecord>();
   private activeRunId: string | null = null;
 
-  constructor(private readonly engine: ParserEngine) {}
+  constructor(private readonly engine: RunEngine<Filters>) {}
 
-  start(filters: ParserFilters): string {
+  start(filters: Filters): string {
     if (this.activeRunId) {
       throw new ActiveRunError();
     }
@@ -77,7 +80,7 @@ export class RunManager {
 
   private async execute(
     record: RunRecord,
-    filters: ParserFilters,
+    filters: Filters,
   ): Promise<void> {
     try {
       await this.engine.run(filters, (event) => {
