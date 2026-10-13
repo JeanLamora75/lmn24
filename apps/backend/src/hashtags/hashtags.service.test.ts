@@ -111,3 +111,68 @@ describe("SCRUM-49 — Hashtag administration", () => {
     expect(warnings.join(" ")).toContain("Termes courts");
   });
 });
+
+
+describe("SCRUM-50 — lien entre médias et hashtags", () => {
+  const make = (prisma: unknown, media: unknown) =>
+    new HashtagsService(
+      { prisma } as DatabaseService,
+      media as import("./hashtag-media.service").HashtagMediaService,
+    );
+  const record = {
+    id, name: "Moscou", slug: "moscou", imageUrl: "/api/media/hashtags/old.webp",
+    aliases: [], _count: { hourlyCounts: 0 },
+  };
+
+  it("keeps the old image when conversion fails", async () => {
+    const prisma = {
+      hashtag: {
+        findUnique: vi.fn().mockResolvedValue(record),
+        updateMany: vi.fn(),
+      },
+    };
+    const media = {
+      storeImage: vi.fn().mockRejectedValue(new BadRequestException("Image invalide")),
+      deleteLocalImage: vi.fn(),
+    };
+    await expect(make(prisma, media).uploadImage(id, Buffer.from("bad")))
+      .rejects.toThrow(BadRequestException);
+    expect(prisma.hashtag.updateMany).not.toHaveBeenCalled();
+    expect(media.deleteLocalImage).not.toHaveBeenCalled();
+  });
+
+  it("cleans up a new image if another update wins the race", async () => {
+    const url = "/api/media/hashtags/new.webp";
+    const prisma = {
+      hashtag: {
+        findUnique: vi.fn().mockResolvedValue(record),
+        updateMany: vi.fn().mockResolvedValue({ count: 0 }),
+      },
+    };
+    const media = { storeImage: vi.fn().mockResolvedValue(url), deleteLocalImage: vi.fn() };
+    await expect(make(prisma, media).uploadImage(id, Buffer.from("image")))
+      .rejects.toThrow(ConflictException);
+    expect(media.deleteLocalImage).toHaveBeenCalledWith(url);
+    expect(media.deleteLocalImage).not.toHaveBeenCalledWith(record.imageUrl);
+  });
+
+  it("replaces an image in the DB before removing the old file", async () => {
+    const url = "/api/media/hashtags/new.webp";
+    const sequence: string[] = [];
+    const prisma = {
+      hashtag: {
+        findUnique: vi.fn().mockResolvedValue(record),
+        updateMany: vi.fn(async () => { sequence.push("db"); return { count: 1 }; }),
+      },
+    };
+    const media = {
+      storeImage: vi.fn().mockResolvedValue(url),
+      deleteLocalImage: vi.fn(async () => { sequence.push("delete-old"); }),
+    };
+    await make(prisma, media).uploadImage(id, Buffer.from("image"));
+    expect(sequence).toEqual(["db", "delete-old"]);
+    expect(prisma.hashtag.updateMany).toHaveBeenCalledWith({
+      where: { id, imageUrl: record.imageUrl }, data: { imageUrl: url },
+    });
+  });
+});
