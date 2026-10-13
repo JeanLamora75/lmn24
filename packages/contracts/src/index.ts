@@ -4,3 +4,4 @@ export * from "./pagination";
 export * from "./category-home";
 export * from "./category-page";
 export * from "./source-profile";
+export * from "./hashtag-normalization";

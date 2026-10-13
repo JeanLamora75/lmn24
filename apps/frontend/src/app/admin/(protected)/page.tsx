@@ -38,6 +38,12 @@ const ADMIN_FEATURES = [
       "Consulter et gérer les catégories d’actualités disponibles dans LMN24.",
   },
   {
+    href: "/admin/hashtags",
+    icon: "hash",
+    title: "Hashtags",
+    description: "Gérer les sujets suivis et leurs alias multilingues.",
+  },
+  {
     href: "/admin/languages",
     icon: "translate",
     title: "Langues",
