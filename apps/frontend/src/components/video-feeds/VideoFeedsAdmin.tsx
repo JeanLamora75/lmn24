@@ -119,6 +119,8 @@ export function VideoFeedForm({ id, initialSourceId = "" }: { id?: string; initi
   const categoryName = (slug: string) => categoryNames?.[slug] ?? slug.replace(/-/g, " ");
   const [resolving, setResolving] = useState(false);
   const [lookupMessage, setLookupMessage] = useState("");
+  const [showMetaInput, setShowMetaInput] = useState(false);
+  const [metaInput, setMetaInput] = useState("");
   const [options,setOptions]=useState<Options|null>(null);
   const [sourceId,setSourceId]=useState(initialSourceId);
   const [categoryId,setCategoryId]=useState("");
@@ -138,12 +140,12 @@ export function VideoFeedForm({ id, initialSourceId = "" }: { id?: string; initi
     return ()=>c.abort();
   },[id,initialSourceId]);
   function updateChannel(value:string){const found=getChannelId(value);const next=found||value.trim();setChannelId(next);if(channelPattern.test(next))setFeedUrl("https://www.youtube.com/feeds/videos.xml?channel_id="+next);}
-  async function resolveChannel() {
+  async function resolveChannel(queryOverride?: string) {
     setResolving(true);
     setLookupMessage("");
     setError("");
     try {
-      const query = channelId.trim();
+      const query = (queryOverride ?? channelId).trim();
       const payload = await json<{channelId:string;feedUrl:string}>(base+"/resolve-channel", {
         method:"POST",headers:{"content-type":"application/json"},
         body:JSON.stringify({sourceId, ...(query ? {query} : {})}),
@@ -151,6 +153,7 @@ export function VideoFeedForm({ id, initialSourceId = "" }: { id?: string; initi
       setChannelId(payload.channelId);
       setFeedUrl(payload.feedUrl);
       setLookupMessage("Identifiant YouTube trouvé. URL Atom renseignée automatiquement.");
+      if (queryOverride !== undefined) { setMetaInput(""); setShowMetaInput(false); }
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Recherche YouTube impossible.");
     } finally { setResolving(false); }
@@ -166,7 +169,14 @@ export function VideoFeedForm({ id, initialSourceId = "" }: { id?: string; initi
     <div className="col-12"><label htmlFor="vf-source" className="form-label">Source / Journal *</label><select id="vf-source" className="form-select" required value={sourceId} onChange={e=>setSourceId(e.target.value)}><option value="">Sélectionner une source</option>{options?.sources.map(x=><option key={x.id} value={x.id}>{x.name}</option>)}</select>{options?.sources.find(x=>x.id===sourceId)?.youtubeUrl&&<p className="form-text">Chaîne renseignée sur la source : <a href={options.sources.find(x=>x.id===sourceId)?.youtubeUrl??"#"} target="_blank" rel="noopener noreferrer">Ouvrir YouTube</a></p>}</div>
     <div className="col-md-6"><label htmlFor="vf-category" className="form-label">Catégorie *</label><select id="vf-category" className="form-select" required value={categoryId} onChange={e=>setCategoryId(e.target.value)}><option value="">Sélectionner</option>{options?.categories.map(x=><option key={x.id} value={x.id}>{categoryName(x.slug)}</option>)}</select></div>
     <div className="col-md-6"><label htmlFor="vf-language" className="form-label">Langue *</label><select id="vf-language" className="form-select" required value={languageIsoCode2} onChange={e=>setLanguage(e.target.value)}>{options?.languages.map(x=><option key={x.isoCode2} value={x.isoCode2.trim()}>{readableLanguage(x.isoCode2)}</option>)}</select></div>
-    <div className="col-12"><label htmlFor="vf-channel" className="form-label">Identifiant de chaîne YouTube (channel_id) *</label><div className="input-group"><input id="vf-channel" className="form-control" required value={channelId} onChange={e=>{setLookupMessage("");updateChannel(e.target.value);}} placeholder="UC… ou @handle YouTube" maxLength={255}/><button type="button" className="btn btn-outline-primary" disabled={resolving||busy} onClick={()=>void resolveChannel()}>{resolving?"Recherche…":"Rechercher"}</button></div>{lookupMessage&&<p className="form-text text-success" role="status">{lookupMessage}</p>}<p className="form-text">Collez un identifiant UC…, une adresse YouTube /channel/UC… ou un lien @handle. Le bouton recherche également le lien YouTube renseigné sur la source. Si YouTube limite la recherche automatique, vous pouvez saisir l’identifiant UC… manuellement.</p></div>
+    <div className="col-12"><label htmlFor="vf-channel" className="form-label">Identifiant de chaîne YouTube (channel_id) *</label><div className="input-group"><input id="vf-channel" className="form-control" required value={channelId} onChange={e=>{setLookupMessage("");updateChannel(e.target.value);}} placeholder="UC… ou @handle YouTube" maxLength={255}/><button type="button" className="btn btn-outline-primary" disabled={resolving||busy} onClick={()=>void resolveChannel()}>{resolving?"Recherche…":"Rechercher"}</button></div>{lookupMessage&&<p className="form-text text-success" role="status">{lookupMessage}</p>}<p className="form-text">Collez un identifiant UC…, une adresse YouTube /channel/UC… ou un lien @handle. Le bouton recherche également le lien YouTube renseigné sur la source. Si YouTube bloque cette recherche, utilisez la méthode alternative ci-dessous.</p>
+    <button type="button" className="btn btn-link btn-sm px-0" aria-expanded={showMetaInput} aria-controls="vf-meta-fallback" onClick={()=>setShowMetaInput(current=>!current)}>La recherche échoue ? Coller une balise HTML YouTube</button>
+    {showMetaInput&&<div id="vf-meta-fallback" className="border rounded p-3 mt-2">
+      <p className="small text-body-secondary mb-2">Dans Chrome, ouvrez la page YouTube de la chaîne, affichez son code source avec Ctrl+U, puis recherchez <code>al:ios:url</code> ou <code>al:android:url</code> avec Ctrl+F. Copiez la balise <code>meta</code> complète et collez-la ici. Cette méthode ne dépend pas de l’accès automatisé à YouTube.</p>
+      <label htmlFor="vf-meta-input" className="form-label">Balise HTML de la chaîne YouTube</label>
+      <textarea id="vf-meta-input" className="form-control" value={metaInput} onChange={e=>setMetaInput(e.target.value)} rows={3} maxLength={2048} placeholder={'<meta property="al:ios:url" content="vnd.youtube://www.youtube.com/channel/UC…">'} />
+      <button type="button" className="btn btn-outline-primary mt-2" disabled={resolving||busy||!metaInput.trim()} onClick={()=>void resolveChannel(metaInput)}>{resolving?"Analyse…":"Extraire l’identifiant depuis la balise"}</button>
+    </div>}</div>
     <div className="col-12"><label htmlFor="vf-url" className="form-label">URL du flux Atom XML *</label><input id="vf-url" className="form-control" required type="url" value={feedUrl} onChange={e=>setFeedUrl(e.target.value)} maxLength={2048}/></div>
     <div className="col-12 form-check ms-3"><input id="vf-active" type="checkbox" className="form-check-input" checked={isActive} onChange={e=>setActive(e.target.checked)}/><label htmlFor="vf-active" className="form-check-label">Flux actif</label></div>
     </div><div className="card-footer d-flex justify-content-end gap-2"><Link href="/admin/video-feeds" className="btn btn-outline-secondary">Annuler</Link><button disabled={busy} className="btn btn-primary" type="submit">{busy?"Enregistrement…":"Enregistrer"}</button></div></form>}
