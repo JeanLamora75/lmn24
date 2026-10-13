@@ -6,6 +6,7 @@ describe("SCRUM-46 video run lifecycle", () => {
   it("rejects parallel starts, replays video SSE events and permits the next run after completion", async () => {
     let complete: (() => void) | undefined;
     const engine = { run: vi.fn(async (_filters: ParserFilters, emit: (event: ParserEvent) => void) => {
+      void _filters;
       emit({ type: "run-started", timestamp: "2026-10-13T10:00:00.000Z", message: "Collecte vidéo" });
       await new Promise<void>(resolve => { complete = resolve; });
       emit({ type: "run-completed", timestamp: "2026-10-13T10:00:01.000Z", message: "Terminé" });
