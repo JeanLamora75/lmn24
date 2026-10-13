@@ -21,7 +21,25 @@ function getChannelId(url: string) {
 }
 async function json<T>(path: string, init?: RequestInit): Promise<T> {
   const r = await fetch(path, { cache: "no-store", ...init });
-  if (!r.ok) throw new Error(r.status === 409 ? "Ce flux existe déjà ou possède des vidéos / exécutions. Désactivez-le plutôt." : "Erreur serveur (" + r.status + ").");
+  if (!r.ok) {
+    let details: string | null = null;
+    try {
+      const payload: unknown = await r.json();
+      if (payload && typeof payload === "object" && "message" in payload) {
+        const message = (payload as { message?: unknown }).message;
+        if (typeof message === "string" && message.trim()) details = message.trim();
+        else if (Array.isArray(message)) {
+          const lines = message.filter((item): item is string => typeof item === "string");
+          if (lines.length) details = lines.join(" ");
+        }
+      }
+    } catch {
+      // Some gateways return HTML rather than a JSON error.
+    }
+    throw new Error(details ?? (r.status === 409
+      ? "Ce flux existe déjà ou possède des vidéos / exécutions. Désactivez-le plutôt."
+      : "Erreur de recherche ou d'enregistrement (HTTP " + r.status + ")."));
+  }
   return r.json() as Promise<T>;
 }
 function readableLanguage(value: string): string {
@@ -148,7 +166,7 @@ export function VideoFeedForm({ id, initialSourceId = "" }: { id?: string; initi
     <div className="col-12"><label htmlFor="vf-source" className="form-label">Source / Journal *</label><select id="vf-source" className="form-select" required value={sourceId} onChange={e=>setSourceId(e.target.value)}><option value="">Sélectionner une source</option>{options?.sources.map(x=><option key={x.id} value={x.id}>{x.name}</option>)}</select>{options?.sources.find(x=>x.id===sourceId)?.youtubeUrl&&<p className="form-text">Chaîne renseignée sur la source : <a href={options.sources.find(x=>x.id===sourceId)?.youtubeUrl??"#"} target="_blank" rel="noopener noreferrer">Ouvrir YouTube</a></p>}</div>
     <div className="col-md-6"><label htmlFor="vf-category" className="form-label">Catégorie *</label><select id="vf-category" className="form-select" required value={categoryId} onChange={e=>setCategoryId(e.target.value)}><option value="">Sélectionner</option>{options?.categories.map(x=><option key={x.id} value={x.id}>{categoryName(x.slug)}</option>)}</select></div>
     <div className="col-md-6"><label htmlFor="vf-language" className="form-label">Langue *</label><select id="vf-language" className="form-select" required value={languageIsoCode2} onChange={e=>setLanguage(e.target.value)}>{options?.languages.map(x=><option key={x.isoCode2} value={x.isoCode2.trim()}>{readableLanguage(x.isoCode2)}</option>)}</select></div>
-    <div className="col-12"><label htmlFor="vf-channel" className="form-label">Identifiant de chaîne YouTube (channel_id) *</label><div className="input-group"><input id="vf-channel" className="form-control" required value={channelId} onChange={e=>{setLookupMessage("");updateChannel(e.target.value);}} placeholder="UC… ou @handle YouTube" maxLength={255}/><button type="button" className="btn btn-outline-primary" disabled={resolving||busy} onClick={()=>void resolveChannel()}>{resolving?"Recherche…":"Rechercher"}</button></div>{lookupMessage&&<p className="form-text text-success" role="status">{lookupMessage}</p>}<p className="form-text">Colle un identifiant UC… ou une URL youtube.com/channel/UC… ; les liens @handle devront d’abord être résolus en identifiant de chaîne.</p></div>
+    <div className="col-12"><label htmlFor="vf-channel" className="form-label">Identifiant de chaîne YouTube (channel_id) *</label><div className="input-group"><input id="vf-channel" className="form-control" required value={channelId} onChange={e=>{setLookupMessage("");updateChannel(e.target.value);}} placeholder="UC… ou @handle YouTube" maxLength={255}/><button type="button" className="btn btn-outline-primary" disabled={resolving||busy} onClick={()=>void resolveChannel()}>{resolving?"Recherche…":"Rechercher"}</button></div>{lookupMessage&&<p className="form-text text-success" role="status">{lookupMessage}</p>}<p className="form-text">Collez un identifiant UC…, une adresse YouTube /channel/UC… ou un lien @handle. Le bouton recherche également le lien YouTube renseigné sur la source. Si YouTube limite la recherche automatique, vous pouvez saisir l’identifiant UC… manuellement.</p></div>
     <div className="col-12"><label htmlFor="vf-url" className="form-label">URL du flux Atom XML *</label><input id="vf-url" className="form-control" required type="url" value={feedUrl} onChange={e=>setFeedUrl(e.target.value)} maxLength={2048}/></div>
     <div className="col-12 form-check ms-3"><input id="vf-active" type="checkbox" className="form-check-input" checked={isActive} onChange={e=>setActive(e.target.checked)}/><label htmlFor="vf-active" className="form-check-label">Flux actif</label></div>
     </div><div className="card-footer d-flex justify-content-end gap-2"><Link href="/admin/video-feeds" className="btn btn-outline-secondary">Annuler</Link><button disabled={busy} className="btn btn-primary" type="submit">{busy?"Enregistrement…":"Enregistrer"}</button></div></form>}
