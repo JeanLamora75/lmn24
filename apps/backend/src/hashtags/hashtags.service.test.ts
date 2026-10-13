@@ -66,12 +66,13 @@ describe("SCRUM-49 — Hashtag administration", () => {
         createMany: vi.fn(async () => { actions.push("create"); }),
       },
     };
+    type Transaction = typeof tx;
     const prisma = {
       hashtag: { findUnique: vi.fn().mockResolvedValue({
         id, name: "Moscou", slug: "moscou", isActive: true,
         aliases: [], _count: { hourlyCounts: 0 },
       }) },
-      $transaction: vi.fn(async (callback: (tx: typeof tx) => Promise<void>) => callback(tx)),
+      $transaction: vi.fn(async (callback: (transaction: Transaction) => Promise<void>) => callback(tx)),
     };
     await service(prisma).update(id, base);
     expect(actions).toEqual(["update", "delete", "create"]);
