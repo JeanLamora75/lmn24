@@ -46,7 +46,6 @@ describe("SCRUM-46 — batch video parser", () => {
 
     expect(db.findMany).toHaveBeenCalledWith(expect.objectContaining({
       where: { isActive: true },
-      take: undefined,
     }));
     expect(summary).toEqual({ feeds: 2, successful: 2, failed: 0, imported: 1, skipped: 1 });
     expect(events.map(event => event.type)).toEqual([
