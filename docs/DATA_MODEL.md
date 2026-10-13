@@ -291,6 +291,25 @@ Un paramètre spécifique à un `Feed` ou une `Category` surcharge la valeur glo
 
 **Exception explicite :** le nombre d’articles affichés par section sur la page d’accueil n’est pas configurable dans `Setting` ; il est automatiquement déterminé par le `layoutType` de la catégorie. L’ordre et la couleur des sections sont également stockés sur `Category`.
 
+### Rétention configurable (cible MVP)
+
+Les durées de conservation utilisent des lignes **indépendantes** de `Setting`, toutes avec `scope = GLOBAL`, `scopeId = NULL`, `type = INTEGER`, `value` représentant un **nombre de jours strictement positif**. Aucune modification de structure de la table `setting` n'est nécessaire.
+
+| Clé (`Setting.key`) | Défaut (jours) | Données concernées |
+|---|---:|---|
+| `retentionArticlesDays` | 60 | `article`, selon `published_at` |
+| `retentionVideosDays` | 60 | `video`, selon `published_at` |
+| `retentionInfoParserRunsDays` | 14 | `feed_run`, selon `started_at` |
+| `retentionVideoParserRunsDays` | 14 | `feed_video_run`, selon `started_at` |
+| `retentionInfoParserLogsDays` | 7 | Fichiers de logs techniques du parser RSS, s'ils sont conservés localement |
+| `retentionVideoParserLogsDays` | 7 | Fichiers de logs techniques du parser vidéo, s'ils sont conservés localement |
+| `retentionBackendLogsDays` | 7 | Fichiers de logs techniques du backend, s'ils sont conservés localement |
+| `retentionHashtagHourlyCountsDays` | 60 | `hashtag_hourly_count`, selon `hour_utc` |
+
+Le **seed SQL idempotent** est `database/seed_retention_settings.sql`. Modifier ces valeurs ne supprime aucune donnée tant que les tâches de maintenance ne sont pas développées et activées. Les fichiers Pino envoyés seulement sur stdout ou à un hébergeur externe suivent la politique de rétention de cet hébergeur : la valeur en base ne peut pas, à elle seule, les supprimer.
+
+La conservation des séries hashtags ne doit pas dépasser l'horizon des articles ; les classements publics sont limités aux périodes effectivement couvertes. Les paramètres sont administrables uniquement par un administrateur, validés côté API et utilisés par les tâches planifiées. Les `Setting` eux-mêmes, sources, flux, catégories, langues et définitions de hashtags ne sont pas concernés par cette purge.
+
 ---
 
 # 9. User
@@ -524,3 +543,74 @@ Country 1 ── N Source
 Category 1 ── N FeedVideo ; Category 1 ── N Video
 Language 1 ── N FeedVideo ; Language 1 ── N Video
 ```
+
+---
+
+# 14. Hashtags et tendances — modèle cible (à implémenter)
+
+> **Statut : documentation de conception uniquement.** Les tables ci-dessous nécessiteront des modifications de `packages/database/schema.prisma` et une migration SQL/Prisma ultérieure. Elles ne sont pas créées par ce document.
+
+## 14.1. Hashtag (table `hashtag`)
+
+Sujet suivi par LMN24, administrable et visible dans un classement public.
+
+| Champ Prisma | Type | Obligatoire | Description |
+|---|---|---:|---|
+| `id` | UUID | Oui | Identifiant |
+| `name` | String(255) | Oui | Libellé de référence |
+| `slug` | String(255) | Oui | Identifiant d'URL unique |
+| `imageUrl` | Text | Non | Chemin relatif d'une image téléversée, stockée sur un volume persistant hors PostgreSQL |
+| `isActive` | Boolean | Oui | Statut de visibilité et de suivi |
+| `createdAt` | DateTime | Oui | Date de création |
+| `updatedAt` | DateTime | Oui | Date de dernière modification |
+
+**Contraintes :** `slug` unique ; les images ne sont pas stockées en binaire dans PostgreSQL. Les définitions de hashtags ne sont pas effacées par la purge temporelle.
+
+## 14.2. HashtagAlias (table `hashtag_alias`)
+
+Termes ou orthographes alternatifs d'un sujet (ex. « Moscou », « Moscow », « Москва »). L'alias peut être lié à une langue indicative, mais la recherche publique couvre **toutes** les langues et tous les alias du sujet.
+
+| Champ Prisma | Type | Obligatoire | Description |
+|---|---|---:|---|
+| `id` | UUID | Oui | Identifiant |
+| `hashtagId` | UUID | Oui | Référence `Hashtag` |
+| `name` | String(255) | Oui | Variante recherchée |
+| `languageIsoCode2` | String(2) | Non | Langue indicative, si connue |
+| `createdAt` | DateTime | Oui | Date de création |
+
+**Contraintes :** unicité des variantes normalisées au sein d'un hashtag ; index `hashtagId`. Le nom principal est également un terme recherché. Les frontières de mots, casse, accents et variantes Unicode doivent être traités sans faux positifs évidents.
+
+## 14.3. HashtagHourlyCount (table `hashtag_hourly_count`)
+
+Compteur agrégé du nombre **d'articles distincts** évoquant un hashtag, calculé par heure de **publication** en UTC.
+
+| Champ Prisma | Type | Obligatoire | Description |
+|---|---|---:|---|
+| `hashtagId` | UUID | Oui | Référence `Hashtag` |
+| `hourUtc` | DateTime | Oui | Début d'heure en UTC, dérivé d'`Article.publishedAt` |
+| `articleCount` | Integer | Oui | Nombre d'articles distincts correspondants |
+| `updatedAt` | DateTime | Oui | Dernier recalcul / ajustement |
+
+**Contraintes :** clé composite `(hashtagId, hourUtc)`, compteur non négatif, index chronologique. Suppression en cascade des compteurs lors de la suppression d'un hashtag. **Aucune table `article_hashtag` persistante** pour le MVP.
+
+## 14.4. Règles de cohérence des tendances
+
+- Un article compte **au plus une fois par hashtag**, même si plusieurs variantes apparaissent dans le titre et le résumé.
+- La recherche porte sur `Article.title` et `Article.summary` ; la page de détail recherche les articles conservés, toutes langues confondues, par date de publication décroissante avec pagination.
+- La création/modification des alias, la suppression d'articles, les réimportations et les corrections de contenu doivent déclencher une **reconstruction des heures affectées**, ou un recalcul borné, pour éviter la dérive des compteurs sans table d'association.
+- Les classements 24 h / 7 j / 30 j sont dérivés des heures conservées ; un automate peut matérialiser/mettre en cache le classement public chaque heure.
+- La purge des articles (`retentionArticlesDays`) et des compteurs (`retentionHashtagHourlyCountsDays`) est cohérente ; un changement de durée peut nécessiter une reconstruction. Il n'est pas possible de recréer des statistiques plus anciennes que les articles déjà purgés.
+- Les statistiques sont indicatives et reflètent les articles **actuellement présents** en base, non l'historique complet de l'actualité.
+
+# 15. Durées de conservation indépendantes — modèle cible
+
+La table `Setting` existante porte les huit durées décrites en section 8. Les nettoyages sont des traitements applicatifs séparés, planifiés, idempotents et observables :
+
+- `Article` et `Video` : date `publishedAt`, au-delà de leur propre durée.
+- `FeedRun` et `FeedVideoRun` : date `startedAt`, avec traitement prudent des runs encore `RUNNING`.
+- `HashtagHourlyCount` : `hourUtc`, en cohérence avec la rétention des articles.
+- Logs Pino conservés dans des fichiers : politique de rotation/purge par service, si le stockage local est sous contrôle de LMN24.
+- Les statuts `lastFetch*` sur les flux demeurent des **états courants**, pas des historiques à purger.
+
+Les données supprimées ne deviennent pas récupérables par la simple augmentation d'une durée. La purge réelle sera développée via User Stories Jira, avec journal de synthèse et tests. Les sauvegardes PostgreSQL suivent une rétention séparée de l'application.
+
