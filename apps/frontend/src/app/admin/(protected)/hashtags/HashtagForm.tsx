@@ -325,7 +325,7 @@ export function HashtagForm({ mode, hashtagId }: Props) {
               </p>
             )}
             <p className="form-text mb-0">
-              Ceci est un diagnostic. L'enregistrement des statistiques horaires
+              Ceci est un diagnostic. L&apos;enregistrement des statistiques horaires
               et leur reconstruction automatique seront développés dans SCRUM-52.
             </p>
           </section>
