@@ -22,6 +22,25 @@ function isApprovedYouTubeUrl(url: URL): boolean {
 }
 
 function channelFromMetadata(html: string): string | null {
+  // YouTube often publishes its canonical channel ID as an App Links URL
+  // rather than itemprop=channelId. Accept only channel URLs on youtube.com,
+  // never arbitrary deep links, video IDs or a lookalike host.
+  const appLinkProperties = new Set([
+    "al:ios:url", "al:android:url", "al:web:url",
+    "twitter:app:url:iphone", "twitter:app:url:ipad",
+    "twitter:app:url:googleplay",
+  ]);
+  for (const tag of html.match(/<meta\b[^>]*>/gi) ?? []) {
+    const property = tag.match(/(?:^|\s)(?:property|name)\s*=\s*(["'])(.*?)\1/i)?.[2]?.toLowerCase();
+    if (!property || !appLinkProperties.has(property)) continue;
+    const content = tag.match(/(?:^|\s)content\s*=\s*(["'])(.*?)\1/i)?.[2]?.trim();
+    if (!content) continue;
+    const channelId = content.match(
+      /^(?:vnd\.youtube|https):\/\/(?:www\.)?youtube\.com\/channel\/(UC[A-Za-z0-9_-]{22})(?=$|[/?#])/i,
+    )?.[1];
+    if (channelId && CHANNEL.test(channelId)) return channelId;
+  }
+
   const patterns = [
     /<meta\b(?=[^>]*\bitemprop=["']channelId["'])(?=[^>]*\bcontent=["'](UC[A-Za-z0-9_-]{22})["'])[^>]*>/i,
     /<meta\b(?=[^>]*\bcontent=["'](UC[A-Za-z0-9_-]{22})["'])(?=[^>]*\bitemprop=["']channelId["'])[^>]*>/i,
