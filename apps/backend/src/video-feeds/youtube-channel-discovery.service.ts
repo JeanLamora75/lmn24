@@ -2,7 +2,8 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  TooManyRequestsException,
+  HttpException,
+  HttpStatus,
   UnprocessableEntityException,
 } from "@nestjs/common";
 import { chromium } from "playwright";
@@ -106,7 +107,7 @@ async function lookupWithFetch(url: string): Promise<string | null> {
       headers: { accept: "text/html" },
     });
     if (response.status === 429) {
-      throw new TooManyRequestsException("YouTube limite les requêtes pour le moment. Réessayez plus tard.");
+      throw new HttpException("YouTube limite les requêtes pour le moment. Réessayez plus tard.", HttpStatus.TOO_MANY_REQUESTS);
     }
     if (response.status >= 300 && response.status < 400) {
       const location = response.headers.get("location");
@@ -200,7 +201,7 @@ export class YoutubeChannelDiscoveryService {
       try {
         channelId = await lookupWithFetch(normalized.url) ?? undefined;
       } catch (error) {
-        if (error instanceof TooManyRequestsException) throw error;
+        if (error instanceof HttpException && error.getStatus() === HttpStatus.TOO_MANY_REQUESTS) throw error;
         // Recover with standard Chrome/Chromium when the public HTTP request fails.
       }
       if (!channelId) channelId = await lookupWithBrowser(normalized.url) ?? undefined;
