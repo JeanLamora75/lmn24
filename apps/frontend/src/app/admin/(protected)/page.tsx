@@ -60,7 +60,7 @@ const ADMIN_FEATURES = [
   },
   {
     href: "/admin/video-parser",
-    icon: "play-btn",
+    icon: "play-circle",
     title: "Lancer le Parser Vidéos",
     description:
       "Déclencher la collecte des flux XML YouTube et suivre son avancement.",
