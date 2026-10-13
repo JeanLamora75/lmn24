@@ -83,6 +83,33 @@ export class ParserController {
     return this.parserGateway.startRun(parsed.data);
   }
 
+  @Post("video-runs")
+  @HttpCode(202)
+  @Header("Cache-Control", "no-store")
+  async startVideo(@Req() request: RequestLike, @Body() body: unknown) {
+    await this.assertAuthenticated(request);
+    const parsed = startSchema.strict().safeParse(body);
+    if (!parsed.success) {
+      throw new BadRequestException("Critères du parser vidéo invalides.");
+    }
+    return this.parserGateway.startVideoBatch(parsed.data);
+  }
+
+  @Get("video-runs/:id/events")
+  async videoEvents(
+    @Req() request: RequestLike,
+    @Param("id") rawId: string,
+    @Res() response: StreamResponse,
+  ): Promise<void> {
+    await this.assertAuthenticated(request);
+    const runId = runIdSchema.safeParse(rawId);
+    if (!runId.success) {
+      throw new BadRequestException("Identifiant d’exécution vidéo invalide.");
+    }
+    const upstream = await this.parserGateway.openVideoEvents(runId.data);
+    await this.forwardEvents(upstream, response);
+  }
+
   @Get("runs/:id/events")
   async events(
     @Req() request: RequestLike,
@@ -100,6 +127,10 @@ export class ParserController {
     }
 
     const upstream = await this.parserGateway.openEvents(runId.data);
+    await this.forwardEvents(upstream, response);
+  }
+
+  private async forwardEvents(upstream: Response, response: StreamResponse): Promise<void> {
     const reader = upstream.body!.getReader();
 
     response.setHeader(
