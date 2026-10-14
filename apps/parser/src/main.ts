@@ -1,5 +1,5 @@
 import type { ApiErrorResponse, HealthResponse } from "@lmn24/contracts";
-import { createPrismaClient } from "@lmn24/database";
+import { createPrismaClient, rebuildHashtagHourlyCounts, type RebuildOptions } from "@lmn24/database";
 import {
   createServer,
   type IncomingMessage,
@@ -9,6 +9,7 @@ import { timingSafeEqual } from "node:crypto";
 import { resolve } from "node:path";
 
 import pino from "pino";
+import cron from "node-cron";
 import { z } from "zod";
 
 import { ParserEngine } from "./parser-engine.js";
@@ -139,6 +140,49 @@ async function bootstrap(): Promise<void> {
   const runs = new RunManager(engine);
   const videoEngine = new VideoParserEngine(database);
   const videoRuns = new RunManager<VideoParserFilters>(videoEngine);
+  let rebuildingStats = false;
+  let lastStatsResult: {
+    finishedAt: string | null;
+    error: string | null;
+    rebuiltBuckets: number | null;
+  } = { finishedAt: null, error: null, rebuiltBuckets: null };
+
+  // A transaction-level PostgreSQL advisory lock serializes this rebuild
+  // with RSS inserts and hashtag administration, even across processes.
+  async function runStatsRebuild(options: RebuildOptions): Promise<boolean> {
+    if (rebuildingStats) return false;
+    rebuildingStats = true;
+    try {
+      const result = await rebuildHashtagHourlyCounts(database, options);
+      lastStatsResult = {
+        finishedAt: new Date().toISOString(),
+        error: null,
+        rebuiltBuckets: result.countedBuckets,
+      };
+      logger.info({ result }, "Hashtag hourly statistics rebuilt");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      lastStatsResult = {
+        finishedAt: new Date().toISOString(),
+        error: message,
+        rebuiltBuckets: null,
+      };
+      logger.error({ error }, "Hashtag hourly rebuild failed; next schedule will retry");
+    } finally {
+      rebuildingStats = false;
+    }
+    return true;
+  }
+
+  // Frequent small reconciliation catches late RSS arrivals and out-of-band
+  // corrections. A daily full reconciliation heals deletions and missed jobs.
+  const hourlyStatsJob = cron.schedule("10 * * * *", () => {
+    void runStatsRebuild({ from: new Date(Date.now() - 48 * 3_600_000) });
+  }, { timezone: "Etc/UTC" });
+  const fullStatsJob = cron.schedule("35 3 * * *", () => {
+    void runStatsRebuild({});
+  }, { timezone: "Etc/UTC" });
+
 
   const server = createServer(async (request, response) => {
     try {
@@ -164,6 +208,36 @@ async function bootstrap(): Promise<void> {
           "UNAUTHORIZED",
           "Parser authentication failed.",
         );
+        return;
+      }
+
+      if (request.method === "GET" && url.pathname === "/hashtag-stats/status") {
+        writeJson(response, 200, { running: rebuildingStats, ...lastStatsResult });
+        return;
+      }
+
+      if (request.method === "POST" && url.pathname === "/hashtag-stats/rebuild") {
+        const raw = await readJson(request);
+        const parsed = z.object({
+          hashtagId: z.string().uuid().optional(),
+          hours: z.number().int().min(1).max(24 * 60).optional(),
+        }).strict().safeParse(raw);
+        if (!parsed.success) {
+          writeApiError(response, 400, "INVALID_REBUILD", "Invalid hashtag statistics rebuild request.");
+          return;
+        }
+        if (rebuildingStats) {
+          writeApiError(response, 409, "REBUILD_ACTIVE", "Hashtag rebuild already in progress.");
+          return;
+        }
+        const options: RebuildOptions = {
+          ...(parsed.data.hashtagId ? { hashtagId: parsed.data.hashtagId } : {}),
+          ...(parsed.data.hours
+            ? { from: new Date(Date.now() - parsed.data.hours * 3_600_000) }
+            : {}),
+        };
+        void runStatsRebuild(options);
+        writeJson(response, 202, { accepted: true });
         return;
       }
 
@@ -316,6 +390,8 @@ async function bootstrap(): Promise<void> {
   async function shutdown(signal: string): Promise<void> {
     logger.info({ signal }, "LMN24 parser shutting down");
 
+    hourlyStatsJob.stop();
+    fullStatsJob.stop();
     server.close(async (error) => {
       await database.$disconnect();
 
