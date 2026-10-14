@@ -3,6 +3,7 @@ import {
 } from "@nestjs/common";
 import { normalizeHashtagTerm } from "@lmn24/contracts";
 import { DatabaseService } from "../database/database.service";
+import { HashtagStatsService } from "./hashtag-stats.service";
 import { HashtagMediaService } from "./hashtag-media.service";
 
 export type HashtagAliasInput = { name: string; languageIsoCode2?: string | null | undefined };
@@ -39,6 +40,7 @@ export class HashtagsService {
   constructor(
     private readonly database: DatabaseService,
     @Optional() private readonly media?: HashtagMediaService,
+    @Optional() private readonly stats?: HashtagStatsService,
   ) {}
 
   async list(params: HashtagListInput) {
@@ -135,6 +137,7 @@ export class HashtagsService {
           aliases: { create: aliases },
         },
       });
+      this.stats?.enqueue(item.id);
       return this.getById(item.id);
     } catch (error) {
       if (isUniqueConstraint(error)) {
@@ -159,6 +162,7 @@ export class HashtagsService {
           });
         }
       });
+      this.stats?.enqueue(id);
       return this.getById(id);
     } catch (error) {
       if (isUniqueConstraint(error)) {
@@ -171,6 +175,7 @@ export class HashtagsService {
   async setActive(id: string, isActive: boolean) {
     await this.getById(id);
     await this.database.prisma.hashtag.update({ where: { id }, data: { isActive } });
+    this.stats?.enqueue(id);
     return this.getById(id);
   }
 
