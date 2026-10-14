@@ -2,7 +2,7 @@ import {
   BadRequestException, ConflictException, Injectable, Logger, NotFoundException,
 } from "@nestjs/common";
 import { randomUUID } from "node:crypto";
-import { rebuildHashtagHourlyCounts } from "@lmn24/database";
+import { rebuildHashtagHourlyCounts, type DatabaseClient } from "@lmn24/database";
 import { DatabaseService } from "../database/database.service";
 import { RetentionSettingsService } from "./retention-settings.service";
 
@@ -77,8 +77,10 @@ export class ManualPurgeService {
       ? { hourUtc: { lt: cutoff } } : { publishedAt: { lt: cutoff } }) : {};
   }
 
-  private async count(table: PurgeTable, cutoff: Date | null): Promise<number> {
-    const db = this.db.prisma;
+  private async count(
+    table: PurgeTable, cutoff: Date | null,
+    db: Pick<DatabaseClient, "article" | "video" | "feedRun" | "feedVideoRun" | "hashtagHourlyCount"> = this.db.prisma,
+  ): Promise<number> {
     switch (table) {
       case "article": return db.article.count({ where: this.filter(table, cutoff) });
       case "video": return db.video.count({ where: this.filter(table, cutoff) });
@@ -173,7 +175,7 @@ export class ManualPurgeService {
           if (configured !== snapshot) throw new ConflictException("Durée modifiée. Reprévisualisez.");
         }
         const cutoff = preview.cutoff;
-        const before = await this.count(job.table, cutoff);
+        const before = await this.count(job.table, cutoff, tx);
         if (before !== preview.count) {
           throw new ConflictException("Le nombre d'enregistrements a changé. Reprévisualisez.");
         }
