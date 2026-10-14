@@ -1,5 +1,5 @@
 import {
-  BadRequestException, ConflictException, Injectable, Logger, NotFoundException,
+  BadRequestException, ConflictException, Injectable, Logger,
 } from "@nestjs/common";
 import { randomUUID } from "node:crypto";
 import { rebuildHashtagHourlyCounts, type DatabaseClient } from "@lmn24/database";
