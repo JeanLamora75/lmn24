@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { DatabaseService } from "../database/database.service";
+import { HashtagTrendsService } from "../hashtags/hashtag-trends.service";
 import { SourceMediaService } from "./source-media.service";
 import { SourcesService, type SourceInput } from "./sources.service";
 
@@ -22,6 +23,7 @@ function setup(found?: Record<string, unknown>) {
   const service = new SourcesService(
     { prisma: { country, source } } as unknown as DatabaseService,
     media as unknown as SourceMediaService,
+    { invalidate: vi.fn() } as unknown as HashtagTrendsService,
   );
   return { service, source, country };
 }

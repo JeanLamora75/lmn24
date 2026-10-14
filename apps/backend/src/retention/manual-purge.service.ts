@@ -4,6 +4,7 @@ import {
 import { randomUUID } from "node:crypto";
 import { rebuildHashtagHourlyCounts, type DatabaseClient } from "@lmn24/database";
 import { DatabaseService } from "../database/database.service";
+import { HashtagTrendsService } from "../hashtags/hashtag-trends.service";
 import { RetentionSettingsService } from "./retention-settings.service";
 
 export const PURGE_TABLES = [
@@ -61,6 +62,7 @@ export class ManualPurgeService {
   constructor(
     private readonly db: DatabaseService,
     private readonly retention: RetentionSettingsService,
+    private readonly trends: HashtagTrendsService,
   ) {}
 
   private async cutoffFor(table: PurgeTable, mode: PurgeMode, now = new Date()): Promise<Date | null> {
@@ -244,10 +246,21 @@ export class ManualPurgeService {
         }
         return deleted;
       }, { maxWait: 5_000, timeout: 15 * MINUTE });
+      if (job.deleted > 0 &&
+          (job.table === "article" || job.table === "hashtag_hourly_count")) {
+        this.trends.invalidate();
+      }
       if (job.table === "article" && job.deleted > 0) {
-        // The earlier transaction published ZERO stale counters.
-        // If rebuild fails, counters remain empty and rankings unverified.
-        await rebuildHashtagHourlyCounts(this.db.prisma);
+        // The purge itself is already COMMITTED. A failed recalculation
+        // must not claim the committed deletion failed or leave stale scores.
+        try {
+          await rebuildHashtagHourlyCounts(this.db.prisma);
+          this.trends.invalidate();
+        } catch (error) {
+          job.message = "Articles supprimés ; reconstruction hashtags à relancer : " +
+            (error instanceof Error ? error.message : String(error));
+          this.logger.warn(job.message);
+        }
       }
       job.status = "COMPLETED";
     } catch (error) {

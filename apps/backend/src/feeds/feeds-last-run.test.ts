@@ -102,7 +102,7 @@ describe("SCRUM-20 — suppression depuis la liste", () => {
       feed: { findUnique: vi.fn().mockResolvedValue({ id: FEED_ID }) },
       feedRun: { count },
     });
-    await expect(svc.getDeleteImpact(FEED_ID)).resolves.toEqual({ feedRuns: 17 });
+    await expect(svc.getDeleteImpact(FEED_ID)).resolves.toEqual({ feedRuns: 17, activeRuns: 17, articlesPreserved: true });
     expect(count).toHaveBeenCalledWith({ where: { feedId: FEED_ID } });
   });
 
@@ -114,6 +114,7 @@ describe("SCRUM-20 — suppression depuis la liste", () => {
         delete: vi.fn().mockImplementation(async () => { order.push("feed"); }),
       },
       feedRun: {
+        count: vi.fn().mockResolvedValue(0),
         deleteMany: vi.fn().mockImplementation(async () => {
           order.push("runs");
           return { count: 2 };

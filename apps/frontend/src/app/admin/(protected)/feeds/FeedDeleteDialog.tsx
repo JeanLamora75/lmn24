@@ -16,6 +16,7 @@ export function FeedDeleteDialog({ feed, onClose, onDeleted }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const deletingRef = useRef(false);
   const [feedRuns, setFeedRuns] = useState<number | null>(null);
+  const [activeRuns, setActiveRuns] = useState(0);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
@@ -39,11 +40,13 @@ export function FeedDeleteDialog({ feed, onClose, onDeleted }: Props) {
           return;
         }
         if (!response.ok) throw new Error("impact-unavailable");
-        const data = (await response.json()) as { feedRuns: number };
-        if (!Number.isSafeInteger(data.feedRuns) || data.feedRuns < 0) {
+        const data = (await response.json()) as { feedRuns: number; activeRuns: number };
+        if (!Number.isSafeInteger(data.feedRuns) || data.feedRuns < 0 ||
+          !Number.isSafeInteger(data.activeRuns) || data.activeRuns < 0) {
           throw new Error("invalid-impact");
         }
         setFeedRuns(data.feedRuns);
+        setActiveRuns(data.activeRuns);
       } catch (caught) {
         if (!(caught instanceof DOMException && caught.name === "AbortError")) {
           setError("Impossible de calculer les historiques liés à ce flux. Suppression désactivée.");
@@ -57,7 +60,7 @@ export function FeedDeleteDialog({ feed, onClose, onDeleted }: Props) {
   }, [feed.id, router]);
 
   async function confirmDelete() {
-    if (deletingRef.current || loading || feedRuns === null) return;
+    if (deletingRef.current || loading || feedRuns === null || activeRuns > 0) return;
     deletingRef.current = true;
     setDeleting(true);
     setError("");
@@ -103,7 +106,13 @@ export function FeedDeleteDialog({ feed, onClose, onDeleted }: Props) {
           <div className="alert alert-warning">
             Cette suppression définitive effacera ce flux et{" "}
             <strong>{feedRuns} historique{feedRuns > 1 ? "s" : ""} d’exécution</strong>.
-            Les articles déjà enregistrés seront conservés.
+            Les articles déjà enregistrés seront conservés : ils sont rattachés à la source
+            et continueront de compter dans les hashtags. Aucune reconstruction n’est nécessaire.
+            {activeRuns > 0 && (
+              <span className="d-block mt-2 text-danger" role="alert">
+                {activeRuns} extraction(s) en cours : suppression impossible pour le moment.
+              </span>
+            )}
           </div>
         ) : null}
         {error && <p role="alert" className="alert alert-danger">{error}</p>}
@@ -119,7 +128,7 @@ export function FeedDeleteDialog({ feed, onClose, onDeleted }: Props) {
           <button
             type="button"
             className="btn btn-danger"
-            disabled={loading || feedRuns === null || deleting}
+            disabled={loading || feedRuns === null || deleting || activeRuns > 0}
             onClick={() => void confirmDelete()}
           >
             {deleting ? "Suppression…" : "Supprimer définitivement"}

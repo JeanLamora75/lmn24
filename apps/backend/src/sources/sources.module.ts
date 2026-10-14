@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 
 import { AuthModule } from "../auth/auth.module";
+import { HashtagsModule } from "../hashtags/hashtags.module";
 import { SourceCaptureService } from "./source-capture.service";
 import { SourceCsvImportService } from "./source-csv-import.service";
 import { SourceMediaController } from "./source-media.controller";
@@ -9,7 +10,7 @@ import { SourcesController } from "./sources.controller";
 import { SourcesService } from "./sources.service";
 
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, HashtagsModule],
   controllers: [SourcesController, SourceMediaController],
   providers: [
     SourcesService,
