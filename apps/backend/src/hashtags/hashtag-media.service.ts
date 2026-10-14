@@ -120,12 +120,19 @@ async function downloadStep(url: URL): Promise<{ buffer?: Buffer; redirect?: str
       }
       if (status !== 200) {
         res.resume();
-        rejectRequest(new BadRequestException("Téléchargement de l'image refusé par le serveur distant."));
+        rejectRequest(new BadGatewayException(
+          status === 403 ? "Le site distant interdit le téléchargement de cette image."
+            : status === 429 ? "Le site distant limite les téléchargements. Réessayez plus tard."
+              : status === 404 ? "Image introuvable à cette adresse (404)."
+                : "Téléchargement de l’image refusé par le site distant (HTTP " + status + ").",
+        ));
         return;
       }
       const type = String(res.headers["content-type"] ?? "").split(";")[0]?.toLowerCase();
       if (type && !["image/jpeg", "image/png", "image/webp", "application/octet-stream"].includes(type)) {
-        res.resume(); rejectRequest(new BadRequestException("L'URL ne retourne pas une image autorisée.")); return;
+        res.resume(); rejectRequest(new BadRequestException(
+          "Ce lien ne retourne pas une image. Copiez l’URL HTTPS directe d’un fichier JPEG, PNG ou WebP.",
+        )); return;
       }
       const declared = Number(res.headers["content-length"] ?? "0");
       if (declared > MAX_BYTES) {
