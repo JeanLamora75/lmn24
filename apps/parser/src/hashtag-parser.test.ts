@@ -1,4 +1,3 @@
-import { compileHashtags } from "@lmn24/contracts";
 import { describe, expect, it, vi } from "vitest";
 import { ParserEngine } from "./parser-engine.js";
 
@@ -11,44 +10,55 @@ const feed = {
 };
 const entries = [
   { title: "Москва", summary: "Moscou", imageUrl: "https://example.com/image.jpg",
-    articleUrl: "https://example.com/a", publishedAt: new Date("2026-10-12T09:00:00Z") },
+    articleUrl: "https://example.com/a", publishedAt: new Date() },
   { title: "Un autre sujet", summary: null, imageUrl: "https://example.com/image.jpg",
-    articleUrl: "https://example.com/b", publishedAt: new Date("2026-10-12T10:00:00Z") },
+    articleUrl: "https://example.com/b", publishedAt: new Date() },
 ];
-const matches = compileHashtags([
-  { id: "moscou", name: "Moscou", aliases: [{ name: "Москва" }] },
-]);
-type ImportArticles = (inputFeed: typeof feed, inputEntries: typeof entries,
-  activeHashtags: typeof matches) => Promise<{ imported: number; matched: number }>;
+type ImportArticles = (inputFeed: typeof feed, inputEntries: typeof entries) =>
+  Promise<{ imported: number; matched: number }>;
 
-describe("SCRUM-51 — parser only counts committed, unique inserted articles", () => {
-  it("never attributes a duplicate feed item to newly imported hashtag matches", async () => {
+describe("SCRUM-52 — parser inserts and counts in the same database transaction", () => {
+  it("only counts committed, newly inserted articles once per hashtag", async () => {
     const createManyAndReturn = vi.fn().mockResolvedValue([
       { id: "id-a", title: "Москва", summary: "Moscou", publishedAt: entries[0]!.publishedAt },
     ]);
+    const upsert = vi.fn().mockResolvedValue({});
+    const tx = {
+      $queryRaw: vi.fn().mockResolvedValue([{ acquired: 1 }]),
+      setting: { findMany: vi.fn().mockResolvedValue([]) },
+      hashtag: { findMany: vi.fn().mockResolvedValue([{
+        id: "moscow", name: "Moscou", aliases: [{ name: "Москва" }],
+      }]) },
+      article: { createManyAndReturn },
+      hashtagHourlyCount: { upsert },
+    };
     const db = {
-      article: { findMany: vi.fn().mockResolvedValue([]), createManyAndReturn },
+      article: { findMany: vi.fn().mockResolvedValue([]) },
+      $transaction: vi.fn(async (callback: (input: typeof tx) => Promise<unknown>) => callback(tx)),
     };
     const engine = new ParserEngine(db as never);
     const fn = (engine as unknown as { importArticles: ImportArticles }).importArticles.bind(engine);
-    const result = await fn(feed, [entries[0]!, entries[0]!, entries[1]!], matches);
+    const result = await fn(feed, [entries[0]!, entries[0]!, entries[1]!]);
     expect(result).toEqual({ imported: 1, matched: 1 });
     expect(createManyAndReturn).toHaveBeenCalledOnce();
-    expect(createManyAndReturn.mock.calls[0]?.[0]).toMatchObject({
-      skipDuplicates: true, select: { title: true, summary: true },
-    });
+    expect(upsert).toHaveBeenCalledOnce();
+    expect(upsert).toHaveBeenCalledWith(expect.objectContaining({
+      create: expect.objectContaining({ hashtagId: "moscow", articleCount: 1 }),
+      update: { articleCount: { increment: 1 } },
+    }));
   });
-  it("leaves the import untouched if all URLs already exist", async () => {
-    const createManyAndReturn = vi.fn();
+
+  it("never creates counters for already imported URLs", async () => {
+    const transaction = vi.fn();
     const db = {
       article: {
         findMany: vi.fn().mockResolvedValue([{ articleUrl: entries[0]!.articleUrl }]),
-        createManyAndReturn,
       },
+      $transaction: transaction,
     };
     const engine = new ParserEngine(db as never);
     const fn = (engine as unknown as { importArticles: ImportArticles }).importArticles.bind(engine);
-    expect(await fn(feed, [entries[0]!], matches)).toEqual({ imported: 0, matched: 0 });
-    expect(createManyAndReturn).not.toHaveBeenCalled();
+    expect(await fn(feed, [entries[0]!])).toEqual({ imported: 0, matched: 0 });
+    expect(transaction).not.toHaveBeenCalled();
   });
 });
