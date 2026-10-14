@@ -51,6 +51,8 @@ export function HashtagForm({ mode, hashtagId }: Props) {
   const currentId = hashtagId ?? createdId;
   const cancelScan = useRef(false);
   const [scanRunning, setScanRunning] = useState(false);
+  const [rebuildRequested, setRebuildRequested] = useState(false);
+  const [rebuildNotice, setRebuildNotice] = useState("");
   const [scanResult, setScanResult] = useState<{
     scanned: number; matched: number; complete: boolean;
   } | null>(null);
@@ -180,6 +182,26 @@ export function HashtagForm({ mode, hashtagId }: Props) {
     } catch (e) {
       setError(e instanceof Error ? e.message : "Suppression de l’image impossible.");
     } finally { setRemovingImage(false); }
+  };
+
+  const rebuildHourly = async () => {
+    if (!currentId || rebuildRequested) return;
+    setRebuildRequested(true);
+    setError("");
+    setRebuildNotice("");
+    try {
+      const response = await fetch(
+        "/api/admin/hashtags/" + encodeURIComponent(currentId) + "/rebuild",
+        { method: "POST" },
+      );
+      if (!response.ok) throw new Error(await errorMessage(response));
+      setRebuildNotice(
+        "Reconstruction demandée. Les compteurs seront remplacés après son exécution ; " +
+        "le classement n'affichera pas de résultat partiel.",
+      );
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Reconstruction impossible.");
+    } finally { setRebuildRequested(false); }
   };
 
   const analyzeHistory = async () => {
@@ -324,15 +346,22 @@ export function HashtagForm({ mode, hashtagId }: Props) {
                 {scanResult.complete ? " Analyse terminée." : " Résultat provisoire."}
               </p>
             )}
+            <div className="mt-3">
+              <button type="button" className="btn btn-sm btn-outline-success"
+                disabled={rebuildRequested} onClick={() => void rebuildHourly()}>
+                {rebuildRequested ? "Demande en cours…" : "Reconstruire les compteurs horaires"}
+              </button>
+              {rebuildNotice && <p className="form-text" role="status">{rebuildNotice}</p>}
+            </div>
             <p className="form-text mb-0">
               Ceci est un diagnostic. L&apos;enregistrement des statistiques horaires
-              et leur reconstruction automatique seront développés dans SCRUM-52.
+              et leur reconstruction sont maintenant assurés par SCRUM-52.
             </p>
           </section>
         )}
         {mode === "edit" && <p className="form-text mt-3">
           {count} heure(s) de statistiques associées. Une modification des noms ou alias
-          nécessitera une reconstruction des compteurs (prévue dans SCRUM-52).
+          entraîne une reconstruction automatique des compteurs.
         </p>}
 
         <hr />
