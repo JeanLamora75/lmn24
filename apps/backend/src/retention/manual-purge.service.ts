@@ -123,7 +123,7 @@ export class ManualPurgeService {
 
   start(ownerId: string, input: {
     token: string; table: PurgeTable; mode: PurgeMode;
-    confirmed: boolean; typedName?: string;
+    confirmed: boolean; typedName?: string | undefined;
   }): PurgeJob {
     if (this.active) throw new ConflictException("Une purge est déjà en cours.");
     const preview = this.previews.get(input.token);
