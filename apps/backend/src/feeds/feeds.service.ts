@@ -360,15 +360,12 @@ export class FeedsService {
       throw new NotFoundException("Flux RSS/XML introuvable.");
     }
 
-    const feedRuns = await this.database.prisma.feedRun.count({
-      where: {
-        feedId: id,
-      },
-    });
-
-    return {
-      feedRuns,
-    };
+    const [feedRuns, activeRuns] = await Promise.all([
+      this.database.prisma.feedRun.count({ where: { feedId: id } }),
+      this.database.prisma.feedRun.count({ where: { feedId: id, status: "RUNNING" } }),
+    ]);
+    // Articles reference Source, not Feed, and must remain untouched.
+    return { feedRuns, activeRuns, articlesPreserved: true };
   }
 
   async delete(id: string) {
@@ -380,6 +377,15 @@ export class FeedsService {
 
       if (!feed) {
         throw new NotFoundException("Flux RSS/XML introuvable.");
+      }
+
+      const running = await tx.feedRun.count({
+        where: { feedId: id, status: "RUNNING" },
+      });
+      if (running > 0) {
+        throw new ConflictException(
+          "Une extraction de ce flux est en cours. Attendez sa fin avant de supprimer.",
+        );
       }
 
       const deletedRuns = await tx.feedRun.deleteMany({
