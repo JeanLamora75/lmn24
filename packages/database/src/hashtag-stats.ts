@@ -156,6 +156,7 @@ export async function rebuildHashtagHourlyCounts(
     const compiled = compileHashtags(definitions);
     const buckets = new Map<string, { hashtagId: string; hourUtc: Date; articleCount: number }>();
     let cursor: string | undefined;
+    let earliestIngestedAt: Date | null = null;
     let scannedArticles = 0;
     let matchingArticles = 0;
     while (true) {
@@ -163,10 +164,15 @@ export async function rebuildHashtagHourlyCounts(
         where: { publishedAt: { gte: start, lt: end } },
         orderBy: { id: "asc" }, take: BATCH,
         ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-        select: { id: true, title: true, summary: true, publishedAt: true },
+        select: { id: true, title: true, summary: true, publishedAt: true, createdAt: true },
       });
       if (!articles.length) break;
       scannedArticles += articles.length;
+      for (const row of articles) {
+        if (earliestIngestedAt === null || row.createdAt < earliestIngestedAt) {
+          earliestIngestedAt = row.createdAt;
+        }
+      }
       matchingArticles += collectHashtagHours(articles, compiled, buckets, start, through);
       cursor = articles.at(-1)!.id;
       if (articles.length < BATCH) break;
@@ -183,6 +189,26 @@ export async function rebuildHashtagHourlyCounts(
     const counted = [...buckets.values()];
     for (let i = 0; i < counted.length; i += BATCH) {
       await tx.hashtagHourlyCount.createMany({ data: counted.slice(i, i + BATCH) });
+    }
+    // Publish freshness/coverage markers ONLY after successful full rebuild.
+    // In the same transaction: a failed rebuild cannot advertise completeness.
+    if (!options.hashtagId && !options.from && !options.to) {
+      const fullRebuildAt = new Date().toISOString();
+      const coverageSince = (earliestIngestedAt ?? now).toISOString();
+      await tx.$executeRaw`
+        INSERT INTO setting ("key", "value", "type", "scope", "scope_id", "description")
+        VALUES ('hashtagStatsLastFullRebuildAt', ${fullRebuildAt}, 'STRING', 'GLOBAL', NULL,
+                'Last successful complete hashtag hourly reconstruction (UTC)')
+        ON CONFLICT ("key") WHERE "scope" = 'GLOBAL'
+        DO UPDATE SET "value" = EXCLUDED."value", "updated_at" = NOW()
+      `;
+      await tx.$executeRaw`
+        INSERT INTO setting ("key", "value", "type", "scope", "scope_id", "description")
+        VALUES ('hashtagStatsCoverageSinceUtc', ${coverageSince}, 'STRING', 'GLOBAL', NULL,
+                'Earliest article ingestion time represented in last full reconstruction')
+        ON CONFLICT ("key") WHERE "scope" = 'GLOBAL'
+        DO UPDATE SET "value" = EXCLUDED."value", "updated_at" = NOW()
+      `;
     }
     return {
       scannedArticles,

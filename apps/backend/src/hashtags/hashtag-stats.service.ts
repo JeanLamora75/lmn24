@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleDestroy } from "@nestjs/common";
 import { rebuildHashtagHourlyCounts, type RebuildResult } from "@lmn24/database";
 import { DatabaseService } from "../database/database.service";
+import { HashtagTrendsService } from "./hashtag-trends.service";
 
 /**
  * Coalesced, best-effort immediate rebuild after a subject/alias edit.
@@ -15,7 +16,7 @@ export class HashtagStatsService implements OnModuleDestroy {
   private running = false;
   private stopped = false;
 
-  constructor(private readonly db: DatabaseService) {}
+  constructor(private readonly db: DatabaseService, private readonly trends: HashtagTrendsService) {}
 
   enqueue(hashtagId: string): void {
     this.queued.add(hashtagId);
@@ -39,6 +40,7 @@ export class HashtagStatsService implements OnModuleDestroy {
         try {
           const result = await rebuildHashtagHourlyCounts(this.db.prisma, { hashtagId: id });
           this.latest.set(id, { finishedAt: new Date().toISOString(), result });
+          this.trends.invalidate();
         } catch (error) {
           const message = error instanceof Error ? error.message : "Erreur inconnue";
           this.latest.set(id, { finishedAt: new Date().toISOString(), error: message });
