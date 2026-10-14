@@ -10,7 +10,6 @@ const RETENTION_KEYS = ["retentionArticlesDays", "retentionHashtagHourlyCountsDa
 const MARKER_KEYS = ["hashtagStatsLastFullRebuildAt", "hashtagStatsCoverageSinceUtc"] as const;
 const CACHE_LIMIT = 3;
 const HOUR_MS = 3_600_000;
-const DAY_MS = 86_400_000;
 
 export type TrendSettings = Readonly<{
   hashtagTrendMinMentions: number;
