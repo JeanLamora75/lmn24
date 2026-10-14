@@ -104,7 +104,7 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
       });
     };
     try {
-      await this.observer?.start(record.id, filters, trigger);
+      if (this.observer) await this.observer.start(record.id, filters, trigger);
       await this.engine.run(filters, (event) => {
         this.emit(record, event);
         persist(event);
