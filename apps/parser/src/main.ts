@@ -13,6 +13,7 @@ import cron from "node-cron";
 import { z } from "zod";
 
 import { ParserEngine } from "./parser-engine.js";
+import { PersistentRunLog } from "./persistent-run-log.js";
 import { VideoParserEngine, type VideoParserFilters } from "./video-parser-engine.js";
 import {
   ActiveRunError,
@@ -137,9 +138,18 @@ async function bootstrap(): Promise<void> {
   await database.$connect();
 
   const engine = new ParserEngine(database);
-  const runs = new RunManager(engine);
+  const infoLog = new PersistentRunLog(database, "INFOS");
+  const videoLog = new PersistentRunLog(database, "VIDEOS");
+  // Recover only stale, unclosed batches. Never invent a SUCCESS for a crashed run.
+  const [infoInterrupted, videoInterrupted] = await Promise.all([
+    infoLog.recoverInterrupted(), videoLog.recoverInterrupted(),
+  ]);
+  if (infoInterrupted + videoInterrupted) {
+    logger.warn({ infoInterrupted, videoInterrupted }, "Recovered interrupted parser batches");
+  }
+  const runs = new RunManager(engine, infoLog);
   const videoEngine = new VideoParserEngine(database);
-  const videoRuns = new RunManager<VideoParserFilters>(videoEngine);
+  const videoRuns = new RunManager<VideoParserFilters>(videoEngine, videoLog);
   let rebuildingStats = false;
   let lastStatsResult: {
     finishedAt: string | null;
