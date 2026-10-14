@@ -57,6 +57,12 @@ const ADMIN_FEATURES = [
       "Gérer les langues proposées sur le site public.",
   },
   {
+    href: "/admin/retention",
+    icon: "clock-history",
+    title: "Conservation des données",
+    description: "Configurer séparément les durées de conservation des articles, vidéos et historiques.",
+  },
+  {
     href: "/admin/settings",
     icon: "gear",
     title: "Paramètres",
