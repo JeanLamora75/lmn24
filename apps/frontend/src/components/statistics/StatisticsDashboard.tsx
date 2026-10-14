@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { CountryFlag } from "@/components/home/CountryFlag";
+import { HashtagStatistics } from "./HashtagStatistics";
 import { countryName } from "@/components/home/country-flag";
 
 type Item = { name: string; count: number; id?: string };
@@ -166,6 +167,7 @@ export function StatisticsDashboard() {
         </Panel></div>
         <div className="col-12 col-lg-5"><Panel title="Top 10 des sources productives"><Histogram items={data.editorial.topSources}/></Panel></div>
       </div>
+      <HashtagStatistics />
       <h2 className="h4 mb-3">Couverture géographique et thématique</h2>
       <div className="row g-3 mb-4">
         <div className="col-12 col-lg-4"><Panel title="Articles par pays"><Histogram kind="country" items={data.distribution.byCountry}/></Panel></div>
