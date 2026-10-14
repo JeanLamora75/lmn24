@@ -32,10 +32,10 @@ function harness(count = 2) {
       count: vi.fn().mockResolvedValue(count),
       findMany: vi.fn().mockResolvedValue([]),
     },
-    article: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
-    video: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
-    feedRun: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
-    feedVideoRun: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
+    article: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
+    video: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
+    feedRun: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
+    feedVideoRun: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
   };
   const prisma = {
     $transaction: vi.fn(async (callback: (db: typeof tx) => Promise<number>) => callback(tx)),
