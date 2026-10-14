@@ -130,12 +130,15 @@ export class HashtagsService {
   async create(input: HashtagInput) {
     const aliases = this.validateAliases(input);
     try {
-      const item = await this.database.prisma.hashtag.create({
-        data: {
-          name: input.name.trim(), slug: input.slug,
-          isActive: input.isActive,
-          aliases: { create: aliases },
-        },
+      const item = await this.database.prisma.$transaction(async (tx) => {
+        await tx.$queryRaw`SELECT pg_advisory_xact_lock(52024, 52)`;
+        return tx.hashtag.create({
+          data: {
+            name: input.name.trim(), slug: input.slug,
+            isActive: input.isActive,
+            aliases: { create: aliases },
+          },
+        });
       });
       this.stats?.enqueue(item.id);
       return this.getById(item.id);
@@ -152,6 +155,7 @@ export class HashtagsService {
     await this.getById(id);
     try {
       await this.database.prisma.$transaction(async (tx) => {
+        await tx.$queryRaw`SELECT pg_advisory_xact_lock(52024, 52)`;
         await tx.hashtag.update({ where: { id }, data: {
           name: input.name.trim(), slug: input.slug, isActive: input.isActive,
         } });
@@ -174,7 +178,10 @@ export class HashtagsService {
 
   async setActive(id: string, isActive: boolean) {
     await this.getById(id);
-    await this.database.prisma.hashtag.update({ where: { id }, data: { isActive } });
+    await this.database.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT pg_advisory_xact_lock(52024, 52)`;
+      await tx.hashtag.update({ where: { id }, data: { isActive } });
+    });
     this.stats?.enqueue(id);
     return this.getById(id);
   }
@@ -228,7 +235,10 @@ export class HashtagsService {
 
   async delete(id: string) {
     const existing = await this.getById(id);
-    await this.database.prisma.hashtag.delete({ where: { id } });
+    await this.database.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT pg_advisory_xact_lock(52024, 52)`;
+      await tx.hashtag.delete({ where: { id } });
+    });
     await this.media?.deleteLocalImage(existing.imageUrl);
     // Alias and hourly counts are removed by database CASCADE.
     // Image cleanup will be introduced by SCRUM-50.
