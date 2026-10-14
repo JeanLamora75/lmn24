@@ -9,6 +9,7 @@ import { FeedsModule } from "./feeds/feeds.module";
 import { HashtagsModule } from "./hashtags/hashtags.module";
 import { HealthController } from "./health.controller";
 import { ParserModule } from "./parser/parser.module";
+import { RetentionSettingsModule } from "./retention/retention-settings.module";
 import { SourcesModule } from "./sources/sources.module";
 import { StatisticsModule } from "./statistics/statistics.module";
 import { VideoFeedsModule } from "./video-feeds/video-feeds.module";
@@ -28,6 +29,7 @@ import { VideosModule } from "./videos/videos.module";
     CategoriesModule,
     HashtagsModule,
     ParserModule,
+    RetentionSettingsModule,
     StatisticsModule,
     VideoFeedsModule,
     VideosModule,

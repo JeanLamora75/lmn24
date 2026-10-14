@@ -6,3 +6,4 @@ export * from "./category-page";
 export * from "./source-profile";
 export * from "./hashtag-normalization";
 export * from "./hashtag-matching";
+export * from "./retention-settings";
