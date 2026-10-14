@@ -294,9 +294,44 @@ export class ParserMonitoringService {
         AND "startedAt" < ${new Date(Date.now()-30*60_000)}
       ORDER BY "startedAt" DESC LIMIT 30
     `;
+    // Only report a stale-success warning when a previous success is
+    // actually present in the selected historical window. A missing success
+    // record is UNKNOWN, not proof of a longstanding outage.
+    const oldSuccess = await this.db.prisma.$queryRaw<Array<{
+      parserType: string; feedId: string; source: string; feedUrl: string;
+      lastAttempt: Date; lastSuccess: Date;
+    }>>`
+      WITH r AS (${combined}),
+      ranked AS (
+        SELECT *, ROW_NUMBER() OVER(
+          PARTITION BY "parserType","feedId"
+          ORDER BY "startedAt" DESC,id DESC
+        ) AS rn FROM r
+      ),
+      perfeed AS (
+        SELECT "parserType","feedId",
+          MAX("source") AS "source", MAX("feedUrl") AS "feedUrl",
+          MAX("startedAt") FILTER (WHERE rn=1) AS "lastAttempt",
+          MAX("status") FILTER (WHERE rn=1) AS "latestStatus",
+          MAX("startedAt") FILTER (WHERE "status"='SUCCESS') AS "lastSuccess"
+        FROM ranked GROUP BY "parserType","feedId"
+      )
+      SELECT "parserType","feedId","source","feedUrl","lastAttempt","lastSuccess"
+      FROM perfeed WHERE "latestStatus"='ERROR'
+        AND "lastSuccess" IS NOT NULL
+        AND "lastSuccess" < ${new Date(Date.now()-24*60*60_000)}
+      ORDER BY "lastAttempt" DESC LIMIT 30
+    `;
     return {
-      thresholds: { consecutiveFailures: 3, stuckMinutes: 30 },
+      thresholds: { consecutiveFailures: 3, stuckMinutes: 30,
+        lastSuccessHours: 24 },
       rows: [
+        ...oldSuccess.map(row => ({
+          type: "STALE_SUCCESS", parserType: row.parserType, feedId: row.feedId,
+          source: row.source, feedUrl: row.feedUrl,
+          message: "Dernier succès connu il y a plus de 24 heures",
+          at: row.lastSuccess.toISOString(),
+        })),
         ...failures.map(row => ({
           type: "REPEATED_FAILURE", parserType: row.parserType, feedId: row.feedId,
           source: row.source, feedUrl: row.feedUrl,
