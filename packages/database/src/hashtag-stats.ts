@@ -197,14 +197,14 @@ export async function rebuildHashtagHourlyCounts(
       const coverageSince = (earliestIngestedAt ?? now).toISOString();
       await tx.$executeRaw`
         INSERT INTO setting ("key", "value", "type", "scope", "scope_id", "description")
-        VALUES ('hashtagStatsLastFullRebuildAt', ${fullRebuildAt}, 'DATETIME', 'GLOBAL', NULL,
+        VALUES ('hashtagStatsLastFullRebuildAt', ${fullRebuildAt}, 'STRING', 'GLOBAL', NULL,
                 'Last successful complete hashtag hourly reconstruction (UTC)')
         ON CONFLICT ("key") WHERE "scope" = 'GLOBAL'
         DO UPDATE SET "value" = EXCLUDED."value", "updated_at" = NOW()
       `;
       await tx.$executeRaw`
         INSERT INTO setting ("key", "value", "type", "scope", "scope_id", "description")
-        VALUES ('hashtagStatsCoverageSinceUtc', ${coverageSince}, 'DATETIME', 'GLOBAL', NULL,
+        VALUES ('hashtagStatsCoverageSinceUtc', ${coverageSince}, 'STRING', 'GLOBAL', NULL,
                 'Earliest article ingestion time represented in last full reconstruction')
         ON CONFLICT ("key") WHERE "scope" = 'GLOBAL'
         DO UPDATE SET "value" = EXCLUDED."value", "updated_at" = NOW()
