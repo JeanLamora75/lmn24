@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-const dashboard = readFileSync(new URL("../page.tsx", import.meta.url), "utf8");
+// Navigation links now live in the SCRUM-13 admin-home registry, not page JSX.
+const dashboard = readFileSync(new URL("../admin-home.data.ts", import.meta.url), "utf8");
 const common = readFileSync(new URL("./ParserRunScreen.tsx", import.meta.url), "utf8");
 const videoPage = readFileSync(new URL("../video-parser/page.tsx", import.meta.url), "utf8");
 const backend = readFileSync(new URL("../../../api/admin/parser/video-runs/route.ts", import.meta.url), "utf8");
