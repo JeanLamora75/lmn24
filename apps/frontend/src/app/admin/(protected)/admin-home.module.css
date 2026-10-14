@@ -1,3 +1,122 @@
+/* SCRUM-13: denser administration homepage, grouped by functional domain. */
+.pageHeader {
+  margin-bottom: 1.5rem;
+}
+
+.searchPanel {
+  background: var(--bs-tertiary-bg);
+  border: 1px solid var(--bs-border-color-translucent);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.searchRow {
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+  max-width: 46rem;
+}
+
+.searchRow input {
+  min-width: 0;
+}
+
+.sectionList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.section {
+  min-width: 0;
+}
+
+.sectionHeading {
+  margin: 0 0 0.85rem;
+  font-size: 1.18rem;
+  font-weight: 650;
+}
+
+.sectionToggle {
+  width: 100%;
+  min-height: 3.55rem;
+  padding: 0.25rem 0.2rem 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border: none;
+  border-bottom: 1px solid var(--bs-border-color);
+  border-radius: 0;
+  background: transparent;
+  color: var(--bs-body-color);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sectionToggle:hover:not(:disabled) {
+  color: var(--bs-primary);
+}
+
+.sectionToggle:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.sectionToggle:focus-visible {
+  outline: 3px solid var(--bs-primary);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+.sectionIcon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 0.7rem;
+  background: var(--bs-primary-bg-subtle);
+}
+
+.sectionIcon img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.sectionTitle {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sectionCount {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--bs-secondary-color);
+  background: var(--bs-tertiary-bg);
+  border: 1px solid var(--bs-border-color-translucent);
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  line-height: 1;
+}
+
+.chevron {
+  flex: 0 0 auto;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  margin-right: 0.4rem;
+  transition: transform 150ms ease;
+}
+
+.chevron.expanded {
+  transform: rotate(225deg);
+}
+
 .cardLink {
   display: block;
   height: 100%;
@@ -7,26 +126,37 @@
 }
 
 .cardLink:focus-visible {
-  outline: 0;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  outline: 3px solid var(--bs-primary);
+  outline-offset: 3px;
 }
 
 .card {
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease;
+  border: 1px solid var(--bs-border-color-translucent) !important;
+  border-radius: 0.85rem;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
 
 .cardLink:hover .card,
 .cardLink:focus-visible .card {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
+  border-color: var(--bs-primary-border-subtle) !important;
   box-shadow: var(--bs-box-shadow) !important;
 }
 
+.cardBody {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+  min-height: 6.5rem;
+  padding: 1rem 1.15rem;
+}
+
 .iconWrapper {
+  flex: 0 0 auto;
   display: inline-flex;
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 3.25rem;
+  height: 3.25rem;
   align-items: center;
   justify-content: center;
   border-radius: 0.75rem;
@@ -34,12 +164,70 @@
 }
 
 .iconWrapper img {
-  width: 2rem;
-  height: 2rem;
+  display: block;
+  width: 2.4rem;
+  height: 2.4rem;
+  object-fit: contain;
+}
+
+.cardContent {
+  display: block;
+  flex: 1;
+  min-width: 0;
+}
+
+.cardTitle {
+  font-size: 1.04rem;
+  line-height: 1.3;
+  font-weight: 650;
+  margin: 0 0 0.25rem;
+  color: var(--bs-emphasis-color);
+  overflow-wrap: anywhere;
+}
+
+.cardDescription {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  color: var(--bs-secondary-color);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 575.98px) {
+  .pageHeader {
+    margin-bottom: 1.15rem;
+  }
+
+  .searchPanel {
+    padding: 0.9rem;
+    margin-bottom: 1.3rem;
+  }
+
+  .sectionList {
+    gap: 1.3rem;
+  }
+
+  .sectionHeading {
+    font-size: 1.08rem;
+  }
+
+  .cardBody {
+    padding: 0.9rem;
+    min-height: 5.8rem;
+  }
+
+  .cardTitle {
+    font-size: 0.99rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card {
+  .card,
+  .chevron {
     transition: none;
   }
 

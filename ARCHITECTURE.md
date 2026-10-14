@@ -1742,3 +1742,13 @@ Le backend NestJS assure l’import contrôlé et la publication des images de h
 - **Conservation** : les politiques de jours SCRUM-56 sont définies mais aucune purge automatique n'est introduite (SCRUM-57 reportée). Événements/logs seront à inclure dans les jobs futurs, après définition exacte des dépendances.
 - **Recette** : appliquer la migration dans une copie sauvegardée de la base, lancer une collecte de chaque type puis confirmer la présence de 2 batchs et de leurs events. Vérifier un historique ancien, le filtre type/période/status, l'export CSV, l'absence d'accès anonyme et les rendus 375px/768px/1440px. Les tests CI emploient des mocks pour les nouvelles requêtes ; les connexions parser réelles restent à valider sur la base locale.
 
+
+### SCRUM-13 — Accueil de l'administration restructuré (16 fonctionnalités)
+
+- **URL et sécurité inchangées** : `/admin`, sous le layout serveur `apps/frontend/src/app/admin/(protected)/layout.tsx`, redirigeant vers la connexion lorsque aucune session n'est active.
+- **Inventaire déclaré dans un seul registre** : `apps/frontend/src/app/admin/(protected)/admin-home.data.ts`, contient les 16 destinations réelles, sans doublon ni modification d'URL ; il définit l'ordre, l'icône Bootstrap SVG locale, le titre, la description et le groupe.
+- **Cinq sections métier** : Sources et flux (3), Contenus et référentiels (3), Collecte et supervision (3), Analyse et configuration (4), Données et maintenance (3). Les groupes sont ouverts par défaut et peuvent être repliés/dépliés depuis leur en-tête, au clavier comme à la souris.
+- **Nouvelle interface** : `AdminHomeClient.tsx` présente l'icône à gauche, le titre et une description courte à droite, dans des cartes horizontales Bootstrap à coins arrondis et survol/focus visible. `admin-home.module.css` conserve le thème et les marges réduites. Grille responsive 3 colonnes desktop (≥ 992px), 2 tablette (≥ 768px), 1 mobile.
+- **Recherche côté navigateur** : `filterAdminSections` retire les accents, casse et espaces périphériques ; recherche par titre, description et section ; masque les groupes vides, révèle les correspondances si l'en-tête était précédemment replié et propose un état « aucun résultat » et une remise à zéro. Aucun appel réseau, aucun changement de droits ou de base de données.
+- **Contrôles** : tests sur cinq regroupements et les 16 URLs exactes, présence des icônes locales, filtres accent/casse/section/rien trouvé, accessibilité de l'accordéon et grille Bootstrap. Aucune migration SQL, aucun backend modifié.
+
