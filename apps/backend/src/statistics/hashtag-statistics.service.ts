@@ -42,6 +42,9 @@ export class HashtagStatisticsService {
   ) {}
 
   async dashboard(period: RankingPeriod, requestedIds: readonly string[] = [], now = new Date()) {
+    if (requestedIds.length > 5 || new Set(requestedIds).size !== requestedIds.length) {
+      throw new BadRequestException("Au maximum cinq hashtags distincts.");
+    }
     const prisma = this.db.prisma;
     // Same closed UTC-hour cutoff as SCRUM-53 and the public rankings.
     const most = await this.trends.rank({
