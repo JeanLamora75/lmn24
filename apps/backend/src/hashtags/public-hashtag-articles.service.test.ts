@@ -51,7 +51,7 @@ function fixture(custom = rows, active = true, value = "60") {
   });
   const details = vi.fn(async (query: { where: { id: { in: string[] } } }) =>
     custom.filter((row) => query.where.id.in.includes(row.id)).reverse());
-  const findMany = vi.fn(async (query: { select: { summary: boolean } | { source: unknown } }) =>
+  const findMany = vi.fn(async (query: { select: { summary: boolean } | { source: unknown }; where: { id?: { in: string[] }; languageIsoCode2?: string } }) =>
     "source" in query.select ? details(query as never) : candidates(query as never));
   const prisma = {
     hashtag: { findFirst: vi.fn().mockResolvedValue(active ? subject : null) },
@@ -168,6 +168,6 @@ describe("SCRUM-55 — public hashtag detail matching and pagination", () => {
     });
     const detailCall = prisma.article.findMany.mock.calls.find(([query]) =>
       query.select && "source" in query.select);
-    expect(detailCall?.[0].where.id.in).toHaveLength(19);
+    expect(detailCall?.[0].where.id?.in).toHaveLength(19);
   });
 });
