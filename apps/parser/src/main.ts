@@ -13,6 +13,7 @@ import cron from "node-cron";
 import { z } from "zod";
 
 import { ParserEngine } from "./parser-engine.js";
+import { PersistentRunLog } from "./persistent-run-log.js";
 import { VideoParserEngine, type VideoParserFilters } from "./video-parser-engine.js";
 import {
   ActiveRunError,
@@ -137,9 +138,18 @@ async function bootstrap(): Promise<void> {
   await database.$connect();
 
   const engine = new ParserEngine(database);
-  const runs = new RunManager(engine);
+  const infoLog = new PersistentRunLog(database, "INFOS");
+  const videoLog = new PersistentRunLog(database, "VIDEOS");
+  // Recover only stale, unclosed batches. Never invent a SUCCESS for a crashed run.
+  const [infoInterrupted, videoInterrupted] = await Promise.all([
+    infoLog.recoverInterrupted(), videoLog.recoverInterrupted(),
+  ]);
+  if (infoInterrupted + videoInterrupted) {
+    logger.warn({ infoInterrupted, videoInterrupted }, "Recovered interrupted parser batches");
+  }
+  const runs = new RunManager(engine, infoLog);
   const videoEngine = new VideoParserEngine(database);
-  const videoRuns = new RunManager<VideoParserFilters>(videoEngine);
+  const videoRuns = new RunManager<VideoParserFilters>(videoEngine, videoLog);
   let rebuildingStats = false;
   let lastStatsResult: {
     finishedAt: string | null;
@@ -182,6 +192,30 @@ async function bootstrap(): Promise<void> {
   const fullStatsJob = cron.schedule("35 3 * * *", () => {
     void runStatsRebuild({});
   }, { timezone: "Etc/UTC" });
+
+  // Automatic parser schedules are opt-in and run only when configured.
+  // Never silently start an hourly collection on an existing installation.
+  const scheduledJobs: Array<{ stop(): void }> = [];
+  for (const schedule of [
+    { expression: process.env.PARSER_INFOS_CRON, type: "INFOS" },
+    { expression: process.env.PARSER_VIDEOS_CRON, type: "VIDEOS" },
+  ] as const) {
+    if (!schedule.expression?.trim()) continue;
+    if (!cron.validate(schedule.expression)) {
+      throw new Error("Invalid " + schedule.type + " parser cron expression.");
+    }
+    scheduledJobs.push(cron.schedule(schedule.expression, () => {
+      try {
+        if (schedule.type === "INFOS") runs.start({}, "AUTOMATIC");
+        else videoRuns.start({}, "AUTOMATIC");
+      } catch (error) {
+        if (!(error instanceof ActiveRunError))
+          logger.error({ error }, "Automatic parser start failed");
+      }
+    }, { timezone: "Etc/UTC" }));
+    logger.info({ parser: schedule.type }, "Automatic parser schedule configured");
+  }
+
 
 
   const server = createServer(async (request, response) => {
@@ -249,7 +283,8 @@ async function bootstrap(): Promise<void> {
           return;
         }
         try {
-          const runId = videoRuns.start(parsedVideo.data);
+          const runId = videoRuns.start(parsedVideo.data,
+            request.headers["x-parser-trigger"] === "AUTOMATIC" ? "AUTOMATIC" : "MANUAL");
           writeJson(response, 202, { accepted: true, runId });
         } catch (error) {
           if (error instanceof ActiveRunError) {
@@ -276,7 +311,8 @@ async function bootstrap(): Promise<void> {
         }
 
         try {
-          const runId = runs.start(parsed.data);
+          const runId = runs.start(parsed.data,
+            request.headers["x-parser-trigger"] === "AUTOMATIC" ? "AUTOMATIC" : "MANUAL");
 
           writeJson(response, 202, { runId });
         } catch (error) {
@@ -392,6 +428,7 @@ async function bootstrap(): Promise<void> {
 
     hourlyStatsJob.stop();
     fullStatsJob.stop();
+    for (const job of scheduledJobs) job.stop();
     server.close(async (error) => {
       await database.$disconnect();
 

@@ -81,6 +81,7 @@ export class ParserEngine {
   async run(
     filters: ParserFilters,
     emit: (event: ParserEvent) => void,
+    batchRunId?: string,
   ): Promise<void> {
     const settings = await this.loadSettings();
     const feeds = await this.loadFeeds(filters);
@@ -121,7 +122,7 @@ export class ParserEngine {
       });
 
       try {
-        const result = await this.processFeed(feed, settings);
+        const result = await this.processFeed(feed, settings, batchRunId);
 
         if (result.ok) {
           successfulFeeds += 1;
@@ -296,11 +297,13 @@ export class ParserEngine {
   private async processFeed(
     feed: FeedRow,
     settings: ParserSettings,
+    batchRunId?: string,
   ): Promise<FeedResult> {
     const startedAt = new Date();
     const feedRun = await this.database.feedRun.create({
       data: {
         feedId: feed.id,
+        ...(batchRunId ? { batchRunId } : {}),
         startedAt,
         status: "RUNNING",
       },

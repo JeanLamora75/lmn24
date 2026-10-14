@@ -42,7 +42,7 @@ async function boundedResponse(response: Response): Promise<string> {
 export class VideoParserEngine {
   constructor(private readonly database: DatabaseClient) {}
 
-  async run(filters: VideoParserFilters = {}, emit?: VideoEmitter): Promise<VideoSummary> {
+  async run(filters: VideoParserFilters = {}, emit?: VideoEmitter, batchRunId?: string): Promise<VideoSummary> {
     const feeds = await this.database.feedVideo.findMany({
       where: {
         isActive: true,
@@ -73,7 +73,7 @@ export class VideoParserEngine {
         feedUrl: feed.feedUrl,
       });
       const startedAt = new Date();
-      const run = await this.database.feedVideoRun.create({ data: { feedVideoId: feed.id, startedAt, status: "RUNNING" }, select: { id: true } });
+      const run = await this.database.feedVideoRun.create({ data: { feedVideoId: feed.id, ...(batchRunId ? { batchRunId } : {}), startedAt, status: "RUNNING" }, select: { id: true } });
       let error: string | null = null;
       let itemsFound = 0, videosImported = 0, videosSkipped = 0;
       try {
