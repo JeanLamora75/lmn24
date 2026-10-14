@@ -6,7 +6,9 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 
+import { rebuildHashtagHourlyCounts } from "@lmn24/database";
 import { DatabaseService } from "../database/database.service";
+import { HashtagTrendsService } from "../hashtags/hashtag-trends.service";
 import { SourceMediaService } from "./source-media.service";
 
 export type SourceStatusFilter = "all" | "active" | "inactive";
@@ -44,6 +46,7 @@ export class SourcesService {
   constructor(
     private readonly database: DatabaseService,
     private readonly media: SourceMediaService,
+    private readonly trends: HashtagTrendsService,
   ) {}
 
   async list(params: ListSourcesParams) {
@@ -329,91 +332,114 @@ export class SourcesService {
 
   async getDeleteImpact(id: string) {
     const source = await this.database.prisma.source.findUnique({
-      where: { id },
-      select: { id: true },
+      where: { id }, select: { id: true },
     });
+    if (!source) throw new NotFoundException("Source introuvable.");
 
-    if (!source) {
-      throw new NotFoundException("Source introuvable.");
-    }
-
-    const [feeds, articles] = await Promise.all([
-      this.database.prisma.feed.count({
-        where: { sourceId: id },
-      }),
-      this.database.prisma.article.count({
-        where: { sourceId: id },
-      }),
-    ]);
-
+    const [feeds, articles, videoFeeds, videos, runningInfo, runningVideo] =
+      await Promise.all([
+        this.database.prisma.feed.count({ where: { sourceId: id } }),
+        this.database.prisma.article.count({ where: { sourceId: id } }),
+        this.database.prisma.feedVideo.count({ where: { sourceId: id } }),
+        this.database.prisma.video.count({ where: { sourceId: id } }),
+        this.database.prisma.feedRun.count({
+          where: { feed: { sourceId: id }, status: "RUNNING" },
+        }),
+        this.database.prisma.feedVideoRun.count({
+          where: { feedVideo: { sourceId: id }, status: "RUNNING" },
+        }),
+      ]);
     return {
-      feeds,
-      articles,
+      feeds, articles, videoFeeds, videos,
+      activeRuns: runningInfo + runningVideo,
     };
   }
 
   async delete(id: string) {
     const result = await this.database.prisma.$transaction(async (tx) => {
+      // Same lock as article ingestion, hashtag edits and rebuilds.
+      // Holding it until COMMIT prevents writers from leaving stale buckets.
+      await tx.$queryRaw`SELECT 1 AS acquired FROM pg_advisory_xact_lock(52024, 52)`;
       const source = await tx.source.findUnique({
-        where: { id },
-        select: {
-          id: true,
-          logoUrl: true,
-        },
+        where: { id }, select: { id: true, logoUrl: true },
       });
+      if (!source) throw new NotFoundException("Source introuvable.");
 
-      if (!source) {
-        throw new NotFoundException("Source introuvable.");
+      const [infoActive, videoActive] = await Promise.all([
+        tx.feedRun.count({
+          where: { feed: { sourceId: id }, status: "RUNNING" },
+        }),
+        tx.feedVideoRun.count({
+          where: { feedVideo: { sourceId: id }, status: "RUNNING" },
+        }),
+      ]);
+      if (infoActive + videoActive > 0) {
+        throw new ConflictException(
+          "Une extraction de cette source est en cours. Attendez sa fin avant de supprimer.",
+        );
       }
 
-      const feeds = await tx.feed.findMany({
-        where: { sourceId: id },
-        select: { id: true },
-      });
+      // Explicitly remove dependants; never use TRUNCATE CASCADE.
+      // Articles attach directly to the source, not to their RSS feed.
+      await tx.feedRun.deleteMany({ where: { feed: { sourceId: id } } });
+      await tx.feedVideoRun.deleteMany({ where: { feedVideo: { sourceId: id } } });
 
-      const feedIds = feeds.map((feed) => feed.id);
+      const deletedFeeds = await tx.feed.deleteMany({ where: { sourceId: id } });
+      const deletedVideos = await tx.video.deleteMany({ where: { sourceId: id } });
+      const deletedVideoFeeds = await tx.feedVideo.deleteMany({ where: { sourceId: id } });
+      const deletedArticles = await tx.article.deleteMany({ where: { sourceId: id } });
 
-      if (feedIds.length > 0) {
-        await tx.feedRun.deleteMany({
+      if (deletedArticles.count > 0) {
+        // All former hourly counts could include articles from this source.
+        // Clear the counts and freshness markers in the SAME transaction
+        // as article deletion, then reconcile asynchronously after COMMIT.
+        await tx.hashtagHourlyCount.deleteMany({});
+        await tx.setting.deleteMany({
           where: {
-            feedId: {
-              in: feedIds,
-            },
+            scope: "GLOBAL",
+            key: { in: [
+              "hashtagStatsLastFullRebuildAt", "hashtagStatsCoverageSinceUtc",
+            ] },
           },
         });
       }
 
-      const deletedFeeds = await tx.feed.deleteMany({
-        where: { sourceId: id },
-      });
-
-      const deletedArticles = await tx.article.deleteMany({
-        where: { sourceId: id },
-      });
-
-      await tx.source.delete({
-        where: { id },
-      });
-
+      await tx.source.delete({ where: { id } });
       return {
         logoUrl: source.logoUrl,
         feeds: deletedFeeds.count,
         articles: deletedArticles.count,
+        videoFeeds: deletedVideoFeeds.count,
+        videos: deletedVideos.count,
       };
-    });
+    }, { maxWait: 60_000, timeout: 60_000 });
+
+    if (result.articles > 0) {
+      this.trends.invalidate();
+      // The source is already deleted: a failed rebuild must not produce
+      // an HTTP "delete failed" response. The daily full rebuild retries it.
+      void rebuildHashtagHourlyCounts(this.database.prisma)
+        .then(() => { this.trends.invalidate(); })
+        .catch((error: unknown) => {
+          this.logger.error(
+            "Source supprimée, mais reconstruction hashtags échouée (réessai quotidien) : " +
+            (error instanceof Error ? error.message : String(error)),
+          );
+        });
+    }
 
     if (result.logoUrl) {
       try {
         await this.media.deleteLocalImage(result.logoUrl);
       } catch {
-        // La suppression transactionnelle a déjà réussi : ne pas annoncer un échec trompeur.
         this.logger.warn("Source supprimée, mais son logo local n'a pas pu être effacé.");
       }
     }
 
     return {
-      feeds: result.feeds,
-      articles: result.articles,
+      feeds: result.feeds, articles: result.articles,
+      videoFeeds: result.videoFeeds, videos: result.videos,
+      hashtagRebuildRequested: result.articles > 0,
     };
   }
 
