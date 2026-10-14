@@ -1,11 +1,17 @@
-import { BadRequestException, NotFoundException } from "@nestjs/common";
+import {
+  BadGatewayException, BadRequestException, GatewayTimeoutException,
+  NotFoundException, ServiceUnavailableException,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import sharp from "sharp";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { HashtagMediaService, validatePublicImageUrl } from "./hashtag-media.service";
+import {
+  HashtagMediaService, imageDownloadError, normalizeImageSourceUrl,
+  validatePublicImageUrl,
+} from "./hashtag-media.service";
 
 let temp: string;
 let service: HashtagMediaService;
@@ -66,5 +72,69 @@ describe("SCRUM-50 — secure image URL rules", () => {
   it("accepts public HTTPS URLs for server-side checks", () => {
     expect(validatePublicImageUrl("https://upload.wikimedia.org/example.jpg").hostname)
       .toBe("upload.wikimedia.org");
+  });
+});
+
+describe("Image URL import — regression: never return raw Internal error", () => {
+  it("accepts a Wikimedia Commons file page and converts it into the direct-image redirect", () => {
+    const url = normalizeImageSourceUrl(
+      "https://commons.wikimedia.org/wiki/File:Example_image_2026.jpg",
+    );
+    expect(url.toString()).toBe(
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Example_image_2026.jpg",
+    );
+    expect(normalizeImageSourceUrl("https://upload.wikimedia.org/commons/test.png").hostname)
+      .toBe("upload.wikimedia.org");
+  });
+
+  it("rejects private origins, plain HTTP and invalid Wikimedia URLs", () => {
+    expect(() => normalizeImageSourceUrl(
+      "https://commons.wikimedia.org/wiki/File:",
+    )).toThrow(BadRequestException);
+    expect(() => normalizeImageSourceUrl("http://commons.wikimedia.org/wiki/File:A.png"))
+      .toThrow(BadRequestException);
+    expect(() => normalizeImageSourceUrl("https://127.0.0.1/photo.png"))
+      .toThrow(BadRequestException);
+  });
+
+  it.each([
+    "UNABLE_TO_GET_ISSUER_CERT_LOCALLY", "SELF_SIGNED_CERT_IN_CHAIN",
+    "CERT_HAS_EXPIRED", "ERR_TLS_CERT_ALTNAME_INVALID",
+  ])("turns a TLS error (%s) into a helpful 502", (code) => {
+    const error = Object.assign(new Error("network details"), { code });
+    const mapped = imageDownloadError(error);
+    expect(mapped).toBeInstanceOf(BadGatewayException);
+    expect(mapped.getStatus()).toBe(502);
+    expect(mapped.message).toContain("certificat HTTPS");
+    expect(mapped.message).not.toContain("network details");
+  });
+
+  it("converts network and timeout errors into controlled 502 and 504 responses", () => {
+    expect(imageDownloadError(Object.assign(new Error("unreachable"), {
+      code: "ENOTFOUND",
+    }))).toBeInstanceOf(BadGatewayException);
+    expect(imageDownloadError(Object.assign(new Error("timed out"), {
+      code: "ETIMEDOUT",
+    }))).toBeInstanceOf(GatewayTimeoutException);
+    expect(imageDownloadError(new Error("other reason")))
+      .toBeInstanceOf(BadGatewayException);
+  });
+
+  it("keeps explicit validation messages instead of hiding them", () => {
+    const bad = new BadRequestException("Un lien HTTPS est obligatoire.");
+    expect(imageDownloadError(bad)).toBe(bad);
+  });
+
+  it("returns 503 for a nonwritable storage directory instead of unhandled 500", async () => {
+    const broken = new HashtagMediaService({
+      get: vi.fn().mockReturnValue(temp + "/missing-parent/file"),
+    } as unknown as ConfigService);
+    // The parent path is occupied by a file; mkdir of a child must fail.
+    const { writeFile } = await import("node:fs/promises");
+    await writeFile(temp + "/missing-parent", "not a directory");
+    const input = await sharp({
+      create: { width: 20, height: 20, channels: 3, background: "#335577" },
+    }).png().toBuffer();
+    await expect(broken.storeImage(input)).rejects.toThrow(ServiceUnavailableException);
   });
 });

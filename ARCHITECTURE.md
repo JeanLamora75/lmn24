@@ -1707,3 +1707,13 @@ Le backend NestJS assure l’import contrôlé et la publication des images de h
 - **Séparation fonctionnelle** : le filtre des hashtags demeure indépendant du filtre global historique (qui couvre aussi 90 jours et les dates personnalisées) pour ne pas inventer une granularité que la base ne stocke pas. Une panne de la nouvelle API est confinée à cette rubrique et ne bloque pas les six autres.
 - Aucune modification de schéma PostgreSQL ; aucune migration. Le seed de paramètres de tendances `database/seed_hashtag_trend_settings.sql` reste requis pour les classements.
 
+
+### Correctif — Import d'images Hashtags depuis une URL HTTPS
+
+- `HashtagMediaService.importFromUrl` accepte les liens HTTPS directs vers JPEG, PNG ou WebP **et** les pages `https://commons.wikimedia.org/wiki/File:...` (transformées vers `Special:FilePath` pour récupérer le fichier original). Les résultats de recherche Google Images et les pages HTML ordinaires ne sont pas des images directes : le formulaire demande de copier l'URL réelle du fichier.
+- Téléchargement protégé contre les **SSRF** : HTTPS uniquement, DNS IPv4 publics épinglés pour chaque connexion, refus des localhost/réseaux privés et revalidation à chaque redirection (maximum trois), certificat TLS et nom du serveur toujours vérifiés, 8 Mo maximum, formats et dimensions validés par Sharp.
+- Sur Windows en réseau d'entreprise, les requêtes HTTPS d'images font désormais confiance **aux racines du système approuvées par Windows en plus des CA Node.js**, sans passer `rejectUnauthorized=false`. L'import ne modifie pas les certificats utilisés par les autres clients de l'application.
+- Les erreurs de certificat, réseau/connexion, timeout, page HTML, refus distant et stockage local sont transformées en erreurs HTTP explicites **400, 502, 503 ou 504**, plutôt qu'en `500 Internal error`. Les détails système ne sont pas exposés au navigateur.
+- Tests unitaires pour la normalisation Commons, la validation des URLs et les codes d'erreur, ainsi que tests de téléchargements HTTPS avec DNS et réseau simulés (aucun appel réel vers Internet).
+- **Note pour les postes entreprise** : un échec HTTP 502 avec mention de certificat indique que la CA du proxy HTTPS n'est pas approuvée par le système : installer la CA légitime ou démarrer le backend avec `NODE_EXTRA_CA_CERTS` pointant vers son fichier PEM. Ne jamais utiliser `NODE_TLS_REJECT_UNAUTHORIZED=0`.
+
