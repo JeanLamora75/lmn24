@@ -1,148 +1,234 @@
+/* SCRUM-10 — news header inspired by the approved LMN24 blue-and-white mockup.
+ * Layout is data-driven: six navigation pills can coexist, or the nav itself
+ * scrolls on tighter widths while logo and language stay visible.
+ */
 .header {
   z-index: 1030;
-  min-height: 72px;
-  background-color: var(--bs-primary);
+  background-color: var(--bs-body-bg, #fff);
+  border-bottom: 1px solid rgba(13, 110, 253, 0.17);
+  box-shadow: 0 6px 21px rgba(12, 44, 88, 0.13);
+}
+
+.headerLayout {
+  display: grid;
+  grid-template-columns: clamp(158px, 16vw, 245px) minmax(0, 1fr) clamp(175px, 22vw, 325px);
+  align-items: stretch;
+  width: 100%;
+  min-height: 98px;
+  background: linear-gradient(116deg, #f0f6ff 0%, #fff 37%, #f3f7ff 92%);
+}
+
+.brandPanel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 5px 35px 5px 18px;
+  min-width: 0;
+  isolation: isolate;
+}
+
+.brandPanel::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(115deg, var(--bs-primary) 0%, #0866e7 66%, #3599ff 100%);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 36px) 100%, 0 100%);
+}
+
+.brandPanel::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 21px;
+  height: 100%;
+  top: 0;
+  right: 5px;
+  transform: skewX(-27deg);
+  transform-origin: 0 0;
+  background: linear-gradient(to bottom, #58acff, #238afe);
+  opacity: 0.82;
 }
 
 .logoLink {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
-  border-radius: 0.5rem;
+  justify-content: center;
+  border-radius: 0.7rem;
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
 }
 
 .logoLink:focus-visible {
-  outline: 3px solid rgba(13, 110, 253, 0.35);
-  outline-offset: 2px;
+  outline: 3px solid #fff;
+  outline-offset: 3px;
 }
 
 .logo {
   display: block;
-  width: 60px;
-  height: 60px;
+  width: clamp(64px, 6.9vw, 86px);
+  height: clamp(64px, 6.9vw, 86px);
   object-fit: contain;
 }
 
 .primaryNavigation {
-  display: inline-flex;
+  display: flex;
+  min-width: 0;
+  gap: clamp(0.35rem, 0.75vw, 0.85rem);
   align-items: center;
-  gap: 0.125rem;
-  margin-left: 0.25rem;
+  justify-content: flex-start;
+  padding: 12px clamp(0.8rem, 1.7vw, 1.9rem);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(20, 75, 155, 0.25) transparent;
+  background: linear-gradient(120deg, #f4f9ff 0%, #fff 30%, #f7faff 100%);
 }
 
 .navigationLink {
-  position: relative;
   display: inline-flex;
-  flex: 0 0 60px;
-  width: 60px;
-  height: 60px;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  background: transparent;
+  gap: clamp(0.4rem, 0.8vw, 0.75rem);
+  padding: 0.5rem clamp(0.65rem, 1.15vw, 1.25rem);
+  min-height: 54px;
+  scroll-snap-align: start;
+  white-space: nowrap;
+  color: #112e54;
+  font-size: clamp(0.88rem, 1.05vw, 1.07rem);
+  font-weight: 650;
+  line-height: 1.2;
   text-decoration: none;
-  border-radius: 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 70, 132, 0.025);
+  background: linear-gradient(170deg, #f4f6fa, #edf1f7);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.85);
+  transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
-.navigationLink:hover,
+.navigationLink:hover {
+  color: #074ead;
+  background: #e5f1ff;
+  box-shadow: 0 3px 12px rgba(34, 89, 152, 0.14);
+}
+
 .navigationLink:focus-visible {
+  outline: 3px solid #12294d;
+  outline-offset: 3px;
+}
+
+.navigationLink[aria-current="page"] {
   color: #fff;
-  background: transparent;
+  background: var(--bs-primary);
+  border-color: var(--bs-primary);
+  box-shadow: 0 7px 15px rgba(13, 110, 253, 0.26);
 }
 
-.navigationLink:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: -3px;
-}
-
-.navigationLink[aria-current="page"]::after {
-  content: "";
-  position: absolute;
-  bottom: 1px;
-  width: 28px;
-  height: 3px;
-  background-color: #fff;
-  border-radius: 2px;
+.navigationLink[aria-current="page"]:hover {
+  color: #fff;
+  filter: brightness(1.07);
 }
 
 .navigationIcon {
   display: block;
-  width: 48px;
-  height: 48px;
-  color: #fff;
-  transition: transform 150ms ease;
+  flex: 0 0 auto;
+  width: clamp(23px, 2vw, 29px);
+  height: clamp(23px, 2vw, 29px);
 }
 
-.navigationLink:hover .navigationIcon {
-  transform: scale(1.06);
-}
-
-.navigationTooltip {
-  position: absolute;
-  top: calc(100% + 0.45rem);
-  left: 50%;
-  z-index: 1050;
-  transform: translate(-50%, -0.3rem);
-  padding: 0.35rem 0.65rem;
-  border-radius: 0.4rem;
-  background: var(--bs-body-color);
-  color: var(--bs-body-bg);
-  font-size: 0.875rem;
-  font-weight: 600;
+.navigationLabel {
+  display: inline-block;
   white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
 }
 
-.navigationLink:hover .navigationTooltip,
-.navigationLink:focus-visible .navigationTooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translate(-50%, 0);
+.languagePanel {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 clamp(0.7rem, 1.2vw, 1.35rem) 0 34px;
+  isolation: isolate;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .navigationIcon,
-  .navigationTooltip {
-    transition: none;
-  }
+.globeVisual {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-color: var(--bs-primary);
+  background-image:
+    linear-gradient(to right, rgba(13, 110, 253, 0.14), rgba(0, 42, 107, 0.05)),
+    url("/header-globe.webp");
+  background-size: cover;
+  background-position: center center;
+  clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.languagePanel::before {
+  content: "";
+  position: absolute;
+  width: 17px;
+  height: 100%;
+  top: 0;
+  left: 16px;
+  z-index: -1;
+  transform: skewX(-24deg);
+  background: linear-gradient(to bottom, #a9d9ff, #3799fa);
 }
 
 .languageDropdown {
   position: relative;
+  z-index: 2;
   margin-left: auto;
 }
 
 .languageButton {
   display: inline-flex;
-  width: 3.5rem;
-  height: 3.5rem;
+  min-width: 66px;
+  height: 58px;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  padding: 0;
-  margin-right: 0.5rem;
+  gap: 5px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background-color: #fff;
+  color: #102d54;
+  box-shadow: 0 3px 12px rgba(0, 39, 112, 0.18);
 }
 
 .languageButton:hover,
 .languageButton:focus-visible {
-  background-color: #f1f3f5;
+  background-color: #f0f6ff;
 }
 
 .languageButton:focus-visible {
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 0.35rem rgba(13, 110, 253, 0.36);
 }
 
 .currentFlag {
   display: block;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   object-fit: contain;
+}
+
+.chevron {
+  display: block;
+  flex: 0 0 auto;
+  width: 13px;
+  height: 13px;
 }
 
 .languageMenu {
   position: absolute;
+  z-index: 1050;
   top: 100%;
   right: 0;
   left: auto;
@@ -150,7 +236,6 @@
   max-width: min(18rem, calc(100vw - 1rem));
   max-height: min(70vh, 28rem);
   overflow-y: auto;
-  margin-right: 0;
 }
 
 .flag {
@@ -160,44 +245,106 @@
   object-fit: contain;
 }
 
-@media (max-width: 767.98px) {
-  .header {
-    min-height: 64px;
+@media (max-width: 1199.98px) {
+  .headerLayout {
+    grid-template-columns: 144px minmax(0, 1fr) 95px;
+    min-height: 82px;
   }
-
   .logo {
-    width: 50px;
-    height: 50px;
+    width: 67px;
+    height: 67px;
   }
-
+  .brandPanel {
+    padding-left: 13px;
+  }
   .primaryNavigation {
-    gap: 0;
-    margin-left: 0.125rem;
+    padding-inline: 0.65rem;
   }
-
   .navigationLink {
-    width: 50px;
-    height: 50px;
-    flex-basis: 50px;
+    min-height: 48px;
+    padding-inline: 0.85rem;
+    font-size: 0.91rem;
   }
-
   .navigationIcon {
-    width: 42px;
-    height: 42px;
+    width: 25px;
+    height: 25px;
   }
-
+  .languagePanel {
+    padding: 0 10px 0 17px;
+  }
+  .languagePanel::before {
+    display: none;
+  }
+  .globeVisual {
+    background-image: linear-gradient(125deg, var(--bs-primary), #0750b5);
+    clip-path: none;
+  }
   .languageButton {
-    width: 3.25rem;
-    height: 3.25rem;
-    margin-right: 0.25rem;
+    min-width: 60px;
+    height: 54px;
   }
+}
 
+@media (max-width: 767.98px) {
+  .headerLayout {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand language"
+      "navigation navigation";
+    min-height: 0;
+  }
+  .brandPanel {
+    grid-area: brand;
+    min-height: 65px;
+    padding: 4px 0 4px 14px;
+    background: var(--bs-primary);
+  }
+  .brandPanel::before,
+  .brandPanel::after {
+    display: none;
+  }
+  .logo {
+    width: 53px;
+    height: 53px;
+  }
+  .primaryNavigation {
+    grid-area: navigation;
+    min-height: 59px;
+    padding: 6px 10px 7px;
+    gap: 8px;
+    scroll-padding-inline: 10px;
+    border-top: 1px solid rgba(10, 60, 125, 0.1);
+  }
+  .navigationLink {
+    min-height: 44px;
+    font-size: 0.88rem;
+    padding: 7px 13px;
+    gap: 7px;
+  }
+  .navigationIcon {
+    width: 22px;
+    height: 22px;
+  }
+  .languagePanel {
+    grid-area: language;
+    background-color: var(--bs-primary);
+    padding: 0 14px 0 8px;
+  }
+  .languageButton {
+    min-width: 59px;
+    height: 48px;
+  }
   .currentFlag {
-    width: 30px;
-    height: 30px;
+    width: 27px;
+    height: 27px;
   }
-
   .languageMenu {
-    max-width: calc(100vw - 0.5rem);
+    max-width: calc(100vw - 1rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navigationLink {
+    transition: none;
   }
 }

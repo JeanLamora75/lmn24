@@ -67,8 +67,9 @@ describe("SCRUM-54 — SSR public page and accessible navigation", () => {
     expect(page).not.toContain('locale="?');
   });
   it("connects the main header and active-only detail route", () => {
-    expect(header).toContain('href="/hashtags"');
-    expect(header).toContain("navLabels.hashtags");
+    // The redesigned header keeps public URLs in the six-menu-ready registry.
+    expect(header).toContain('key: "hashtags", href: "/hashtags"');
+    expect(header).toContain("navLabels[item.key]");
     expect(detail).toContain("loadHashtag(slug)");
     expect(detail).toContain("if (!subject) notFound()");
   });
