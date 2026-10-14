@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
+import { getHashtagLabels } from "@/components/hashtags/hashtag-ranking-data";
 import styles from "./PublicFooter.module.css";
 
 const CATEGORY_SLUGS = [
@@ -37,6 +38,7 @@ export function PublicFooter() {
 
   const tCategories = useTranslations("categories");
   const tLanguages = useTranslations("languages");
+  const hashtagLabels = getHashtagLabels(locale);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -70,6 +72,11 @@ export function PublicFooter() {
               <li>
                 <Link href="/" className={styles.footerLink}>
                   LMN24
+                </Link>
+              </li>
+              <li>
+                <Link href="/hashtags" className={styles.footerLink}>
+                  {hashtagLabels.title}
                 </Link>
               </li>
             </ul>

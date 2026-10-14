@@ -23,15 +23,15 @@ const LANGUAGE_FLAGS: Record<SupportedLocale, string> = {
 
 // Names are displayed as tooltips on hover and keyboard focus.
 // This also keeps the new navigation in the visitor's current language.
-const NAVIGATION_LABELS: Record<SupportedLocale, { news: string; videos: string }> = {
-  fr: { news: "Actualités", videos: "Vidéos" },
-  en: { news: "News", videos: "Videos" },
-  de: { news: "Nachrichten", videos: "Videos" },
-  es: { news: "Noticias", videos: "Vídeos" },
-  pt: { news: "Notícias", videos: "Vídeos" },
-  it: { news: "Notizie", videos: "Video" },
-  ru: { news: "Новости", videos: "Видео" },
-  nl: { news: "Nieuws", videos: "Video's" },
+const NAVIGATION_LABELS: Record<SupportedLocale, { news: string; videos: string; hashtags: string }> = {
+  fr: { news: "Actualités", videos: "Vidéos", hashtags: "Hashtags" },
+  en: { news: "News", videos: "Videos", hashtags: "Hashtags" },
+  de: { news: "Nachrichten", videos: "Videos", hashtags: "Hashtags" },
+  es: { news: "Noticias", videos: "Vídeos", hashtags: "Hashtags" },
+  pt: { news: "Notícias", videos: "Vídeos", hashtags: "Hashtags" },
+  it: { news: "Notizie", videos: "Video", hashtags: "Hashtag" },
+  ru: { news: "Новости", videos: "Видео", hashtags: "Хэштеги" },
+  nl: { news: "Nieuws", videos: "Video's", hashtags: "Hashtags" },
 };
 
 function isSupportedLocale(locale: string): locale is SupportedLocale {
@@ -156,6 +156,27 @@ export function PublicHeader() {
               <path d="m10 9 5 3-5 3z" fill="currentColor" stroke="none" />
             </svg>
             <span className={styles.navigationTooltip} aria-hidden="true">{navLabels.videos}</span>
+          </Link>
+          <Link
+            href="/hashtags"
+            className={styles.navigationLink}
+            aria-label={navLabels.hashtags}
+            aria-current={pathname === "/hashtags" || pathname.startsWith("/hashtags/") ? "page" : undefined}
+          >
+            <svg
+              className={styles.navigationIcon}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M9 3 6.5 21M17.5 3 15 21M4 9h16M3 15h16" />
+            </svg>
+            <span className={styles.navigationTooltip} aria-hidden="true">{navLabels.hashtags}</span>
           </Link>
         </nav>
         <div className={`dropdown ${styles.languageDropdown}`} ref={dropdownRef}>
