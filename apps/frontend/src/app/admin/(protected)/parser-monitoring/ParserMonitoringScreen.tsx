@@ -325,7 +325,7 @@ export function ParserMonitoringScreen() {
           </div>
         </div>
         <p className="small text-body-secondary mt-3 mb-0">
-          Rafraîchissement toutes les 30 secondes si l'onglet est visible.
+          Rafraîchissement toutes les 30 secondes si l’onglet est visible.
           Dates des filtres en UTC, heures du tableau affichées selon votre navigateur.
           Les stocks de flux actifs sont indépendants de la période et des filtres historiques.
         </p>
@@ -426,7 +426,7 @@ export function ParserMonitoringScreen() {
     <section className="card shadow-sm mb-4"><div className="card-body">
       <h2 className="h5">Lancements globaux des parsers</h2>
       <p className="text-body-secondary small">
-        L'historique global commence à l'installation de SCRUM-60 ;
+        L’historique global commence à l’installation de SCRUM-60 ;
         les exécutions plus anciennes restent dans le tableau ci-dessus.
       </p>
       {!batches?.rows.length?<p>Aucun lancement global historisé.</p>
@@ -459,7 +459,7 @@ export function ParserMonitoringScreen() {
         {alerts?"Seuils : "+alerts.thresholds.consecutiveFailures+
           " échecs consécutifs ou RUNNING depuis "+
           alerts.thresholds.stuckMinutes+" minutes.":"Calcul des alertes…"}
-        {" "}Un faible volume de publications n'est pas considéré comme une panne.
+        {" "}Un faible volume de publications n’est pas considéré comme une panne.
       </p>
       {!alerts?.rows.length?<p className="text-body-secondary">
         Aucune anomalie détectée pour la période.</p>
