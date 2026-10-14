@@ -44,8 +44,9 @@ describe("SCRUM-20 — confirmation obligatoire", () => {
   it("présente le nombre réel d'historiques et le maintien des articles", () => {
     expect(dialog).toContain('"/delete-impact"');
     expect(dialog).toContain("feedRuns");
-    expect(dialog).toContain("Les articles déjà enregistrés seront conservés.");
-    expect(dialog).toContain("disabled={loading || feedRuns === null || deleting}");
+    expect(dialog).toContain("Les articles déjà enregistrés seront conservés");
+    expect(dialog).toContain("hashtags");
+    expect(dialog).toContain("disabled={loading || feedRuns === null || deleting || activeRuns > 0}");
   });
 
   it("n'exécute DELETE que sur confirmation, jamais sur annulation", () => {
