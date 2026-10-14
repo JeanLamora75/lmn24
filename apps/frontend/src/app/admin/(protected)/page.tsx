@@ -44,6 +44,12 @@ const ADMIN_FEATURES = [
     description: "Gérer les sujets suivis et leurs alias multilingues.",
   },
   {
+    href: "/admin/hashtag-trends",
+    icon: "graph-up-arrow",
+    title: "Paramètres des tendances",
+    description: "Ajuster les seuils de progression et de classement des hashtags.",
+  },
+  {
     href: "/admin/languages",
     icon: "translate",
     title: "Langues",
