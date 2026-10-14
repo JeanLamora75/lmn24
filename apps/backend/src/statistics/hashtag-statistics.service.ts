@@ -50,6 +50,9 @@ export class HashtagStatisticsService {
     const rising = await this.trends.rank({
       period, mode: "trending", page: 1, pageSize: 10,
     }, now);
+    const monthlyComparison = period === "30d" ? rising : await this.trends.rank({
+      period: "30d", mode: "trending", page: 1, pageSize: 10,
+    }, now);
     const end = new Date(most.asOf);
     const from = new Date(end.getTime() - PERIOD_HOURS[period] * HOUR_MS);
     const start30 = new Date(end.getTime() - 720 * HOUR_MS);
@@ -179,6 +182,8 @@ export class HashtagStatisticsService {
         freshness: most.freshness,
         comparisonAvailable: rising.comparisonAvailable,
         comparisonReason: rising.comparisonReason,
+        comparison30dAvailable: monthlyComparison.comparisonAvailable,
+        comparison30dReason: monthlyComparison.comparisonReason,
         lastFullRebuildAt: most.lastFullRebuildAt,
         coverageSinceUtc: most.coverageSinceUtc,
         bucketCount: hourlyHealth._count._all,
