@@ -8,7 +8,8 @@ import { describe, expect, it, vi } from "vitest";
 const timestamp = new Date("2026-10-13T14:37:00Z");
 const now = new Date("2026-10-14T08:00:00Z");
 const subject = { id: "moscow", name: "Moscou", aliases: [{ name: "Moscow" }, { name: "Москва" }] };
-const article = { id: "a", title: "Moscou", summary: "Moscow et Москва", publishedAt: timestamp };
+const article = { id: "a", title: "Moscou", summary: "Moscow et Москва", publishedAt: timestamp,
+  createdAt: new Date("2026-10-10T08:00:00Z") };
 
 describe("SCRUM-52 — UTC buckets and distinct articles", () => {
   it("buckets by original publication hour, not processing time", () => {
@@ -74,6 +75,7 @@ describe("SCRUM-52 — complete / targeted and idempotent reconciliation", () =>
     const createMany = vi.fn().mockResolvedValue({ count: 1 });
     const tx = {
       $queryRaw: vi.fn().mockResolvedValue([{ acquired: 1 }]),
+      $executeRaw: vi.fn().mockResolvedValue(1),
       setting: { findMany: vi.fn().mockResolvedValue([
         { key: "retentionArticlesDays", value: "60" },
         { key: "retentionHashtagHourlyCountsDays", value: "60" },
@@ -93,6 +95,7 @@ describe("SCRUM-52 — complete / targeted and idempotent reconciliation", () =>
     const stats = await rebuildHashtagHourlyCounts(db as never, {}, now);
     expect(stats).toMatchObject({ scannedArticles: 1, matchingArticles: 1, countedBuckets: 1 });
     expect(tx.hashtagHourlyCount.deleteMany).toHaveBeenCalledWith({ where: {} });
+    expect(tx.$executeRaw).toHaveBeenCalledTimes(2);
     expect(tx.hashtagHourlyCount.createMany).toHaveBeenCalledWith({
       data: [{ hashtagId: "moscow", hourUtc: startOfUtcHour(timestamp), articleCount: 1 }],
     });
@@ -108,6 +111,7 @@ describe("SCRUM-52 — complete / targeted and idempotent reconciliation", () =>
     expect(tx.hashtagHourlyCount.deleteMany).toHaveBeenCalledWith({
       where: { hashtagId: "moscow" },
     });
+    expect(tx.$executeRaw).not.toHaveBeenCalled();
   });
 
   it("limits a repair to affected hours and filters expired articles", async () => {
