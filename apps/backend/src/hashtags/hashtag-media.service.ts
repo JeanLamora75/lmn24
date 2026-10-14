@@ -85,6 +85,23 @@ export function validatePublicImageUrl(raw: string): URL {
   return url;
 }
 
+/** Commons links copied from its file page point at HTML, not the image.
+ * Special:FilePath redirects to the original media asset; the redirect is
+ * independently checked for HTTPS, public DNS, content type and byte limits.
+ */
+export function normalizeImageSourceUrl(raw: string): URL {
+  const original = validatePublicImageUrl(raw);
+  if (original.hostname === "commons.wikimedia.org" &&
+      original.pathname.startsWith("/wiki/File:")) {
+    const encodedName = original.pathname.slice("/wiki/File:".length);
+    if (!encodedName) throw new BadRequestException("Nom de fichier Wikimedia manquant.");
+    return validatePublicImageUrl(
+      "https://commons.wikimedia.org/wiki/Special:FilePath/" + encodedName,
+    );
+  }
+  return original;
+}
+
 async function approvedAddress(hostname: string): Promise<string> {
   try {
     // Pin the validated IPv4 address in the actual TLS connection; do not
@@ -171,7 +188,7 @@ export class HashtagMediaService {
   }
 
   async importFromUrl(raw: string): Promise<string> {
-    let current = validatePublicImageUrl(raw);
+    let current = normalizeImageSourceUrl(raw);
     for (let i = 0; i <= 3; i += 1) {
       let result: Awaited<ReturnType<typeof downloadStep>>;
       try { result = await downloadStep(current); }
