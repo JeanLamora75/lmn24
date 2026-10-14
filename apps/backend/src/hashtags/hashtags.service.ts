@@ -131,7 +131,7 @@ export class HashtagsService {
     const aliases = this.validateAliases(input);
     try {
       const item = await this.database.prisma.$transaction(async (tx) => {
-        await tx.$queryRaw`SELECT pg_advisory_xact_lock(52024, 52)::text`;
+        await tx.$queryRaw`SELECT 1 AS acquired FROM pg_advisory_xact_lock(52024, 52)`;
         return tx.hashtag.create({
           data: {
             name: input.name.trim(), slug: input.slug,
@@ -155,7 +155,7 @@ export class HashtagsService {
     await this.getById(id);
     try {
       await this.database.prisma.$transaction(async (tx) => {
-        await tx.$queryRaw`SELECT pg_advisory_xact_lock(52024, 52)::text`;
+        await tx.$queryRaw`SELECT 1 AS acquired FROM pg_advisory_xact_lock(52024, 52)`;
         await tx.hashtag.update({ where: { id }, data: {
           name: input.name.trim(), slug: input.slug, isActive: input.isActive,
         } });
@@ -179,7 +179,7 @@ export class HashtagsService {
   async setActive(id: string, isActive: boolean) {
     await this.getById(id);
     await this.database.prisma.$transaction(async (tx) => {
-      await tx.$queryRaw`SELECT pg_advisory_xact_lock(52024, 52)::text`;
+      await tx.$queryRaw`SELECT 1 AS acquired FROM pg_advisory_xact_lock(52024, 52)`;
       await tx.hashtag.update({ where: { id }, data: { isActive } });
     });
     this.stats?.enqueue(id);
@@ -236,7 +236,7 @@ export class HashtagsService {
   async delete(id: string) {
     const existing = await this.getById(id);
     await this.database.prisma.$transaction(async (tx) => {
-      await tx.$queryRaw`SELECT pg_advisory_xact_lock(52024, 52)::text`;
+      await tx.$queryRaw`SELECT 1 AS acquired FROM pg_advisory_xact_lock(52024, 52)`;
       await tx.hashtag.delete({ where: { id } });
     });
     await this.media?.deleteLocalImage(existing.imageUrl);
