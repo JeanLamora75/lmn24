@@ -92,9 +92,9 @@ const ADMIN_FEATURES = [
   {
     href: "/admin/parser-monitoring",
     icon: "activity",
-    title: "Logs et statistiques du parser",
+    title: "Logs et statistiques des parsers",
     description:
-      "Consulter les logs d’exécution et les indicateurs de supervision du parser.",
+      "Centraliser les logs d’exécution et les indicateurs de supervision des parsers Infos et Vidéos.",
   },
   {
     href: "/admin/import-csv",
