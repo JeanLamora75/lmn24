@@ -1,6 +1,7 @@
 import { BadRequestException, ConflictException } from "@nestjs/common";
 import { describe, expect, it, vi } from "vitest";
 import { DatabaseService } from "../database/database.service";
+import { HashtagTrendsService } from "../hashtags/hashtag-trends.service";
 import { RetentionSettingsService } from "./retention-settings.service";
 import { ManualPurgeService } from "./manual-purge.service";
 
@@ -46,11 +47,13 @@ function harness(count = 2) {
     hashtagHourlyCount: { count: vi.fn().mockResolvedValue(count) },
   };
   const retention = { getAll: vi.fn().mockResolvedValue({ values: days }) };
+  const trends = { invalidate: vi.fn() };
   const service = new ManualPurgeService(
     { prisma } as unknown as DatabaseService,
     retention as unknown as RetentionSettingsService,
+    trends as unknown as HashtagTrendsService,
   );
-  return { service, prisma, tx, deleteMany, retention };
+  return { service, prisma, tx, deleteMany, retention, trends };
 }
 
 async function done(service: ManualPurgeService) {
@@ -120,7 +123,7 @@ describe("SCRUM-58 — safe preview and manual purge", () => {
   });
 
   it("invalidates hashtag counters before deleting articles within a transaction", async () => {
-    const { service, tx } = harness();
+    const { service, tx, trends } = harness();
     const p = await service.preview(admin, "article", "expired");
     service.start(admin, { table: "article", mode: "expired",
       token: p.token, confirmed: true });
@@ -128,6 +131,7 @@ describe("SCRUM-58 — safe preview and manual purge", () => {
     expect(tx.hashtagHourlyCount.deleteMany).toHaveBeenCalledWith({});
     expect(tx.setting.deleteMany).toHaveBeenCalled();
     expect(tx.article.deleteMany).toHaveBeenCalled();
+    expect(trends.invalidate).toHaveBeenCalled();
   });
 
   it("refuses to continue when candidates have changed since preview", async () => {
