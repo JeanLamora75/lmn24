@@ -82,7 +82,7 @@ export async function insertArticlesAndCount(
 ): Promise<{ imported: number; matched: number }> {
   if (!data.length) return { imported: 0, matched: 0 };
   return database.$transaction(async (tx) => {
-    await tx.$executeRaw`SELECT pg_advisory_xact_lock(52024, 52)`;
+    await tx.$queryRaw`SELECT pg_advisory_xact_lock(52024, 52)::text`;
     const retentionDays = await readRetentionDays(tx);
     const cutoff = new Date(now.getTime() - retentionDays * DAY_MS);
     const hashtags = compileHashtags(await tx.hashtag.findMany({
@@ -136,7 +136,7 @@ export async function rebuildHashtagHourlyCounts(
   now = new Date(),
 ): Promise<RebuildResult> {
   return database.$transaction(async (tx) => {
-    await tx.$executeRaw`SELECT pg_advisory_xact_lock(52024, 52)`;
+    await tx.$queryRaw`SELECT pg_advisory_xact_lock(52024, 52)::text`;
     const days = await readRetentionDays(tx);
     const cutoff = new Date(now.getTime() - days * DAY_MS);
     const start = options.from && options.from > cutoff ? options.from : cutoff;
