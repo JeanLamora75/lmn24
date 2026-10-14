@@ -48,7 +48,7 @@ const duration = (ms: number | null) => ms === null ? "—"
   : ms < 1000 ? ms + " ms" : (ms / 1000).toFixed(1) + " s";
 const apiRoot = "/api/admin/parser-monitoring/";
 async function json<T>(path: string, signal?: AbortSignal): Promise<T> {
-  const response = await fetch(apiRoot + path, { cache: "no-store", signal });
+  const response = await fetch(apiRoot + path, { cache: "no-store", ...(signal ? { signal } : {}) });
   if (!response.ok) {
     let message = "Erreur de consultation des parsers (" + response.status + ").";
     try { const body = await response.json() as { message?: string }; message = body.message || message; }
