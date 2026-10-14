@@ -63,6 +63,12 @@ const ADMIN_FEATURES = [
     description: "Configurer séparément les durées de conservation des articles, vidéos et historiques.",
   },
   {
+    href: "/admin/data-purge",
+    icon: "trash",
+    title: "Purge manuelle des données",
+    description: "Prévisualiser et purger une table de données à la fois avec confirmation.",
+  },
+  {
     href: "/admin/settings",
     icon: "gear",
     title: "Paramètres",
