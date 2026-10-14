@@ -371,6 +371,9 @@ importers:
 
   packages/database:
     dependencies:
+      '@lmn24/contracts':
+        specifier: workspace:*
+        version: link:../contracts
       '@prisma/adapter-pg':
         specifier: ^7.10.0
         version: 7.10.0
