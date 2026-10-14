@@ -162,7 +162,50 @@ model Article {
   @@map("article")
 }
 
+
+model ParserBatchRun {
+  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  parserType      String           @map("parser_type") @db.VarChar(16)
+  trigger         String           @default("MANUAL") @db.VarChar(16)
+  filters         Json             @default("{}")
+  startedAt       DateTime         @default(now()) @map("started_at") @db.Timestamptz(6)
+  finishedAt      DateTime?        @map("finished_at") @db.Timestamptz(6)
+  status          String           @default("RUNNING") @db.VarChar(16)
+  totalFeeds      Int              @default(0) @map("total_feeds")
+  processedFeeds  Int              @default(0) @map("processed_feeds")
+  successfulFeeds Int              @default(0) @map("successful_feeds")
+  failedFeeds     Int              @default(0) @map("failed_feeds")
+  itemsFound      Int              @default(0) @map("items_found")
+  itemsImported   Int              @default(0) @map("items_imported")
+  itemsSkipped    Int              @default(0) @map("items_skipped")
+  lastHeartbeatAt DateTime         @default(now()) @map("last_heartbeat_at") @db.Timestamptz(6)
+  events          ParserRunEvent[]
+  infoRuns        FeedRun[]
+  videoRuns       FeedVideoRun[]
+
+  @@index([parserType, startedAt(sort: Desc)], map: "idx_parser_batch_type_started")
+  @@index([status, lastHeartbeatAt], map: "idx_parser_batch_status_heartbeat")
+  @@map("parser_batch_run")
+}
+
+model ParserRunEvent {
+  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  batchRunId  String         @map("batch_run_id") @db.Uuid
+  timestamp   DateTime       @default(now()) @db.Timestamptz(6)
+  level       String         @db.VarChar(8)
+  eventType   String         @map("event_type") @db.VarChar(40)
+  message     String         @db.VarChar(1024)
+  feedId      String?        @map("feed_id") @db.Uuid
+  feedVideoId String?        @map("feed_video_id") @db.Uuid
+  batch       ParserBatchRun @relation(fields: [batchRunId], references: [id], onDelete: Cascade)
+
+  @@index([batchRunId, timestamp, id], map: "idx_parser_run_event_batch_time")
+  @@map("parser_run_event")
+}
+
 model FeedRun {
+  batchRunId       String?   @map("batch_run_id") @db.Uuid
+  batch            ParserBatchRun? @relation(fields: [batchRunId], references: [id], onDelete: SetNull)
   id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   feedId           String    @map("feed_id") @db.Uuid
   startedAt        DateTime  @default(now()) @map("started_at") @db.Timestamptz(6)
@@ -177,6 +220,7 @@ model FeedRun {
 
   feed Feed @relation(fields: [feedId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
+  @@index([batchRunId], map: "idx_feed_run_batch_id")
   @@index([feedId], map: "idx_feed_run_feed_id")
   @@index([startedAt(sort: Desc)], map: "idx_feed_run_started_at")
   @@index([status], map: "idx_feed_run_status")
@@ -316,6 +360,8 @@ model Video {
 }
 
 model FeedVideoRun {
+  batchRunId     String?   @map("batch_run_id") @db.Uuid
+  batch          ParserBatchRun? @relation(fields: [batchRunId], references: [id], onDelete: SetNull)
   id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   feedVideoId    String    @map("feed_video_id") @db.Uuid
   startedAt      DateTime  @default(now()) @map("started_at") @db.Timestamptz(6)
@@ -330,6 +376,7 @@ model FeedVideoRun {
 
   feedVideo FeedVideo @relation(fields: [feedVideoId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
+  @@index([batchRunId], map: "idx_feed_video_run_batch_id")
   @@index([feedVideoId], map: "idx_feed_video_run_feed_video_id")
   @@index([startedAt(sort: Desc)], map: "idx_feed_video_run_started_at")
   @@index([status], map: "idx_feed_video_run_status")
