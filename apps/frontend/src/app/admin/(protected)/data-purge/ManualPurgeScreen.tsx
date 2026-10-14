@@ -70,7 +70,8 @@ export function ManualPurgeScreen() {
   }, [router]);
 
   useEffect(() => {
-    void refreshJobs();
+    const timer = window.setTimeout(() => { void refreshJobs(); }, 0);
+    return () => window.clearTimeout(timer);
   }, [refreshJobs]);
 
   const activeJob = jobs.some(job => job.status === "RUNNING" || job.status === "PENDING");
