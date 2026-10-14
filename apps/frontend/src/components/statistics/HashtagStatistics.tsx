@@ -34,6 +34,7 @@ type HashtagReport = {
   health: {
     freshness: "fresh" | "stale" | "unverified";
     comparisonAvailable: boolean; comparisonReason: string | null;
+    comparison30dAvailable: boolean; comparison30dReason: string | null;
     lastFullRebuildAt: string | null; coverageSinceUtc: string | null;
     bucketCount: number; firstHour: string | null; lastHour: string | null;
     calculatedAt: string; currentPeriodCovered: boolean;
@@ -383,12 +384,11 @@ export function HashtagStatistics() {
               <dt className="col-6">Dernier calcul</dt>
               <dd className="col-6">{utcDate(data.health.calculatedAt)}</dd>
               <dt className="col-6">Comparaison fiable 30 j / 30 j</dt>
-              <dd className="col-6">{data.health.comparisonAvailable
-                ? "Disponible pour la période sélectionnée" :
-                  "N/A pour la période sélectionnée"}</dd>
+              <dd className="col-6">{data.health.comparison30dAvailable
+                ? "Disponible" : "N/A — historique insuffisant"}</dd>
             </dl>
-            {!data.health.comparisonAvailable && <p className="small text-warning-emphasis">
-              {data.health.comparisonReason ??
+            {!data.health.comparison30dAvailable && <p className="small text-warning-emphasis">
+              {data.health.comparison30dReason ??
                 "Une reconstruction ou un historique plus long est nécessaire."}
             </p>}
             <div className="d-flex flex-wrap gap-2">
