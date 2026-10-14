@@ -117,6 +117,17 @@ export function HashtagForm({ mode, hashtagId }: Props) {
     event.preventDefault();
     setError("");
     setNotice("");
+    if (mediaMode === "url" && remoteImageUrl.trim()) {
+      try {
+        const parsed = new URL(remoteImageUrl.trim());
+        if (parsed.protocol !== "https:" || parsed.username || parsed.password) {
+          throw new Error("Lien non HTTPS.");
+        }
+      } catch {
+        setError("Utilisez un lien public HTTPS vers une image JPEG, PNG ou WebP.");
+        return;
+      }
+    }
     setSaving(true);
     let persisted = false;
     try {
@@ -412,7 +423,13 @@ export function HashtagForm({ mode, hashtagId }: Props) {
                 <input type="url" id="hashtag-image-url" className="form-control"
                   value={remoteImageUrl} placeholder="https://example.org/photo.jpg"
                   onChange={(e) => setRemoteImageUrl(e.target.value)} />
-                <p className="form-text">L’image sera téléchargée, convertie en WebP et enregistrée sur LMN24.</p>
+                <p className="form-text">
+                  Collez l’URL HTTPS directe d’une image JPEG, PNG ou WebP,
+                  ou le lien vers la page d’un fichier Wikimedia Commons.
+                  Les pages de résultats Google Images et les pages web ordinaires
+                  ne sont pas des liens directs vers une image.
+                  L’image sera téléchargée et enregistrée en WebP sur LMN24.
+                </p>
               </div>
             )}
             <p className="form-text mb-2">JPEG, PNG ou WebP, maximum 8 Mo. Conversion et optimisation WebP automatiques.</p>
