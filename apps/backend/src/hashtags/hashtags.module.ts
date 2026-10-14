@@ -16,5 +16,6 @@ import { HashtagsService } from "./hashtags.service";
   imports: [AuthModule],
   controllers: [HashtagsController, HashtagMediaController, HashtagTrendSettingsController, HashtagRankingsController, PublicHashtagArticlesController],
   providers: [HashtagsService, HashtagMediaService, HashtagHistoryService, HashtagStatsService, HashtagTrendsService, PublicHashtagArticlesService],
+  exports: [HashtagTrendsService],
 })
 export class HashtagsModule {}
