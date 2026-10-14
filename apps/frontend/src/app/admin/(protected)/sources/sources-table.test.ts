@@ -63,8 +63,10 @@ describe("SCRUM-14 — confirmation obligatoire avant suppression", () => {
     expect(confirm).toContain('/delete-impact"');
     expect(confirm).toContain("impact.feeds");
     expect(confirm).toContain("impact.articles");
-    expect(confirm).toContain("disabled={loading || !impact || deleting}");
-    expect(confirm).toContain("if (deletingRef.current || !impact || loading) return;");
+    expect(confirm).toContain("impact.videoFeeds");
+    expect(confirm).toContain("impact.videos");
+    expect(confirm).toContain("disabled={loading || !impact || deleting || impact.activeRuns > 0}");
+    expect(confirm).toContain("if (deletingRef.current || !impact || loading || impact.activeRuns > 0) return;");
   });
 
   it("envoie un DELETE seulement après une action de confirmation", () => {
