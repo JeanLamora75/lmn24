@@ -29,12 +29,13 @@ function harness(count = 2) {
     setting: { deleteMany: vi.fn().mockResolvedValue({ count: 2 }) },
     hashtagHourlyCount: {
       deleteMany: vi.fn().mockResolvedValue({ count: 2 }),
+      count: vi.fn().mockResolvedValue(count),
       findMany: vi.fn().mockResolvedValue([]),
     },
-    article: { findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
-    video: { findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
-    feedRun: { findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
-    feedVideoRun: { findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
+    article: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
+    video: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
+    feedRun: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
+    feedVideoRun: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany },
   };
   const prisma = {
     $transaction: vi.fn(async (callback: (db: typeof tx) => Promise<number>) => callback(tx)),
@@ -130,9 +131,9 @@ describe("SCRUM-58 — safe preview and manual purge", () => {
   });
 
   it("refuses to continue when candidates have changed since preview", async () => {
-    const { service, prisma, tx } = harness();
+    const { service, tx } = harness();
     const p = await service.preview(admin, "video", "all");
-    prisma.video.count.mockResolvedValue(3);
+    tx.video.count.mockResolvedValue(3);
     service.start(admin, { table: "video", mode: "all", token: p.token,
       confirmed: true, typedName: "video" });
     const result = await done(service);
