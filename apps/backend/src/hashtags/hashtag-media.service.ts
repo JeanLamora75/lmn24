@@ -1,4 +1,7 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import {
+  BadGatewayException, BadRequestException, GatewayTimeoutException,
+  HttpException, Injectable, Logger, NotFoundException, ServiceUnavailableException,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { randomUUID } from "node:crypto";
 import { lookup } from "node:dns/promises";
@@ -6,9 +9,51 @@ import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import { request as httpsRequest } from "node:https";
 import { isIP } from "node:net";
 import { resolve } from "node:path";
+import { getCACertificates } from "node:tls";
 import sharp from "sharp";
 
 const PREFIX = "/api/media/hashtags/";
+
+// Node's bundled CAs do not necessarily contain the enterprise HTTPS root
+// already trusted by Windows. Include BOTH trusted CA stores for this
+// outgoing request, without turning off TLS verification or hostname checks.
+const IMAGE_HTTPS_CA = [...new Set([
+  ...getCACertificates("default"), ...getCACertificates("system"),
+])];
+
+const TLS_CERTIFICATE_CODES = new Set([
+  "UNABLE_TO_GET_ISSUER_CERT_LOCALLY", "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+  "SELF_SIGNED_CERT_IN_CHAIN", "DEPTH_ZERO_SELF_SIGNED_CERT",
+  "CERT_HAS_EXPIRED", "ERR_TLS_CERT_ALTNAME_INVALID",
+]);
+
+export function imageDownloadError(error: unknown): HttpException {
+  if (error instanceof HttpException) return error;
+  const code = typeof error === "object" && error !== null && "code" in error
+    ? String(error.code) : "";
+  if (TLS_CERTIFICATE_CODES.has(code)) {
+    return new BadGatewayException(
+      "Le certificat HTTPS du site d’image n’est pas reconnu. " +
+      "Vérifiez les certificats racines approuvés par Windows ou le proxy de votre réseau.",
+    );
+  }
+  if (["ETIMEDOUT", "ESOCKETTIMEDOUT", "ERR_SOCKET_TIMEOUT"].includes(code)) {
+    return new GatewayTimeoutException(
+      "Le serveur de l’image ne répond pas assez vite. Réessayez ou utilisez un autre lien.",
+    );
+  }
+  if (["ENOTFOUND", "EAI_AGAIN", "ECONNREFUSED", "ECONNRESET",
+    "EHOSTUNREACH", "ENETUNREACH", "EPIPE"].includes(code)) {
+    return new BadGatewayException(
+      "Impossible de joindre le serveur de l’image. " +
+      "Vérifiez que le lien est public et accessible depuis le serveur LMN24.",
+    );
+  }
+  return new BadGatewayException(
+    "Le téléchargement de l’image a échoué. " +
+    "Utilisez un lien HTTPS direct vers une image JPEG, PNG ou WebP.",
+  );
+}
 const MAX_BYTES = 8 * 1024 * 1024;
 const MAX_PIXELS = 40_000_000;
 const IMAGE_TYPES = new Set(["jpeg", "png", "webp"]);
@@ -59,6 +104,8 @@ async function downloadStep(url: URL): Promise<{ buffer?: Buffer; redirect?: str
   return new Promise((resolveRequest, rejectRequest) => {
     const req = httpsRequest(url, {
       timeout: 8000,
+      ca: IMAGE_HTTPS_CA,
+      rejectUnauthorized: true,
       headers: { Accept: "image/webp,image/png,image/jpeg", "User-Agent": "LMN24-HashtagImage/1.0" },
       lookup: (_hostname, _options, callback) => callback(null, address, 4),
     }, (res) => {
@@ -93,10 +140,15 @@ async function downloadStep(url: URL): Promise<{ buffer?: Buffer; redirect?: str
         } else chunks.push(chunk);
       });
       res.on("end", () => resolveRequest({ buffer: Buffer.concat(chunks) }));
-      res.on("error", rejectRequest);
+      res.on("error", (error: Error) => rejectRequest(imageDownloadError(error)));
+      res.on("aborted", () => rejectRequest(new BadGatewayException(
+        "Le serveur distant a interrompu le téléchargement de l’image.",
+      )));
     });
-    req.on("timeout", () => req.destroy(new BadRequestException("Téléchargement trop long.")));
-    req.on("error", rejectRequest);
+    req.on("timeout", () => req.destroy(new GatewayTimeoutException(
+      "Le serveur de l’image ne répond pas assez vite.",
+    )));
+    req.on("error", (error: Error) => rejectRequest(imageDownloadError(error)));
     req.end();
   });
 }
@@ -114,7 +166,9 @@ export class HashtagMediaService {
   async importFromUrl(raw: string): Promise<string> {
     let current = validatePublicImageUrl(raw);
     for (let i = 0; i <= 3; i += 1) {
-      const result = await downloadStep(current);
+      let result: Awaited<ReturnType<typeof downloadStep>>;
+      try { result = await downloadStep(current); }
+      catch (error) { throw imageDownloadError(error); }
       if (result.buffer) return this.storeImage(result.buffer);
       if (!result.redirect || i === 3) break;
       current = validatePublicImageUrl(result.redirect);
@@ -138,10 +192,21 @@ export class HashtagMediaService {
     } catch {
       throw new BadRequestException("Image invalide. Utilisez JPEG, PNG ou WebP.");
     }
-    await mkdir(this.mediaDir, { recursive: true });
-    const name = randomUUID() + ".webp";
-    await writeFile(resolve(this.mediaDir, name), data, { flag: "wx" });
-    return PREFIX + name;
+    try {
+      await mkdir(this.mediaDir, { recursive: true });
+      const name = randomUUID() + ".webp";
+      await writeFile(resolve(this.mediaDir, name), data, { flag: "wx" });
+      return PREFIX + name;
+    } catch (error) {
+      this.logger.error(
+        "Impossible de stocker une image hashtag : " +
+        (error instanceof Error ? error.message : String(error)),
+      );
+      throw new ServiceUnavailableException(
+        "Stockage de l’image indisponible. Vérifiez les droits d’écriture " +
+        "du répertoire des images Hashtags.",
+      );
+    }
   }
 
   async readImage(name: string): Promise<Buffer> {
