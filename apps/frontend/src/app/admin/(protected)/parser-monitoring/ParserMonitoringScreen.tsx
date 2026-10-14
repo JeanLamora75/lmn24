@@ -69,16 +69,16 @@ function Kpi({ title, value, subtitle }: {
     </div></div>
   </div>;
 }
-function Chart({ rows }: { rows: Summary["timeline"] }) {
+function Chart({ rows, metric = "runs" }: { rows: Summary["timeline"]; metric?: "runs" | "imports" }) {
   const dates = [...new Set(rows.map(row => row.bucket))].sort();
   const byDate = dates.map(at => ({
     at,
     infosOk: rows.filter(r => r.bucket === at && r.parserType === "INFOS" &&
-      r.status === "SUCCESS").reduce((n, r) => n + r.total, 0),
+      r.status === "SUCCESS").reduce((n, r) => n + (metric === "imports" ? r.imported : r.total), 0),
     videosOk: rows.filter(r => r.bucket === at && r.parserType === "VIDEOS" &&
       r.status === "SUCCESS").reduce((n, r) => n + r.total, 0),
     errors: rows.filter(r => r.bucket === at &&
-      ["ERROR","INTERRUPTED"].includes(r.status)).reduce((n,r) => n + r.total, 0),
+      ["ERROR","INTERRUPTED"].includes(r.status)).reduce((n,r) => n + (metric === "imports" ? r.imported : r.total), 0),
   }));
   const max = Math.max(1, ...byDate.map(x => x.infosOk + x.videosOk + x.errors));
   if (!dates.length) return <p className="text-body-secondary">
@@ -87,10 +87,12 @@ function Chart({ rows }: { rows: Summary["timeline"] }) {
     <div className="d-flex flex-wrap gap-3 small mb-2">
       <span><span className="text-primary">■</span> Infos réussies</span>
       <span><span className="text-success">■</span> Vidéos réussies</span>
-      <span><span className="text-danger">■</span> Erreurs</span>
+      {metric === "runs" && <span><span className="text-danger">■</span> Erreurs</span>}
     </div>
     <svg viewBox="0 0 920 205" role="img" width="100%" height="205"
-      aria-label="Histogramme des succès Infos, Vidéos et erreurs, par période UTC">
+      aria-label={metric === "runs"
+        ? "Histogramme des succès Infos, Vidéos et erreurs, par période UTC"
+        : "Histogramme des articles et vidéos importés, par période UTC"}>
       {byDate.map((point, index) => {
         const w = 850 / byDate.length;
         const bw = Math.max(1, w * 0.72);
@@ -102,12 +104,12 @@ function Chart({ rows }: { rows: Summary["timeline"] }) {
           { value: point.errors, fill: "#dc3545" },
         ];
         return <g key={point.at}>
-          {layers.map((item, i) => {
+          {layers.filter((_item,i) => metric === "runs" || i < 2).map((item, i) => {
             const height = item.value / max * 155;
             top -= height;
             return <rect key={i} x={start} y={top} width={bw}
               height={height} fill={item.fill}><title>
-                {point.at}: {item.value} exécutions</title></rect>;
+                {point.at}: {item.value} {metric === "runs" ? "exécutions" : "contenus importés"}</title></rect>;
           })}
         </g>;
       })}
@@ -123,9 +125,9 @@ function Chart({ rows }: { rows: Summary["timeline"] }) {
     <details className="small"><summary>Valeurs détaillées accessibles</summary>
       <div className="table-responsive mt-2" style={{ maxHeight: 260 }}>
         <table className="table table-sm"><thead><tr>
-          <th>Heure UTC</th><th>Infos SUCCESS</th><th>Vidéos SUCCESS</th><th>Erreurs</th>
+          <th>Heure UTC</th><th>Infos {metric === "runs" ? "SUCCESS" : "importés"}</th><th>Vidéos {metric === "runs" ? "SUCCESS" : "importées"}</th>{metric === "runs" && <th>Erreurs</th>}
         </tr></thead><tbody>{byDate.map(p=><tr key={p.at}>
-          <td>{p.at}</td><td>{p.infosOk}</td><td>{p.videosOk}</td><td>{p.errors}</td>
+          <td>{p.at}</td><td>{p.infosOk}</td><td>{p.videosOk}</td>{metric === "runs" && <td>{p.errors}</td>}
         </tr>)}</tbody></table>
       </div>
     </details>
@@ -371,6 +373,8 @@ export function ParserMonitoringScreen() {
       <section className="card shadow-sm mb-4"><div className="card-body">
         <h2 className="h5">Évolution des exécutions</h2>
         <Chart rows={summary.timeline}/>
+        <h3 className="h6 mt-4">Articles et vidéos importés par période</h3>
+        <Chart rows={summary.timeline} metric="imports"/>
         <p className="small text-body-secondary mb-0">
           Buckets UTC ; les succès Infos et Vidéos sont présentés séparément.
         </p>
