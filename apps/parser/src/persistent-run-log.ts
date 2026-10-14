@@ -46,7 +46,7 @@ export class PersistentRunLog {
       this.db.parserBatchRun.update({
         where: { id }, data: {
           lastHeartbeatAt: new Date(),
-          ...(e.type === "run-started" && Number.isInteger(e.feedTotal)
+          ...(e.type === "run-started" && typeof e.feedTotal === "number" && Number.isInteger(e.feedTotal)
             ? { totalFeeds: e.feedTotal } : {}),
         },
       }),
