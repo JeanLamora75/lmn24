@@ -81,6 +81,7 @@ export class ParserEngine {
   async run(
     filters: ParserFilters,
     emit: (event: ParserEvent) => void,
+    batchRunId?: string,
   ): Promise<void> {
     const settings = await this.loadSettings();
     const feeds = await this.loadFeeds(filters);
@@ -301,6 +302,7 @@ export class ParserEngine {
     const feedRun = await this.database.feedRun.create({
       data: {
         feedId: feed.id,
+        ...(batchRunId ? { batchRunId } : {}),
         startedAt,
         status: "RUNNING",
       },
