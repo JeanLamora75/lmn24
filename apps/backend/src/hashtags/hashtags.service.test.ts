@@ -22,7 +22,11 @@ describe("SCRUM-49 — Hashtag administration", () => {
       id, name: "Moscou", slug: "moscou", isActive: true,
       aliases: [], _count: { hourlyCounts: 0 },
     });
-    await service({ hashtag: { create, findUnique } }).create(base);
+    const tx = { $queryRaw: vi.fn().mockResolvedValue([]), hashtag: { create } };
+    await service({
+      hashtag: { findUnique },
+      $transaction: vi.fn(async (callback: (client: typeof tx) => Promise<unknown>) => callback(tx)),
+    }).create(base);
     expect(create).toHaveBeenCalledWith(expect.objectContaining({
       data: expect.objectContaining({
         aliases: {
@@ -42,7 +46,13 @@ describe("SCRUM-49 — Hashtag administration", () => {
 
   it("returns a useful conflict for a duplicate slug", async () => {
     const error = Object.assign(new Error("duplicate"), { code: "P2002" });
-    const api = service({ hashtag: { create: vi.fn().mockRejectedValue(error) } });
+    const tx = {
+      $queryRaw: vi.fn().mockResolvedValue([]),
+      hashtag: { create: vi.fn().mockRejectedValue(error) },
+    };
+    const api = service({
+      $transaction: vi.fn(async (callback: (client: typeof tx) => Promise<unknown>) => callback(tx)),
+    });
     await expect(api.create(base)).rejects.toThrow(ConflictException);
   });
 
@@ -60,6 +70,7 @@ describe("SCRUM-49 — Hashtag administration", () => {
   it("updates main fields and aliases atomically", async () => {
     const actions: string[] = [];
     const tx = {
+      $queryRaw: vi.fn().mockResolvedValue([]),
       hashtag: { update: vi.fn(async () => { actions.push("update"); }) },
       hashtagAlias: {
         deleteMany: vi.fn(async () => { actions.push("delete"); }),
@@ -79,14 +90,18 @@ describe("SCRUM-49 — Hashtag administration", () => {
   });
 
   it("deletes only the hashtag and relies on FK cascade for dependents", async () => {
+    const tx = {
+      $queryRaw: vi.fn().mockResolvedValue([]),
+      hashtag: { delete: vi.fn().mockResolvedValue({ id }) },
+    };
     const api = service({
       hashtag: {
         findUnique: vi.fn().mockResolvedValue({
           id, name: "Moscou", aliases: [{ id: "alias" }],
           _count: { hourlyCounts: 5 },
         }),
-        delete: vi.fn().mockResolvedValue({ id }),
       },
+      $transaction: vi.fn(async (callback: (client: typeof tx) => Promise<unknown>) => callback(tx)),
     });
     await expect(api.delete(id)).resolves.toEqual({
       deleted: true, aliasCount: 1, hourlyCountRows: 5,

@@ -8,6 +8,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { z } from "zod";
 import { AuthService } from "../auth/auth.service";
 import { AUTH_FAILURE_MESSAGE, DEFAULT_SESSION_COOKIE_NAME } from "../auth/auth.constants";
+import { HashtagStatsService } from "./hashtag-stats.service";
 import { HashtagsService } from "./hashtags.service";
 import { HashtagHistoryService } from "./hashtag-history.service";
 
@@ -37,6 +38,7 @@ export class HashtagsController {
   private readonly cookieName: string;
   constructor(
     private readonly hashtags: HashtagsService,
+    private readonly stats: HashtagStatsService,
     private readonly history: HashtagHistoryService,
     private readonly auth: AuthService,
     config: ConfigService,
@@ -148,6 +150,24 @@ export class HashtagsController {
     }).strict().safeParse(body);
     if (!parsed.success) throw new BadRequestException("Paramètres d'analyse invalides.");
     return this.history.scanPage(id, parsed.data);
+  }
+
+  @Post(":id/rebuild")
+  @HttpCode(202)
+  @Header("Cache-Control", "no-store")
+  async rebuild(@Req() request: RequestLike, @Param("id") rawId: string) {
+    await this.assertAdmin(request);
+    const id = this.parseId(rawId);
+    await this.hashtags.getById(id);
+    this.stats.enqueue(id);
+    return { queued: true, id };
+  }
+
+  @Get(":id/rebuild")
+  @Header("Cache-Control", "no-store")
+  async rebuildStatus(@Req() request: RequestLike, @Param("id") rawId: string) {
+    await this.assertAdmin(request);
+    return this.stats.getStatus(this.parseId(rawId));
   }
 
   @Get(":id")

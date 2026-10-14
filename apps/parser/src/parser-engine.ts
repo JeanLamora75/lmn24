@@ -1,5 +1,4 @@
-import type { DatabaseClient } from "@lmn24/database";
-import { compileHashtags, matchArticleHashtags, type CompiledHashtag } from "@lmn24/contracts";
+import { insertArticlesAndCount, type DatabaseClient } from "@lmn24/database";
 
 import { parseFeedXml } from "./feed-parser.js";
 
@@ -85,11 +84,6 @@ export class ParserEngine {
   ): Promise<void> {
     const settings = await this.loadSettings();
     const feeds = await this.loadFeeds(filters);
-    // Load active subjects once per run. Alias edits take effect next run.
-    const activeHashtags = compileHashtags(await this.database.hashtag.findMany({
-      where: { isActive: true },
-      select: { id: true, name: true, aliases: { select: { name: true } } },
-    }));
 
     emit({
       type: "run-started",
@@ -127,7 +121,7 @@ export class ParserEngine {
       });
 
       try {
-        const result = await this.processFeed(feed, settings, activeHashtags);
+        const result = await this.processFeed(feed, settings);
 
         if (result.ok) {
           successfulFeeds += 1;
@@ -302,7 +296,6 @@ export class ParserEngine {
   private async processFeed(
     feed: FeedRow,
     settings: ParserSettings,
-    hashtags: readonly CompiledHashtag[],
   ): Promise<FeedResult> {
     const startedAt = new Date();
     const feedRun = await this.database.feedRun.create({
@@ -342,7 +335,7 @@ export class ParserEngine {
 
         const xml = await response.text();
         const parsed = await parseFeedXml(xml, response.url || feed.feedUrl);
-        const imported = await this.importArticles(feed, parsed.articles, hashtags);
+        const imported = await this.importArticles(feed, parsed.articles);
         const finishedAt = new Date();
         const durationMs = Math.max(
           0,
@@ -424,7 +417,6 @@ export class ParserEngine {
     parsedArticles: Awaited<
       ReturnType<typeof parseFeedXml>
     >["articles"],
-    hashtags: readonly CompiledHashtag[],
   ): Promise<{ imported: number; matched: number }> {
     if (parsedArticles.length === 0) {
       return { imported: 0, matched: 0 };
@@ -467,8 +459,9 @@ export class ParserEngine {
       newArticles,
       INSERT_CHUNK_SIZE,
     )) {
-      const inserted = await this.database.article.createManyAndReturn({
-        data: chunk.map((article) => ({
+      const result = await insertArticlesAndCount(
+        this.database,
+        chunk.map((article) => ({
           sourceId: feed.sourceId,
           categoryId: feed.categoryId,
           languageIsoCode2: feed.languageIsoCode2.trim().toLowerCase(),
@@ -478,16 +471,9 @@ export class ParserEngine {
           articleUrl: article.articleUrl,
           publishedAt: article.publishedAt,
         })),
-        skipDuplicates: true,
-        select: { id: true, title: true, summary: true, publishedAt: true },
-      });
-
-      imported += inserted.length;
-      // Only confirmed inserts, never every parsed or duplicate RSS entry.
-      // Atomic persistent hourly counters are implemented in SCRUM-52.
-      for (const article of inserted) {
-        if (matchArticleHashtags(article, hashtags).length > 0) matched += 1;
-      }
+      );
+      imported += result.imported;
+      matched += result.matched;
     }
 
     return { imported, matched };
