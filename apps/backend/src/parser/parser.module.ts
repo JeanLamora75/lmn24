@@ -1,13 +1,15 @@
 import { Module } from "@nestjs/common";
 
 import { AuthModule } from "../auth/auth.module";
+import { ParserMonitoringController } from "./parser-monitoring.controller";
+import { ParserMonitoringService } from "./parser-monitoring.service";
 import { ParserController } from "./parser.controller";
 import { ParserGatewayService } from "./parser-gateway.service";
 
 @Module({
   imports: [AuthModule],
-  controllers: [ParserController],
-  providers: [ParserGatewayService],
+  controllers: [ParserController, ParserMonitoringController],
+  providers: [ParserGatewayService, ParserMonitoringService],
   exports: [ParserGatewayService],
 })
 export class ParserModule {}
