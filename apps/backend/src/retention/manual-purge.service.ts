@@ -69,12 +69,14 @@ export class ManualPurgeService {
     return new Date(now.getTime() - values[RULES[table].retention] * DAY);
   }
 
-  private filter(table: PurgeTable, cutoff: Date | null) {
-    if (table === "feed_run" || table === "feed_video_run") {
-      return { status: { not: "RUNNING" }, ...(cutoff ? { startedAt: { lt: cutoff } } : {}) };
-    }
-    return cutoff ? (table === "hashtag_hourly_count"
-      ? { hourUtc: { lt: cutoff } } : { publishedAt: { lt: cutoff } }) : {};
+  private publishedFilter(cutoff: Date | null) {
+    return cutoff ? { publishedAt: { lt: cutoff } } : {};
+  }
+  private runFilter(cutoff: Date | null) {
+    return { status: { not: "RUNNING" }, ...(cutoff ? { startedAt: { lt: cutoff } } : {}) };
+  }
+  private hourFilter(cutoff: Date | null) {
+    return cutoff ? { hourUtc: { lt: cutoff } } : {};
   }
 
   private async count(
@@ -82,12 +84,12 @@ export class ManualPurgeService {
     db: Pick<DatabaseClient, "article" | "video" | "feedRun" | "feedVideoRun" | "hashtagHourlyCount"> = this.db.prisma,
   ): Promise<number> {
     switch (table) {
-      case "article": return db.article.count({ where: this.filter(table, cutoff) });
-      case "video": return db.video.count({ where: this.filter(table, cutoff) });
-      case "feed_run": return db.feedRun.count({ where: this.filter(table, cutoff) });
-      case "feed_video_run": return db.feedVideoRun.count({ where: this.filter(table, cutoff) });
+      case "article": return db.article.count({ where: this.publishedFilter(cutoff) });
+      case "video": return db.video.count({ where: this.publishedFilter(cutoff) });
+      case "feed_run": return db.feedRun.count({ where: this.runFilter(cutoff) });
+      case "feed_video_run": return db.feedVideoRun.count({ where: this.runFilter(cutoff) });
       case "hashtag_hourly_count": return db.hashtagHourlyCount.count({
-        where: this.filter(table, cutoff),
+        where: this.hourFilter(cutoff),
       });
     }
   }
@@ -196,21 +198,21 @@ export class ManualPurgeService {
           let n = 0;
           switch (job.table) {
             case "article": {
-              const rows = await tx.article.findMany({ where: this.filter("article", cutoff),
+              const rows = await tx.article.findMany({ where: this.publishedFilter(cutoff),
                 take: BATCH, select: { id: true } });
               if (!rows.length) break;
               n = (await tx.article.deleteMany({ where: { id: { in: rows.map(r => r.id) } } })).count;
               break;
             }
             case "video": {
-              const rows = await tx.video.findMany({ where: this.filter("video", cutoff),
+              const rows = await tx.video.findMany({ where: this.publishedFilter(cutoff),
                 take: BATCH, select: { id: true } });
               if (!rows.length) break;
               n = (await tx.video.deleteMany({ where: { id: { in: rows.map(r => r.id) } } })).count;
               break;
             }
             case "feed_run": {
-              const rows = await tx.feedRun.findMany({ where: this.filter("feed_run", cutoff),
+              const rows = await tx.feedRun.findMany({ where: this.runFilter(cutoff),
                 take: BATCH, select: { id: true } });
               if (!rows.length) break;
               n = (await tx.feedRun.deleteMany({ where: { id: { in: rows.map(r => r.id) },
@@ -218,7 +220,7 @@ export class ManualPurgeService {
               break;
             }
             case "feed_video_run": {
-              const rows = await tx.feedVideoRun.findMany({ where: this.filter("feed_video_run", cutoff),
+              const rows = await tx.feedVideoRun.findMany({ where: this.runFilter(cutoff),
                 take: BATCH, select: { id: true } });
               if (!rows.length) break;
               n = (await tx.feedVideoRun.deleteMany({ where: { id: { in: rows.map(r => r.id) },
@@ -227,7 +229,7 @@ export class ManualPurgeService {
             }
             case "hashtag_hourly_count": {
               const rows = await tx.hashtagHourlyCount.findMany({
-                where: this.filter("hashtag_hourly_count", cutoff),
+                where: this.hourFilter(cutoff),
                 take: BATCH, select: { hashtagId: true, hourUtc: true },
               });
               if (!rows.length) break;
