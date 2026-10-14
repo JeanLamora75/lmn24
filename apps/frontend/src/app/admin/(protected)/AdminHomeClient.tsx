@@ -128,10 +128,10 @@ export function AdminHomeClient() {
                                 unoptimized
                               />
                             </span>
-                            <span className={styles.cardContent}>
+                            <div className={styles.cardContent}>
                               <h3 className={styles.cardTitle}>{feature.title}</h3>
                               <span className={styles.cardDescription}>{feature.description}</span>
-                            </span>
+                            </div>
                           </div>
                         </article>
                       </Link>
