@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import styles from "./sources.module.css";
 
-type Impact = { feeds: number; articles: number };
+type Impact = { feeds: number; articles: number; videoFeeds: number; videos: number; activeRuns: number };
 type Props = {
   source: { id: string; name: string };
   onClose: () => void;
@@ -45,7 +45,10 @@ export function SourceDeleteDialog({ source, onClose, onDeleted }: Props) {
           !Number.isSafeInteger(data.feeds) ||
           !Number.isSafeInteger(data.articles) ||
           data.feeds < 0 ||
-          data.articles < 0
+          data.articles < 0 ||
+          !Number.isSafeInteger(data.videoFeeds) || data.videoFeeds < 0 ||
+          !Number.isSafeInteger(data.videos) || data.videos < 0 ||
+          !Number.isSafeInteger(data.activeRuns) || data.activeRuns < 0
         ) throw new Error("invalid-impact");
         setImpact(data);
       } catch (caught) {
@@ -61,7 +64,7 @@ export function SourceDeleteDialog({ source, onClose, onDeleted }: Props) {
   }, [router, source.id]);
 
   async function confirmDelete() {
-    if (deletingRef.current || !impact || loading) return;
+    if (deletingRef.current || !impact || loading || impact.activeRuns > 0) return;
     deletingRef.current = true;
     setDeleting(true);
     setError("");
@@ -103,8 +106,22 @@ export function SourceDeleteDialog({ source, onClose, onDeleted }: Props) {
         ) : impact ? (
           <div className="alert alert-warning">
             Cette action effacera <strong>{impact.feeds} flux RSS/XML</strong> et{" "}
-            <strong>{impact.articles} articles</strong> rattachés à cette source,
-            ainsi que les historiques d’exécution des flux concernés. Cette action est irréversible.
+            <strong>{impact.articles} articles</strong>,{" "}
+            <strong>{impact.videoFeeds} flux YouTube</strong> et{" "}
+            <strong>{impact.videos} vidéos</strong> rattachés à cette source,
+            ainsi que les historiques d’exécution correspondants.
+            {impact.articles > 0 && (
+              <span className="d-block mt-2">
+                Les statistiques des hashtags seront invalidées puis recalculées.
+                Les classements peuvent être temporairement indisponibles.
+              </span>
+            )}
+            <strong className="d-block mt-2">Cette action est irréversible.</strong>
+            {impact.activeRuns > 0 && (
+              <span className="d-block mt-2 text-danger" role="alert">
+                {impact.activeRuns} extraction(s) en cours : attendez leur fin avant de supprimer.
+              </span>
+            )}
           </div>
         ) : null}
         {error && <p role="alert" className="alert alert-danger">{error}</p>}
@@ -118,7 +135,7 @@ export function SourceDeleteDialog({ source, onClose, onDeleted }: Props) {
           <button
             type="button"
             className="btn btn-danger"
-            disabled={loading || !impact || deleting}
+            disabled={loading || !impact || deleting || impact.activeRuns > 0}
             onClick={() => void confirmDelete()}
           >{deleting ? "Suppression…" : "Supprimer définitivement"}</button>
         </div>
