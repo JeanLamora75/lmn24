@@ -14,6 +14,7 @@ const other = "22222222-2222-4222-8222-222222222222";
 const days = {
   retentionArticlesDays: 60,
   retentionVideosDays: 60,
+  retentionHoroscopesDays: 30,
   retentionInfoParserRunsDays: 14,
   retentionVideoParserRunsDays: 14,
   retentionInfoParserLogsDays: 7,
@@ -34,6 +35,8 @@ function harness(count = 2) {
       findMany: vi.fn().mockResolvedValue([]),
     },
     article: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
+    horoscope: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
+    horoscopeAstronomySnapshot: { deleteMany: vi.fn().mockResolvedValue({ count: 1 }) },
     video: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
     feedRun: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
     feedVideoRun: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
@@ -41,6 +44,7 @@ function harness(count = 2) {
   const prisma = {
     $transaction: vi.fn(async (callback: (db: typeof tx) => Promise<number>) => callback(tx)),
     article: { count: vi.fn().mockResolvedValue(count) },
+    horoscope: { count: vi.fn().mockResolvedValue(count) },
     video: { count: vi.fn().mockResolvedValue(count) },
     feedRun: { count: vi.fn().mockResolvedValue(count) },
     feedVideoRun: { count: vi.fn().mockResolvedValue(count) },
@@ -160,5 +164,32 @@ describe("SCRUM-58 — safe preview and manual purge", () => {
       .rejects.toThrow(ConflictException);
     resume?.();
     await done(service);
+  });
+});
+
+describe("SCRUM-65 — horoscope purge", () => {
+  it("previews expired horoscope rows using a DATE cutoff", async () => {
+    const { service, prisma } = harness();
+    const preview = await service.preview(admin, "horoscope", "expired");
+    expect(preview.count).toBe(2);
+    expect(preview.cutoff).toMatch(/T00:00:00\.000Z$/);
+    expect(prisma.horoscope.count).toHaveBeenCalledWith({
+      where: { date: { lt: new Date(preview.cutoff!) } },
+    });
+  });
+  it("purges only horoscopes and orphan snapshots, not import history", async () => {
+    const { service, tx } = harness();
+    const preview = await service.preview(admin, "horoscope", "all");
+    service.start(admin, {table:"horoscope",mode:"all",token:preview.token,
+      confirmed:true,typedName:"horoscope"});
+    const job = await done(service);
+    expect(job.status).toBe("COMPLETED");
+    expect(job.deleted).toBe(2);
+    expect(tx.horoscope.deleteMany).toHaveBeenCalledOnce();
+    expect(tx.horoscopeAstronomySnapshot.deleteMany).toHaveBeenCalledWith({
+      where:{horoscopes:{none:{}}},
+    });
+    expect(tx.article.deleteMany).not.toHaveBeenCalled();
+    expect(tx.video.deleteMany).not.toHaveBeenCalled();
   });
 });
