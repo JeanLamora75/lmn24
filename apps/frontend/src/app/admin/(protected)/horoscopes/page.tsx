@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 type FileInfo={fileName:string;date:string;count:number;expected:number;status:string;lastImportAt:string|null;error:string|null};
 type Run={id:string;sourceFile:string;startedAt:string;status:string;itemsInserted:number;itemsSkipped:number;errorMessage:string|null};
 const SIGNS=["aries","taurus","gemini","cancer","leo","virgo","libra","scorpio","sagittarius","capricorn","aquarius","pisces"];
@@ -21,7 +22,13 @@ export default function HoroscopesPage(){
   const [preview,setPreview]=useState<Record<string,string>|null>(null);
   const [selected,setSelected]=useState("");
   const refresh=useCallback(async()=>{const [f,h]=await Promise.all([api<FileInfo[]>("overview"),api<Run[]>("history")]);setFiles(f);setHistory(h);},[]);
-  useEffect(()=>{void refresh().catch(e=>setError(String(e)));},[refresh]);
+  useEffect(()=>{
+    let cancelled = false;
+    void Promise.all([api<FileInfo[]>("overview"),api<Run[]>("history")])
+      .then(([f,h])=>{if(!cancelled){setFiles(f);setHistory(h);}})
+      .catch(e=>{if(!cancelled)setError(String(e));});
+    return ()=>{cancelled=true;};
+  },[]);
   async function execute(fn:()=>Promise<unknown>){
     setBusy(true);setError("");setMessage("");
     try{await fn();setMessage("Opération terminée.");await refresh();}
@@ -53,7 +60,7 @@ export default function HoroscopesPage(){
   return <main className="container py-4">
     <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
       <div><h1 className="h3 mb-1">Gestion des horoscopes</h1><p className="text-body-secondary mb-0">Imports manuels et couverture des 12 signes dans 8 langues</p></div>
-      <a className="btn btn-outline-secondary" href="/admin">Retour administration</a>
+      <Link className="btn btn-outline-secondary" href="/admin">Retour administration</Link>
     </div>
     <div className="row g-3 mb-4">
       {[[ "Fichiers disponibles",files.length],["Importés",imported],["Partiels",partial],["À importer",files.length-imported-partial]].map(([name,count])=>

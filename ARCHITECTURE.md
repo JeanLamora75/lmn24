@@ -1814,7 +1814,7 @@ Téléversement admin JSON                ─┘              │
 
 ## Extension cible — Météo mondiale (conception préalable à Jira, octobre 2026)
 
-> **Statut : décision fonctionnelle et architecture cible documentées.** Cette section ne signifie pas que le parser, les API, les écrans ou les migrations sont implémentés. Le script SQL initial de 66 villes a été préparé séparément ; son exécution sur une base LMN24 et son intégration à Prisma restent des étapes distinctes.
+> **Statut : décision fonctionnelle et architecture cible documentées.** Le socle de données SCRUM-69 (modèles Prisma, migration SQL 011 et seed des 66 villes) est codé dans le dépôt mais **n'est pas exécuté sur la base PostgreSQL de l'utilisateur** ; le parser, les API et les écrans demeurent des lots suivants.
 
 ### Objectif et périmètre
 
@@ -1845,7 +1845,7 @@ Téléversement admin JSON                ─┘              │
 
 ### Données, administration, exploitation
 
-- Table de référence `weather_city` : schéma exact du fichier SQL des 66 villes, incluant `slug`, `name`, `country_iso2`, `continent_code`, coordonnées, `timezone`, `display_order`, `is_active` et dates. `country_iso2` est une valeur ISO2 sans FK obligatoire vers `country` dans le seed initial, afin d'accepter les villes même si le référentiel des pays LMN24 est incomplet. Ne pas recréer la table `country`.
+- Table de référence `weather_city` : schéma exact de `database/migrations/011_weather_data_model.sql` et seed `database/seed_weather_cities.sql`, incluant `slug`, `name`, `country_iso2`, `continent_code`, coordonnées, `timezone`, `display_order`, `is_active` et dates. `country_iso2` est une valeur ISO2 sans FK obligatoire vers `country` dans le seed initial, afin d'accepter les villes même si le référentiel des pays LMN24 est incomplet. Ne pas recréer la table `country`.
 - Table cible `weather_current` : **un enregistrement courant par ville**, informations WMO et horodatages de l'observation et de la collecte ; aucune accumulation quotidienne non bornée. Historique minimal des collectes dans `weather_run` (cible) pour la supervision. Détails et contraintes dans `docs/DATA_MODEL.md`.
 - Ajouter les **modèles Prisma et migration correspondante** au moment du développement, dans `packages/database` ; le SQL fourni séparément ne vaut pas déclaration Prisma et ne doit pas être appliqué une seconde fois aveuglément après migration.
 - Administration : deux cartes **« Villes météo »** (`/admin/weather-cities`) dans « Contenus et référentiels » et **« Lancer le Parser Météo »** (`/admin/weather-parser`) dans « Collecte et supervision ». CRUD du référentiel des villes (activation, pays/continent, coordonnées, fuseau, ordre) avec validations, recherche et confirmation des suppressions ; lancement manuel ADMIN avec filtres optionnels continent, progression, compteurs, erreurs et protection contre les doublons, puis planification future par CRON sans changer le moteur. Intégrer le nouveau moteur à **« Logs et statistiques des parsers »** sans renommer ni réinterpréter les compteurs de flux INFOS/VIDEOS ; prévoir des métriques spécifiques « villes traitées » et l'historique `weather_run`.

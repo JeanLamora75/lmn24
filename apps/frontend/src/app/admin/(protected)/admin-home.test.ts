@@ -31,7 +31,7 @@ describe("SCRUM-13 — administration home registry and grouping", () => {
   it("includes each of the 16 original paths exactly once", () => {
     const links = ADMIN_SECTIONS.flatMap(section => section.features.map(feature => feature.href));
     expect(links).toHaveLength(17);
-    expect(new Set(links).size).toBe(16);
+    expect(new Set(links).size).toBe(17);
     expect([...links].sort()).toEqual([...oldRoutes, "/admin/horoscopes"].sort());
   });
 
@@ -64,7 +64,7 @@ describe("SCRUM-13 — instant local search", () => {
 
   it("returns all five groups and 17 cards for a blank search", () => {
     expect(filterAdminSections(ADMIN_SECTIONS, " ").map(section => section.features.length))
-      .toEqual([3, 3, 3, 4, 3]);
+      .toEqual([3, 4, 3, 4, 3]);
   });
 
   it("finds Video cards across different groups without accents", () => {
@@ -96,7 +96,7 @@ describe("SCRUM-13 — instant local search", () => {
   it("handles zero results without modifying original content", () => {
     const noMatches = filterAdminSections(ADMIN_SECTIONS, "zz-unknown-admin-menu");
     expect(noMatches).toEqual([]);
-    expect(ADMIN_SECTIONS.map(section => section.features.length)).toEqual([3, 3, 3, 4, 3]);
+    expect(ADMIN_SECTIONS.map(section => section.features.length)).toEqual([3, 4, 3, 4, 3]);
   });
 });
 

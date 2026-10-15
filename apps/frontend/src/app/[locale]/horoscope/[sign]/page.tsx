@@ -46,7 +46,7 @@ export default async function HoroscopeSignPage({params,searchParams}:Props){
  setRequestLocale(locale);
  const lang=locale as Locale,t=TEXT[lang],index=SIGNS.indexOf(sign as typeof SIGNS[number]);
  const days=daysFromParis(),query=(await searchParams).date;
- const selected=typeof query==="string"?query:days[0];
+ const selected=typeof query==="string"?query:(days[0] ?? "");
  if(!days.includes(selected))notFound();
  let horoscope:Horoscope|null=null;
  let serviceFailed=false;

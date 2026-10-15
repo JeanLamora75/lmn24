@@ -19,7 +19,9 @@ describe("horoscope JSON validation",()=>{
   });
   it("rejects duplicate combinations",()=>{
     const source=fixture();
-    source.horoscopes[1]=source.horoscopes[0];
+    const first = source.horoscopes[0];
+    if (!first) throw new Error("Horoscope test fixture is empty");
+    source.horoscopes[1] = first;
     expect(()=>validateHoroscopeJson(JSON.stringify(source),"horoscopes-2026-10-15.json")).toThrow();
   });
   it("rejects a mismatched file date",()=>{

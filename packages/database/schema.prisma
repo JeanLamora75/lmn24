@@ -507,3 +507,65 @@ model HoroscopeImportRun {
   @@index([triggeredByUserId], map: "idx_horoscope_import_run_user")
   @@map("horoscope_import_run")
 }
+
+
+// SCRUM-69 — Weather worldwide: 66 seeded cities and last current observation.
+// The current weather record is a cache, not a permanent observation history.
+// PostgreSQL CHECK constraints are enforced by database/migrations/011.
+model WeatherCity {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug          String   @unique(map: "weather_city_slug_key") @db.VarChar(120)
+  name          String   @db.VarChar(120)
+  countryIso2   String   @map("country_iso2") @db.Char(2)
+  continentCode String   @map("continent_code") @db.Char(2)
+  latitude      Decimal  @db.Decimal(9, 6)
+  longitude     Decimal  @db.Decimal(9, 6)
+  timezone      String   @db.VarChar(64)
+  displayOrder  Int      @map("display_order") @db.SmallInt
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  current WeatherCurrent?
+
+  @@unique([continentCode, displayOrder], map: "weather_city_continent_order_uq")
+  @@index([countryIso2], map: "idx_weather_city_country_iso2")
+  @@index([continentCode, displayOrder], map: "idx_weather_city_active_continent_order", where: raw("is_active = true"))
+  @@map("weather_city")
+}
+
+model WeatherCurrent {
+  cityId               String   @id @map("city_id") @db.Uuid
+  temperatureC         Decimal  @map("temperature_c") @db.Decimal(5, 2)
+  apparentTemperatureC Decimal? @map("apparent_temperature_c") @db.Decimal(5, 2)
+  humidityPct          Int?     @map("humidity_pct") @db.SmallInt
+  windSpeedKmh         Decimal? @map("wind_speed_kmh") @db.Decimal(6, 2)
+  weatherCode          Int      @map("weather_code") @db.SmallInt
+  isDay                Boolean  @map("is_day")
+  observedAt           DateTime @map("observed_at") @db.Timestamptz(6)
+  fetchedAt            DateTime @map("fetched_at") @db.Timestamptz(6)
+  provider             String   @default("OPEN_METEO") @db.VarChar(32)
+
+  city WeatherCity @relation(fields: [cityId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "weather_current_city_id_fkey")
+
+  @@index([observedAt], map: "idx_weather_current_observed_at")
+  @@map("weather_current")
+}
+
+model WeatherRun {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  trigger          String    @default("MANUAL") @db.VarChar(16)
+  continentCode    String?   @map("continent_code") @db.Char(2)
+  startedAt        DateTime  @default(now()) @map("started_at") @db.Timestamptz(6)
+  finishedAt       DateTime? @map("finished_at") @db.Timestamptz(6)
+  status           String    @default("RUNNING") @db.VarChar(16)
+  totalCities      Int       @default(0) @map("total_cities")
+  processedCities  Int       @default(0) @map("processed_cities")
+  successfulCities Int       @default(0) @map("successful_cities")
+  failedCities     Int       @default(0) @map("failed_cities")
+  errorMessage     String?   @map("error_message") @db.Text
+
+  @@index([startedAt(sort: Desc)], map: "idx_weather_run_started_at")
+  @@index([status], map: "idx_weather_run_status")
+  @@map("weather_run")
+}
