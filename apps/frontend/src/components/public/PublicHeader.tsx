@@ -25,16 +25,16 @@ const LANGUAGE_FLAGS: Record<SupportedLocale, string> = {
  * route to this registry — the labels/icons and scrollable layout are ready.
  * Never show empty links or pretend a planned page already exists.
  */
-type NavKey = "news" | "videos" | "hashtags" | "live" | "podcasts" | "dossiers";
+type NavKey = "news" | "videos" | "hashtags" | "horoscope" | "live" | "podcasts" | "dossiers";
 const NAVIGATION_LABELS: Record<SupportedLocale, Record<NavKey, string>> = {
-  fr: { news: "Articles", videos: "Vidéos", hashtags: "Hashtags", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
-  en: { news: "Articles", videos: "Videos", hashtags: "Hashtags", live: "Live", podcasts: "Podcasts", dossiers: "Features" },
-  de: { news: "Artikel", videos: "Videos", hashtags: "Hashtags", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
-  es: { news: "Artículos", videos: "Vídeos", hashtags: "Hashtags", live: "Directo", podcasts: "Pódcasts", dossiers: "Reportajes" },
-  pt: { news: "Artigos", videos: "Vídeos", hashtags: "Hashtags", live: "Ao vivo", podcasts: "Podcasts", dossiers: "Dossiês" },
-  it: { news: "Articoli", videos: "Video", hashtags: "Hashtag", live: "Diretta", podcasts: "Podcast", dossiers: "Dossier" },
-  ru: { news: "Статьи", videos: "Видео", hashtags: "Хэштеги", live: "Эфир", podcasts: "Подкасты", dossiers: "Материалы" },
-  nl: { news: "Artikelen", videos: "Video's", hashtags: "Hashtags", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
+  fr: { news: "Articles", videos: "Vidéos", hashtags: "Hashtags", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
+  en: { news: "Articles", videos: "Videos", hashtags: "Hashtags", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Features" },
+  de: { news: "Artikel", videos: "Videos", hashtags: "Hashtags", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
+  es: { news: "Artículos", videos: "Vídeos", hashtags: "Hashtags", horoscope: "Horoscope", live: "Directo", podcasts: "Pódcasts", dossiers: "Reportajes" },
+  pt: { news: "Artigos", videos: "Vídeos", hashtags: "Hashtags", horoscope: "Horoscope", live: "Ao vivo", podcasts: "Podcasts", dossiers: "Dossiês" },
+  it: { news: "Articoli", videos: "Video", hashtags: "Hashtag", horoscope: "Oroscopo", live: "Diretta", podcasts: "Podcast", dossiers: "Dossier" },
+  ru: { news: "Статьи", videos: "Видео", hashtags: "Хэштеги", horoscope: "Гороскоп", live: "Эфир", podcasts: "Подкасты", dossiers: "Материалы" },
+  nl: { news: "Artikelen", videos: "Video's", hashtags: "Hashtags", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
 };
 
 // Add new links here only when their pages actually exist.
@@ -44,6 +44,7 @@ const VISIBLE_NAVIGATION = [
   { key: "news", href: "/" },
   { key: "videos", href: "/videos" },
   { key: "hashtags", href: "/hashtags" },
+  { key: "horoscope", href: "/horoscope" },
 ] as const satisfies ReadonlyArray<{ key: NavKey; href: string }>;
 
 function NavigationIcon({ name }: { name: NavKey }) {
@@ -65,6 +66,8 @@ function NavigationIcon({ name }: { name: NavKey }) {
       return <svg {...common}><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m10 9 5 3-5 3z" fill="currentColor" stroke="none"/></svg>;
     case "hashtags":
       return <svg {...common}><path d="M9 3 6.5 21M17.5 3 15 21M4 9h16M3 15h16"/></svg>;
+    case "horoscope":
+      return <svg {...common}><circle cx="12" cy="12" r="7"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M12 8l1.5 2.5L16 12l-2.5 1.5L12 16l-1.5-2.5L8 12l2.5-1.5z"/></svg>;
     case "live":
       return <svg {...common}><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M7.2 7.2a6.8 6.8 0 0 0 0 9.6m9.6-9.6a6.8 6.8 0 0 1 0 9.6M4.3 4.3a10.9 10.9 0 0 0 0 15.4m15.4-15.4a10.9 10.9 0 0 1 0 15.4"/></svg>;
     case "podcasts":
