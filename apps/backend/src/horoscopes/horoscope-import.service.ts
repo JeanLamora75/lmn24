@@ -61,7 +61,7 @@ export class HoroscopeImportService {
           throw new ConflictException("Métadonnées de cette date déjà publiées depuis une autre version.");
         if(!snapshot) snapshot=await tx.horoscopeAstronomySnapshot.create({data:{
           date,generatedAt:new Date(data.generatedAt),timezone:data.timezone,
-          astronomy:data.astronomy,sourceFile:fileName,sourceFingerprint:fingerprint,
+          astronomy:JSON.parse(JSON.stringify(data.astronomy)),sourceFile:fileName,sourceFingerprint:fingerprint,
         }});
         if(missing.length)await tx.horoscope.createMany({data:missing.map(x=>({
           date,sign:x.sign,languageIsoCode2:x.language,general:x.general,love:x.love,
