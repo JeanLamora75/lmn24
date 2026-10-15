@@ -769,3 +769,123 @@ Setting ─── paramètres de rétention Horoscope / imports (sans FK spécif
 ```
 
 **Séquencement :** SCRUM-62 (modèle/API), SCRUM-63 (moteur d'import/historique), SCRUM-64 (administration), SCRUM-66/67 (public), SCRUM-65 (purge). Les futurs dépôts automatisés ou directs au serveur sont hors MVP, mais le modèle et le service d'import doivent rester indépendants du lieu de dépôt.
+---
+
+# 17. Extension Météo mondiale — modèle cible (documentation préalable à Jira)
+
+> **Statut au 15 octobre 2026 : conception validée pour préparer l'Epic et les User Stories.** Le script SQL séparé `lmn24_weather_city_66.sql` décrit et initialise seulement `weather_city`. Il ne prouve ni son exécution sur une base, ni la présence d'un modèle Prisma ou des tables de collecte. Les structures `weather_current` et `weather_run` ci-dessous sont des **cibles à réaliser**, sans migration appliquée par la présente documentation.
+
+## 17.1. Périmètre et codes continents
+
+- **66 villes fixes**, sans déclinaison nationale automatique ; une seule rubrique mondiale filtrée par continent.
+- Répartition et ordre de la grille de trois cartes sur desktop : `EU` 15 (5 lignes), `AS` 15 (5), `AF` 12 (4), `NA` 12 (4), `SA` 6 (2), `OC` 6 (2).
+- `NA` comprend Amérique du Nord, centrale et Caraïbes. Le continent affiché est une **classification éditoriale explicite** de la ville, notamment pour les villes de pays transcontinentaux.
+- L'identifiant du pays `country_iso2` est conservé pour le drapeau et l'affichage. Le nom du pays continue de venir des traductions existantes. `name` est le nom canonique international de la ville ; les libellés de présentation et conditions météo utilisent les huit locales `next-intl` avec un repli sur `name`.
+
+## 17.2. WeatherCity (table PostgreSQL `weather_city`) — référentiel initial
+
+Le modèle doit correspondre **exactement** au script SQL de création/seed déjà fourni, sans changer les colonnes lors de l'ajout ultérieur du modèle Prisma.
+
+| Champ Prisma cible | Colonne SQL | Type PostgreSQL | Obligatoire | Rôle |
+| --- | --- | --- | --- | --- |
+| `id` | `id` | UUID, PK, défaut `gen_random_uuid()` | Oui | Identifiant stable |
+| `slug` | `slug` | VARCHAR(120), UNIQUE | Oui | Identifiant canonique de la ville |
+| `name` | `name` | VARCHAR(120) | Oui | Nom international |
+| `countryIso2` | `country_iso2` | CHAR(2) | Oui | Code pays ISO 3166-1 alpha-2 |
+| `continentCode` | `continent_code` | CHAR(2) | Oui | EU, AS, AF, NA, SA, OC |
+| `latitude` | `latitude` | NUMERIC(9,6) | Oui | Latitude du centre-ville |
+| `longitude` | `longitude` | NUMERIC(9,6) | Oui | Longitude du centre-ville |
+| `timezone` | `timezone` | VARCHAR(64) | Oui | Identifiant de fuseau IANA |
+| `displayOrder` | `display_order` | SMALLINT | Oui | Ordre **au sein du continent** |
+| `isActive` | `is_active` | BOOLEAN DEFAULT TRUE | Oui | Inclusion affichage et collecte |
+| `createdAt` | `created_at` | TIMESTAMPTZ DEFAULT NOW() | Oui | Création |
+| `updatedAt` | `updated_at` | TIMESTAMPTZ DEFAULT NOW() | Oui | Dernière modification (gérée à l'UPDATE par l'application) |
+
+**Contraintes existantes dans le script SQL :**
+
+- `slug` unique ; `(continent_code, display_order)` unique, avec `display_order > 0`.
+- Contrôles `latitude BETWEEN -90 AND 90`, `longitude BETWEEN -180 AND 180`, `country_iso2` = deux lettres majuscules, `continent_code` dans les six codes.
+- Index partiel `(continent_code, display_order) WHERE is_active = TRUE` pour les lectures publiques ; index sur `country_iso2`.
+- `country_iso2` **n'est pas une clé étrangère** vers `country` dans le SQL initial : le seed doit pouvoir charger des territoires encore absents du référentiel Country. Ajouter une FK seulement après un audit des codes effectivement présents et un plan de migration ; ne pas supprimer la table `country` ni y insérer arbitrairement des pays.
+- Validation applicative du format IANA `timezone` (ex. `Europe/Paris`, `Asia/Tokyo`) ; la base ne valide pas à elle seule que ce fuseau existe. Les coordonnées d'amorçage sont des coordonnées de centre-ville approximatives.
+- Le SQL d'amorçage utilise `ON CONFLICT DO NOTHING` : il est **non destructif**, mais ne remet pas automatiquement en conformité une ville dont les informations ont changé. Les corrections de référentiel sont des migrations/éditions explicites.
+
+**Référentiel initial par continent :**
+
+- EU : Paris, Londres, Berlin, Madrid, Rome, Lisbonne, Bruxelles, Amsterdam, Varsovie, Vienne, Stockholm, Athènes, Kyiv, Istanbul, Moscou.
+- AS : Tokyo, Séoul, Pékin, Shanghai, Hong Kong, Taipei, Singapour, Bangkok, Manille, Jakarta, New Delhi, Mumbai, Dubaï, Riyad, Tachkent.
+- AF : Le Caire, Casablanca, Alger, Dakar, Abidjan, Lagos, Accra, Kinshasa, Nairobi, Addis-Abeba, Johannesburg, Le Cap.
+- NA : New York, Washington DC, Chicago, Los Angeles, San Francisco, Miami, Toronto, Montréal, Vancouver, Mexico, La Havane, Panama.
+- SA : São Paulo, Rio de Janeiro, Buenos Aires, Santiago, Lima, Bogotá.
+- OC : Sydney, Melbourne, Perth, Auckland, Suva, Port Moresby.
+
+## 17.3. WeatherCurrent (table `weather_current`) — cible MVP
+
+**Une seule observation courante par ville**, remplacée atomiquement à chaque collecte réussie ; aucune accumulation d'observations historiques requise pour le MVP.
+
+| Champ Prisma cible | Colonne SQL proposée | Type | Obligatoire | Rôle |
+| --- | --- | --- | --- | --- |
+| `cityId` | `city_id` | UUID, PK, FK `weather_city.id` | Oui | Ville de l'observation |
+| `temperatureC` | `temperature_c` | NUMERIC(5,2) | Oui | Température actuelle °C |
+| `apparentTemperatureC` | `apparent_temperature_c` | NUMERIC(5,2) | Non | Température ressentie °C |
+| `humidityPct` | `humidity_pct` | SMALLINT | Non | Humidité relative, 0–100 % |
+| `windSpeedKmh` | `wind_speed_kmh` | NUMERIC(6,2) | Non | Vitesse du vent km/h |
+| `weatherCode` | `weather_code` | SMALLINT | Oui | Code WMO normalisé selon Open-Meteo |
+| `isDay` | `is_day` | BOOLEAN | Oui | Jour/nuit au moment de l'observation |
+| `observedAt` | `observed_at` | TIMESTAMPTZ | Oui | Instant réel des données météorologiques |
+| `fetchedAt` | `fetched_at` | TIMESTAMPTZ | Oui | Dernière collecte réussie côté LMN24 |
+| `provider` | `provider` | VARCHAR(32) | Oui | `OPEN_METEO` initialement |
+
+**Contraintes et comportement :** PK `city_id`, FK vers `weather_city` (suppression de ville à traiter explicitement, éventuellement `ON DELETE CASCADE` si validé), humidité bornée, vitesse du vent non négative, instants stockés en UTC. Ne remplacer l'observation que lorsque la réponse est valide et non plus ancienne que l'observation conservée. Le parser collecte avec un paramétrage de fuseau UTC, puis convertit les réponses de manière explicite ; pas de stockage de libellés traduits ni de l'heure locale comme chaîne.
+
+**Fraîcheur :** un relevé absent ou vieux au-delà du seuil configuré est rendu comme « indisponible » ou « données anciennes » avec l'heure `observedAt` ; le succès HTTP du frontend ne signifie pas que la météo est récente. En cas d'échec du parser, conserver l'ancienne ligne pour diagnostic et affichage signalé.
+
+**Icônes :** `weatherCode` + `isDay` pilotent une table de correspondance applicative vers des SVG **Meteocons Flat statiques** hébergés localement et un libellé localisé ; ne pas stocker d'URL d'icône externe en base. L'heure affichée en HH:mm est calculée à l'exécution avec le fuseau `WeatherCity.timezone` via `Intl.DateTimeFormat`, non enregistrée dans `weather_current`.
+
+## 17.4. WeatherRun (table `weather_run`) — historique minimal cible
+
+Une ligne par **lancement du parser météo**, pour la supervision unifiée sans détourner la sémantique des compteurs de flux RSS/vidéo.
+
+| Champ | Colonne SQL proposée | Type | Rôle |
+| --- | --- | --- | --- |
+| `id` | `id` | UUID PK | Identifiant de lancement |
+| `trigger` | `trigger` | VARCHAR(16) | `MANUAL` ou `AUTOMATIC` |
+| `continentCode` | `continent_code` | CHAR(2), nullable | Filtre facultatif du lancement manuel |
+| `startedAt` | `started_at` | TIMESTAMPTZ | Début |
+| `finishedAt` | `finished_at` | TIMESTAMPTZ, nullable | Fin |
+| `status` | `status` | VARCHAR(16) | `RUNNING`, `SUCCESS`, `PARTIAL`, `ERROR`, `INTERRUPTED` |
+| `totalCities` | `total_cities` | INTEGER | Nombre de villes à traiter |
+| `processedCities` | `processed_cities` | INTEGER | Villes traitées |
+| `successfulCities` | `successful_cities` | INTEGER | Observations sauvegardées |
+| `failedCities` | `failed_cities` | INTEGER | Échecs de villes |
+| `errorMessage` | `error_message` | TEXT, nullable | Diagnostic synthétique assaini |
+
+Compteurs non négatifs, index `started_at DESC` et `status`. `RUNNING` peut avoir `finished_at = NULL`. Ne pas perdre le statut d'un lancement interrompu. Le contrôle des chevauchements, retries et éventuels événements détaillés sera spécifié lors de la User Story du parser. **Ne pas ajouter WEATHER à `parser_batch_run` sans faire évoluer explicitement son contrat de compteurs `total_feeds`.** Un adaptateur de lecture pourra agréger l'historique météo dans la page de supervision existante.
+
+## 17.5. Settings météo (table `setting` déjà existante)
+
+Paramètres proposés pour le MVP, portés par des lignes distinctes avec `scope = 'GLOBAL'`, `scope_id = NULL`, `type = 'INTEGER'`. Valeurs à charger dans un **seed idempotent distinct** lors de la Story correspondante ; aucune ligne n'est créée par cette documentation.
+
+| `Setting.key` | Valeur initiale | Signification |
+| --- | ---: | --- |
+| `weatherCurrentRefreshMinutes` | 60 | Intervalle de collecte des conditions actuelles |
+| `weatherStaleAfterMinutes` | 180 | Seuil de signalement des observations anciennes |
+
+Valider des entiers strictement positifs côté API. Les timeouts, retries et taille des lots seront configurés selon les conventions du parser existant, lors de la spécification détaillée.
+
+## 17.6. Relations, lecture et séquencement
+
+```text
+WeatherCity 1 ─── 0..1 WeatherCurrent
+WeatherRun (historique des collectes ; compteurs par villes)
+Setting (fréquence / seuil de fraîcheur, portée GLOBAL)
+Country (référentiel existant, liaison logique via country_iso2 sans FK initiale)
+```
+
+- Lecture publique : `weather_city` filtré par `is_active = true` et `continent_code`, tri `display_order ASC`, LEFT JOIN vers `weather_current` ; une absence de relevé n'exclut pas la ville de l'affichage.
+- Détection du continent à partir d'une source IP de confiance côté serveur, choix manuel prioritaire mémorisé dans le navigateur, continent par défaut EU si information absente ou invalide. **Ne stocker aucune IP dans ce modèle.** La locale choisie ne modifie pas le continent.
+- Planification horaire et import par lots côté serveur Open-Meteo, jamais une requête fournisseur à chaque visite. Les champs de température restent en **°C** et le fuseau horaire des villes est **IANA**, distinct des instants UTC persistés.
+- Les conditions libellées, drapeaux et l'interface sont traduits par le frontend ; afficher la provenance/attribution Open-Meteo et une date d'actualisation. Vérifier les licences avant production.
+- Ordre de réalisation recommandé : **Epic Jira Météo → Story schéma/migration + seed 66 villes → Story collecte/persistance + suivi → Story API publiques → Story sélection continent/horloges → Story interface Meteocons/responsive et administration → Story tests et recette**.
+- **Hors MVP** : prévisions 7 jours, pages par ville, météo nationale, collecte d'un historique climatique, géolocalisation GPS, ajout automatique de villes au fil des visites.
+
