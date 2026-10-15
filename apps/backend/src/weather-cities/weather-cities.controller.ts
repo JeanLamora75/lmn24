@@ -34,3 +34,50 @@ export class WeatherCitiesController {
     if(!p.success)throw new BadRequestException("Identifiant invalide.");
     return p.data;
   }
+
+  @Get()
+  async list(@Req() req:RequestLike,@Query() query:Record<string,string|undefined>) {
+    await this.admin(req);
+    const parsed=weatherCityListSchema.safeParse(query);
+    if(!parsed.success)throw new BadRequestException("Filtres météo invalides.");
+    return this.service.list(parsed.data);
+  }
+  @Post()
+  async create(@Req() req:RequestLike,@Body() body:unknown) {
+    await this.admin(req);
+    const parsed=weatherCityInputSchema.safeParse(body);
+    if(!parsed.success)throw new BadRequestException("Informations invalides.");
+    return this.service.save(parsed.data);
+  }
+  @Get(":id/delete-impact")
+  async impact(@Req() req:RequestLike,@Param("id") raw:string) {
+    await this.admin(req);
+    return this.service.deleteImpact(this.id(raw));
+  }
+  @Get(":id")
+  async get(@Req() req:RequestLike,@Param("id") raw:string) {
+    await this.admin(req);
+    return this.service.get(this.id(raw));
+  }
+  @Put(":id")
+  async update(@Req() req:RequestLike,@Param("id") raw:string,@Body() body:unknown) {
+    await this.admin(req);
+    const parsed=weatherCityInputSchema.safeParse(body);
+    if(!parsed.success)throw new BadRequestException("Informations invalides.");
+    return this.service.save(parsed.data,this.id(raw));
+  }
+  @Patch(":id/status")
+  async status(@Req() req:RequestLike,@Param("id") raw:string,@Body() body:unknown) {
+    await this.admin(req);
+    const parsed=weatherCityStatusSchema.safeParse(body);
+    if(!parsed.success)throw new BadRequestException("Statut invalide.");
+    return this.service.setStatus(this.id(raw),parsed.data.isActive);
+  }
+  @Delete(":id")
+  async remove(@Req() req:RequestLike,@Param("id") raw:string,@Body() body:unknown) {
+    await this.admin(req);
+    const parsed=weatherCityDeleteSchema.safeParse(body);
+    if(!parsed.success)throw new BadRequestException("Confirmation obligatoire.");
+    return this.service.remove(this.id(raw),parsed.data.confirmSlug);
+  }
+}
