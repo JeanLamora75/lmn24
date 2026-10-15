@@ -15,6 +15,7 @@ import { SourcesModule } from "./sources/sources.module";
 import { StatisticsModule } from "./statistics/statistics.module";
 import { VideoFeedsModule } from "./video-feeds/video-feeds.module";
 import { VideosModule } from "./videos/videos.module";
+import { WeatherCitiesModule } from "./weather-cities/weather-cities.module";
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { VideosModule } from "./videos/videos.module";
     StatisticsModule,
     VideoFeedsModule,
     VideosModule,
+    WeatherCitiesModule,
   ],
   controllers: [HealthController],
 })
