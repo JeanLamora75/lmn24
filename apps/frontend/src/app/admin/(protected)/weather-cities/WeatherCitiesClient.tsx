@@ -166,7 +166,7 @@ export function WeatherCitiesClient() {
            <select id="weather-continent" className="form-select" value={form.continentCode}
              onChange={e=>{
                const next=e.target.value as Continent;
-               setForm({...form,continentCode:next,displayOrder:items.filter(x=>x.continentCode===next && x.id!==editor?.id).length+1});
+               setForm({...form,continentCode:next,displayOrder:items.filter(x=>x.continentCode===next && x.id!==(editor ? editor.id : undefined)).length+1});
              }}>
              {CODES.map(code=><option key={code} value={code}>{REGIONS[code]}</option>)}
            </select>
@@ -233,3 +233,87 @@ export function WeatherCitiesClient() {
        </div>
      </div>
    </section>}
+
+   <div className="row g-3 align-items-end mb-3">
+     <div className="col-12 col-lg-5">
+       <label className="form-label" htmlFor="weather-search">Rechercher une ville</label>
+       <input id="weather-search" className="form-control" type="search" value={search}
+         placeholder="Ville, slug, pays ou continent" onChange={e=>{setSearch(e.target.value);setPage(1);}}/>
+     </div>
+     <div className="col-12 col-md-5 col-lg-3">
+       <label className="form-label" htmlFor="weather-continent-filter">Continent</label>
+       <select id="weather-continent-filter" className="form-select" value={continent}
+         onChange={e=>{setContinent(e.target.value);setPage(1);}}>
+         <option value="all">Tous les continents</option>
+         {CODES.map(code=><option value={code} key={code}>{REGIONS[code]}</option>)}
+       </select>
+     </div>
+     <div className="col-12 col-md-4 col-lg-2">
+       <label className="form-label" htmlFor="weather-status-filter">Statut</label>
+       <select id="weather-status-filter" className="form-select" value={status}
+         onChange={e=>{setStatus(e.target.value);setPage(1);}}>
+         <option value="all">Toutes</option>
+         <option value="active">Actives</option>
+         <option value="inactive">Inactives</option>
+       </select>
+     </div>
+     <div className="col-12 col-md-3 col-lg-2">
+       <label className="form-label" htmlFor="weather-size">Par page</label>
+       <select id="weather-size" className="form-select" value={size}
+         onChange={e=>{setSize(Number(e.target.value));setPage(1);}}>
+         {PAGE_SIZES.map(n=><option key={n}>{n}</option>)}
+       </select>
+     </div>
+   </div>
+   <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+     <span className="text-body-secondary" aria-live="polite">
+       {loading?"Chargement…":`${filtered.length} résultat(s) · ${items.filter(x=>x.isActive).length} villes actives sur ${items.length}`}
+     </span>
+     <button className="btn btn-outline-secondary btn-sm" type="button" disabled={busy}
+       onClick={()=>void run(load,"Liste actualisée.")}>Actualiser</button>
+   </div>
+   <div className="card shadow-sm">
+     <div className="table-responsive">
+       <table className="table table-hover align-middle mb-0">
+         <thead><tr>
+           <th>Ville</th><th>Pays</th><th>Continent</th><th>Fuseau</th>
+           <th className="text-center">Ordre</th><th>Statut</th><th>Actions</th>
+         </tr></thead>
+         <tbody>
+           {visible.map(city=><tr key={city.id}>
+             <td><strong>{city.name}</strong><div className="small text-body-secondary">{city.slug}</div></td>
+             <td><span aria-hidden="true">{flag(city.countryIso2)}</span> {city.countryIso2}</td>
+             <td>{REGIONS[city.continentCode]}</td>
+             <td><span className="small">{city.timezone}</span>
+               <div className="small text-body-secondary">{city.latitude.toFixed(3)}, {city.longitude.toFixed(3)}</div></td>
+             <td className="text-center">{city.displayOrder}</td>
+             <td><label className="form-check form-switch m-0 d-flex gap-2 align-items-center">
+               <input className="form-check-input" type="checkbox"
+                 aria-label={`Activer ${city.name}`} checked={city.isActive}
+                 disabled={busy} onChange={()=>void toggle(city)}/>
+               <span className="small">{city.isActive?"Active":"Inactive"}</span>
+             </label></td>
+             <td><div className="d-flex flex-wrap gap-2">
+               <button className="btn btn-outline-primary btn-sm" disabled={busy}
+                 type="button" onClick={()=>edit(city)}>Modifier</button>
+               <button className="btn btn-outline-danger btn-sm" disabled={busy}
+                 type="button" onClick={()=>confirmDelete(city)}>Supprimer</button>
+             </div></td>
+           </tr>)}
+           {!loading&&visible.length===0&&<tr><td colSpan={7}
+             className="text-center text-body-secondary py-4">Aucune ville correspondante.</td></tr>}
+           {loading&&<tr><td colSpan={7} className="text-center py-4">Chargement des villes…</td></tr>}
+         </tbody>
+       </table>
+     </div>
+   </div>
+   <nav className="d-flex justify-content-center align-items-center gap-3 mt-3"
+     aria-label="Pagination des villes météo">
+     <button className="btn btn-outline-secondary btn-sm" type="button"
+       disabled={safePage<=1} onClick={()=>setPage(safePage-1)}>Précédent</button>
+     <span className="small">Page {safePage} sur {pages}</span>
+     <button className="btn btn-outline-secondary btn-sm" type="button"
+       disabled={safePage>=pages} onClick={()=>setPage(safePage+1)}>Suivant</button>
+   </nav>
+ </main>;
+}
