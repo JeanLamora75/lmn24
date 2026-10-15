@@ -8,7 +8,7 @@ import { HashtagTrendsService } from "../hashtags/hashtag-trends.service";
 import { RetentionSettingsService } from "./retention-settings.service";
 
 export const PURGE_TABLES = [
-  "article", "video", "feed_run", "feed_video_run", "hashtag_hourly_count",
+  "article", "video", "feed_run", "feed_video_run", "hashtag_hourly_count", "horoscope",
 ] as const;
 export type PurgeTable = typeof PURGE_TABLES[number];
 export type PurgeMode = "expired" | "all";
@@ -19,6 +19,7 @@ const DAY = 86_400_000;
 
 const RULES = {
   article: { retention: "retentionArticlesDays", field: "published_at" },
+  horoscope: { retention: "retentionHoroscopesDays", field: "date" },
   video: { retention: "retentionVideosDays", field: "published_at" },
   feed_run: { retention: "retentionInfoParserRunsDays", field: "started_at" },
   feed_video_run: { retention: "retentionVideoParserRunsDays", field: "started_at" },
@@ -68,6 +69,15 @@ export class ManualPurgeService {
   private async cutoffFor(table: PurgeTable, mode: PurgeMode, now = new Date()): Promise<Date | null> {
     if (mode === "all") return null;
     const { values } = await this.retention.getAll();
+    if (table === "horoscope") {
+      // Date-only records: expiration is based on the Paris civil day, not UTC instants.
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit",
+      }).formatToParts(now);
+      const component = (type: string) => parts.find(part => part.type === type)?.value;
+      const today = new Date(`${component("year")}-${component("month")}-${component("day")}T00:00:00.000Z`);
+      return new Date(today.getTime() - values.retentionHoroscopesDays * DAY);
+    }
     return new Date(now.getTime() - values[RULES[table].retention] * DAY);
   }
 
@@ -77,15 +87,19 @@ export class ManualPurgeService {
   private runFilter(cutoff: Date | null) {
     return { status: { not: "RUNNING" }, ...(cutoff ? { startedAt: { lt: cutoff } } : {}) };
   }
+  private horoscopeFilter(cutoff: Date | null) {
+    return cutoff ? { date: { lt: cutoff } } : {};
+  }
   private hourFilter(cutoff: Date | null) {
     return cutoff ? { hourUtc: { lt: cutoff } } : {};
   }
 
   private async count(
     table: PurgeTable, cutoff: Date | null,
-    db: Pick<DatabaseClient, "article" | "video" | "feedRun" | "feedVideoRun" | "hashtagHourlyCount"> = this.db.prisma,
+    db: Pick<DatabaseClient, "article" | "video" | "feedRun" | "feedVideoRun" | "hashtagHourlyCount" | "horoscope"> = this.db.prisma,
   ): Promise<number> {
     switch (table) {
+      case "horoscope": return db.horoscope.count({ where: this.horoscopeFilter(cutoff) });
       case "article": return db.article.count({ where: this.publishedFilter(cutoff) });
       case "video": return db.video.count({ where: this.publishedFilter(cutoff) });
       case "feed_run": return db.feedRun.count({ where: this.runFilter(cutoff) });
@@ -115,7 +129,9 @@ export class ManualPurgeService {
         ? ["Les compteurs hashtags seront invalidés puis intégralement reconstruits."]
         : table === "hashtag_hourly_count"
           ? ["Les classements seront marqués non vérifiés jusqu'à reconstruction."]
-          : [],
+          : table === "horoscope"
+            ? ["Les fichiers JSON et les journaux d’import restent intacts. Les métadonnées astronomiques devenues orphelines seront nettoyées."]
+            : [],
     };
   }
 
@@ -206,6 +222,13 @@ export class ManualPurgeService {
               n = (await tx.article.deleteMany({ where: { id: { in: rows.map(r => r.id) } } })).count;
               break;
             }
+            case "horoscope": {
+              const rows = await tx.horoscope.findMany({ where: this.horoscopeFilter(cutoff),
+                take: BATCH, select: { id: true } });
+              if (!rows.length) break;
+              n = (await tx.horoscope.deleteMany({ where: { id: { in: rows.map(r => r.id) } } })).count;
+              break;
+            }
             case "video": {
               const rows = await tx.video.findMany({ where: this.publishedFilter(cutoff),
                 take: BATCH, select: { id: true } });
@@ -243,6 +266,12 @@ export class ManualPurgeService {
           }
           if (!n) break;
           deleted += n;
+        }
+        if (job.table === "horoscope" && deleted > 0) {
+          // Do not retain orphan snapshots; do not delete source files or import logs.
+          await tx.horoscopeAstronomySnapshot.deleteMany({
+            where: { horoscopes: { none: {} } },
+          });
         }
         return deleted;
       }, { maxWait: 5_000, timeout: 15 * MINUTE });
