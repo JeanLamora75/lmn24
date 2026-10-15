@@ -80,8 +80,8 @@ DO $$
 DECLARE missing_count integer;
 BEGIN
   SELECT COUNT(*) INTO missing_count
-  FROM unnest(ARRAY['paris', 'london', 'berlin', 'madrid', 'rome', 'lisbon', 'brussels', 'amsterdam', 'warsaw', 'vienna', 'stockholm', 'athens', 'kyiv', 'istanbul', 'moscow', 'tokyo', 'seoul', 'beijing', 'shanghai', 'hong-kong', 'taipei', 'singapore', 'bangkok', 'manila', 'jakarta', 'new-delhi', 'mumbai', 'dubai', 'riyadh', 'tashkent', 'cairo', 'casablanca', 'algiers', 'dakar', 'abidjan', 'lagos', 'accra', 'kinshasa', 'nairobi', 'addis-ababa', 'johannesburg', 'cape-town', 'new-york', 'washington-dc', 'chicago', 'los-angeles', 'san-francisco', 'miami', 'toronto', 'montreal', 'vancouver', 'mexico-city', 'havana', 'panama-city', 'sao-paulo', 'rio-de-janeiro', 'buenos-aires', 'santiago', 'lima', 'bogota', 'sydney', 'melbourne', 'perth', 'auckland', 'suva', 'port-moresby']::text[]) AS seed_slug
-  WHERE NOT EXISTS (SELECT 1 FROM public.weather_city c WHERE c.slug = seed_slug);
+  FROM unnest(ARRAY['paris', 'london', 'berlin', 'madrid', 'rome', 'lisbon', 'brussels', 'amsterdam', 'warsaw', 'vienna', 'stockholm', 'athens', 'kyiv', 'istanbul', 'moscow', 'tokyo', 'seoul', 'beijing', 'shanghai', 'hong-kong', 'taipei', 'singapore', 'bangkok', 'manila', 'jakarta', 'new-delhi', 'mumbai', 'dubai', 'riyadh', 'tashkent', 'cairo', 'casablanca', 'algiers', 'dakar', 'abidjan', 'lagos', 'accra', 'kinshasa', 'nairobi', 'addis-ababa', 'johannesburg', 'cape-town', 'new-york', 'washington-dc', 'chicago', 'los-angeles', 'san-francisco', 'miami', 'toronto', 'montreal', 'vancouver', 'mexico-city', 'havana', 'panama-city', 'sao-paulo', 'rio-de-janeiro', 'buenos-aires', 'santiago', 'lima', 'bogota', 'sydney', 'melbourne', 'perth', 'auckland', 'suva', 'port-moresby']::text[]) AS seed(seed_slug)
+  WHERE NOT EXISTS (SELECT 1 FROM public.weather_city c WHERE c.slug = seed.seed_slug);
   IF missing_count <> 0 THEN
     RAISE EXCEPTION 'Weather seed incomplete: % initial cities absent. Check conflicting continent/display_order; no data was changed.', missing_count;
   END IF;
