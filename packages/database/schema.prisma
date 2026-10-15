@@ -45,6 +45,7 @@ model Language {
   articles   Article[]
   videoFeeds FeedVideo[]
   videos     Video[]
+  horoscopes Horoscope[]
 
   @@map("language")
 }
@@ -263,6 +264,7 @@ model User {
   updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   sessions Session[]
+  horoscopeImportRuns HoroscopeImportRun[]
 
   // The existing PostgreSQL schema enforces case-insensitive email uniqueness
   // with UNIQUE INDEX uq_app_user_email_lower ON app_user(LOWER(email)).
@@ -437,3 +439,71 @@ model HashtagHourlyCount {
   @@map("hashtag_hourly_count")
 }
 
+
+// SCRUM-62 — Horoscope: date is a civil calendar day (Europe/Paris).
+model HoroscopeAstronomySnapshot {
+  id                String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  date              DateTime   @unique(map: "horoscope_astronomy_date_unique") @db.Date
+  generatedAt       DateTime   @map("generated_at") @db.Timestamptz(6)
+  timezone          String     @db.VarChar(64)
+  astronomy         Json
+  sourceFile        String     @map("source_file") @db.VarChar(255)
+  sourceFingerprint String     @map("source_fingerprint") @db.VarChar(64)
+  createdAt         DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  horoscopes        Horoscope[]
+
+  @@map("horoscope_astronomy_snapshot")
+}
+
+model Horoscope {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  date                DateTime  @db.Date
+  sign                String    @db.VarChar(20)
+  languageIsoCode2    String    @map("language_iso_code2") @db.Char(2)
+  general             String    @db.Text
+  love                String    @db.Text
+  work                String    @db.Text
+  finance             String    @db.Text
+  disclaimer          String    @db.Text
+  sourceFile          String    @map("source_file") @db.VarChar(255)
+  sourceFingerprint   String    @map("source_fingerprint") @db.VarChar(64)
+  astronomySnapshotId String    @map("astronomy_snapshot_id") @db.Uuid
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  language          Language                   @relation(fields: [languageIsoCode2], references: [isoCode2], onDelete: Restrict, onUpdate: Cascade)
+  astronomySnapshot HoroscopeAstronomySnapshot @relation(fields: [astronomySnapshotId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([date, sign, languageIsoCode2], map: "horoscope_date_sign_language_unique")
+  @@index([languageIsoCode2, sign, date], map: "idx_horoscope_language_sign_date")
+  @@index([astronomySnapshotId], map: "idx_horoscope_astronomy_snapshot_id")
+  @@map("horoscope")
+}
+
+model HoroscopeImportRun {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceType        String    @map("source_type") @db.VarChar(16)
+  sourceFile        String    @map("source_file") @db.VarChar(255)
+  fileFingerprint   String?   @map("file_fingerprint") @db.VarChar(64)
+  targetDate        DateTime? @map("target_date") @db.Date
+  startedAt         DateTime  @default(now()) @map("started_at") @db.Timestamptz(6)
+  finishedAt        DateTime? @map("finished_at") @db.Timestamptz(6)
+  status            String    @default("RUNNING") @db.VarChar(16)
+  itemsExpected     Int       @default(96) @map("items_expected")
+  itemsValid        Int       @default(0) @map("items_valid")
+  itemsInserted     Int       @default(0) @map("items_inserted")
+  itemsSkipped      Int       @default(0) @map("items_skipped")
+  itemsErrored      Int       @default(0) @map("items_errored")
+  errorMessage      String?   @map("error_message") @db.Text
+  triggeredByUserId String?   @map("triggered_by_user_id") @db.Uuid
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  triggeredByUser User? @relation(fields: [triggeredByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([startedAt(sort: Desc)], map: "idx_horoscope_import_run_started_at")
+  @@index([targetDate, startedAt(sort: Desc)], map: "idx_horoscope_import_run_date_started")
+  @@index([status], map: "idx_horoscope_import_run_status")
+  @@index([triggeredByUserId], map: "idx_horoscope_import_run_user")
+  @@map("horoscope_import_run")
+}
