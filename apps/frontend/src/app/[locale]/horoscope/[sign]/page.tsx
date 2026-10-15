@@ -56,7 +56,7 @@ export default async function HoroscopeSignPage({params,searchParams}:Props){
    else horoscope=await response.json() as Horoscope;
  }catch{serviceFailed=true;}
  const when=(day:string)=>new Intl.DateTimeFormat(lang,{weekday:"short",day:"numeric",month:"short",timeZone:"UTC"}).format(new Date(day+"T12:00:00Z"));
- const name=t.signs[index];
+ const name=t.signs[index] ?? sign;
  const attr=horoscope?.astronomy?.attribution;
  // The source file explicitly requires a visible CosmyDay link on pages using its data.
  const attrUrl=attr?.url==="https://cosmyday.com"||attr?.url==="https://www.cosmyday.com"?attr.url:"https://cosmyday.com";
