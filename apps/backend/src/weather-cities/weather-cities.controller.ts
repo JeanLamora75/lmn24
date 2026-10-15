@@ -13,7 +13,6 @@ import {
 type RequestLike = {headers: Record<string,string|string[]|undefined>};
 
 @Controller("admin/weather-cities")
-@Header("Cache-Control","no-store")
 export class WeatherCitiesController {
   private readonly cookieName: string;
   constructor(private readonly service:WeatherCitiesService,
@@ -35,6 +34,7 @@ export class WeatherCitiesController {
     return p.data;
   }
 
+  @Header("Cache-Control","no-store")
   @Get()
   async list(@Req() req:RequestLike,@Query() query:Record<string,string|undefined>) {
     await this.admin(req);
@@ -42,6 +42,7 @@ export class WeatherCitiesController {
     if(!parsed.success)throw new BadRequestException("Filtres météo invalides.");
     return this.service.list(parsed.data);
   }
+  @Header("Cache-Control","no-store")
   @Post()
   async create(@Req() req:RequestLike,@Body() body:unknown) {
     await this.admin(req);
@@ -49,16 +50,19 @@ export class WeatherCitiesController {
     if(!parsed.success)throw new BadRequestException("Informations invalides.");
     return this.service.save(parsed.data);
   }
+  @Header("Cache-Control","no-store")
   @Get(":id/delete-impact")
   async impact(@Req() req:RequestLike,@Param("id") raw:string) {
     await this.admin(req);
     return this.service.deleteImpact(this.id(raw));
   }
+  @Header("Cache-Control","no-store")
   @Get(":id")
   async get(@Req() req:RequestLike,@Param("id") raw:string) {
     await this.admin(req);
     return this.service.get(this.id(raw));
   }
+  @Header("Cache-Control","no-store")
   @Put(":id")
   async update(@Req() req:RequestLike,@Param("id") raw:string,@Body() body:unknown) {
     await this.admin(req);
@@ -66,6 +70,7 @@ export class WeatherCitiesController {
     if(!parsed.success)throw new BadRequestException("Informations invalides.");
     return this.service.save(parsed.data,this.id(raw));
   }
+  @Header("Cache-Control","no-store")
   @Patch(":id/status")
   async status(@Req() req:RequestLike,@Param("id") raw:string,@Body() body:unknown) {
     await this.admin(req);
@@ -73,6 +78,7 @@ export class WeatherCitiesController {
     if(!parsed.success)throw new BadRequestException("Statut invalide.");
     return this.service.setStatus(this.id(raw),parsed.data.isActive);
   }
+  @Header("Cache-Control","no-store")
   @Delete(":id")
   async remove(@Req() req:RequestLike,@Param("id") raw:string,@Body() body:unknown) {
     await this.admin(req);
