@@ -27,6 +27,15 @@ export class HoroscopeImportController {
   }
   @Get("files") @Header("Cache-Control","no-store")
   async files(@Req()req:RequestLike){await this.authorize(req);return this.imports.files();}
+  @Get("overview") @Header("Cache-Control","no-store")
+  async overview(@Req()req:RequestLike){await this.authorize(req);return this.imports.overview();}
+  @Get("preview/:fileName/:sign/:language") @Header("Cache-Control","no-store")
+  async preview(@Req()req:RequestLike,@Param("fileName")fileName:string,@Param("sign")sign:string,@Param("language")language:string){
+    await this.authorize(req);
+    if(!/^(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)$/.test(sign)
+       || !/^(fr|en|de|es|it|pt|ru|nl)$/.test(language))throw new BadRequestException();
+    return this.imports.preview(fileName,sign,language);
+  }
   @Get("history") @Header("Cache-Control","no-store")
   async history(@Req()req:RequestLike){await this.authorize(req);return this.imports.history();}
   @Post("files/:fileName/import") @Header("Cache-Control","no-store")
