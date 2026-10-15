@@ -59,7 +59,7 @@ export class WeatherCitiesService {
   }
 
   private async lock(tx:Tx) {
-    await tx.$executeRaw`SELECT pg_advisory_xact_lock(241024,70)`;
+    await tx.$queryRaw`SELECT 1::INTEGER AS acquired FROM pg_advisory_xact_lock(241024,70)`;
   }
 
   // Two-phase reorder: move positions to unused high numbers first.
