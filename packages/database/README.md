@@ -128,3 +128,74 @@ procédures de création/migration.
 - La création de schéma ne remplit pas les compteurs ; l'ingestion et le
   recalcul appartiennent aux Stories SCRUM-51/52.
 - Aucun script n'a été exécuté sur la base PostgreSQL locale lors de ce changement.
+
+
+## SCRUM-69 — Météo mondiale : 66 villes et modèles de données
+
+L'extension Météo ajoute **trois tables** : `weather_city` (référentiel),
+`weather_current` (une observation courante par ville, facultative) et
+`weather_run` (exécutions futures du parser). Les champs et contraintes sont
+déclarés dans `schema.prisma` et dans une migration SQL additive.
+
+### Mise à jour d'une base existante LMN24 (Windows / PowerShell)
+
+**1. Sauvegarder la base `lmn24`**, vérifier son état et arrêter les
+traitements capables de modifier les données pendant la migration.
+
+**2. Depuis la racine du dépôt, appliquer la migration SQL historique :**
+
+```powershell
+# Adapter le compte, le port et le chemin de psql à ton poste.
+psql -v ON_ERROR_STOP=1 -U postgres -d lmn24 -f database/migrations/011_weather_data_model.sql
+```
+
+La migration est transactionnelle, additive et réexécutable. Elle reconnaît
+la table `weather_city` si le fichier initial
+`lmn24_weather_city_66.sql` a déjà été exécuté.
+Ne **pas** exécuter à la fois `database/migrations/011_weather_data_model.sql`
+et `packages/database/migrations/20261015223000_weather_data_model/migration.sql`
+sur la même base : ce sont deux chemins vers une migration équivalente.
+**Ne pas lancer `prisma migrate dev` ou `prisma migrate deploy`** sur une
+base LMN24 historique non baselinée : les anciennes migrations sont des SQL
+hors de l'historique Prisma Migrate.
+
+**3. Initialiser les données de référence et paramètres (une seule fois ou
+plusieurs fois, les scripts conservent les modifications existantes) :**
+
+```powershell
+psql -v ON_ERROR_STOP=1 -U postgres -d lmn24 -f database/seed_weather_cities.sql
+psql -v ON_ERROR_STOP=1 -U postgres -d lmn24 -f database/seed_weather_settings.sql
+```
+
+Le seed de villes crée au maximum les **66 valeurs initiales**, distribuées
+EU 15, AS 15, AF 12, NA 12, SA 6, OC 6. Il ne modifie ni ne supprime
+les villes existantes, et échoue de manière transactionnelle si une collision
+d'ordre empêche de retrouver les 66 villes prévues.
+
+**4. Vérifier puis régénérer le client Prisma :**
+
+```powershell
+psql -v ON_ERROR_STOP=1 -U postgres -d lmn24 -f database/tests/scrum_69_weather_schema_smoke.sql
+pnpm db:validate
+pnpm db:generate
+```
+
+Le test SQL est encapsulé dans une transaction **ROLLBACK** : aucune ligne
+de test n'est conservée. Consulter au besoin les trois tables dans Prisma
+Studio après la génération du client.
+
+### Limites et suite
+
+- Aucun appel météo, lancement du parser, formulaire d'administration ou page
+  publique n'est livré par SCRUM-69 : ces composants sont suivis dans
+  SCRUM-70 à SCRUM-79.
+- Le paramètre `weatherCurrentRefreshMinutes=60` est **indicatif** :
+  l'automatisation CRON ne sera activable qu'avec SCRUM-80.
+- `weatherStaleAfterMinutes=180` et `weatherRunRetentionDays=14`
+  ne déclenchent aucune purge. La purge administrative sera ajoutée
+  dans SCRUM-78.
+- La table `weather_city` n'a pas de FK `country_iso2` vers `country` :
+  certains codes pays de la sélection peuvent être absents du référentiel
+  historique. Toute FK future exige un audit préalable.
+- Le seed fournit des coordonnées de centre-ville ; elles restent modifiables
+  depuis la future interface de gestion des villes.
