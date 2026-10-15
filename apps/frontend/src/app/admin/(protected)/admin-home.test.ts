@@ -19,20 +19,20 @@ const oldRoutes = [
 ];
 
 describe("SCRUM-13 — administration home registry and grouping", () => {
-  it("contains the five approved sections in the correct order (3/3/3/4/3)", () => {
+  it("contains the five approved sections in the correct order (3/4/3/4/3)", () => {
     expect(ADMIN_SECTIONS.map((section) => section.title)).toEqual([
       "Sources et flux", "Contenus et référentiels",
       "Collecte et supervision", "Analyse et configuration",
       "Données et maintenance",
     ]);
-    expect(ADMIN_SECTIONS.map((section) => section.features.length)).toEqual([3, 3, 3, 4, 3]);
+    expect(ADMIN_SECTIONS.map((section) => section.features.length)).toEqual([3, 4, 3, 4, 3]);
   });
 
   it("includes each of the 16 original paths exactly once", () => {
     const links = ADMIN_SECTIONS.flatMap(section => section.features.map(feature => feature.href));
-    expect(links).toHaveLength(16);
+    expect(links).toHaveLength(17);
     expect(new Set(links).size).toBe(16);
-    expect([...links].sort()).toEqual([...oldRoutes].sort());
+    expect([...links].sort()).toEqual([...oldRoutes, "/admin/horoscopes"].sort());
   });
 
   it("keeps the parser monitoring title and direct links intact", () => {
@@ -62,7 +62,7 @@ describe("SCRUM-13 — instant local search", () => {
     expect(normalizeAdminSearch("Purgé")).toBe("purge");
   });
 
-  it("returns all five groups and 16 cards for a blank search", () => {
+  it("returns all five groups and 17 cards for a blank search", () => {
     expect(filterAdminSections(ADMIN_SECTIONS, " ").map(section => section.features.length))
       .toEqual([3, 3, 3, 4, 3]);
   });
