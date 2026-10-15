@@ -62,6 +62,12 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
         description: "Consulter et gérer les catégories d’actualités disponibles dans LMN24.",
       },
       {
+        href: "/admin/weather-cities",
+        icon: "tags",
+        title: "Villes météo",
+        description: "Gérer les 66 villes initiales, leurs continents, coordonnées, fuseaux et statuts.",
+      },
+      {
         href: "/admin/horoscopes",
         icon: "hash",
         title: "Horoscopes",
