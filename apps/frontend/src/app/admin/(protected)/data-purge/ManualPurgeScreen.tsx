@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-type Table = "article" | "video" | "feed_run" | "feed_video_run" | "hashtag_hourly_count";
+type Table = "article" | "video" | "feed_run" | "feed_video_run" | "hashtag_hourly_count" | "horoscope";
 type Mode = "expired" | "all";
 type Preview = {
   token: string; table: Table; mode: Mode; count: number;
@@ -21,6 +21,8 @@ type Job = {
 const TABLES: ReadonlyArray<{ key: Table; title: string; note: string }> = [
   { key: "article", title: "Articles d’actualité",
     note: "Après suppression, les statistiques hashtags seront reconstruites." },
+  { key: "horoscope", title: "Horoscopes",
+    note: "Les fichiers JSON et l’historique des imports sont conservés ; métadonnées orphelines nettoyées." },
   { key: "video", title: "Vidéos YouTube",
     note: "Ne supprime ni les sources ni les flux vidéos." },
   { key: "feed_run", title: "Historique du Parser Infos",
