@@ -22,15 +22,15 @@ describe("SCRUM-10 — approved LMN24 header redesign", () => {
     expect(header).toContain('router.replace(pathname, { locale: nextLocale })');
   });
 
-  it("shows only three real routes, with icon and visible text", () => {
+  it("shows four real routes, with icon and visible text", () => {
     const start = header.indexOf("const VISIBLE_NAVIGATION = [");
     const end = header.indexOf("] as const satisfies", start);
     const registry = header.slice(start, end);
     for (const key of ['key: "news", href: "/"',
-      'key: "videos", href: "/videos"', 'key: "hashtags", href: "/hashtags"']) {
+      'key: "videos", href: "/videos"', 'key: "hashtags", href: "/hashtags"', 'key: "horoscope", href: "/horoscope"']) {
       expect(registry).toContain(key);
     }
-    expect((registry.match(/key: "/g) ?? [])).toHaveLength(3);
+    expect((registry.match(/key: "/g) ?? [])).toHaveLength(4);
     expect(registry).not.toContain("podcasts");
     expect(registry).not.toContain("dossiers");
     expect(header).toContain('className={styles.navigationLabel}');
@@ -40,8 +40,8 @@ describe("SCRUM-10 — approved LMN24 header redesign", () => {
     expect(header).not.toContain("L'actu qui compte");
   });
 
-  it("has a six-entry icon and translation registry for all eight existing locales", () => {
-    const keys = ["news", "videos", "hashtags", "live", "podcasts", "dossiers"];
+  it("has a seven-entry icon and translation registry for all eight existing locales", () => {
+    const keys = ["news", "videos", "hashtags", "horoscope", "live", "podcasts", "dossiers"];
     for (const key of keys) {
       expect(header).toContain('case "' + key + '":');
     }
