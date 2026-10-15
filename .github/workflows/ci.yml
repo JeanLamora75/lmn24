@@ -95,3 +95,15 @@ jobs:
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/migrations/009_video_aggregation.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/migrations/010_parser_monitoring.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/tests/scrum_60_parser_monitoring_smoke.sql
+
+      - name: Test additive weather schema, seed, and replay (SCRUM-69)
+        run: |
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/migrations/011_weather_data_model.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/seed_weather_cities.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/seed_weather_settings.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/tests/scrum_69_weather_schema_smoke.sql
+          # Replay must not create duplicates or destroy edited weather rows.
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/migrations/011_weather_data_model.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/seed_weather_cities.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/seed_weather_settings.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/tests/scrum_69_weather_schema_smoke.sql
