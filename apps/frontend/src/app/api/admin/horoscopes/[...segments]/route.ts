@@ -18,7 +18,7 @@ async function forward(request:Request,{segments}: {segments:string[]} ,method:"
       headers["content-type"]="application/json";
     }
     const response=await fetch(getBackendUrl()+"/admin/horoscopes/"+route,{
-      method,headers,body:method==="POST"?await request.text():undefined,cache:"no-store",
+      method,headers,...(method==="POST"?{body:await request.text()}:{}),cache:"no-store",
     });
     return new NextResponse(await response.text(),{status:response.status,
       headers:{"content-type":"application/json","cache-control":"no-store"}});
