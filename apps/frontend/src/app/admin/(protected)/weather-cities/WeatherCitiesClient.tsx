@@ -123,3 +123,113 @@ export function WeatherCitiesClient() {
      setDeleting(null);setImpact(null);
    },"Ville supprimée.");
  }
+
+ return <main className="container-fluid px-3 px-lg-4 py-4">
+   <header className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+     <div>
+       <h1 className="h2 mb-1">Villes météo</h1>
+       <p className="text-body-secondary mb-0">Gérez les villes suivies par la météo mondiale LMN24.</p>
+     </div>
+     <div className="d-flex flex-wrap gap-2">
+       <Link href="/admin" className="btn btn-outline-secondary">Retour administration</Link>
+       <button className="btn btn-primary" type="button" disabled={busy}
+         onClick={()=>editor===false?edit():setEditor(false)}>
+         {editor===false?"Ajouter une ville":"Fermer le formulaire"}
+       </button>
+     </div>
+   </header>
+   {error&&<div className="alert alert-danger" role="alert">{error}</div>}
+   {success&&<div className="alert alert-success" role="status">{success}</div>}
+   {editor!==false&&<section className="card shadow-sm mb-4" aria-label="Formulaire de ville météo">
+     <div className="card-header fw-semibold">{editor?"Modifier la ville":"Ajouter une ville"}</div>
+     <form className="card-body" onSubmit={submit}>
+       <div className="row g-3">
+         <div className="col-12 col-md-6 col-xl-4">
+           <label className="form-label" htmlFor="weather-name">Nom de la ville</label>
+           <input id="weather-name" className="form-control" required maxLength={120}
+             value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/>
+         </div>
+         <div className="col-12 col-md-6 col-xl-4">
+           <label className="form-label" htmlFor="weather-slug">Slug unique</label>
+           <input id="weather-slug" className="form-control" required
+             pattern="[a-z0-9]+(-[a-z0-9]+)*" maxLength={120}
+             value={form.slug} onChange={e=>setForm({...form,slug:e.target.value})}/>
+         </div>
+         <div className="col-12 col-md-6 col-xl-4">
+           <label className="form-label" htmlFor="weather-country">Pays (code ISO2)</label>
+           <input id="weather-country" className="form-control" required minLength={2} maxLength={2}
+             pattern="[A-Za-z]{2}" value={form.countryIso2}
+             onChange={e=>setForm({...form,countryIso2:e.target.value.toUpperCase()})}/>
+         </div>
+         <div className="col-12 col-md-6 col-xl-4">
+           <label className="form-label" htmlFor="weather-continent">Continent</label>
+           <select id="weather-continent" className="form-select" value={form.continentCode}
+             onChange={e=>{
+               const next=e.target.value as Continent;
+               setForm({...form,continentCode:next,displayOrder:items.filter(x=>x.continentCode===next && x.id!==editor?.id).length+1});
+             }}>
+             {CODES.map(code=><option key={code} value={code}>{REGIONS[code]}</option>)}
+           </select>
+         </div>
+         <div className="col-12 col-md-6 col-xl-4">
+           <label className="form-label" htmlFor="weather-latitude">Latitude</label>
+           <input id="weather-latitude" className="form-control" required type="number"
+             step="any" min="-90" max="90" value={form.latitude}
+             onChange={e=>setForm({...form,latitude:Number(e.target.value)})}/>
+         </div>
+         <div className="col-12 col-md-6 col-xl-4">
+           <label className="form-label" htmlFor="weather-longitude">Longitude</label>
+           <input id="weather-longitude" className="form-control" required type="number"
+             step="any" min="-180" max="180" value={form.longitude}
+             onChange={e=>setForm({...form,longitude:Number(e.target.value)})}/>
+         </div>
+         <div className="col-12 col-md-6 col-xl-4">
+           <label className="form-label" htmlFor="weather-timezone">Fuseau horaire IANA</label>
+           <input id="weather-timezone" className="form-control" required maxLength={64}
+             placeholder="Europe/Paris" value={form.timezone}
+             onChange={e=>setForm({...form,timezone:e.target.value})}/>
+           <div className="form-text">Ex. Europe/Paris, Asia/Tokyo, America/New_York.</div>
+         </div>
+         <div className="col-12 col-md-6 col-xl-4">
+           <label className="form-label" htmlFor="weather-order">Position dans le continent</label>
+           <input id="weather-order" className="form-control" required type="number"
+             min={1} max={32760} step={1} value={form.displayOrder}
+             onChange={e=>setForm({...form,displayOrder:Number(e.target.value)})}/>
+         </div>
+         <div className="col-12 col-md-6 col-xl-4 d-flex align-items-end">
+           <div className="form-check mb-2">
+             <input className="form-check-input" id="weather-active" type="checkbox"
+               checked={form.isActive} onChange={e=>setForm({...form,isActive:e.target.checked})}/>
+             <label className="form-check-label" htmlFor="weather-active">Ville active</label>
+           </div>
+         </div>
+       </div>
+       <div className="d-flex flex-wrap gap-2 mt-4">
+         <button className="btn btn-primary" disabled={busy} type="submit">
+           {busy?"Enregistrement…":"Enregistrer"}
+         </button>
+         <button className="btn btn-outline-secondary" type="button"
+           disabled={busy} onClick={()=>setEditor(false)}>Annuler</button>
+       </div>
+     </form>
+   </section>}
+   {deleting&&<section className="card border-danger mb-4" aria-label="Confirmation de suppression">
+     <div className="card-header fw-semibold text-danger">Supprimer {deleting.name} ?</div>
+     <div className="card-body">
+       <p>Cette suppression est définitive. Elle effacera aussi son dernier relevé météo
+         {impact?" ("+impact.observationCount+" relevé)":""}, mais conservera toutes les autres villes.</p>
+       <label className="form-label" htmlFor="weather-confirm">
+         Saisissez exactement <strong>{deleting.slug}</strong> pour confirmer.
+       </label>
+       <input id="weather-confirm" className="form-control mb-3" autoComplete="off"
+         value={typed} onChange={e=>setTyped(e.target.value)}/>
+       <div className="d-flex gap-2 flex-wrap">
+         <button className="btn btn-danger" type="button"
+           disabled={busy||!impact||typed!==deleting.slug} onClick={()=>void remove()}>
+           Supprimer définitivement
+         </button>
+         <button className="btn btn-outline-secondary" type="button"
+           disabled={busy} onClick={()=>{setDeleting(null);setImpact(null);}}>Annuler</button>
+       </div>
+     </div>
+   </section>}
