@@ -13,6 +13,8 @@ INSERT INTO public.setting (
 VALUES
   ('retentionArticlesDays', '60', 'INTEGER', 'GLOBAL', NULL,
    'Conservation des articles selon published_at, en jours'),
+  ('retentionHoroscopesDays', '30', 'INTEGER', 'GLOBAL', NULL,
+   'Conservation des horoscopes selon la date civile Europe/Paris, en jours'),
   ('retentionVideosDays', '60', 'INTEGER', 'GLOBAL', NULL,
    'Conservation des vidéos selon published_at, en jours'),
   ('retentionInfoParserRunsDays', '14', 'INTEGER', 'GLOBAL', NULL,
