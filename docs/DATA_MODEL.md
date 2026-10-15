@@ -773,7 +773,7 @@ Setting ─── paramètres de rétention Horoscope / imports (sans FK spécif
 
 # 17. Extension Météo mondiale — modèle cible (documentation préalable à Jira)
 
-> **Statut au 15 octobre 2026 : conception validée pour préparer l'Epic et les User Stories.** Le script SQL séparé `lmn24_weather_city_66.sql` décrit et initialise seulement `weather_city`. Il ne prouve ni son exécution sur une base, ni la présence d'un modèle Prisma ou des tables de collecte. Les structures `weather_current` et `weather_run` ci-dessous sont des **cibles à réaliser**, sans migration appliquée par la présente documentation.
+> **Statut au 15 octobre 2026 :** le modèle et les scripts de migration/seed SCRUM-69 sont développés (`packages/database/schema.prisma`, `database/migrations/011_weather_data_model.sql`, `database/seed_weather_cities.sql`, `database/seed_weather_settings.sql`). Leur exécution sur la base PostgreSQL de l'utilisateur reste à faire. Les services parser/API et écrans sont des Stories ultérieures.
 
 ## 17.1. Périmètre et codes continents
 
@@ -784,7 +784,7 @@ Setting ─── paramètres de rétention Horoscope / imports (sans FK spécif
 
 ## 17.2. WeatherCity (table PostgreSQL `weather_city`) — référentiel initial
 
-Le modèle doit correspondre **exactement** au script SQL de création/seed déjà fourni, sans changer les colonnes lors de l'ajout ultérieur du modèle Prisma.
+Le modèle Prisma **est désormais déclaré** et correspond aux colonnes de la migration SQL 011 ; le seed des 66 villes est un fichier distinct.
 
 | Champ Prisma cible | Colonne SQL | Type PostgreSQL | Obligatoire | Rôle |
 | --- | --- | --- | --- | --- |
@@ -808,7 +808,7 @@ Le modèle doit correspondre **exactement** au script SQL de création/seed déj
 - Index partiel `(continent_code, display_order) WHERE is_active = TRUE` pour les lectures publiques ; index sur `country_iso2`.
 - `country_iso2` **n'est pas une clé étrangère** vers `country` dans le SQL initial : le seed doit pouvoir charger des territoires encore absents du référentiel Country. Ajouter une FK seulement après un audit des codes effectivement présents et un plan de migration ; ne pas supprimer la table `country` ni y insérer arbitrairement des pays.
 - Validation applicative du format IANA `timezone` (ex. `Europe/Paris`, `Asia/Tokyo`) ; la base ne valide pas à elle seule que ce fuseau existe. Les coordonnées d'amorçage sont des coordonnées de centre-ville approximatives.
-- Le SQL d'amorçage utilise `ON CONFLICT DO NOTHING` : il est **non destructif**, mais ne remet pas automatiquement en conformité une ville dont les informations ont changé. Les corrections de référentiel sont des migrations/éditions explicites.
+- Le SQL d'amorçage utilise `ON CONFLICT DO NOTHING` : il est **non destructif**, mais ne remet pas automatiquement en conformité une ville dont les informations ont changé. Une vérification transactionnelle de la présence des 66 slugs empêche un seed silencieusement incomplet. Les corrections de référentiel sont des migrations/éditions explicites.
 
 **Référentiel initial par continent :**
 
