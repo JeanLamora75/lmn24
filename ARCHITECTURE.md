@@ -1810,4 +1810,45 @@ Téléversement admin JSON                ─┘              │
 - Mode expirés : viser uniquement les dates strictement antérieures au seuil de conservation, sans effacer par défaut les horoscopes du jour et du futur. Mode vidage intégral : confirmation renforcée de SCRUM-58.
 - Ne jamais supprimer les JSON GitHub/serveur par une purge des tables. Journal d'import : politique distincte, à expliciter avant suppression.
 - Les tickets de réalisation liés sont **SCRUM-62 à SCRUM-67**, rattachés à l'Epic **SCRUM-61**.
+---
+
+## Extension cible — Météo mondiale (conception préalable à Jira, octobre 2026)
+
+> **Statut : décision fonctionnelle et architecture cible documentées.** Cette section ne signifie pas que le parser, les API, les écrans ou les migrations sont implémentés. Le script SQL initial de 66 villes a été préparé séparément ; son exécution sur une base LMN24 et son intégration à Prisma restent des étapes distinctes.
+
+### Objectif et périmètre
+
+- Rubrique **Météo mondiale**, sans déclinaison nationale ni gestion dynamique de toutes les villes d'un pays. **66 villes fixes**, administrables par activation et ordre de présentation : Europe (EU) 15, Asie (AS) 15, Afrique (AF) 12, Amérique du Nord (NA) 12, Amérique du Sud (SA) 6, Océanie (OC) 6. L'Amérique centrale et les Caraïbes sont regroupées avec NA.
+- Les villes reflètent une **sélection éditoriale**, pas une liste exhaustive des capitales. Pour les villes de pays transcontinentaux, le continent est celui défini dans le référentiel LMN24, sans recalcul dynamique.
+- **MVP : conditions météorologiques actuelles et heure locale**. Les prévisions à 7 jours, pages détaillées par ville et historique météorologique sont des évolutions possibles, non requises pour le premier lot.
+
+### Parcours public, géolocalisation et horloges
+
+- Route cible `/[locale]/weather` et entrée Météo dans la navigation publique **uniquement à la livraison**. Afficher les villes du continent sélectionné, triées par `display_order`, en cartes Bootstrap **3 colonnes desktop, 2 tablette, 1 mobile**. Pour les 66 villes initiales : 5, 5, 4, 4, 2 et 2 lignes de trois selon le continent.
+- À la première consultation, sélectionner automatiquement le continent du visiteur à partir de sa **géolocalisation IP approximative côté serveur**, si disponible. Avec Cloudflare, lire `cf-ipcontinent` uniquement si cet en-tête provient effectivement d'un proxy de confiance et que l'accès direct à l'origine est protégé. Alternative possible : base GeoLite2 côté serveur. Codes admis : `EU, AS, AF, NA, SA, OC`.
+- Le **choix manuel du continent prévaut** sur la détection automatique et peut être mémorisé dans le navigateur. Si la géolocalisation échoue ou renvoie une valeur inconnue, afficher le continent par défaut configuré (`EU` initialement), sans bloquer la page. La langue de l'interface et le continent sont deux préférences indépendantes ; pas de GPS obligatoire ni de permission de localisation.
+- Respecter la minimisation des données : aucune adresse IP dans les tables météo ; vérifier les mentions d'information RGPD et la conformité du mécanisme de préférence navigateur. Prévenir les incohérences d'hydratation entre rendu serveur et préférence client.
+- Chaque carte présente ville, drapeau/pays, pictogramme météo, température en °C, libellé des conditions, **heure locale HH:mm**, et date/heure de dernière observation ; éventuel décalage avec le fuseau du navigateur. Fuseaux IANA persistés dans `weather_city.timezone`. L'horloge est calculée **dans le navigateur** avec `Intl.DateTimeFormat` à partir de l'instant courant, rafraîchie une fois par minute ; gestion automatique des changements d'heure et, si utile, du jour différent (hier/demain). **Aucun appel à une API horaire.**
+
+### Icônes et identité graphique
+
+- Utiliser la bibliothèque **Meteocons**, variante **Flat**, sous forme de **SVG statiques hébergés localement** dans le frontend Next.js ; inclure uniquement les variantes utiles. Pas d'appel à un CDN d'icônes à chaque affichage.
+- Établir une table de correspondance déterministe des `weather_code` WMO de la réponse Open-Meteo vers les pictogrammes et libellés `next-intl` ; distinguer jour/nuit via `is_day`. Icône de repli et texte explicatif si le code est inconnu ; le texte ne doit pas dépendre de l'image. Animations **désactivées par défaut** ; toute animation future respecte `prefers-reduced-motion`.
+
+### Collecte et flux de données
+
+1. Le **parser météo LMN24** (Node, dans le monorepo) interroge **Open-Meteo** côté serveur pour les seules villes actives, à partir de `latitude`/`longitude` et avec les paramètres de temps normalisés en UTC. Les requêtes sont groupées par lots raisonnables et les erreurs gérées individuellement ou par lot.
+2. Une **planification horaire** (configurable via `Setting`) alimente une table de dernière observation `weather_current` par **upsert sur ville**. Déclenchement manuel ADMIN avec filtre continent facultatif. Limiter la concurrence, appliquer timeout/retry et empêcher les chevauchements ; prévoir des tests du coût réel selon le mode de comptabilisation Open-Meteo.
+3. PostgreSQL constitue la **source de lecture** pour NestJS et Next.js : **aucun appel Open-Meteo à chaque affichage**. Le backend expose les villes actives du continent et leurs dernières observations, avec cache HTTP raisonnable, horodatages et statut de fraîcheur.
+4. En cas d'indisponibilité fournisseur, conserver les dernières observations, mais **signaler les données périmées** ; jamais présenter une observation ancienne comme une météo en direct. Si aucune donnée n'existe : carte avec état « météo indisponible », horloge toujours fonctionnelle.
+5. Afficher une attribution visible et un lien **Open-Meteo**, conformément aux conditions/licences applicables à un site non commercial. Revérifier quotas, licence et fréquence avant mise en production.
+
+### Données, administration, exploitation
+
+- Table de référence `weather_city` : schéma exact du fichier SQL des 66 villes, incluant `slug`, `name`, `country_iso2`, `continent_code`, coordonnées, `timezone`, `display_order`, `is_active` et dates. `country_iso2` est une valeur ISO2 sans FK obligatoire vers `country` dans le seed initial, afin d'accepter les villes même si le référentiel des pays LMN24 est incomplet. Ne pas recréer la table `country`.
+- Table cible `weather_current` : **un enregistrement courant par ville**, informations WMO et horodatages de l'observation et de la collecte ; aucune accumulation quotidienne non bornée. Historique minimal des collectes dans `weather_run` (cible) pour la supervision. Détails et contraintes dans `docs/DATA_MODEL.md`.
+- Ajouter les **modèles Prisma et migration correspondante** au moment du développement, dans `packages/database` ; le SQL fourni séparément ne vaut pas déclaration Prisma et ne doit pas être appliqué une seconde fois aveuglément après migration.
+- Administration : référentiel des villes (activation, continent, coordonnées, fuseau, ordre), lancement manuel du parser Météo, paramètres horaires et seuil de fraîcheur. Intégrer le nouveau moteur à **« Logs et statistiques des parsers »** sans renommer ni réinterpréter les compteurs de flux INFOS/VIDEOS ; prévoir des métriques spécifiques « villes traitées » et l'historique `weather_run`.
+- Ne pas créer d'appel par visiteur, de stockage des IP, de table de pages nationales ou de configuration quotidienne ville par ville. Les chaînes d'interface sont traduites dans les **huit langues existantes** via `next-intl`; `weather_city.name` reste le nom canonique et peut servir de repli.
+- Réalisation Jira **après validation documentaire** : modèle/seed & Prisma, collecte/parser/supervision, API publique, sélection de continent et horloges, rendu Meteocons/responsive, recette avec tests et conformité.
 
