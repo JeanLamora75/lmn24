@@ -18,6 +18,42 @@ export class HoroscopeImportService {
     catch(e) {if ((e as NodeJS.ErrnoException).code==="ENOENT") return []; throw e;}
     return names.filter(n=>FILE_RE.test(n)).sort();
   }
+  async overview() {
+    const files = await this.files();
+    const names = files.map(fileName => ({
+      fileName, date: fileName.slice(11, 21),
+    }));
+    const dates = names.map(item => new Date(item.date + "T00:00:00.000Z"));
+    const [rows, runs] = await Promise.all([
+      this.db.prisma.horoscope.findMany({
+        where: {date: {in: dates}},
+        select: {date:true,sign:true,languageIsoCode2:true},
+      }),
+      this.db.prisma.horoscopeImportRun.findMany({
+        where: {sourceFile: {in: files}},
+        orderBy: {startedAt:"desc"},
+        select:{sourceFile:true,status:true,startedAt:true,errorMessage:true},
+      }),
+    ]);
+    return names.map(item => {
+      const existing = rows.filter(row=>row.date.toISOString().slice(0,10)===item.date);
+      const combinations = new Set(existing.map(row=>row.sign+":"+row.languageIsoCode2));
+      const latest = runs.find(run=>run.sourceFile===item.fileName);
+      const count=combinations.size;
+      return {...item, count, expected:96,
+        status:count===96?"IMPORTED":count>0?"PARTIAL":latest?.status==="ERROR"?"ERROR":"PENDING",
+        lastImportAt:latest?.startedAt??null,error:latest?.status==="ERROR"?latest.errorMessage:null,
+      };
+    });
+  }
+  async preview(fileName:string,sign:string,language:string) {
+    if(!FILE_RE.test(fileName))throw new BadRequestException("Fichier invalide.");
+    const content=await fs.readFile(path.join(this.storage,fileName),"utf8");
+    const parsed=validateHoroscopeJson(content,fileName);
+    const item=parsed.data.horoscopes.find(row=>row.sign===sign&&row.language===language);
+    if(!item)throw new NotFoundException("Horoscope introuvable.");
+    return item;
+  }
   async history() {
     return this.db.prisma.horoscopeImportRun.findMany({take:100,orderBy:{startedAt:"desc"}});
   }
