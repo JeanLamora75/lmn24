@@ -667,3 +667,105 @@ La table `Setting` existante porte les huit durées décrites en section 8. Les 
 
 Les données supprimées ne deviennent pas récupérables par la simple augmentation d'une durée. La purge réelle sera développée via User Stories Jira, avec journal de synthèse et tests. Les sauvegardes PostgreSQL suivent une rétention séparée de l'application.
 
+
+
+---
+
+# 16. Extension Horoscope multilingue — modèle cible (SCRUM-61)
+
+> **Statut : conception uniquement.** Les entités ci-dessous ne sont pas encore déclarées dans Prisma par cette mise à jour documentaire et aucune migration n'est exécutée. Elles devront être confrontées au schéma effectif lors de SCRUM-62.
+
+## 16.1 Contrat source observé
+
+Exemple réel : `data/horoscopes/horoscopes-2026-10-15.json`.
+- Racine : `date` (YYYY-MM-DD), `generatedAt` (ISO 8601 horodaté), `timezone` (`Europe/Paris`), `astronomy` (objet de provenance / validation), `horoscopes` (tableau).
+- Un item : `date`, `sign` (code anglais canonique : `aries`, `taurus`, `gemini`, `cancer`, `leo`, `virgo`, `libra`, `scorpio`, `sagittarius`, `capricorn`, `aquarius`, `pisces`), `language` (`fr`, `en`, `de`, `es`, `it`, `pt`, `ru`, `nl`), `general`, `love`, `work`, `finance`, `disclaimer`.
+- Couverture attendue : **96 items uniques par date**. Interdire une date d'item différente de la date racine.
+- L'objet `astronomy` est conservé sans perte (statut de validation, données et limites, attribution CosmyDay et lien), même lorsque les paramètres ne sont pas tous confirmés. Le statut `PARTIAL` **ne bloque pas systématiquement** l'import, conformément aux règles éditoriales de génération V4.1.
+
+## 16.2 Horoscope (table PostgreSQL `horoscope`) — cible
+
+Un enregistrement correspond à **un signe, une langue et une date civile** ; aucune association à une source de presse ou à un flux RSS.
+
+| Champ Prisma suggéré | Type | Obligatoire | Rôle |
+| --- | --- | --- | --- |
+| `id` | UUID | Oui | Identifiant technique |
+| `date` | Date (`@db.Date`) | Oui | Jour de publication affiché, sans heure |
+| `sign` | String(20) | Oui | Code anglais canonique du signe |
+| `languageIsoCode2` | String(2) | Oui | Langue, idéalement FK vers `Language.isoCode2` si la relation existante s'y prête |
+| `general` | Text | Oui | Horoscope général |
+| `love` | Text | Oui | Amour |
+| `work` | Text | Oui | Travail |
+| `finance` | Text | Oui | Finances |
+| `disclaimer` | Text | Oui | Mention d'avertissement traduite |
+| `sourceFile` | String | Oui | Nom de fichier d'origine |
+| `sourceFingerprint` | String | Oui | Empreinte SHA-256 du fichier source validé |
+| `astronomySnapshotId` | UUID | Oui | FK vers métadonnées source de la journée |
+| `createdAt` | DateTime | Oui | Première importation |
+| `updatedAt` | DateTime | Oui | Dernière modification technique |
+
+**Contraintes :** unicité `(date, sign, languageIsoCode2)` ; validation serveur des 12 signes, des 8 langues, de la non-vacuité des textes et de la cohérence de la date ; index adapté à la lecture `(languageIsoCode2, sign, date)`. La clé `date` est une date civile évaluée en `Europe/Paris`, jamais un instant UTC minuit converti implicitement.
+
+## 16.3 HoroscopeAstronomySnapshot (table `horoscope_astronomy_snapshot`) — cible
+
+Évite de répéter les métadonnées astronomiques volumineuses 96 fois par journée et conserve les conditions d'attribution.
+
+| Champ | Type | Obligatoire | Rôle |
+| --- | --- | --- | --- |
+| `id` | UUID | Oui | Identifiant |
+| `date` | Date (`@db.Date`) | Oui | Jour associé, unique dans la version MVP |
+| `generatedAt` | DateTime | Oui | Horodatage de production |
+| `timezone` | String | Oui | Fuseau de référence |
+| `astronomy` | Json | Oui | Objet source intégral, y compris `attribution`, `validationStatus`, limites et provenance |
+| `sourceFile` | String | Oui | Nom du fichier d'origine |
+| `sourceFingerprint` | String | Oui | SHA-256 du contenu contrôlé |
+| `createdAt` | DateTime | Oui | Import |
+| `updatedAt` | DateTime | Oui | Suivi technique |
+
+**Relations :** `HoroscopeAstronomySnapshot 1 → N Horoscope`. Une seule version publiable est prévue par date en MVP. Toute stratégie de remplacement/versions sera définie avant d'autoriser l'écrasement des fichiers déjà importés.
+
+## 16.4 HoroscopeImportRun (table `horoscope_import_run`) — cible
+
+Historise **chaque tentative** d'import manuelle, y compris les refus et les échecs. Le journal est distinct des données publiées.
+
+| Champ | Type | Obligatoire | Rôle |
+| --- | --- | --- | --- |
+| `id` | UUID | Oui | Identifiant |
+| `sourceType` | String / enum | Oui | `REPOSITORY`, `UPLOAD` (extension `SERVER` future) |
+| `sourceFile` | String | Oui | Fichier ciblé |
+| `fileFingerprint` | String | Non | Empreinte lorsque le fichier est lisible |
+| `targetDate` | Date | Non | Date reconnue |
+| `startedAt` | DateTime | Oui | Début |
+| `finishedAt` | DateTime | Non | Fin |
+| `status` | Enum / String | Oui | `RUNNING`, `SUCCESS`, `PARTIAL`, `ERROR`, `SKIPPED` |
+| `itemsExpected` | Integer | Oui | 96 pour une journée complète |
+| `itemsValid` | Integer | Oui | Entrées conformes |
+| `itemsInserted` | Integer | Oui | Nouveaux enregistrements |
+| `itemsSkipped` | Integer | Oui | Combinaisons déjà présentes |
+| `itemsErrored` | Integer | Oui | Entrées rejetées |
+| `errorMessage` | Text | Non | Diagnostic expurgé des secrets |
+| `triggeredByUserId` | UUID | Non | Administrateur à l'origine de l'action, référence éventuelle `User` |
+| `createdAt` | DateTime | Oui | Création du journal |
+
+**Contraintes :** compteurs non négatifs ; index `(startedAt DESC)`, `(targetDate, startedAt DESC)`, `status`. Garder l'historique même lorsqu'une importation échoue. Les règles de suppression des utilisateurs ne doivent pas effacer automatiquement l'historique : référence nullable / mise à NULL selon le modèle utilisateur réel.
+
+## 16.5 Cohérence et règles d'import
+
+1. **Unicité fonctionnelle :** `date + sign + languageIsoCode2` ; seules les combinaisons manquantes peuvent être ajoutées lors d'un rejeu ; ne jamais écraser un contenu déjà publié sans flux de correction explicitement validé.
+2. **Validation :** noms de fichiers conformes, date racine, date des items, unicité de chaque combinaison, 12 signes et 8 langues, rubriques textuelles, JSON limité en taille et profondeur.
+3. **Atomicité :** valider le fichier entièrement avant écriture ; en cas d'anomalie bloquante, refuser sa publication et enregistrer le diagnostic. Une base partiellement peuplée auparavant peut être complétée par l'ajout contrôlé des entrées absentes.
+4. **Suivi :** distinguer statut du **fichier** (présent/absent) et couverture **de la base** (0–96). Les états affichés sont dérivés des deux, pas d'un simple drapeau « importé ».
+5. **Traçabilité :** `astronomy` et la mention d'attribution doivent rester associés aux horoscopes affichés. Le site affiche le lien CosmyDay si requis par les données sources. Une validation `PARTIAL` ne doit pas être transformée en `VERIFIED`.
+6. **Rétention :** ajouter un paramètre de conservation Horoscope dans `Setting` selon les conventions de SCRUM-56 ; intégration à la purge manuelle SCRUM-58 via SCRUM-65. La purge d'une date efface les horoscopes correspondants et, seulement si orphelin, son snapshot astronomique. L'historique d'import conserve sa politique distincte ; **les fichiers sources ne sont pas supprimés**.
+7. **Exposition :** l'API publique fournit par locale/signe/date uniquement les données nécessaires à la lecture, l'attribution et les mentions légales. Ne pas exposer empreintes, chemins, logs, utilisateurs ou détails techniques internes.
+
+## 16.6 Relations cible
+
+```text
+Language 1 ─── N Horoscope
+HoroscopeAstronomySnapshot 1 ─── N Horoscope
+User 0..1 ─── N HoroscopeImportRun (déclencheur facultatif)
+Setting ─── paramètres de rétention Horoscope / imports (sans FK spécifique)
+```
+
+**Séquencement :** SCRUM-62 (modèle/API), SCRUM-63 (moteur d'import/historique), SCRUM-64 (administration), SCRUM-66/67 (public), SCRUM-65 (purge). Les futurs dépôts automatisés ou directs au serveur sont hors MVP, mais le modèle et le service d'import doivent rester indépendants du lieu de dépôt.
