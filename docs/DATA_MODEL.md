@@ -870,6 +870,7 @@ Paramètres proposés pour le MVP, portés par des lignes distinctes avec `scope
 | --- | ---: | --- |
 | `weatherCurrentRefreshMinutes` | 60 | Intervalle de collecte des conditions actuelles |
 | `weatherStaleAfterMinutes` | 180 | Seuil de signalement des observations anciennes |
+| `weatherRunRetentionDays` | 14 | Conservation des exécutions météo terminées, en jours |
 
 Valider des entiers strictement positifs côté API. Les timeouts, retries et taille des lots seront configurés selon les conventions du parser existant, lors de la spécification détaillée.
 
@@ -884,8 +885,34 @@ Country (référentiel existant, liaison logique via country_iso2 sans FK initia
 
 - Lecture publique : `weather_city` filtré par `is_active = true` et `continent_code`, tri `display_order ASC`, LEFT JOIN vers `weather_current` ; une absence de relevé n'exclut pas la ville de l'affichage.
 - Détection du continent à partir d'une source IP de confiance côté serveur, choix manuel prioritaire mémorisé dans le navigateur, continent par défaut EU si information absente ou invalide. **Ne stocker aucune IP dans ce modèle.** La locale choisie ne modifie pas le continent.
-- Planification horaire et import par lots côté serveur Open-Meteo, jamais une requête fournisseur à chaque visite. Les champs de température restent en **°C** et le fuseau horaire des villes est **IANA**, distinct des instants UTC persistés.
+- MVP : import manuel par lots côté serveur Open-Meteo ; automatisation par CRON future utilisant la même fonction de collecte, jamais une requête fournisseur à chaque visite. Les champs de température restent en **°C** et le fuseau horaire des villes est **IANA**, distinct des instants UTC persistés.
 - Les conditions libellées, drapeaux et l'interface sont traduits par le frontend ; afficher la provenance/attribution Open-Meteo et une date d'actualisation. Vérifier les licences avant production.
-- Ordre de réalisation recommandé : **Epic Jira Météo → Story schéma/migration + seed 66 villes → Story collecte/persistance + suivi → Story API publiques → Story sélection continent/horloges → Story interface Meteocons/responsive et administration → Story tests et recette**.
+- Ordre de réalisation recommandé : **Epic Jira Météo → schéma/migration + seed 66 villes → administration des villes → parser manuel + historique/supervision → API publique → header + page Météo + détection continent + horloges + Meteocons → purge et rétention → tests/recette**, puis automatisation du parser dans une Story d'évolution.
 - **Hors MVP** : prévisions 7 jours, pages par ville, météo nationale, collecte d'un historique climatique, géolocalisation GPS, ajout automatique de villes au fil des visites.
+
+
+## 17.7. Navigation et interfaces obligatoires
+
+- **Header public** : entrée « Météo », traduction des huit langues existantes, lien `/[locale]/weather`, cohérence avec les rubriques existantes et le header responsive.
+- **Page publique d'accueil Météo** : sélecteur de six continents, détection IP approximative de la première visite, préférence manuelle prioritaire et mémorisée ; défaut EU en l'absence de détection ; cartes 3/2/1 colonnes desktop/tablette/mobile ; drapeau, nom de ville, libellé de météo localisé, icône Meteocons Flat locale, température, horloge en direct et date du relevé. Gestion des absences et de la péremption. Pas de pages météo par pays au MVP.
+- **Administration des villes** : page liste `/admin/weather-cities` (pays, continent, recherche, ordre, actif, actions) et formulaire ajouter/modifier avec validations des coordonnées, pays, fuseau IANA, unicité slug et ordre par continent. Contrôle ADMIN, suppression sous confirmation et prévention des ruptures de relations ; 66 villes sont la **valeur initiale**, non une limite technique.
+- **Lancer le Parser Météo** : page `/admin/weather-parser` (toutes les villes actives ou filtrées par continent), lancement manuel, progression/diagnostic, anti-concurrence et lien vers supervision. Le premier MVP n'exige **aucun CRON actif**.
+- **Supervision** : enrichir `/admin/parser-monitoring` d'un type Météo sans fusionner numériquement les villes traitées avec les compteurs de flux d'Infos/Vidéos. `weather_run` fournit la vérité durable et l'état final ; journal technique normalisé.
+- **Navigation admin** : dans l'accueil regroupé (SCRUM-13), ajouter « Villes météo » à « Contenus et référentiels » et « Lancer le Parser Météo » à « Collecte et supervision » ; réutiliser le registre de cartes existant et la recherche.
+
+## 17.8. Purge et rétention météo (extension ciblée de SCRUM-58)
+
+- L'écran unique `/admin/data-purge` autorise `weather_current` et `weather_run` dans sa liste blanche. **La table `weather_city` est exclue** de la purge générique puisqu'elle contient le référentiel de villes et non des données collectées. Un effacement volontaire de ce référentiel nécessiterait une procédure administrative séparée, une sauvegarde et la gestion de ses dépendances.
+- **`weather_current`** : une ligne maximum par ville et pas d'historique. Mode proposé : **vider les relevés actuels** après prévisualisation, confirmation renforcée et contrôle d'une collecte concurrente. Les villes restent actives/visibles, météo indisponible puis réhydratée par un import manuel. Une purge par date de rétention n'a pas de sens métier pour ce cache de dernière observation.
+- **`weather_run`** : `weatherRunRetentionDays = 14` (scope GLOBAL, type INTEGER, valeur en jours strictement positive), modes **runs terminés expirés** ou **vider les runs terminés** ; protéger sans exception les lignes `RUNNING`, et ne supprimer aucune observation ni ville lors de la purge de l'historique.
+- Ces purges réemploient le système **ADMIN-only, jeton de prévisualisation, anti-CSRF, confirmation textuelle pour vidage, verrou, journal d'audit** déjà spécifié/implémenté sous SCRUM-58. Aucune suppression multi-table implicite, ni `TRUNCATE ... CASCADE`.
+- L'interface « Conservation des données » (SCRUM-56) doit proposer la durée `weatherRunRetentionDays` ; l'option automatique demeure **ultérieure** avec SCRUM-57. Un ajustement de la durée ne lance pas de suppression instantanée.
+- Tests : prévisualisation et vidage de chaque table ; protection des runs actifs, isolation stricte, relecture publique sans relevés, relance manuelle qui réhydrate les relevés, filtre de liste blanche serveur et contrôle des accès.
+
+## 17.9. Stratégie technique et contractuelle
+
+- API météo côté serveur : Open-Meteo, données actuelles WMO; conservation `weatherCode` et `isDay`, translation des codes en icônes/textes côté frontend. Attribution et quota vérifiés à la recette.
+- Horloges : `timezone` IANA sans données d'horloge en DB ; calcul JavaScript `Intl.DateTimeFormat` localement avec une horloge commune actualisée à la minute.
+- **Automatisation future** : ajouter une programmation horaire configurable, désactivable, qui invoque le **même moteur que le bouton manuel**, produit `weather_run.trigger = AUTOMATIC` et conserve les mêmes garanties de supervision. Ce n'est pas une condition de livraison du MVP manuel.
+- Conformité : pas de sauvegarde IP dans les tables météo ; sélection de continent sans couplage à la langue ; accessibilité et état d'erreur avec alternative textuelle ; monitoring des collectes, gestion des fuseaux et tests huit langues.
 
