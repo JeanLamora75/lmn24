@@ -50,7 +50,7 @@ export class HoroscopeImportService {
     try {
       const result=await this.db.prisma.$transaction(async tx=>{
         // A PostgreSQL advisory lock serializes all writers to the same civil date.
-        await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${data.date}))`;
+        await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${data.date}))`;
         const existing=await tx.horoscope.findMany({where:{date},select:{sign:true,languageIsoCode2:true,sourceFingerprint:true}});
         const current=new Set(existing.map(x=>x.sign+":"+x.languageIsoCode2));
         if(existing.some(x=>x.sourceFingerprint!==fingerprint))
