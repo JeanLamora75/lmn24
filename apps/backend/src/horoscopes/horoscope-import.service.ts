@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { promises as fs } from "node:fs";
 import path from "node:path";
@@ -8,6 +8,7 @@ import { validateHoroscopeJson } from "./horoscope-import.validation";
 const FILE_RE=/^horoscopes-\d{4}-\d{2}-\d{2}\.json$/;
 @Injectable()
 export class HoroscopeImportService {
+  private readonly logger = new Logger(HoroscopeImportService.name);
   private readonly storage: string;
   constructor(private readonly db:DatabaseService,config:ConfigService) {
     this.storage=path.resolve(config.get<string>("HOROSCOPE_STORAGE_PATH")?.trim() || "../../data/horoscopes");
@@ -86,7 +87,7 @@ export class HoroscopeImportService {
     try {
       const result=await this.db.prisma.$transaction(async tx=>{
         // A PostgreSQL advisory lock serializes all writers to the same civil date.
-        await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${data.date}))`;
+        await tx.$queryRaw`SELECT 1 AS acquired FROM pg_advisory_xact_lock(hashtext(${data.date}))`;
         const existing=await tx.horoscope.findMany({where:{date},select:{sign:true,languageIsoCode2:true,sourceFingerprint:true}});
         const current=new Set(existing.map(x=>x.sign+":"+x.languageIsoCode2));
         if(existing.some(x=>x.sourceFingerprint!==fingerprint))
@@ -112,6 +113,7 @@ export class HoroscopeImportService {
       }});
       return {date:data.date,...result,status:result.inserted?"SUCCESS":"SKIPPED"};
     }catch(e){
+      this.logger.error(`Horoscope import failed: ${fileName}`, e instanceof Error ? e.stack : String(e));
       await this.db.prisma.horoscopeImportRun.update({where:{id:run.id},data:{
         status:"ERROR",errorMessage:e instanceof ConflictException?e.message:"Échec technique d'import.",
         finishedAt:new Date(),
