@@ -63,7 +63,7 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
       },
       {
         href: "/admin/horoscopes",
-        icon: "stars",
+        icon: "hash",
         title: "Horoscopes",
         description: "Suivre, prévisualiser et importer les horoscopes quotidiens.",
       },
