@@ -62,6 +62,12 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
         description: "Consulter et gérer les catégories d’actualités disponibles dans LMN24.",
       },
       {
+        href: "/admin/horoscopes",
+        icon: "stars",
+        title: "Horoscopes",
+        description: "Suivre, prévisualiser et importer les horoscopes quotidiens.",
+      },
+      {
         href: "/admin/hashtags",
         icon: "hash",
         title: "Hashtags",
