@@ -25,6 +25,8 @@ const GROUPS: readonly Group[] = [
     fields: [
       { key: "retentionArticlesDays", label: "Articles d’actualité",
         note: "Articles RSS/XML ; les compteurs des hashtags seront réconciliés lors des purges." },
+      { key: "retentionHoroscopesDays", label: "Horoscopes",
+        note: "Conservation des horoscopes par date civile. Les fichiers JSON sources et historiques d'import sont préservés." },
       { key: "retentionVideosDays", label: "Vidéos YouTube",
         note: "Vidéos conservées selon leur date de publication sur YouTube." },
     ],
@@ -169,7 +171,7 @@ export function RetentionSettings() {
         <div>
           <h1 className="h2 mb-1">Conservation des données</h1>
           <p className="text-body-secondary mb-0">
-            Réglage indépendant des huit durées de conservation, exprimées en jours.
+            Réglage indépendant des neuf durées de conservation, exprimées en jours.
           </p>
         </div>
         <Link href="/admin" className="btn btn-outline-secondary">Retour administration</Link>
