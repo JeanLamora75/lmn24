@@ -1752,3 +1752,62 @@ Le backend NestJS assure l’import contrôlé et la publication des images de h
 - **Recherche côté navigateur** : `filterAdminSections` retire les accents, casse et espaces périphériques ; recherche par titre, description et section ; masque les groupes vides, révèle les correspondances si l'en-tête était précédemment replié et propose un état « aucun résultat » et une remise à zéro. Aucun appel réseau, aucun changement de droits ou de base de données.
 - **Contrôles** : tests sur cinq regroupements et les 16 URLs exactes, présence des icônes locales, filtres accent/casse/section/rien trouvé, accessibilité de l'accordéon et grille Bootstrap. Aucune migration SQL, aucun backend modifié.
 
+
+
+---
+
+# Extension Horoscope multilingue — conception MVP (SCRUM-61 à SCRUM-67)
+
+> **Statut : conception documentée, non implémentée.** Cette section ne signifie pas que les routes, tables ou migrations existent déjà. Elle complète les principes précédents. Les huit langues effectivement exploitées par le module sont `fr`, `en`, `de`, `es`, `it`, `pt`, `ru` et `nl` (néerlandais) ; certaines listes historiques de langues plus haut ne sont pas exhaustives.
+
+## Sources, intégrité et provenance
+
+- Un générateur IA tiers au site produit un fichier journalier `data/horoscopes/horoscopes-YYYY-MM-DD.json` sur GitHub. Ce fichier demeure **immuable pour l'importateur** : LMN24 ne déclenche pas sa génération et ne le modifie pas.
+- Le fichier observé le 15 octobre 2026 porte les clés racine `date`, `generatedAt`, `timezone`, `astronomy` et `horoscopes`. Le tableau `horoscopes` comporte 96 objets (12 signes × 8 langues) avec `date`, `sign`, `language`, `general`, `love`, `work`, `finance`, `disclaimer`.
+- `astronomy` contient notamment `validationStatus` (`VERIFIED` / `PARTIAL` / autres valeurs à confirmer avec les contrats réels), `source`, `sourceUrl`, `attribution`, `requestedDateTime`, `calculationParameters` et les métadonnées de justification. **Un statut PARTIAL n'interdit pas automatiquement l'import** : exposer fidèlement le degré de validation et ne pas prétendre à une vérification indépendante absente.
+- Le JSON réel signale une obligation d'attribution à **CosmyDay**, avec lien visible vers `https://cosmyday.com` là où les données dérivées sont affichées. Préserver cette information et respecter la condition de réutilisation applicable ; ne jamais la supprimer lors de l'import ou du rendu.
+- `generatedAt` est un instant de production ; `date` est une **date civile d'horoscope**. Les requêtes de consultation et J/J+7 utilisent `Europe/Paris`, y compris lors des changements d'heure.
+
+## Chaîne d'import découplée du lieu de dépôt
+
+```text
+GitHub / fichiers inclus au déploiement ─┐
+Dossier persistant sur le serveur (futur) ├──> Adaptateur de fichiers
+Téléversement admin JSON                ─┘              │
+                                                       ▼
+                                   Validation structure + dates + contenu
+                                                       │
+                                                       ▼
+                                 Import NestJS idempotent + journalisation
+                                                       │ Prisma
+                                                       ▼
+                                                   PostgreSQL
+                                                       │ REST
+                                                       ▼
+                                   Next.js public et administration
+```
+
+- Le lecteur de fichiers doit reposer sur un adaptateur remplaçable : pour le MVP, lecture des fichiers déployés et upload manuel ; un futur stockage persistant configuré par `HOROSCOPE_STORAGE_PATH` sera pris en charge sans modifier les contrats métier. Un chemin de déploiement éphémère ne doit jamais être considéré comme volume persistant.
+- Le backend NestJS valide chaque contenu avant la transaction d'import ; garde-fous de taille, type MIME déclaré et vérification effective JSON, noms de fichiers, dates, valeurs de langues/signes, données textuelles et contrôles anti-concurrence.
+- Chaque horoscopie quotidienne attend **96 couples signe/langue distincts**. Tout fichier incomplet ou erroné reçoit un diagnostic précis ; une tentative rejetée ne doit pas être présentée comme publiée. En cas de données déjà partiellement chargées, rejouer uniquement les combinaisons manquantes.
+- Un import rejoué n'écrase pas les textes existants silencieusement. Stocker statut, compteurs, origine, empreinte, erreurs assainies, responsable, horodatages et durée d'exécution dans un historique durable.
+- En MVP, l'action est **manuelle et réservée à ADMIN** ; l'import programmé, l'API de dépôt par l'agent IA et les alertes automatiques seront spécifiés séparément. La conception reste compatible avec ces extensions.
+- L'accès HTTP public ne sert **jamais** directement les JSON sources ou le répertoire de dépôt. Le front utilise uniquement les API du backend.
+
+## Administration et publication
+
+- Ajouter « Horoscopes » au groupe **Contenus et référentiels** du tableau de bord admin existant ; privilégier le registre des destinations et les composants Bootstrap actuels.
+- L'écran compare fichiers détectés et combinaisons réellement stockées en base : **absent, à importer, partiel, importé, erreur** ; il montre les dates, la couverture X/96, les dernières tentatives, leur durée, l'historique et une prévisualisation signe/langue.
+- Actions MVP : importer un fichier, compléter les jours partiels, importer les fichiers manquants, téléverser un JSON ; toutes les mutations vérifient session ADMIN, protections anti-CSRF et traitement à exécution unique.
+- Le lien **Horoscope** est ajouté au header du site public et traduit pour les huit locales ; accueil `/[locale]/horoscope` listant les 12 signes et détail `/[locale]/horoscope/[sign]`.
+- La page signe affiche J par défaut, avec navigation J à J+7 inclus ; date sélectionnable par paramètre validé (par exemple `?date=YYYY-MM-DD`). Contenu pris dans `general`, `love`, `work`, `finance`, `disclaimer` du JSON existant, rendu en texte sûr.
+- L'absence d'une combinaison (date, signe, locale) donne un message localisé, sans fallback silencieux vers une autre date ou langue. Prévoir métadonnées SEO, canonical/hreflang adaptés, accessibilité clavier et responsive.
+- **Attribution CosmyDay visible** sur les pages affichant des horoscopes issus des données portant cette obligation ; montrer la limite éditoriale « divertissement » telle que fournie, sans présenter les interprétations astrologiques comme prédictions scientifiques.
+
+## Rétention et purge
+
+- Étendre l'écran de purge manuelle déjà spécifié par **SCRUM-58**, plutôt que créer une autre interface. Rétention configurable cohérente avec **SCRUM-56**, et réutilisable lors de **SCRUM-57**.
+- Mode expirés : viser uniquement les dates strictement antérieures au seuil de conservation, sans effacer par défaut les horoscopes du jour et du futur. Mode vidage intégral : confirmation renforcée de SCRUM-58.
+- Ne jamais supprimer les JSON GitHub/serveur par une purge des tables. Journal d'import : politique distincte, à expliciter avant suppression.
+- Les tickets de réalisation liés sont **SCRUM-62 à SCRUM-67**, rattachés à l'Epic **SCRUM-61**.
+
