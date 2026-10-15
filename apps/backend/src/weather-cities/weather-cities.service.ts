@@ -85,3 +85,78 @@ export class WeatherCitiesService {
   private async fromTx(tx:Tx,id:string) {
     return this.serialize(await tx.weatherCity.findUniqueOrThrow({where:{id},select:fields}));
   }
+
+  async save(input:WeatherCityInput,id?:string) {
+    try {
+      return await this.db.prisma.$transaction(async tx=>{
+        await this.lock(tx);
+        const previous=id?await tx.weatherCity.findUnique({
+          where:{id},select:{id:true,continentCode:true}
+        }):null;
+        if(id&&!previous)throw new NotFoundException("Ville météo introuvable.");
+        const duplicate=await tx.weatherCity.findUnique({
+          where:{slug:input.slug},select:{id:true}
+        });
+        if(duplicate&&duplicate.id!==id)throw new ConflictException("Slug déjà utilisé.");
+        const destination=await tx.weatherCity.findMany({
+          where:{continentCode:input.continentCode,...(id?{id:{not:id}}:{})},
+          orderBy:{displayOrder:"asc"},select:{id:true,displayOrder:true}
+        });
+        const position=Math.min(input.displayOrder-1,destination.length);
+        const temp=Math.max(0,...destination.map(x=>x.displayOrder))+1;
+        if(temp+destination.length*2+3>32767)
+          throw new BadRequestException("Nombre de villes trop élevé pour le classement.");
+        const data={
+          name:input.name,slug:input.slug,countryIso2:input.countryIso2,
+          continentCode:input.continentCode,latitude:input.latitude,
+          longitude:input.longitude,timezone:input.timezone,isActive:input.isActive
+        };
+        let savedId:string;
+        if(previous){
+          const moving=previous.continentCode!==input.continentCode;
+          await tx.weatherCity.update({where:{id:previous.id},
+            data:{...data,...(moving?{displayOrder:temp}:{})}});
+          savedId=previous.id;
+        }else{
+          const created=await tx.weatherCity.create({
+            data:{...data,displayOrder:temp},select:{id:true}
+          });
+          savedId=created.id;
+        }
+        const nextIds=destination.map(x=>x.id);
+        nextIds.splice(position,0,savedId);
+        if(previous&&previous.continentCode!==input.continentCode){
+          const origin=await tx.weatherCity.findMany({
+            where:{continentCode:previous.continentCode},
+            orderBy:{displayOrder:"asc"},select:{id:true}
+          });
+          await this.order(tx,previous.continentCode,origin.map(x=>x.id));
+        }
+        await this.order(tx,input.continentCode,nextIds);
+        return this.fromTx(tx,savedId);
+      },{maxWait:10000,timeout:30000});
+    }catch(error){
+      if(error instanceof Prisma.PrismaClientKnownRequestError && error.code==="P2002")
+        throw new ConflictException("Slug ou position déjà utilisé.");
+      throw error;
+    }
+  }
+
+  async remove(id:string,confirmSlug:string) {
+    return this.db.prisma.$transaction(async tx=>{
+      await this.lock(tx);
+      const city=await tx.weatherCity.findUnique({
+        where:{id},select:{slug:true,continentCode:true}
+      });
+      if(!city)throw new NotFoundException("Ville météo introuvable.");
+      if(confirmSlug!==city.slug)throw new BadRequestException("Confirmation incorrecte.");
+      await tx.weatherCity.delete({where:{id}});
+      const remaining=await tx.weatherCity.findMany({
+        where:{continentCode:city.continentCode},
+        orderBy:{displayOrder:"asc"},select:{id:true}
+      });
+      await this.order(tx,city.continentCode,remaining.map(x=>x.id));
+      return {deleted:true,slug:city.slug};
+    },{maxWait:10000,timeout:30000});
+  }
+}
