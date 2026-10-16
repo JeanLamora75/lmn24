@@ -285,7 +285,7 @@ export function ParserMonitoringScreen() {
                 className="form-control" onChange={e=>changeFilter(setTo,e.target.value)}/>
             </div>
           </>}
-          <div className="col-6 col-md-3 col-xl-2">
+          {parser!=="WEATHER"&&<div className="col-6 col-md-3 col-xl-2">
             <label htmlFor="monitor-status" className="form-label">Statut</label>
             <select id="monitor-status" className="form-select" value={status}
               onChange={e=>changeFilter(setStatus,e.target.value as Status)}>
@@ -293,19 +293,19 @@ export function ParserMonitoringScreen() {
                 .map(value=><option value={value} key={value}>
                   {value === "ALL" ? "Tous" : value}</option>)}
             </select>
-          </div>
+          </div>}
           {parser!=="WEATHER"&&<div className="col-12 col-md-6 col-xl-3">
             <label htmlFor="monitor-search" className="form-label">Source ou URL du flux</label>
             <input id="monitor-search" className="form-control" maxLength={120}
               placeholder="Rechercher…" value={search}
               onChange={e=>changeFilter(setSearch,e.target.value)}/>
-          </div>}}
+          </div>}
           {parser!=="WEATHER"&&<div className="col-6 col-md-2">
             <label htmlFor="monitor-language" className="form-label">Langue (ISO 2)</label>
             <input id="monitor-language" className="form-control"
               maxLength={2} placeholder="Toutes" value={language}
               onChange={e=>changeFilter(setLanguage,e.target.value)}/>
-          </div>}}
+          </div>}
           {parser!=="WEATHER"&&<div className="col-6 col-md-3">
             <label htmlFor="monitor-country" className="form-label">Pays (UUID)</label>
             <input id="monitor-country" className="form-control"
