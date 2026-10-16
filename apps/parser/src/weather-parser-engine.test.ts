@@ -83,6 +83,41 @@ describe("SCRUM-71 weather parser engine",()=>{
   expect(mock.weatherRun.create).not.toHaveBeenCalled();
   expect(fetchBatch).not.toHaveBeenCalled();
  });
+ it("processes 66 cities in nine bounded batches, with one invalid response isolated",async()=>{
+  const cities=Array.from({length:66},(_,i)=>({
+    id:"00000000-0000-4000-8000-"+String(i+1).padStart(12,"0"),
+    name:"City-"+(i+1),latitude:40+i/100,longitude:3+i/100,
+  }));
+  const mock=dbMock(cities);
+  const fetchBatch=vi.fn(async(group:typeof cities)=>{
+    const sample=weather(group.length);
+    if(group[0]?.name==="City-65"){
+      sample[1]!.current.temperature_2m=999;
+    }
+    return sample;
+  });
+  const engine=new WeatherParserEngine(mock.db as never,fetchBatch);
+  const runId=await engine.start({},"MANUAL");
+  await vi.waitFor(()=>expect(mock.update).toHaveBeenCalledWith(
+    expect.objectContaining({where:{id:runId},data:expect.objectContaining({
+      status:"PARTIAL",
+    })})
+  ));
+  expect(fetchBatch).toHaveBeenCalledTimes(9);
+  expect(fetchBatch.mock.calls.map(([batch])=>batch.length))
+    .toEqual([8,8,8,8,8,8,8,8,2]);
+  expect(mock.execute).toHaveBeenCalledTimes(65);
+  expect(mock.weatherRun.create).toHaveBeenCalledWith(expect.objectContaining({
+    data:expect.objectContaining({totalCities:66,status:"RUNNING"})
+  }));
+  expect(mock.update).toHaveBeenCalledWith(expect.objectContaining({
+    data:expect.objectContaining({
+      processedCities:66,successfulCities:65,failedCities:1,
+      errorMessage:expect.stringContaining("City-66"),
+    }),
+  }));
+ });
+
  it("handles no active cities without making API requests",async()=>{
   const mock=dbMock([]);
   const fetchBatch=vi.fn(async()=>weather());
