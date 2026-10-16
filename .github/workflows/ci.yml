@@ -113,3 +113,7 @@ jobs:
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/seed_retention_settings.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/seed_weather_settings.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/tests/scrum_78_weather_purge_smoke.sql
+
+      - name: End-to-end weather database acceptance (SCRUM-79)
+        run: |
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/tests/scrum_79_weather_end_to_end_smoke.sql
