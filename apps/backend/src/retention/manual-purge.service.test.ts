@@ -49,7 +49,8 @@ function harness(count = 2) {
       deleteMany: vi.fn().mockResolvedValue({ count }),
     },
     weatherRun: {
-      count: vi.fn().mockResolvedValue(0),
+      count: vi.fn(async ({ where }: { where?: { status?: string | { not: string } } }) =>
+        where?.status === "RUNNING" ? 0 : count),
       findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]),
       deleteMany: vi.fn().mockResolvedValue({ count }),
     },
