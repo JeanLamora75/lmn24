@@ -74,3 +74,29 @@ La simple simulation de l'en-tête ne prouve pas qu'un reverse proxy est fiable.
   fiable il assure le choix manuel et le repli, **pas** une localisation automatique
   fondée sur l'adresse IP. Les horloges et pictogrammes Meteocons relèvent de
   SCRUM-76.
+
+## SCRUM-76 — Meteocons et horloges des villes
+
+Les cartes de `/[locale]/weather` chargent uniquement des SVG locaux
+(`public/weather-icons/`) **Meteocons Flat statiques**, sous licence MIT
+(voir `public/weather-icons/LICENSE-METEOCONS.txt`). La correspondance avec
+le code WMO Open-Meteo et `isDay` se trouve dans
+`src/components/weather/weather-icons.ts` ; les variantes soleil/lune,
+nuages, précipitations, neige, brouillard et orages sont incluses.
+Aucun CDN ni paquet npm supplémentaire n'est nécessaire.
+
+L'heure locale est déterminée **côté navigateur** par
+`Intl.DateTimeFormat` avec le champ IANA `timezone` de chaque ville.
+Une seule horloge partagée pilote la grille entière, actualisée à chaque
+changement de minute et lorsque l'onglet redevient visible. Avant
+l'hydratation, « —:— » est affiché pour éviter les divergences serveur/client.
+Les fuseaux invalides donnent « —:— » et ne bloquent pas les autres cartes.
+Les textes de l'horloge sont traduits dans les huit langues.
+L'heure d'observation et son statut frais/ancien/indisponible restent
+indépendants de l'horloge locale : elle ne signifie pas que le relevé
+météo est mis à jour chaque minute.
+
+Tests : `pnpm --filter @lmn24/frontend test`, notamment
+`weather-icons-clock.test.ts` qui vérifie les codes WMO, la présence des
+assets, le jour/nuit, les transitions heure d'été/d'hiver et les fuseaux
+invalides. Aucune migration SQL supplémentaire.
