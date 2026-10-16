@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { formatCityLocalTime } from "./weather-clock";
+import { weatherIconPath } from "./weather-icons";
 import { useRouter } from "next/navigation";
 import {
   WEATHER_CONTINENT_COOKIE, WEATHER_COOKIE_MAX_AGE,
@@ -20,10 +23,12 @@ function dateLabel(instant:string,locale:string):string{
 function value(number:number):string{
   return Number.isFinite(number)?Math.round(number)+"°C":"—";
 }
-function WeatherCard({city,locale}:{city:WeatherCity;locale:string}){
+function WeatherCard({city,locale,now}:{city:WeatherCity;locale:string;now:Date|null}){
   const t=weatherCopy(locale);
   const reading=city.current;
   const available=reading!==null && city.freshness!=="UNAVAILABLE";
+  const clock=formatCityLocalTime(now,city.timezone,locale);
+  const icon=weatherIconPath(reading?.weatherCode??null,reading?.isDay??true);
   return <article className={"card h-100 shadow-sm "+styles.weatherCard}>
     <div className="card-body d-flex flex-column p-3 p-lg-4">
       <div className="d-flex align-items-center gap-2 mb-3">
@@ -31,6 +36,12 @@ function WeatherCard({city,locale}:{city:WeatherCity;locale:string}){
         <div className="min-w-0">
           <h2 className="h5 mb-0 text-break">{city.name}</h2>
           <span className="text-body-secondary small">{city.countryIso2}</span>
+        </div>
+        <div className={"ms-auto text-end "+styles.localClock}>
+          <span className="d-block small text-body-secondary">{t.localTime}</span>
+          <time dateTime={now?.toISOString()} aria-label={t.localTime+": "+(clock??"—")}>
+            {clock??"—:—"}
+          </time>
         </div>
       </div>
       <div className="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-3">
@@ -42,7 +53,9 @@ function WeatherCard({city,locale}:{city:WeatherCity;locale:string}){
             {available&&reading?t.conditions[weatherCondition(reading.weatherCode)]:t.unavailable}
           </p>
         </div>
-        <div className={styles.conditions}>
+        <div className={"d-flex flex-column align-items-end gap-2 "+styles.conditions}>
+          <Image src={icon} width={96} height={96} alt="" aria-hidden="true"
+            unoptimized className={styles.weatherIcon}/>
           {city.freshness==="STALE"&&<span className="badge text-bg-warning">{t.oldData}</span>}
           {city.freshness==="UNAVAILABLE"&&<span className="badge text-bg-secondary">{t.unavailable}</span>}
         </div>
@@ -79,6 +92,7 @@ export function PublicWeather({
   // Server and client share the same initial continent: no hydration mismatch or
   // flash of Europe's data when a preference or trusted GeoIP says otherwise.
   const [continent,setContinent]=useState<WeatherRegion>(initialContinent);
+  const [now,setNow]=useState<Date|null>(null);
   const [mode,setMode]=useState<WeatherSelection["mode"]>(initialMode);
   const [resetting,setResetting]=useState(false);
   const [data,setData]=useState<WeatherResponse|null>(initialData);
@@ -86,6 +100,26 @@ export function PublicWeather({
   const [error,setError]=useState(initialData===null);
   const requestId=useRef(0);
   const controller=useRef<AbortController|null>(null);
+
+  // One shared timer for all cards, aligned to minute boundaries.
+  // First browser update happens after hydration to avoid SSR clock mismatch.
+  useEffect(()=>{
+    const update=()=>setNow(new Date());
+    const immediate=window.setTimeout(update,0);
+    let interval:number|undefined;
+    const align=window.setTimeout(()=>{
+      update();
+      interval=window.setInterval(update,60_000);
+    },60_000-(Date.now()%60_000));
+    const onVisible=()=>{if(document.visibilityState==="visible")update();};
+    document.addEventListener("visibilitychange",onVisible);
+    return ()=>{
+      window.clearTimeout(immediate);
+      window.clearTimeout(align);
+      if(interval!==undefined)window.clearInterval(interval);
+      document.removeEventListener("visibilitychange",onVisible);
+    };
+  },[]);
 
   // Abort in-flight network requests on unmount and when a different continent is selected.
   useEffect(()=>()=>{controller.current?.abort();},[]);
@@ -181,7 +215,7 @@ export function PublicWeather({
       {!loading&&!error&&data&&data.items.length>0&&
         <div className="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3 g-lg-4">
           {data.items.map(city=><div className="col" key={city.slug}>
-            <WeatherCard city={city} locale={locale}/>
+            <WeatherCard city={city} locale={locale} now={now}/>
           </div>)}
         </div>}
     </section>

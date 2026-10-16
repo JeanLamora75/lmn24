@@ -28,6 +28,9 @@
   line-height: 1.15;
 }
 .conditions {max-width: 50%;}
+.weatherIcon {display: block; width: 96px; height: 96px; max-width: 100%; object-fit: contain;}
+.localClock {min-width: 66px; font-variant-numeric: tabular-nums; white-space: nowrap;}
+.localClock time {font-size: 1.25rem; font-weight: 700; color: var(--bs-body-color);}
 .details {min-height: 70px;}
 .details dt {color: var(--bs-secondary-color);font-weight: 450;}
 .details dd {font-weight: 600;margin: 0;}
