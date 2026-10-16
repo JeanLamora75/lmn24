@@ -114,7 +114,7 @@ export function PublicWeather({locale,initialData}:{locale:string;initialData:We
         </div>
         <div className="text-body-secondary small" aria-live="polite">
           {!loading&&data&&data.items.length>0
-            ?t.regions[continent]+" · "+data.items.length+" villes" :null}
+            ?t.regions[continent]+" · "+data.items.length+" "+t.cities :null}
         </div>
       </div>
       {loading&&<div className="d-flex align-items-center gap-3 py-5" role="status">
