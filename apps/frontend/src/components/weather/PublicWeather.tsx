@@ -9,7 +9,7 @@ import {
   WEATHER_CONTINENT_COOKIE, WEATHER_COOKIE_MAX_AGE,
   type WeatherSelection,
 } from "./weather-region-choice";
-import { CountryFlag } from "@/components/home/CountryFlag";
+import { CountryFlag } from "../home/CountryFlag";
 import { WEATHER_REGIONS, weatherCondition, weatherCopy, type WeatherRegion } from "./weather-copy";
 import { parseWeatherResponse, type WeatherResponse, type WeatherCity } from "./weather-data";
 import styles from "./weather.module.css";
