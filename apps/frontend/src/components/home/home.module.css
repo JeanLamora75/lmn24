@@ -208,6 +208,15 @@
   object-fit: contain;
 }
 
+/* An opt-in flag size for two-line city headers; leaves article flags untouched. */
+.largeFlag {
+  display: block;
+  flex: 0 0 auto;
+  width: 5.5rem;
+  height: 3rem;
+  object-fit: contain;
+}
+
 .articleTitle {
   color: var(--bs-body-color);
   font-size: clamp(0.97rem, 1.35vw, 1.17rem);

@@ -31,9 +31,39 @@
 .weatherIcon {display: block; width: 96px; height: 96px; max-width: 100%; object-fit: contain;}
 .localClock {min-width: 66px; font-variant-numeric: tabular-nums; white-space: nowrap;}
 .localClock time {font-size: 1.25rem; font-weight: 700; color: var(--bs-body-color);}
-.details {min-height: 70px;}
-.details dt {color: var(--bs-secondary-color);font-weight: 450;}
-.details dd {font-weight: 600;margin: 0;}
+/* Keep felt temperature, humidity and wind side by side at every viewport.
+   Labels may wrap in longer translations without forcing horizontal scrolling. */
+.details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 0.6rem;
+  min-width: 0;
+}
+.detail {
+  min-width: 0;
+}
+.detail + .detail {
+  border-left: 1px solid var(--bs-border-color);
+  padding-left: 0.6rem;
+}
+.details dt {
+  color: var(--bs-secondary-color);
+  font-weight: 450;
+  font-size: clamp(0.69rem, 1vw, 0.83rem);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.details dd {
+  font-weight: 650;
+  margin: 0.2rem 0 0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(0.78rem, 1vw, 0.9rem);
+}
+@media (max-width: 380px) {
+  .details { column-gap: 0.3rem; }
+  .detail + .detail { padding-left: 0.3rem; }
+}
 .observed {
   border-top: 1px solid var(--bs-border-color);
   overflow-wrap: anywhere;
