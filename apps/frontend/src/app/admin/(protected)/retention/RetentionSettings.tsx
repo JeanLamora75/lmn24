@@ -39,6 +39,16 @@ const GROUPS: readonly Group[] = [
         note: "Historique des collectes de flux d’actualité." },
       { key: "retentionVideoParserRunsDays", label: "Exécutions du Parser Vidéos",
         note: "Historique des collectes de flux vidéo." },
+      { key: "weatherRunRetentionDays", label: "Exécutions du Parser Météo",
+        note: "Historique weather_run ; les collectes RUNNING sont protégées." },
+    ],
+  },
+  {
+    heading: "Relevés météorologiques",
+    hint: "Les villes du référentiel sont toujours conservées.",
+    fields: [
+      { key: "weatherCurrentRetentionDays", label: "Derniers relevés météo",
+        note: "Relevés weather_current anciens selon observed_at, sans supprimer les villes. La purge manuelle pourra recollecter les données." },
     ],
   },
   {
@@ -171,7 +181,7 @@ export function RetentionSettings() {
         <div>
           <h1 className="h2 mb-1">Conservation des données</h1>
           <p className="text-body-secondary mb-0">
-            Réglage indépendant des neuf durées de conservation, exprimées en jours.
+            Réglage indépendant des onze durées de conservation, exprimées en jours.
           </p>
         </div>
         <Link href="/admin" className="btn btn-outline-secondary">Retour administration</Link>
