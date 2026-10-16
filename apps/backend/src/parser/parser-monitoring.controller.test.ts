@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AuthService } from "../auth/auth.service";
 import { ParserMonitoringController } from "./parser-monitoring.controller";
 import { ParserMonitoringService } from "./parser-monitoring.service";
+import { WeatherMonitoringService } from "./weather-monitoring.service";
 
 const req = { headers: { cookie: "lmn24_session=token-123" } };
 const id = "11111111-1111-4111-8111-111111111111";
@@ -18,17 +19,20 @@ function setup(role: string | null) {
     alerts: vi.fn().mockResolvedValue({ rows: [] }),
     exportCsv: vi.fn().mockResolvedValue("header;body"),
   };
+  const weather = { overview: vi.fn().mockResolvedValue({activeCities:66, rows:[]}) };
   const controller = new ParserMonitoringController(
     monitoring as unknown as ParserMonitoringService,
+    weather as unknown as WeatherMonitoringService,
     { getUserFromSession } as unknown as AuthService,
     { get: vi.fn().mockReturnValue("lmn24_session") } as unknown as ConfigService,
   );
-  return { controller, monitoring, getUserFromSession };
+  return { controller, monitoring, weather, getUserFromSession };
 }
 describe("SCRUM-60 — secured and bounded monitoring endpoints", () => {
   it("reads every monitoring view and CSV for ADMIN", async () => {
     const { controller, monitoring, getUserFromSession } = setup("ADMIN");
     await controller.summary(req, { parser: "INFOS", period: "24h" });
+    await controller.weatherOverview(req,{continent:"EU",status:"PARTIAL"});
     await controller.runs(req, { parser: "VIDEOS", pageSize: "50" });
     await controller.batches(req, {});
     await controller.runDetail(req, "INFOS", id);
@@ -44,6 +48,7 @@ describe("SCRUM-60 — secured and bounded monitoring endpoints", () => {
     const { controller, monitoring } = setup(role);
     const type = role ? ForbiddenException : UnauthorizedException;
     await expect(controller.summary(req, {})).rejects.toThrow(type);
+    await expect(controller.weatherOverview(req,{})).rejects.toThrow(type);
     await expect(controller.exportCsv(req, {})).rejects.toThrow(type);
     await expect(controller.events(req, id, {})).rejects.toThrow(type);
     expect(monitoring.summary).not.toHaveBeenCalled();

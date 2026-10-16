@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { WeatherMonitoringPanel } from "./WeatherMonitoringPanel";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-type Parser = "ALL" | "INFOS" | "VIDEOS";
+type Parser = "ALL" | "INFOS" | "VIDEOS" | "WEATHER";
 type Period = "24h" | "7d" | "30d" | "custom";
 type Status = "ALL" | "SUCCESS" | "ERROR" | "RUNNING" | "INTERRUPTED";
 type PageData<T> = {
@@ -177,6 +178,7 @@ export function ParserMonitoringScreen() {
 
   const load = useCallback(async (signal: AbortSignal) => {
     if (period === "custom" && (!from || !to)) return;
+    if (parser === "WEATHER") {setLoading(false);setError("");return;}
     setLoading(true); setError("");
     try {
       const params = base;
@@ -191,7 +193,7 @@ export function ParserMonitoringScreen() {
     } catch (e) {
       if (!signal.aborted) setError(e instanceof Error ? e.message : "Supervision indisponible.");
     } finally { if (!signal.aborted) setLoading(false); }
-  }, [base, period, from, to, page, batchPage]);
+  }, [base, period, from, to, page, batchPage, parser]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -242,12 +244,13 @@ export function ParserMonitoringScreen() {
       <div>
         <h1 className="h2 mb-1">Logs et statistiques des parsers</h1>
         <p className="text-body-secondary mb-0">
-          Collectes RSS/XML et YouTube — exécutions de flux et lancements globaux distincts.
+          Collectes Infos, Vidéos et Météo — indicateurs de flux et de villes volontairement distincts.
         </p>
       </div>
       <div className="d-flex flex-wrap gap-2">
         <Link href="/admin/parser" className="btn btn-outline-primary btn-sm">Parser Infos</Link>
         <Link href="/admin/video-parser" className="btn btn-outline-primary btn-sm">Parser Vidéos</Link>
+        <Link href="/admin/weather-parser" className="btn btn-outline-primary btn-sm">Parser Météo</Link>
         <Link href="/admin" className="btn btn-outline-secondary btn-sm">Retour admin</Link>
       </div>
     </div>
@@ -259,7 +262,7 @@ export function ParserMonitoringScreen() {
             <select id="monitor-parser" className="form-select" value={parser}
               onChange={e=>changeFilter(setParser,e.target.value as Parser)}>
               <option value="ALL">Tous</option><option value="INFOS">Infos</option>
-              <option value="VIDEOS">Vidéos</option>
+              <option value="VIDEOS">Vidéos</option><option value="WEATHER">Météo</option>
             </select>
           </div>
           <div className="col-6 col-md-3 col-xl-2">
@@ -282,7 +285,7 @@ export function ParserMonitoringScreen() {
                 className="form-control" onChange={e=>changeFilter(setTo,e.target.value)}/>
             </div>
           </>}
-          <div className="col-6 col-md-3 col-xl-2">
+          {parser!=="WEATHER"&&<div className="col-6 col-md-3 col-xl-2">
             <label htmlFor="monitor-status" className="form-label">Statut</label>
             <select id="monitor-status" className="form-select" value={status}
               onChange={e=>changeFilter(setStatus,e.target.value as Status)}>
@@ -290,53 +293,56 @@ export function ParserMonitoringScreen() {
                 .map(value=><option value={value} key={value}>
                   {value === "ALL" ? "Tous" : value}</option>)}
             </select>
-          </div>
-          <div className="col-12 col-md-6 col-xl-3">
+          </div>}
+          {parser!=="WEATHER"&&<div className="col-12 col-md-6 col-xl-3">
             <label htmlFor="monitor-search" className="form-label">Source ou URL du flux</label>
             <input id="monitor-search" className="form-control" maxLength={120}
               placeholder="Rechercher…" value={search}
               onChange={e=>changeFilter(setSearch,e.target.value)}/>
-          </div>
-          <div className="col-6 col-md-2">
+          </div>}
+          {parser!=="WEATHER"&&<div className="col-6 col-md-2">
             <label htmlFor="monitor-language" className="form-label">Langue (ISO 2)</label>
             <input id="monitor-language" className="form-control"
               maxLength={2} placeholder="Toutes" value={language}
               onChange={e=>changeFilter(setLanguage,e.target.value)}/>
-          </div>
-          <div className="col-6 col-md-3">
+          </div>}
+          {parser!=="WEATHER"&&<div className="col-6 col-md-3">
             <label htmlFor="monitor-country" className="form-label">Pays (UUID)</label>
             <input id="monitor-country" className="form-control"
               placeholder="Tous" value={countryId}
               onChange={e=>changeFilter(setCountryId,e.target.value)}/>
-          </div>
-          <div className="col-6 col-md-3">
+          </div>}
+          {parser!=="WEATHER"&&<div className="col-6 col-md-3">
             <label htmlFor="monitor-category" className="form-label">Catégorie (UUID)</label>
             <input id="monitor-category" className="form-control"
               placeholder="Toutes" value={categoryId}
               onChange={e=>changeFilter(setCategoryId,e.target.value)}/>
-          </div>
+          </div>}
           <div className="col-auto">
             <button type="button" className="btn btn-primary"
               disabled={loading} onClick={()=>setRevision(n=>n+1)}>
               {loading?"Chargement…":"Actualiser"}
             </button>
           </div>
-          <div className="col-auto">
+          {parser!=="WEATHER"&&<div className="col-auto">
             <a className="btn btn-outline-secondary" href={exportUrl}
               download="parser-runs.csv">Export CSV</a>
-          </div>
+          </div>}
         </div>
         <p className="small text-body-secondary mt-3 mb-0">
           Rafraîchissement toutes les 30 secondes si l’onglet est visible.
           Dates des filtres en UTC, heures du tableau affichées selon votre navigateur.
-          Les stocks de flux actifs sont indépendants de la période et des filtres historiques.
+          Les stocks de flux et de villes actifs sont indépendants de la période ; les filtres pays, langue et catégorie concernent uniquement Infos/Vidéos.
         </p>
       </div>
     </section>
-    {error && <div className="alert alert-danger" role="alert">
+    {parser!=="WEATHER"&&error && <div className="alert alert-danger" role="alert">
       {error} <button className="btn btn-sm btn-outline-danger ms-2"
         onClick={()=>setRevision(n=>n+1)}>Réessayer</button>
     </div>}
+    <WeatherMonitoringPanel period={period} from={from} to={to}
+      visible={parser==="ALL"||parser==="WEATHER"}/>
+    {parser!=="WEATHER" && <>
     {summary && <>
       <div className="row g-3 mb-4">
         <Kpi title="Flux actifs" value={fmt(summary.activeFeeds.total)}
@@ -540,5 +546,6 @@ export function ParserMonitoringScreen() {
         </>}
       </div>
     </section>}
+    </>}
   </main>;
 }

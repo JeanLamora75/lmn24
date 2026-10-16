@@ -108,7 +108,7 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
         href: "/admin/parser-monitoring",
         icon: "activity",
         title: "Logs et statistiques des parsers",
-        description: "Centraliser les logs d’exécution et les indicateurs de supervision des parsers Infos et Vidéos.",
+        description: "Centraliser les exécutions, statistiques et alertes des parsers Infos, Vidéos et Météo.",
       },
     ],
   },
