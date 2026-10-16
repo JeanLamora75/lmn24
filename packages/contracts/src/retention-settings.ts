@@ -1,4 +1,4 @@
-/** Nine independently configurable retention durations, in whole days.
+/** Eleven independently configurable retention durations, in whole days.
  * Database rows are seeded by database/seed_retention_settings.sql.
  * Changing a setting NEVER deletes data; SCRUM-57 handles the purge jobs.
  */
@@ -12,6 +12,8 @@ export const RETENTION_SETTING_KEYS = [
   "retentionVideoParserLogsDays",
   "retentionBackendLogsDays",
   "retentionHashtagHourlyCountsDays",
+  "weatherCurrentRetentionDays",
+  "weatherRunRetentionDays",
 ] as const;
 
 export type RetentionSettingKey = typeof RETENTION_SETTING_KEYS[number];
@@ -26,6 +28,8 @@ export const RETENTION_DEFAULTS: Readonly<Record<RetentionSettingKey, number>> =
   retentionVideoParserLogsDays: 7,
   retentionBackendLogsDays: 7,
   retentionHashtagHourlyCountsDays: 60,
+  weatherCurrentRetentionDays: 7,
+  weatherRunRetentionDays: 14,
 };
 
 export const RETENTION_MAX_DAYS = 3650;

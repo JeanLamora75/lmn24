@@ -22,6 +22,12 @@ describe("SCRUM-58 — ADMIN-only manual purge API", () => {
   it("authenticates preview, execution and job status", async () => {
     const { controller, request, preview, start } = fixture({ id: "admin", role: "ADMIN" });
     await controller.preview(request, "video", "expired");
+    await controller.preview(request, "weather_current", "expired");
+    await controller.preview(request, "weather_run", "all");
+    const available=await controller.tables(request);
+    expect(available.tables).toContain("weather_current");
+    expect(available.tables).toContain("weather_run");
+    expect(available.tables).not.toContain("weather_city");
     expect(preview).toHaveBeenCalledWith("admin", "video", "expired");
     await controller.execute(request, {
       table: "video", mode: "all", token: "ce759515-090c-4baa-bcc1-570c930c97e7",
@@ -43,6 +49,8 @@ describe("SCRUM-58 — ADMIN-only manual purge API", () => {
   });
   it("never accepts arbitrary table keys or forged confirmations", async () => {
     const { controller, request, start } = fixture({ id: "admin", role: "ADMIN" });
+    await expect(controller.preview(request, "weather_city", "all"))
+      .rejects.toThrow(BadRequestException);
     await expect(controller.preview(request, "app_user", "all"))
       .rejects.toThrow(BadRequestException);
     await expect(controller.execute(request, {
@@ -52,6 +60,11 @@ describe("SCRUM-58 — ADMIN-only manual purge API", () => {
     await expect(controller.execute(request, {
       table: "video", mode: "all", confirmed: false,
       token: "ce759515-090c-4baa-bcc1-570c930c97e7",
+    })).rejects.toThrow(BadRequestException);
+    await expect(controller.execute(request, {
+      table: "weather_city", mode: "all", confirmed: true,
+      token: "ce759515-090c-4baa-bcc1-570c930c97e7",
+      typedName:"weather_city",
     })).rejects.toThrow(BadRequestException);
     expect(start).not.toHaveBeenCalled();
   });

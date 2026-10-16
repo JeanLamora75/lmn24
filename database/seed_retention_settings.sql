@@ -28,7 +28,11 @@ VALUES
   ('retentionBackendLogsDays', '7', 'INTEGER', 'GLOBAL', NULL,
    'Conservation des fichiers de logs techniques du backend, en jours'),
   ('retentionHashtagHourlyCountsDays', '60', 'INTEGER', 'GLOBAL', NULL,
-   'Conservation des compteurs horaires des hashtags, en jours')
+   'Conservation des compteurs horaires des hashtags, en jours'),
+  ('weatherCurrentRetentionDays', '7', 'INTEGER', 'GLOBAL', NULL,
+   'Conservation des relevés météo courants selon observed_at, en jours'),
+  ('weatherRunRetentionDays', '14', 'INTEGER', 'GLOBAL', NULL,
+   'Conservation des exécutions du Parser Météo (weather_run), en jours')
 ON CONFLICT ("key") WHERE "scope" = 'GLOBAL' DO NOTHING;
 
 COMMIT;
@@ -37,5 +41,5 @@ COMMIT;
 SELECT "key", "value", "type", "description"
 FROM public.setting
 WHERE "scope" = 'GLOBAL'
-  AND "key" LIKE 'retention%'
+  AND ("key" LIKE 'retention%' OR "key" IN ('weatherCurrentRetentionDays','weatherRunRetentionDays'))
 ORDER BY "key";

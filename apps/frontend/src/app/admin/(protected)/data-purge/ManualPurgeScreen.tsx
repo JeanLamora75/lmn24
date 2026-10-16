@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-type Table = "article" | "video" | "feed_run" | "feed_video_run" | "hashtag_hourly_count" | "horoscope";
+type Table = "article" | "video" | "feed_run" | "feed_video_run" | "hashtag_hourly_count" | "horoscope" | "weather_current" | "weather_run";
 type Mode = "expired" | "all";
 type Preview = {
   token: string; table: Table; mode: Mode; count: number;
@@ -29,6 +29,10 @@ const TABLES: ReadonlyArray<{ key: Table; title: string; note: string }> = [
     note: "Les exécutions RUNNING sont toujours protégées." },
   { key: "feed_video_run", title: "Historique du Parser Vidéos",
     note: "Les exécutions RUNNING sont toujours protégées." },
+  { key: "weather_current", title: "Derniers relevés météo",
+    note: "Efface les observations ; les villes et fuseaux restent conservés. Purge impossible pendant une collecte météo." },
+  { key: "weather_run", title: "Historique du Parser Météo",
+    note: "Efface uniquement les exécutions terminées et conserve toutes les villes. RUNNING protégées." },
   { key: "hashtag_hourly_count", title: "Compteurs horaires des hashtags",
     note: "Les classements seront non vérifiés jusqu'à une reconstruction." },
 ];
@@ -150,7 +154,7 @@ export function ManualPurgeScreen() {
       </div>
       <div className="alert alert-danger" role="note">
         <strong>Action irréversible.</strong> Sauvegardez votre base avant une purge.
-        Les tables de référence, utilisateurs, sources, paramètres et flux ne sont jamais proposées.
+        Les villes météo (weather_city), tables de référence, utilisateurs, sources, paramètres et flux ne sont jamais proposés.
         Ne lancez pas un vidage complet sur une base de production sans sauvegarde vérifiée.
       </div>
       {error && <div className="alert alert-danger" role="alert">{error}</div>}

@@ -8,6 +8,8 @@ VALUES
    'Intervalle cible du futur parser météo automatique (minutes), inactif au MVP'),
   ('weatherStaleAfterMinutes','180','INTEGER','GLOBAL',NULL,
    'Seuil après lequel un relevé météo doit être marqué comme ancien (minutes)'),
+  ('weatherCurrentRetentionDays','7','INTEGER','GLOBAL',NULL,
+   'Conservation des relevés météo avant purge des weather_current (jours)'),
   ('weatherRunRetentionDays','14','INTEGER','GLOBAL',NULL,
    'Rétention prévue des exécutions terminées du parser Météo (jours)')
 ON CONFLICT ("key") WHERE "scope" = 'GLOBAL' DO NOTHING;
@@ -15,5 +17,5 @@ COMMIT;
 
 SELECT "key", "value", "type", "scope"
 FROM public.setting WHERE "scope" = 'GLOBAL'
-  AND "key" IN ('weatherCurrentRefreshMinutes','weatherStaleAfterMinutes','weatherRunRetentionDays')
+  AND "key" IN ('weatherCurrentRefreshMinutes','weatherStaleAfterMinutes','weatherCurrentRetentionDays','weatherRunRetentionDays')
 ORDER BY "key";

@@ -7,14 +7,12 @@ import { z } from "zod";
 import { AuthService } from "../auth/auth.service";
 import { AUTH_FAILURE_MESSAGE, DEFAULT_SESSION_COOKIE_NAME } from "../auth/auth.constants";
 import {
-  isPurgeTable, ManualPurgeService, type PurgeMode,
+  isPurgeTable, ManualPurgeService, PURGE_TABLES, type PurgeMode,
 } from "./manual-purge.service";
 
 type RequestLike = { headers: Record<string, string | string[] | undefined> };
 const modeSchema = z.enum(["expired", "all"]);
-const tableSchema = z.enum([
-  "article", "video", "feed_run", "feed_video_run", "hashtag_hourly_count",
-]);
+const tableSchema = z.enum(PURGE_TABLES);
 const runSchema = z.object({
   token: z.string().uuid(),
   table: tableSchema,
@@ -54,8 +52,7 @@ export class ManualPurgeController {
   @Header("Cache-Control", "no-store")
   async tables(@Req() request: RequestLike) {
     await this.assertAdmin(request);
-    return { tables: ["article", "video", "feed_run", "feed_video_run",
-      "hashtag_hourly_count"] };
+    return { tables: PURGE_TABLES };
   }
 
   @Get("preview")

@@ -100,3 +100,67 @@ Tests : `pnpm --filter @lmn24/frontend test`, notamment
 `weather-icons-clock.test.ts` qui vérifie les codes WMO, la présence des
 assets, le jour/nuit, les transitions heure d'été/d'hiver et les fuseaux
 invalides. Aucune migration SQL supplémentaire.
+
+## SCRUM-78 — Purge météo manuelle et conservation
+
+Deux tables météo sont désormais proposées depuis l'écran existant
+`/admin/data-purge` (et **une seule table par opération**) :
+
+- `weather_current` : supprime exclusivement les derniers relevés météo.
+  Les villes, pays, fuseaux horaires, ordres d'affichage et statuts actifs
+  de `weather_city` **restent intacts**. La page publique continue d'afficher
+  les villes, mais les relevés absents deviennent « météo indisponible ».
+  Une nouvelle collecte manuelle peut recréer ces relevés.
+- `weather_run` : supprime exclusivement l'historique des exécutions terminées.
+  Les statuts `RUNNING` ne sont jamais sélectionnés, même en vidage total.
+
+Les deux durées de conservation sont modifiables depuis
+`/admin/retention` :
+`weatherCurrentRetentionDays=7` (comparaison à `observed_at`) et
+`weatherRunRetentionDays=14` (comparaison à `started_at`).
+Il s'agit de **jours**, distincts de `weatherStaleAfterMinutes=180`,
+qui ne sert qu'à indiquer si une observation est périmée sur le site.
+Une modification de durée **ne supprime rien** : elle ne change que le
+seuil utilisé pour les purges ultérieures.
+
+### Mise à jour de la base PostgreSQL locale — obligatoire
+
+À partir de cette version, l'écran de rétention attend **11 paramètres**,
+dont le nouveau `weatherCurrentRetentionDays` : réexécuter ces deux seeds
+transactionnels et idempotents **après avoir sauvegardé la base**.
+Ils conservent toutes les valeurs configurées précédemment.
+
+```powershell
+git switch main
+git pull --ff-only origin main
+psql -v ON_ERROR_STOP=1 -U postgres -d lmn24 -f database/seed_retention_settings.sql
+psql -v ON_ERROR_STOP=1 -U postgres -d lmn24 -f database/seed_weather_settings.sql
+pnpm dev
+```
+
+Les valeurs existantes de `weatherRunRetentionDays` sont préservées.
+Aucune table ni colonne nouvelle n'est requise.
+
+### Protections
+
+L'API exige un compte ADMIN. Le frontend ne permet pas de sélectionner
+`weather_city`; le backend refuse également cette table si elle lui est
+envoyée directement. Chaque opération demande une prévisualisation chiffrée,
+un jeton à usage unique lié à l'admin et valable trois minutes, une confirmation
+explicite et, pour un vidage complet, la saisie exacte du nom de la table.
+
+La purge est exécutée dans une transaction PostgreSQL avec verrou global.
+Pour les tables météo, elle acquiert en plus le verrou utilisé par le
+démarrage des parsers météo. **Une purge météo est refusée tant qu'une
+exécution `RUNNING` existe.** La liste des candidats est revérifiée dans
+la transaction avant chaque suppression. En cas d'écart avec la prévisualisation,
+la transaction est annulée.
+
+L'historique de purge affiché dans l'interface est lié à la session serveur :
+ce n'est pas un audit historique permanent. Les opérations sont également
+journalisées dans les logs applicatifs. La **purge automatique n'est pas
+activée ici** ; sa planification est une étape distincte (SCRUM-57 / SCRUM-80).
+
+Pour les tests PostgreSQL sur une base de test :
+`database/tests/scrum_78_weather_purge_smoke.sql` exécute ses assertions
+dans un `ROLLBACK` ; il ne laisse aucune donnée en base.
