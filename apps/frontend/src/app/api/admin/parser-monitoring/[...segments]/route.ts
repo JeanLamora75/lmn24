@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getBackendUrl } from "@/lib/admin-backend";
 
 type Context = { params: Promise<{ segments: string[] }> };
-const permitted = new Set(["summary", "runs", "batches", "alerts", "export"]);
+const permitted = new Set(["summary", "runs", "batches", "alerts", "export", "weather"]);
 export async function GET(request: Request, { params }: Context): Promise<Response> {
   const { segments } = await params;
   if (!segments?.length || segments.length > 4 ||
