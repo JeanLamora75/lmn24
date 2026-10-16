@@ -29,7 +29,7 @@ export class WeatherMonitoringService {
     // Queries for numbers and rows use identical conditions. Keep pagination
     // separate from aggregate statistics so page changes don't alter KPIs.
     const [runs, total, activeCities, settings, lastSuccess, currentPresent,
-      freshObservations, latestRuns] = await Promise.all([
+      totals, byStatus, latestRuns] = await Promise.all([
       this.db.prisma.weatherRun.findMany({
         where, orderBy: [{ startedAt: "desc" }, { id: "desc" }],
         skip: (query.page - 1) * query.pageSize, take: query.pageSize,
@@ -50,8 +50,12 @@ export class WeatherMonitoringService {
         where: { city: { isActive: true,
           ...(continent ? { continentCode: continent } : {}) } },
       }),
-      // Temporary placeholder for query parallelization; a freshCount is below.
-      Promise.resolve(0),
+      this.db.prisma.weatherRun.aggregate({
+        where, _sum: { processedCities:true, successfulCities:true, failedCities:true },
+      }),
+      this.db.prisma.weatherRun.groupBy({
+        by: ["status"], where, _count: { _all:true },
+      }),
       this.db.prisma.weatherRun.findMany({
         where, orderBy: [{ startedAt: "desc" }], take: 500,
         select: {
@@ -62,7 +66,6 @@ export class WeatherMonitoringService {
         },
       }),
     ]);
-    void freshObservations;
     const rawStale = Number(settings?.value ?? 180);
     const staleAfterMinutes = Number.isFinite(rawStale) && rawStale > 0
       ? Math.min(43200, Math.trunc(rawStale)) : 180;
@@ -73,13 +76,14 @@ export class WeatherMonitoringService {
         city: { isActive: true, ...(continent ? { continentCode: continent } : {}) },
       },
     });
-    const succeeded = latestRuns.filter(row => row.status === "SUCCESS").length;
-    const partial = latestRuns.filter(row => row.status === "PARTIAL").length;
-    const failed = latestRuns.filter(row => ["ERROR", "INTERRUPTED"].includes(row.status)).length;
-    const running = latestRuns.filter(row => row.status === "RUNNING").length;
-    const totalProcessed = latestRuns.reduce((sum, row) => sum + row.processedCities, 0);
-    const totalSuccessful = latestRuns.reduce((sum, row) => sum + row.successfulCities, 0);
-    const totalFailed = latestRuns.reduce((sum, row) => sum + row.failedCities, 0);
+    const countStatus=(status:string)=>byStatus.find(row=>row.status===status)?._count._all??0;
+    const succeeded = countStatus("SUCCESS");
+    const partial = countStatus("PARTIAL");
+    const failed = countStatus("ERROR") + countStatus("INTERRUPTED");
+    const running = countStatus("RUNNING");
+    const totalProcessed = totals._sum.processedCities??0;
+    const totalSuccessful = totals._sum.successfulCities??0;
+    const totalFailed = totals._sum.failedCities??0;
     const durations = latestRuns
       .filter(row => row.finishedAt !== null)
       .map(row => Math.max(0, row.finishedAt!.getTime() - row.startedAt.getTime()));
@@ -105,9 +109,9 @@ export class WeatherMonitoringService {
       activeCities, currentPresent, freshCities,
       staleCities: Math.max(0, activeCities - freshCities), staleAfterMinutes,
       executions: total, succeeded, partial, failed, running,
-      // Metrics from the 500 most recent runs are explicitly windowed.
-      statsSampleSize: latestRuns.length,
-      sampleTruncated: total > latestRuns.length,
+      // Mean duration and repeated-failure diagnostic use the most recent 500 runs.
+      durationSampleSize: durations.length,
+      durationSampleTruncated: total > latestRuns.length,
       processedCities: totalProcessed, successfulCities: totalSuccessful,
       failedCities: totalFailed,
       averageDurationMs: durations.length
