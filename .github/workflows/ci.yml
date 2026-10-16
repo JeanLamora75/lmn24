@@ -107,3 +107,9 @@ jobs:
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/seed_weather_cities.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/seed_weather_settings.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/tests/scrum_69_weather_schema_smoke.sql
+      
+      - name: Test weather retention settings and safe purge semantics (SCRUM-78)
+        run: |
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/seed_retention_settings.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/seed_weather_settings.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/tests/scrum_78_weather_purge_smoke.sql
