@@ -31,11 +31,13 @@ function WeatherCard({city,locale,now}:{city:WeatherCity;locale:string;now:Date|
   const icon=weatherIconPath(reading?.weatherCode??null,reading?.isDay??true);
   return <article className={"card h-100 shadow-sm "+styles.weatherCard}>
     <div className="card-body d-flex flex-column p-3 p-lg-4">
-      <div className="d-flex align-items-center gap-2 mb-3">
-        <CountryFlag countryIsoCode2={city.countryIso2} locale={locale}/>
-        <div className="min-w-0">
-          <h2 className="h5 mb-0 text-break">{city.name}</h2>
-          <span className="text-body-secondary small">{city.countryIso2}</span>
+      <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
+        <div className="d-flex align-items-center gap-2 min-w-0">
+          <CountryFlag countryIsoCode2={city.countryIso2} locale={locale} size="large"/>
+          <div className="min-w-0">
+            <h2 className="h5 mb-0 text-break">{city.name}</h2>
+            <span className="text-body-secondary small">{city.countryIso2}</span>
+          </div>
         </div>
         <div className={"ms-auto text-end "+styles.localClock}>
           <span className="d-block small text-body-secondary">{t.localTime}</span>
@@ -60,14 +62,14 @@ function WeatherCard({city,locale,now}:{city:WeatherCity;locale:string;now:Date|
           {city.freshness==="UNAVAILABLE"&&<span className="badge text-bg-secondary">{t.unavailable}</span>}
         </div>
       </div>
-      {available&&reading&&<dl className={"row row-cols-2 g-2 small mt-auto mb-3 "+styles.details}>
-        <div className="col">
+      {available&&reading&&<dl className={"small mt-auto mb-3 "+styles.details}>
+        <div className={styles.detail}>
           <dt>{t.felt}</dt><dd>{reading.apparentTemperatureC===null?"—":value(reading.apparentTemperatureC)}</dd>
         </div>
-        <div className="col">
+        <div className={styles.detail}>
           <dt>{t.humidity}</dt><dd>{reading.humidityPct===null?"—":reading.humidityPct+" %"}</dd>
         </div>
-        <div className="col">
+        <div className={styles.detail}>
           <dt>{t.wind}</dt><dd>{reading.windSpeedKmh===null?"—":Math.round(reading.windSpeedKmh)+" km/h"}</dd>
         </div>
       </dl>}
