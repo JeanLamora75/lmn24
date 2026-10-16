@@ -9,6 +9,7 @@ import { RetentionSettingsService } from "./retention-settings.service";
 
 export const PURGE_TABLES = [
   "article", "video", "feed_run", "feed_video_run", "hashtag_hourly_count", "horoscope",
+  "weather_current", "weather_run",
 ] as const;
 export type PurgeTable = typeof PURGE_TABLES[number];
 export type PurgeMode = "expired" | "all";
@@ -24,6 +25,8 @@ const RULES = {
   feed_run: { retention: "retentionInfoParserRunsDays", field: "started_at" },
   feed_video_run: { retention: "retentionVideoParserRunsDays", field: "started_at" },
   hashtag_hourly_count: { retention: "retentionHashtagHourlyCountsDays", field: "hour_utc" },
+  weather_current: { retention: "weatherCurrentRetentionDays", field: "observed_at" },
+  weather_run: { retention: "weatherRunRetentionDays", field: "started_at" },
 } as const;
 
 type Preview = {
@@ -93,10 +96,13 @@ export class ManualPurgeService {
   private hourFilter(cutoff: Date | null) {
     return cutoff ? { hourUtc: { lt: cutoff } } : {};
   }
+  private weatherCurrentFilter(cutoff: Date | null) {
+    return cutoff ? { observedAt: { lt: cutoff } } : {};
+  }
 
   private async count(
     table: PurgeTable, cutoff: Date | null,
-    db: Pick<DatabaseClient, "article" | "video" | "feedRun" | "feedVideoRun" | "hashtagHourlyCount" | "horoscope"> = this.db.prisma,
+    db: Pick<DatabaseClient, "article" | "video" | "feedRun" | "feedVideoRun" | "hashtagHourlyCount" | "horoscope" | "weatherCurrent" | "weatherRun"> = this.db.prisma,
   ): Promise<number> {
     switch (table) {
       case "horoscope": return db.horoscope.count({ where: this.horoscopeFilter(cutoff) });
@@ -104,6 +110,8 @@ export class ManualPurgeService {
       case "video": return db.video.count({ where: this.publishedFilter(cutoff) });
       case "feed_run": return db.feedRun.count({ where: this.runFilter(cutoff) });
       case "feed_video_run": return db.feedVideoRun.count({ where: this.runFilter(cutoff) });
+      case "weather_current": return db.weatherCurrent.count({ where: this.weatherCurrentFilter(cutoff) });
+      case "weather_run": return db.weatherRun.count({ where: this.runFilter(cutoff) });
       case "hashtag_hourly_count": return db.hashtagHourlyCount.count({
         where: this.hourFilter(cutoff),
       });
@@ -131,6 +139,10 @@ export class ManualPurgeService {
           ? ["Les classements seront marqués non vérifiés jusqu'à reconstruction."]
           : table === "horoscope"
             ? ["Les fichiers JSON et les journaux d’import restent intacts. Les métadonnées astronomiques devenues orphelines seront nettoyées."]
+            : table === "weather_current"
+              ? ["Les villes météo restent intactes. Les anciens relevés disparaîtront ; le parser pourra les recollecter. Purge bloquée pendant toute collecte RUNNING."]
+              : table === "weather_run"
+                ? ["Historique météo uniquement. Les lignes RUNNING ne seront jamais supprimées ; purge bloquée pendant une collecte en cours."]
             : [],
     };
   }
@@ -184,6 +196,15 @@ export class ManualPurgeService {
         if (!lock[0]?.acquired) throw new ConflictException("Une autre purge est en cours.");
         if (job.table === "article" || job.table === "hashtag_hourly_count") {
           await tx.$queryRaw`SELECT 1 AS acquired FROM pg_advisory_xact_lock(52024, 52)`;
+        }
+        if (job.table === "weather_current" || job.table === "weather_run") {
+          // Same lock as WeatherParserEngine.start(): a new run cannot start
+          // between checking active runs and committing a weather purge.
+          await tx.$queryRaw`SELECT 1::INTEGER AS acquired FROM pg_advisory_xact_lock(241024, 71)`;
+          const running = await tx.weatherRun.count({ where: { status: "RUNNING" } });
+          if (running > 0) throw new ConflictException(
+            "Collecte météo en cours. Relancez la prévisualisation une fois terminée.",
+          );
         }
         const refreshed = await this.cutoffFor(job.table, job.mode);
         if (refreshed?.getTime() !== preview.cutoff?.getTime() && job.mode === "expired") {
@@ -250,6 +271,22 @@ export class ManualPurgeService {
               if (!rows.length) break;
               n = (await tx.feedVideoRun.deleteMany({ where: { id: { in: rows.map(r => r.id) },
                 status: { not: "RUNNING" } } })).count;
+              break;
+            }
+            case "weather_current": {
+              const rows = await tx.weatherCurrent.findMany({ where: this.weatherCurrentFilter(cutoff),
+                take: BATCH, select: { cityId: true } });
+              if (!rows.length) break;
+              n = (await tx.weatherCurrent.deleteMany({ where: { cityId: { in: rows.map(r => r.cityId) },
+                ...this.weatherCurrentFilter(cutoff) } })).count;
+              break;
+            }
+            case "weather_run": {
+              const rows = await tx.weatherRun.findMany({ where: this.runFilter(cutoff),
+                take: BATCH, select: { id: true } });
+              if (!rows.length) break;
+              n = (await tx.weatherRun.deleteMany({ where: { id: { in: rows.map(r => r.id) },
+                ...this.runFilter(cutoff) } })).count;
               break;
             }
             case "hashtag_hourly_count": {
