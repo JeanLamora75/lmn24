@@ -1,7 +1,7 @@
 import {afterEach,beforeEach,describe,expect,it,vi} from "vitest";
 import {GET} from "./route";
 
-vi.mock("@/lib/admin-backend", () => ({
+vi.mock("../../../../lib/admin-backend", () => ({
   getBackendUrl: () => "http://backend.test:3001",
 }));
 
