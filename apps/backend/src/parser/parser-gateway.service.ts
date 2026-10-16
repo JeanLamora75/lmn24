@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-export type WeatherStartPayload = { continentCode?: "EU" | "AS" | "AF" | "NA" | "SA" | "OC" };
+export type WeatherStartPayload = { continentCode?: "EU" | "AS" | "AF" | "NA" | "SA" | "OC" | undefined };
 
 export type WeatherRunView = {
   id: string;
