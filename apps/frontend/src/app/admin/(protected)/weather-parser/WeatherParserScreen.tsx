@@ -140,3 +140,94 @@ export default function WeatherParserScreen(){
         </div>
       </div>
     </section>
+    <section className="card shadow-sm mb-4" aria-labelledby="weather-progress-heading">
+      <div className="card-body p-4">
+        <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <h2 className="h5 mb-0" id="weather-progress-heading">Suivi de l’exécution</h2>
+          <button type="button" className="btn btn-sm btn-outline-secondary"
+            onClick={()=>void loadRuns()}>Actualiser</button>
+        </div>
+        {!selectedRun?<p className="text-body-secondary mb-0">
+          Aucune collecte météo n’a encore été lancée.
+        </p>:<>
+          <div className="d-flex flex-wrap gap-2 align-items-center mb-3">
+            <span className={"badge "+WEATHER_STATUS_CLASS[selectedRun.status]}>
+              {WEATHER_STATUS[selectedRun.status]}
+            </span>
+            <span className="text-body-secondary small">
+              {selectedRun.continentCode?WEATHER_CONTINENTS[selectedRun.continentCode]:"Tous les continents"}
+              {" · "}{selectedRun.trigger==="MANUAL"?"Manuel":"Automatique"}
+              {" · "}{fmt(selectedRun.startedAt)}
+            </span>
+          </div>
+          <div className="progress mb-2" role="progressbar" aria-label="Progression de la collecte météo"
+            aria-valuenow={weatherProgress(selectedRun)} aria-valuemin={0} aria-valuemax={100}>
+            <div className={"progress-bar"+(selectedRun.status==="RUNNING"?" progress-bar-striped progress-bar-animated":"")}
+              style={{width:weatherProgress(selectedRun)+"%"}}/>
+          </div>
+          <p className="small text-body-secondary mb-3" aria-live="polite">
+            {weatherProgress(selectedRun)} % · {selectedRun.processedCities} / {selectedRun.totalCities} villes traitées
+          </p>
+          <div className="row g-2 mb-3">
+            {([
+              ["Villes prévues",selectedRun.totalCities],
+              ["Traitées",selectedRun.processedCities],
+              ["Réussies",selectedRun.successfulCities],
+              ["En erreur",selectedRun.failedCities],
+            ] as const).map(([label,value])=><div key={label} className="col-6 col-lg-3">
+              <div className="border rounded p-3 h-100">
+                <div className="text-body-secondary small">{label}</div>
+                <div className="h4 mb-0">{value}</div>
+              </div>
+            </div>)}
+          </div>
+          <div className="small text-body-secondary">
+            <span className="me-3">Durée : {weatherElapsed(selectedRun)}</span>
+            <span>Fin : {fmt(selectedRun.finishedAt)}</span>
+          </div>
+          {selectedRun.errorMessage&&<div className="alert alert-warning mt-3 mb-0"
+            role="status">
+            <strong>Diagnostic : </strong>{selectedRun.errorMessage}
+          </div>}
+          {selectedRun.status==="RUNNING"&&<p className="small text-body-secondary mt-3 mb-0"
+            role="status">Mise à jour automatique de l’avancement toutes les quelques secondes.</p>}
+        </>}
+      </div>
+    </section>
+    <section className="card shadow-sm mb-4" aria-labelledby="weather-history-heading">
+      <div className="card-header d-flex flex-wrap gap-2 align-items-center justify-content-between">
+        <h2 id="weather-history-heading" className="h5 mb-0">Dernières exécutions</h2>
+        <Link href="/admin/parser-monitoring" className="small">
+          Logs et statistiques des parsers
+        </Link>
+      </div>
+      <div className="table-responsive">
+        <table className="table table-hover align-middle mb-0">
+          <thead><tr>
+            <th>Début</th><th>Continent</th><th>État</th>
+            <th>Villes</th><th>Succès</th><th>Erreurs</th><th>Action</th>
+          </tr></thead>
+          <tbody>
+            {runs.map(run=><tr key={run.id}>
+              <td>{fmt(run.startedAt)}</td>
+              <td>{run.continentCode?WEATHER_CONTINENTS[run.continentCode]:"Tous"}</td>
+              <td><span className={"badge "+WEATHER_STATUS_CLASS[run.status]}>
+                {WEATHER_STATUS[run.status]}</span></td>
+              <td>{run.processedCities} / {run.totalCities}</td>
+              <td>{run.successfulCities}</td><td>{run.failedCities}</td>
+              <td><button type="button" className="btn btn-sm btn-outline-primary"
+                aria-label={"Afficher l’exécution du "+fmt(run.startedAt)}
+                onClick={()=>setSelectedId(run.id)}>Voir</button></td>
+            </tr>)}
+            {runs.length===0&&<tr><td colSpan={7} className="text-center text-body-secondary py-4">
+              Aucun historique météo disponible.
+            </td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    {lastSuccess&&<p className="small text-body-secondary">
+      Dernière extraction intégralement réussie : {fmt(lastSuccess.finishedAt??lastSuccess.startedAt)}.
+    </p>}
+  </main>;
+}
