@@ -1,0 +1,40 @@
+.intro {
+  padding-block: clamp(1.8rem, 4vw, 3.5rem) clamp(1.6rem, 3vw, 2.5rem);
+}
+.title {
+  font-size: clamp(2rem, 3.4vw, 3.3rem);
+  font-weight: 750;
+  letter-spacing: -.035em;
+  margin: .5rem 0 .7rem;
+  line-height: 1.15;
+}
+.selector { width: min(100%, 350px); }
+.weatherCard {
+  border: 1px solid rgba(17, 63, 111, .11);
+  border-radius: 1.15rem;
+  background: var(--bs-body-bg, #fff);
+  transition: box-shadow .16s ease;
+}
+.weatherCard:hover {
+  box-shadow: 0 8px 25px rgba(25, 62, 102, .12) !important;
+}
+.temperature {
+  display: block;
+  color: var(--bs-primary);
+  font-weight: 750;
+  letter-spacing: -.045em;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(2.2rem, 4vw, 3.05rem);
+  line-height: 1.15;
+}
+.conditions {max-width: 50%;}
+.details {min-height: 70px;}
+.details dt {color: var(--bs-secondary-color);font-weight: 450;}
+.details dd {font-weight: 600;margin: 0;}
+.observed {
+  border-top: 1px solid var(--bs-border-color);
+  overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: reduce) {
+  .weatherCard { transition: none; }
+}

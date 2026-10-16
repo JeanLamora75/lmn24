@@ -20,31 +20,32 @@ const LANGUAGE_FLAGS: Record<SupportedLocale, string> = {
 };
 
 /**
- * Six-item-ready navigation registry. Only entries with implemented public
+ * Navigation registry ready for at least six visible sections. Only entries with implemented public
  * routes belong in VISIBLE_NAVIGATION. To enable a future section, add a
  * route to this registry — the labels/icons and scrollable layout are ready.
  * Never show empty links or pretend a planned page already exists.
  */
-type NavKey = "news" | "videos" | "hashtags" | "horoscope" | "live" | "podcasts" | "dossiers";
+type NavKey = "news" | "videos" | "hashtags" | "horoscope" | "weather" | "live" | "podcasts" | "dossiers";
 const NAVIGATION_LABELS: Record<SupportedLocale, Record<NavKey, string>> = {
-  fr: { news: "Articles", videos: "Vidéos", hashtags: "Hashtags", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
-  en: { news: "Articles", videos: "Videos", hashtags: "Hashtags", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Features" },
-  de: { news: "Artikel", videos: "Videos", hashtags: "Hashtags", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
-  es: { news: "Artículos", videos: "Vídeos", hashtags: "Hashtags", horoscope: "Horoscope", live: "Directo", podcasts: "Pódcasts", dossiers: "Reportajes" },
-  pt: { news: "Artigos", videos: "Vídeos", hashtags: "Hashtags", horoscope: "Horoscope", live: "Ao vivo", podcasts: "Podcasts", dossiers: "Dossiês" },
-  it: { news: "Articoli", videos: "Video", hashtags: "Hashtag", horoscope: "Oroscopo", live: "Diretta", podcasts: "Podcast", dossiers: "Dossier" },
-  ru: { news: "Статьи", videos: "Видео", hashtags: "Хэштеги", horoscope: "Гороскоп", live: "Эфир", podcasts: "Подкасты", dossiers: "Материалы" },
-  nl: { news: "Artikelen", videos: "Video's", hashtags: "Hashtags", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
+  fr: { news: "Articles", videos: "Vidéos", hashtags: "Hashtags", weather: "Météo", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
+  en: { news: "Articles", videos: "Videos", hashtags: "Hashtags", weather: "Weather", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Features" },
+  de: { news: "Artikel", videos: "Videos", hashtags: "Hashtags", weather: "Wetter", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
+  es: { news: "Artículos", videos: "Vídeos", hashtags: "Hashtags", weather: "El tiempo", horoscope: "Horoscope", live: "Directo", podcasts: "Pódcasts", dossiers: "Reportajes" },
+  pt: { news: "Artigos", videos: "Vídeos", hashtags: "Hashtags", weather: "Meteorologia", horoscope: "Horoscope", live: "Ao vivo", podcasts: "Podcasts", dossiers: "Dossiês" },
+  it: { news: "Articoli", videos: "Video", hashtags: "Hashtag", weather: "Meteo", horoscope: "Oroscopo", live: "Diretta", podcasts: "Podcast", dossiers: "Dossier" },
+  ru: { news: "Статьи", videos: "Видео", hashtags: "Хэштеги", weather: "Погода", horoscope: "Гороскоп", live: "Эфир", podcasts: "Подкасты", dossiers: "Материалы" },
+  nl: { news: "Artikelen", videos: "Video's", hashtags: "Hashtags", weather: "Weer", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
 };
 
 // Add new links here only when their pages actually exist.
-// With six entries, the large-screen navigation still fits and on smaller
+// With five entries, the large-screen navigation fits and on smaller
 // screens it scrolls horizontally, while logo/language remain visible.
 const VISIBLE_NAVIGATION = [
   { key: "news", href: "/" },
   { key: "videos", href: "/videos" },
   { key: "hashtags", href: "/hashtags" },
   { key: "horoscope", href: "/horoscope" },
+  { key: "weather", href: "/weather" },
 ] as const satisfies ReadonlyArray<{ key: NavKey; href: string }>;
 
 function NavigationIcon({ name }: { name: NavKey }) {
@@ -68,6 +69,8 @@ function NavigationIcon({ name }: { name: NavKey }) {
       return <svg {...common}><path d="M9 3 6.5 21M17.5 3 15 21M4 9h16M3 15h16"/></svg>;
     case "horoscope":
       return <svg {...common}><circle cx="12" cy="12" r="7"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M12 8l1.5 2.5L16 12l-2.5 1.5L12 16l-1.5-2.5L8 12l2.5-1.5z"/></svg>;
+    case "weather":
+      return <svg {...common}><circle cx="9" cy="8" r="3.4"/><path d="M9 2V1m0 14v-1m-7-6H1m16-1h-1m-12-4-.7-.7m11.4 11.4-.7-.7M4 12a5 5 0 0 1 5.1-4.8c2.4 0 4.1 1.3 4.9 3.2a4.7 4.7 0 0 1 1.6-.3 4.5 4.5 0 0 1 0 9H6a4 4 0 0 1-2-7.5"/></svg>;
     case "live":
       return <svg {...common}><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M7.2 7.2a6.8 6.8 0 0 0 0 9.6m9.6-9.6a6.8 6.8 0 0 1 0 9.6M4.3 4.3a10.9 10.9 0 0 0 0 15.4m15.4-15.4a10.9 10.9 0 0 1 0 15.4"/></svg>;
     case "podcasts":
