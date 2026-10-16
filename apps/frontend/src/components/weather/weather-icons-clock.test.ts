@@ -1,9 +1,17 @@
 import { describe, expect, it } from "vitest";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { formatCityLocalTime } from "./weather-clock";
 import { weatherIconName, weatherIconPath, WEATHER_ICON_NAMES } from "./weather-icons";
 import { weatherCopy } from "./weather-copy";
 
 describe("SCRUM-76 — Static Meteocons Flat mapping", () => {
+  it("ships each allowlisted static icon and its MIT notice locally", () => {
+    for (const name of WEATHER_ICON_NAMES){
+      expect(existsSync(join(process.cwd(),"public","weather-icons",name+".svg"))).toBe(true);
+    }
+    expect(existsSync(join(process.cwd(),"public","weather-icons","LICENSE-METEOCONS.txt"))).toBe(true);
+  });
   it("uses the right solar/night icons, independent of visitor timezone", () => {
     expect(weatherIconName(0,true)).toBe("clear-day");
     expect(weatherIconName(0,false)).toBe("clear-night");
