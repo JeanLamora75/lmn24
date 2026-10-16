@@ -6,6 +6,22 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
+export type WeatherStartPayload = { continentCode?: "EU" | "AS" | "AF" | "NA" | "SA" | "OC" };
+
+export type WeatherRunView = {
+  id: string;
+  trigger: "MANUAL" | "AUTOMATIC";
+  continentCode: string | null;
+  startedAt: string;
+  finishedAt: string | null;
+  status: "RUNNING" | "SUCCESS" | "PARTIAL" | "ERROR" | "INTERRUPTED";
+  totalCities: number;
+  processedCities: number;
+  successfulCities: number;
+  failedCities: number;
+  errorMessage: string | null;
+};
+
 export type ParserStartPayload = {
   countryIsoCode2?: string | undefined;
   languageIsoCode2?: string | undefined;
@@ -128,6 +144,51 @@ export class ParserGatewayService {
     }
 
     return response;
+  }
+
+  /** The weather parser remains internal: only NestJS forwards the shared secret. */
+  async startWeatherRun(payload: WeatherStartPayload): Promise<{accepted:boolean;runId:string}> {
+    return this.weatherRequest("/weather-runs", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async listWeatherRuns(): Promise<{items:WeatherRunView[]}> {
+    return this.weatherRequest("/weather-runs");
+  }
+
+  async getWeatherRun(id:string): Promise<WeatherRunView> {
+    return this.weatherRequest("/weather-runs/" + encodeURIComponent(id));
+  }
+
+  private async weatherRequest<T>(path:string, init:RequestInit={}):Promise<T> {
+    let response:Response;
+    try {
+      response=await fetch(this.parserUrl + path, {
+        ...init,
+        headers: {
+          ...init.headers,
+          "x-parser-secret": this.sharedSecret,
+        },
+        cache:"no-store",
+        signal:AbortSignal.timeout(10_000),
+      });
+    } catch {
+      throw new BadGatewayException("Le service du parser météo est indisponible.");
+    }
+    if(!response.ok) {
+      const message=await this.readMessage(response,"Impossible de contacter le parser météo.");
+      if(response.status===409)throw new ConflictException(message);
+      if(response.status===404)throw new NotFoundException("Exécution météo introuvable.");
+      throw new BadGatewayException(message);
+    }
+    try {
+      return await response.json() as T;
+    } catch {
+      throw new BadGatewayException("Réponse du parser météo invalide.");
+    }
   }
 
   private async readMessage(
