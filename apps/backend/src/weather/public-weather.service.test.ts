@@ -59,6 +59,8 @@ describe("SCRUM-73 — public weather freshness and DTO", () => {
     });
   });
   it("reads active cities even without observations and keeps the requested order", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(at);
     const list = vi.fn(async () => [
       city("paris", 1, reading(1)),
       city("london", 2, null),
@@ -83,6 +85,7 @@ describe("SCRUM-73 — public weather freshness and DTO", () => {
       }),
     });
     expect(setting).toHaveBeenCalledOnce();
+    vi.useRealTimers();
   });
   it("honors a modified freshness setting and empty continent", async () => {
     const list = vi.fn(async () => []);
