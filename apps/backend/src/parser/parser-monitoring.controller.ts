@@ -7,6 +7,7 @@ import { z } from "zod";
 import { AuthService } from "../auth/auth.service";
 import { AUTH_FAILURE_MESSAGE, DEFAULT_SESSION_COOKIE_NAME } from "../auth/auth.constants";
 import { ParserMonitoringService } from "./parser-monitoring.service";
+import { WeatherMonitoringService } from "./weather-monitoring.service";
 
 type RequestLike = { headers: Record<string, string | string[] | undefined> };
 const schema = z.object({
@@ -17,6 +18,15 @@ const schema = z.object({
   search: z.string().trim().max(120).optional(),
   countryId: z.uuid().optional(), categoryId: z.uuid().optional(),
   language: z.string().regex(/^[a-zA-Z]{2}$/).transform(s => s.toLowerCase()).optional(),
+  page: z.coerce.number().int().min(1).max(500).default(1),
+  pageSize: z.coerce.number().int().refine(n => [20,50,100].includes(n)).default(20),
+}).strict();
+
+const weatherSchema = z.object({
+  period: z.enum(["24h","7d","30d","custom"]).default("24h"),
+  from: z.iso.date().optional(), to: z.iso.date().optional(),
+  status: z.enum(["ALL","RUNNING","SUCCESS","PARTIAL","ERROR","INTERRUPTED"]).default("ALL"),
+  continent: z.enum(["ALL","EU","AS","AF","NA","SA","OC"]).default("ALL"),
   page: z.coerce.number().int().min(1).max(500).default(1),
   pageSize: z.coerce.number().int().refine(n => [20,50,100].includes(n)).default(20),
 }).strict();
@@ -32,6 +42,7 @@ export class ParserMonitoringController {
   private readonly cookieName: string;
   constructor(
     private readonly monitoring: ParserMonitoringService,
+    private readonly weather: WeatherMonitoringService,
     private readonly auth: AuthService,
     config: ConfigService,
   ) {
@@ -53,6 +64,15 @@ export class ParserMonitoringController {
     if (!parsed.success) throw new BadRequestException("Filtres de supervision invalides.");
     return parsed.data;
   }
+  @Get("weather")
+  @Header("Cache-Control","no-store")
+  async weatherOverview(@Req() request: RequestLike, @Query() q: Record<string,string | undefined>) {
+    await this.assertAdmin(request);
+    const parsed=weatherSchema.safeParse(q);
+    if(!parsed.success)throw new BadRequestException("Filtres de supervision météo invalides.");
+    return this.weather.overview(parsed.data);
+  }
+
   @Get("summary")
   @Header("Cache-Control","no-store")
   async summary(@Req() request: RequestLike, @Query() q: Record<string,string | undefined>) {
