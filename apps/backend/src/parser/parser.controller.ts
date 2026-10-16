@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Header,
   HttpCode,
@@ -48,6 +49,10 @@ const startSchema = z.object({
 });
 
 const runIdSchema = z.string().uuid();
+const weatherStartSchema = z.object({
+  continentCode: z.enum(["EU","AS","AF","NA","SA","OC"]).optional(),
+}).strict();
+
 
 @Controller("admin/parser")
 export class ParserController {
@@ -130,6 +135,32 @@ export class ParserController {
     await this.forwardEvents(upstream, response);
   }
 
+  @Post("weather-runs")
+  @HttpCode(202)
+  @Header("Cache-Control","no-store")
+  async startWeather(@Req() request:RequestLike,@Body() body:unknown) {
+    await this.assertWeatherAdmin(request);
+    const parsed=weatherStartSchema.safeParse(body);
+    if(!parsed.success)throw new BadRequestException("Critères du parser météo invalides.");
+    return this.parserGateway.startWeatherRun(parsed.data);
+  }
+
+  @Get("weather-runs")
+  @Header("Cache-Control","no-store")
+  async listWeather(@Req() request:RequestLike) {
+    await this.assertWeatherAdmin(request);
+    return this.parserGateway.listWeatherRuns();
+  }
+
+  @Get("weather-runs/:id")
+  @Header("Cache-Control","no-store")
+  async getWeather(@Req() request:RequestLike,@Param("id") rawId:string) {
+    await this.assertWeatherAdmin(request);
+    const parsed=runIdSchema.safeParse(rawId);
+    if(!parsed.success)throw new BadRequestException("Identifiant météo invalide.");
+    return this.parserGateway.getWeatherRun(parsed.data);
+  }
+
   private async forwardEvents(upstream: Response, response: StreamResponse): Promise<void> {
     const reader = upstream.body!.getReader();
 
@@ -154,6 +185,13 @@ export class ParserController {
     } finally {
       response.end();
     }
+  }
+
+  private async assertWeatherAdmin(request:RequestLike):Promise<void> {
+    const token=this.readCookie(request.headers.cookie,this.cookieName);
+    const user=await this.authService.getUserFromSession(token);
+    if(!user)throw new UnauthorizedException(AUTH_FAILURE_MESSAGE);
+    if(user.role!=="ADMIN")throw new ForbiddenException("Accès réservé aux administrateurs.");
   }
 
   private async assertAuthenticated(request: RequestLike): Promise<void> {
