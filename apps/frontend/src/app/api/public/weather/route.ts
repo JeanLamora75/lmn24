@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getBackendUrl } from "@/lib/admin-backend";
-import { isWeatherRegion, parseWeatherResponse } from "@/components/weather/weather-data";
+import { getBackendUrl } from "../../../../lib/admin-backend";
+import { isWeatherRegion, parseWeatherResponse } from "../../../../components/weather/weather-data";
 
 /** Public weather stays isolated from admin sessions and the Open-Meteo API. */
 const MAX_RESPONSE_CHARS = 128_000;
