@@ -99,6 +99,12 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
         description: "Déclencher la collecte des flux XML YouTube et suivre son avancement.",
       },
       {
+        href: "/admin/weather-parser",
+        icon: "play-circle",
+        title: "Lancer le Parser Météo",
+        description: "Mettre à jour manuellement la météo des villes actives, avec suivi de l’exécution.",
+      },
+      {
         href: "/admin/parser-monitoring",
         icon: "activity",
         title: "Logs et statistiques des parsers",
