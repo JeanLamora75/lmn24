@@ -21,6 +21,8 @@ const days = {
   retentionVideoParserLogsDays: 7,
   retentionBackendLogsDays: 7,
   retentionHashtagHourlyCountsDays: 60,
+  weatherCurrentRetentionDays: 7,
+  weatherRunRetentionDays: 14,
 };
 
 function harness(count = 2) {
@@ -40,6 +42,18 @@ function harness(count = 2) {
     video: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
     feedRun: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
     feedVideoRun: { count: vi.fn().mockResolvedValue(count), findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]), deleteMany: vi.fn().mockResolvedValue({ count }) },
+    weatherCurrent: {
+      count: vi.fn().mockResolvedValue(count),
+      findMany: vi.fn().mockResolvedValueOnce([{ cityId: "11111111-1111-4111-8111-111111111111" },
+        { cityId: "22222222-2222-4222-8222-222222222222" }]).mockResolvedValue([]),
+      deleteMany: vi.fn().mockResolvedValue({ count }),
+    },
+    weatherRun: {
+      count: vi.fn().mockResolvedValue(0),
+      findMany: vi.fn().mockResolvedValueOnce(records).mockResolvedValue([]),
+      deleteMany: vi.fn().mockResolvedValue({ count }),
+    },
+    weatherCity: { deleteMany: vi.fn() },
   };
   const prisma = {
     $transaction: vi.fn(async (callback: (db: typeof tx) => Promise<number>) => callback(tx)),
@@ -48,6 +62,8 @@ function harness(count = 2) {
     video: { count: vi.fn().mockResolvedValue(count) },
     feedRun: { count: vi.fn().mockResolvedValue(count) },
     feedVideoRun: { count: vi.fn().mockResolvedValue(count) },
+    weatherCurrent: { count: vi.fn().mockResolvedValue(count) },
+    weatherRun: { count: vi.fn().mockResolvedValue(count) },
     hashtagHourlyCount: { count: vi.fn().mockResolvedValue(count) },
   };
   const retention = { getAll: vi.fn().mockResolvedValue({ values: days }) };
@@ -191,5 +207,82 @@ describe("SCRUM-65 — horoscope purge", () => {
     });
     expect(tx.article.deleteMany).not.toHaveBeenCalled();
     expect(tx.video.deleteMany).not.toHaveBeenCalled();
+  });
+});
+
+describe("SCRUM-78 — meteorological data purge", () => {
+  it("offers expired weather observation preview using observed_at and 7-day retention", async () => {
+    const { service, prisma, retention, tx } = harness();
+    const p=await service.preview(admin,"weather_current","expired");
+    expect(p.count).toBe(2);
+    expect(new Date(p.cutoff!).getTime()).toBeLessThan(Date.now()-6*86400_000);
+    expect(prisma.weatherCurrent.count).toHaveBeenCalledWith({
+      where:{observedAt:{lt:new Date(p.cutoff!)}},
+    });
+    expect(retention.getAll).toHaveBeenCalledOnce();
+    expect(tx.weatherCurrent.deleteMany).not.toHaveBeenCalled();
+  });
+
+  it("purges weather_current ONLY and never touches weather_city or other tables",async()=>{
+    const {service,tx}=harness();
+    const p=await service.preview(admin,"weather_current","all");
+    service.start(admin,{table:"weather_current",mode:"all",token:p.token,confirmed:true,
+      typedName:"weather_current"});
+    const job=await done(service);
+    expect(job.status).toBe("COMPLETED");
+    expect(job.deleted).toBe(2);
+    expect(tx.weatherCurrent.deleteMany).toHaveBeenCalledWith({
+      where:{cityId:{in:[
+        "11111111-1111-4111-8111-111111111111",
+        "22222222-2222-4222-8222-222222222222",
+      ]}},
+    });
+    expect(tx.weatherCity.deleteMany).not.toHaveBeenCalled();
+    expect(tx.weatherRun.deleteMany).not.toHaveBeenCalled();
+    expect(tx.article.deleteMany).not.toHaveBeenCalled();
+    expect(tx.$queryRaw).toHaveBeenCalledTimes(2); // global purge + weather parser lock
+  });
+
+  it("preserves RUNNING executions by construction, including all mode",async()=>{
+    const {service,tx}=harness();
+    const p=await service.preview(admin,"weather_run","all");
+    service.start(admin,{table:"weather_run",mode:"all",token:p.token,confirmed:true,
+      typedName:"weather_run"});
+    const job=await done(service);
+    expect(job.status).toBe("COMPLETED");
+    expect(tx.weatherRun.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where:{status:{not:"RUNNING"}},
+    }));
+    expect(tx.weatherRun.deleteMany).toHaveBeenCalledWith({
+      where:{id:{in:["a","b"]},status:{not:"RUNNING"}},
+    });
+    expect(tx.weatherCurrent.deleteMany).not.toHaveBeenCalled();
+    expect(tx.weatherCity.deleteMany).not.toHaveBeenCalled();
+  });
+
+  it("refuses all weather purges while a parser execution is RUNNING",async()=>{
+    for(const table of ["weather_current","weather_run"] as const){
+      const {service,tx}=harness();
+      tx.weatherRun.count.mockResolvedValue(1);
+      const p=await service.preview(admin,table,"all");
+      service.start(admin,{table,mode:"all",token:p.token,confirmed:true,typedName:table});
+      const job=await done(service);
+      expect(job.status).toBe("ERROR");
+      expect(job.message).toContain("Collecte météo en cours");
+      expect(tx.weatherCurrent.deleteMany).not.toHaveBeenCalled();
+      expect(tx.weatherRun.deleteMany).not.toHaveBeenCalled();
+      expect(tx.weatherCity.deleteMany).not.toHaveBeenCalled();
+    }
+  });
+
+  it("requires a matching owner-bound preview token and confirmation for weather",async()=>{
+    const {service}=harness();
+    const p=await service.preview(admin,"weather_run","all");
+    expect(()=>service.start(other,{table:"weather_run",mode:"all",token:p.token,
+      confirmed:true,typedName:"weather_run"})).toThrow(BadRequestException);
+    expect(()=>service.start(admin,{table:"weather_run",mode:"all",token:p.token,
+      confirmed:true,typedName:"weather_city"})).toThrow(BadRequestException);
+    expect(()=>service.start(admin,{table:"weather_run",mode:"all",token:p.token,
+      confirmed:false,typedName:"weather_run"})).toThrow(BadRequestException);
   });
 });
