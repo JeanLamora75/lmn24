@@ -23,7 +23,7 @@ function dateLabel(instant:string,locale:string):string{
 function value(number:number):string{
   return Number.isFinite(number)?Math.round(number)+"°C":"—";
 }
-function WeatherCard({city,locale,now}:{city:WeatherCity;locale:string;now:Date|null}){
+export function WeatherCard({city,locale,now}:{city:WeatherCity;locale:string;now:Date|null}){
   const t=weatherCopy(locale);
   const reading=city.current;
   const available=reading!==null && city.freshness!=="UNAVAILABLE";
