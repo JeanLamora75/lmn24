@@ -15,6 +15,8 @@ import { z } from "zod";
 import { ParserEngine } from "./parser-engine.js";
 import { PersistentRunLog } from "./persistent-run-log.js";
 import { VideoParserEngine, type VideoParserFilters } from "./video-parser-engine.js";
+import { WeatherParserEngine, WeatherRunActiveError } from "./weather-parser-engine.js";
+import { weatherFiltersSchema } from "./weather-parser-data.js";
 import {
   ActiveRunError,
   RunManager,
@@ -150,6 +152,7 @@ async function bootstrap(): Promise<void> {
   const runs = new RunManager(engine, infoLog);
   const videoEngine = new VideoParserEngine(database);
   const videoRuns = new RunManager<VideoParserFilters>(videoEngine, videoLog);
+  const weatherEngine = new WeatherParserEngine(database);
   let rebuildingStats = false;
   let lastStatsResult: {
     finishedAt: string | null;
@@ -272,6 +275,40 @@ async function bootstrap(): Promise<void> {
         };
         void runStatsRebuild(options);
         writeJson(response, 202, { accepted: true });
+        return;
+      }
+
+      // Internal parser-only API. Next.js never calls Open-Meteo itself.
+      // SCRUM-72 will expose these actions to authorized administrators.
+      if (request.method === "POST" && url.pathname === "/weather-runs") {
+        const body=await readJson(request);
+        const parsed=weatherFiltersSchema.safeParse(body);
+        if(!parsed.success){
+          writeApiError(response,400,"INVALID_WEATHER_FILTER","Continent météo invalide.");
+          return;
+        }
+        try{
+          const runId=await weatherEngine.start(parsed.data,
+            request.headers["x-parser-trigger"]==="AUTOMATIC"?"AUTOMATIC":"MANUAL");
+          writeJson(response,202,{accepted:true,runId});
+        }catch(e){
+          if(e instanceof WeatherRunActiveError){
+            writeApiError(response,409,"WEATHER_RUN_ACTIVE",e.message);return;
+          }
+          throw e;
+        }
+        return;
+      }
+
+      if(request.method==="GET"&&url.pathname==="/weather-runs"){
+        writeJson(response,200,{items:await weatherEngine.latest()});
+        return;
+      }
+      const weatherRunMatch=url.pathname.match(new RegExp("^/weather-runs/([a-f0-9-]{36})$","i"));
+      if(request.method==="GET"&&weatherRunMatch?.[1]){
+        const run=await weatherEngine.get(weatherRunMatch[1]);
+        if(!run){writeApiError(response,404,"WEATHER_RUN_NOT_FOUND","Exécution météo introuvable.");return;}
+        writeJson(response,200,run);
         return;
       }
 
