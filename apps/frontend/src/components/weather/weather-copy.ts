@@ -4,7 +4,7 @@ export type WeatherRegion = (typeof WEATHER_REGIONS)[number];
 export type WeatherCopy = {
   title:string; description:string; choose:string; current:string; unavailable:string;
   oldData:string; updated:string; retry:string; empty:string; error:string;
-  provider:string; loading:string; humidity:string; wind:string; felt:string; cities:string;
+  provider:string; loading:string; humidity:string; wind:string; felt:string; cities:string; localTime:string;
   modeAutomatic:string; modeManual:string; autoDetected:string; autoFallback:string; resetAutomatic:string;
   conditions:Record<"clear"|"mainlyClear"|"partlyCloudy"|"overcast"|"fog"|"drizzle"|"rain"|"snow"|"showers"|"storm"|"unknown",string>;
   regions:Record<WeatherRegion,string>;
@@ -15,7 +15,7 @@ const copy = {
     choose:"Choisir un continent",current:"Conditions actuelles",unavailable:"Météo indisponible",
     oldData:"Données anciennes",updated:"Dernier relevé",retry:"Réessayer",empty:"Aucune ville active dans ce continent.",
     error:"Impossible de charger la météo pour le moment.",provider:"Données météo :",loading:"Chargement des villes…",
-    cities:"villes",humidity:"Humidité",wind:"Vent",felt:"Ressenti",
+    localTime:"Heure locale",cities:"villes",humidity:"Humidité",wind:"Vent",felt:"Ressenti",
     conditions:{clear:"Ciel dégagé",mainlyClear:"Peu nuageux",partlyCloudy:"Partiellement nuageux",overcast:"Couvert",fog:"Brouillard",drizzle:"Bruine",rain:"Pluie",snow:"Neige",showers:"Averses",storm:"Orage",unknown:"Conditions non renseignées"},
     modeAutomatic:"Détection automatique", modeManual:"Choix enregistré", autoDetected:"Continent détecté automatiquement", autoFallback:"Continent par défaut : Europe", resetAutomatic:"Revenir à la détection automatique",
     regions:{EU:"Europe",AS:"Asie",AF:"Afrique",NA:"Amérique du Nord",SA:"Amérique du Sud",OC:"Océanie"},
@@ -25,7 +25,7 @@ const copy = {
     choose:"Choose a continent",current:"Current conditions",unavailable:"Weather unavailable",
     oldData:"Outdated observations",updated:"Last observation",retry:"Try again",empty:"No active cities on this continent.",
     error:"Weather data could not be loaded.",provider:"Weather data:",loading:"Loading cities…",
-    cities:"cities",humidity:"Humidity",wind:"Wind",felt:"Feels like",
+    localTime:"Local time",cities:"cities",humidity:"Humidity",wind:"Wind",felt:"Feels like",
     conditions:{clear:"Clear sky",mainlyClear:"Mainly clear",partlyCloudy:"Partly cloudy",overcast:"Overcast",fog:"Fog",drizzle:"Drizzle",rain:"Rain",snow:"Snow",showers:"Showers",storm:"Thunderstorm",unknown:"Conditions unknown"},
     modeAutomatic:"Automatic detection", modeManual:"Saved selection", autoDetected:"Continent detected automatically", autoFallback:"Default continent: Europe", resetAutomatic:"Use automatic detection",
     regions:{EU:"Europe",AS:"Asia",AF:"Africa",NA:"North America",SA:"South America",OC:"Oceania"},
@@ -35,7 +35,7 @@ const copy = {
     choose:"Kontinent wählen",current:"Aktuelles Wetter",unavailable:"Wetter nicht verfügbar",
     oldData:"Veraltete Daten",updated:"Letzte Messung",retry:"Erneut versuchen",empty:"Keine aktiven Städte auf diesem Kontinent.",
     error:"Wetterdaten können derzeit nicht geladen werden.",provider:"Wetterdaten:",loading:"Städte werden geladen…",
-    cities:"Städte",humidity:"Luftfeuchtigkeit",wind:"Wind",felt:"Gefühlt",
+    localTime:"Ortszeit",cities:"Städte",humidity:"Luftfeuchtigkeit",wind:"Wind",felt:"Gefühlt",
     conditions:{clear:"Klarer Himmel",mainlyClear:"Überwiegend klar",partlyCloudy:"Teilweise bewölkt",overcast:"Bedeckt",fog:"Nebel",drizzle:"Nieselregen",rain:"Regen",snow:"Schnee",showers:"Schauer",storm:"Gewitter",unknown:"Wetter unbekannt"},
     modeAutomatic:"Automatische Erkennung", modeManual:"Gespeicherte Auswahl", autoDetected:"Kontinent automatisch erkannt", autoFallback:"Standardkontinent: Europa", resetAutomatic:"Zur automatischen Erkennung",
     regions:{EU:"Europa",AS:"Asien",AF:"Afrika",NA:"Nordamerika",SA:"Südamerika",OC:"Ozeanien"},
@@ -45,7 +45,7 @@ const copy = {
     choose:"Elegir continente",current:"Condiciones actuales",unavailable:"Tiempo no disponible",
     oldData:"Datos antiguos",updated:"Última observación",retry:"Reintentar",empty:"No hay ciudades activas en este continente.",
     error:"No se pueden cargar los datos meteorológicos.",provider:"Datos meteorológicos:",loading:"Cargando ciudades…",
-    cities:"ciudades",humidity:"Humedad",wind:"Viento",felt:"Sensación",
+    localTime:"Hora local",cities:"ciudades",humidity:"Humedad",wind:"Viento",felt:"Sensación",
     conditions:{clear:"Cielo despejado",mainlyClear:"Casi despejado",partlyCloudy:"Parcialmente nublado",overcast:"Nublado",fog:"Niebla",drizzle:"Llovizna",rain:"Lluvia",snow:"Nieve",showers:"Chubascos",storm:"Tormenta",unknown:"Condiciones desconocidas"},
     modeAutomatic:"Detección automática", modeManual:"Selección guardada", autoDetected:"Continente detectado automáticamente", autoFallback:"Continente predeterminado: Europa", resetAutomatic:"Volver a la detección automática",
     regions:{EU:"Europa",AS:"Asia",AF:"África",NA:"América del Norte",SA:"América del Sur",OC:"Oceanía"},
@@ -55,7 +55,7 @@ const copy = {
     choose:"Escolher continente",current:"Condições atuais",unavailable:"Tempo indisponível",
     oldData:"Dados antigos",updated:"Última observação",retry:"Tentar novamente",empty:"Não existem cidades ativas neste continente.",
     error:"Não foi possível carregar os dados meteorológicos.",provider:"Dados meteorológicos:",loading:"A carregar cidades…",
-    cities:"cidades",humidity:"Humidade",wind:"Vento",felt:"Sensação térmica",
+    localTime:"Hora local",cities:"cidades",humidity:"Humidade",wind:"Vento",felt:"Sensação térmica",
     conditions:{clear:"Céu limpo",mainlyClear:"Pouco nublado",partlyCloudy:"Parcialmente nublado",overcast:"Encoberto",fog:"Nevoeiro",drizzle:"Chuvisco",rain:"Chuva",snow:"Neve",showers:"Aguaceiros",storm:"Trovoada",unknown:"Condições desconhecidas"},
     modeAutomatic:"Deteção automática", modeManual:"Seleção guardada", autoDetected:"Continente detetado automaticamente", autoFallback:"Continente predefinido: Europa", resetAutomatic:"Voltar à deteção automática",
     regions:{EU:"Europa",AS:"Ásia",AF:"África",NA:"América do Norte",SA:"América do Sul",OC:"Oceânia"},
@@ -65,7 +65,7 @@ const copy = {
     choose:"Scegli un continente",current:"Condizioni attuali",unavailable:"Meteo non disponibile",
     oldData:"Dati non aggiornati",updated:"Ultima rilevazione",retry:"Riprova",empty:"Nessuna città attiva in questo continente.",
     error:"Impossibile caricare i dati meteo.",provider:"Dati meteo:",loading:"Caricamento città…",
-    cities:"città",humidity:"Umidità",wind:"Vento",felt:"Percepita",
+    localTime:"Ora locale",cities:"città",humidity:"Umidità",wind:"Vento",felt:"Percepita",
     conditions:{clear:"Sereno",mainlyClear:"Poco nuvoloso",partlyCloudy:"Parzialmente nuvoloso",overcast:"Coperto",fog:"Nebbia",drizzle:"Pioviggine",rain:"Pioggia",snow:"Neve",showers:"Rovesci",storm:"Temporale",unknown:"Condizioni sconosciute"},
     modeAutomatic:"Rilevamento automatico", modeManual:"Selezione salvata", autoDetected:"Continente rilevato automaticamente", autoFallback:"Continente predefinito: Europa", resetAutomatic:"Torna al rilevamento automatico",
     regions:{EU:"Europa",AS:"Asia",AF:"Africa",NA:"America del Nord",SA:"America del Sud",OC:"Oceania"},
@@ -75,7 +75,7 @@ const copy = {
     choose:"Выберите континент",current:"Текущая погода",unavailable:"Данные о погоде недоступны",
     oldData:"Устаревшие данные",updated:"Последнее наблюдение",retry:"Повторить",empty:"На этом континенте нет активных городов.",
     error:"Не удалось загрузить данные о погоде.",provider:"Источник погоды:",loading:"Загрузка городов…",
-    cities:"городов",humidity:"Влажность",wind:"Ветер",felt:"Ощущается как",
+    localTime:"Местное время",cities:"городов",humidity:"Влажность",wind:"Ветер",felt:"Ощущается как",
     conditions:{clear:"Ясно",mainlyClear:"Преимущественно ясно",partlyCloudy:"Переменная облачность",overcast:"Пасмурно",fog:"Туман",drizzle:"Морось",rain:"Дождь",snow:"Снег",showers:"Ливни",storm:"Гроза",unknown:"Погода неизвестна"},
     modeAutomatic:"Автоматическое определение", modeManual:"Сохранённый выбор", autoDetected:"Континент определён автоматически", autoFallback:"Континент по умолчанию: Европа", resetAutomatic:"Вернуться к автоопределению",
     regions:{EU:"Европа",AS:"Азия",AF:"Африка",NA:"Северная Америка",SA:"Южная Америка",OC:"Океания"},
@@ -85,7 +85,7 @@ const copy = {
     choose:"Kies een continent",current:"Huidig weer",unavailable:"Weer niet beschikbaar",
     oldData:"Verouderde gegevens",updated:"Laatste meting",retry:"Opnieuw proberen",empty:"Geen actieve steden op dit continent.",
     error:"Weergegevens kunnen niet worden geladen.",provider:"Weergegevens:",loading:"Steden laden…",
-    cities:"steden",humidity:"Vochtigheid",wind:"Wind",felt:"Gevoelstemperatuur",
+    localTime:"Lokale tijd",cities:"steden",humidity:"Vochtigheid",wind:"Wind",felt:"Gevoelstemperatuur",
     conditions:{clear:"Helder",mainlyClear:"Vrij helder",partlyCloudy:"Halfbewolkt",overcast:"Bewolkt",fog:"Mist",drizzle:"Motregen",rain:"Regen",snow:"Sneeuw",showers:"Buien",storm:"Onweer",unknown:"Onbekende omstandigheden"},
     modeAutomatic:"Automatische detectie", modeManual:"Opgeslagen keuze", autoDetected:"Continent automatisch gedetecteerd", autoFallback:"Standaardcontinent: Europa", resetAutomatic:"Terug naar automatische detectie",
     regions:{EU:"Europa",AS:"Azië",AF:"Afrika",NA:"Noord-Amerika",SA:"Zuid-Amerika",OC:"Oceanië"},
