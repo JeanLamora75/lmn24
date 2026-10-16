@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  WEATHER_CONTINENT_COOKIE, WEATHER_COOKIE_MAX_AGE,
+  type WeatherSelection,
+} from "./weather-region-choice";
 import { CountryFlag } from "@/components/home/CountryFlag";
 import { WEATHER_REGIONS, weatherCondition, weatherCopy, type WeatherRegion } from "./weather-copy";
 import { parseWeatherResponse, type WeatherResponse, type WeatherCity } from "./weather-data";
@@ -60,9 +65,22 @@ function WeatherCard({city,locale}:{city:WeatherCity;locale:string}){
   </article>;
 }
 
-export function PublicWeather({locale,initialData}:{locale:string;initialData:WeatherResponse|null}){
+export function PublicWeather({
+  locale, initialData, initialContinent, initialMode, initialSource,
+}:{
+  locale:string;
+  initialData:WeatherResponse|null;
+  initialContinent:WeatherRegion;
+  initialMode:WeatherSelection["mode"];
+  initialSource:WeatherSelection["source"];
+}){
+  const router=useRouter();
   const t=weatherCopy(locale);
-  const [continent,setContinent]=useState<WeatherRegion>("EU");
+  // Server and client share the same initial continent: no hydration mismatch or
+  // flash of Europe's data when a preference or trusted GeoIP says otherwise.
+  const [continent,setContinent]=useState<WeatherRegion>(initialContinent);
+  const [mode,setMode]=useState<WeatherSelection["mode"]>(initialMode);
+  const [resetting,setResetting]=useState(false);
   const [data,setData]=useState<WeatherResponse|null>(initialData);
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState(initialData===null);
@@ -71,6 +89,26 @@ export function PublicWeather({locale,initialData}:{locale:string;initialData:We
 
   // Abort in-flight network requests on unmount and when a different continent is selected.
   useEffect(()=>()=>{controller.current?.abort();},[]);
+
+  function selectManually(next:WeatherRegion){
+    // A first-party, non-identifying browser cookie is visible to the SSR
+    // request and preserved across languages and browser restarts.
+    const secure=window.location.protocol==="https:"?"; Secure":"";
+    document.cookie=WEATHER_CONTINENT_COOKIE+"="+next+
+      "; path=/; max-age="+WEATHER_COOKIE_MAX_AGE+"; SameSite=Lax"+secure;
+    setMode("manual");
+    void load(next);
+  }
+
+  function restoreAutomatic(){
+    // Removing the cookie restores trusted proxy GeoIP, or Europe if absent.
+    const secure=window.location.protocol==="https:"?"; Secure":"";
+    document.cookie=WEATHER_CONTINENT_COOKIE+
+      "=; path=/; max-age=0; SameSite=Lax"+secure;
+    controller.current?.abort();
+    setResetting(true);
+    router.refresh();
+  }
 
   async function load(next:WeatherRegion){
     controller.current?.abort();
@@ -106,15 +144,27 @@ export function PublicWeather({locale,initialData}:{locale:string;initialData:We
         <div className={styles.selector}>
           <label className="form-label fw-semibold" htmlFor="weather-continent">{t.choose}</label>
           <select id="weather-continent" className="form-select form-select-lg" value={continent}
-            onChange={e=>void load(e.target.value as WeatherRegion)}>
+            disabled={resetting} onChange={e=>selectManually(e.target.value as WeatherRegion)}>
             {WEATHER_REGIONS.map(region=><option key={region} value={region}>
               {t.regions[region]}
             </option>)}
           </select>
         </div>
-        <div className="text-body-secondary small" aria-live="polite">
-          {!loading&&data&&data.items.length>0
-            ?t.regions[continent]+" · "+data.items.length+" "+t.cities :null}
+        <div className="d-flex flex-column align-items-start align-items-md-end gap-2">
+          <span className="badge rounded-pill text-bg-light border text-secondary"
+            aria-live="polite">
+            {mode==="manual"?t.modeManual:
+              initialSource==="geoip"?t.autoDetected:t.autoFallback}
+          </span>
+          {mode==="manual"&&<button type="button"
+            className="btn btn-sm btn-outline-primary"
+            disabled={resetting} onClick={restoreAutomatic}>
+            {t.resetAutomatic}
+          </button>}
+          <div className="text-body-secondary small" aria-live="polite">
+            {!loading&&data&&data.items.length>0
+              ?t.regions[continent]+" · "+data.items.length+" "+t.cities :null}
+          </div>
         </div>
       </div>
       {loading&&<div className="d-flex align-items-center gap-3 py-5" role="status">

@@ -30,6 +30,11 @@ describe("SCRUM-74 — worldwide weather public page",()=>{
       expect(text.title.length).toBeGreaterThan(3);
       expect(text.choose.length).toBeGreaterThan(3);
       expect(text.cities.length).toBeGreaterThan(2);
+      expect(text.modeManual.length).toBeGreaterThan(3);
+      expect(text.modeAutomatic.length).toBeGreaterThan(3);
+      expect(text.autoDetected.length).toBeGreaterThan(3);
+      expect(text.autoFallback.length).toBeGreaterThan(3);
+      expect(text.resetAutomatic.length).toBeGreaterThan(3);
       expect(Object.keys(text.regions)).toEqual(WEATHER_REGIONS);
       expect(text.conditions.unknown.length).toBeGreaterThan(2);
     }

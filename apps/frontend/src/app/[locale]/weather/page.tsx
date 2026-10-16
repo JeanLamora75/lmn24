@@ -1,4 +1,6 @@
 import type {Metadata} from "next";
+import {cookies,headers} from "next/headers";
+import {WEATHER_CONTINENT_COOKIE,resolveWeatherSelection} from "@/components/weather/weather-region-choice";
 import {hasLocale} from "next-intl";
 import {setRequestLocale} from "next-intl/server";
 import {notFound} from "next/navigation";
@@ -27,18 +29,29 @@ export default async function WeatherHomePage({params}:Props){
   const {locale}=await params;
   if(!hasLocale(routing.locales,locale))notFound();
   setRequestLocale(locale);
+  // Manual preference is read during SSR to avoid a wrong-continent flash on
+  // reload or locale changes. GeoIP is used only when the ingress is trusted.
+  const [visitorCookies,requestHeaders]=await Promise.all([cookies(),headers()]);
+  const choice=resolveWeatherSelection({
+    preference:visitorCookies.get(WEATHER_CONTINENT_COOKIE)?.value,
+    cloudflareContinent:requestHeaders.get("cf-ipcontinent"),
+    geoipProvider:process.env.WEATHER_GEOIP_PROVIDER,
+  });
   let initialData:WeatherResponse|null=null;
   try{
-    const response=await fetch(getBackendUrl()+"/weather?continent=EU",{
+    const response=await fetch(getBackendUrl()+"/weather?continent="+choice.continent,{
       cache:"no-store",signal:AbortSignal.timeout(8000),
     });
     if(response.ok){
       const raw:unknown=await response.json();
-      initialData=parseWeatherResponse(raw,"EU");
+      initialData=parseWeatherResponse(raw,choice.continent);
     }
   }catch{
     // The page and continent switcher remain accessible if the backend is down.
     // The retry button fetches via the browser-side Next.js proxy.
   }
-  return <PublicWeather locale={locale} initialData={initialData}/>;
+  return <PublicWeather key={choice.continent+":"+choice.mode}
+    locale={locale} initialData={initialData}
+    initialContinent={choice.continent} initialMode={choice.mode}
+    initialSource={choice.source}/>;
 }
