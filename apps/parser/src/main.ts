@@ -304,7 +304,7 @@ async function bootstrap(): Promise<void> {
         writeJson(response,200,{items:await weatherEngine.latest()});
         return;
       }
-      const weatherRunMatch=url.pathname.match(/^\\/weather-runs\\/([a-f0-9-]{36})$/i);
+      const weatherRunMatch=url.pathname.match(new RegExp("^/weather-runs/([a-f0-9-]{36})$","i"));
       if(request.method==="GET"&&weatherRunMatch?.[1]){
         const run=await weatherEngine.get(weatherRunMatch[1]);
         if(!run){writeApiError(response,404,"WEATHER_RUN_NOT_FOUND","Exécution météo introuvable.");return;}
