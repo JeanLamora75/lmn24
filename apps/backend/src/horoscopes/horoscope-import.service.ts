@@ -67,8 +67,11 @@ export class HoroscopeImportService {
    */
   async importScheduledAvailable() {
     const files=await this.overview();
+    // Missing repository files are transient: never record a false SUCCESS.
+    // The scheduler must retry later rather than treating the day as imported.
+    if(files.length===0)throw new Error("Aucun fichier Horoscope disponible : nouvel essai nécessaire.");
     const target=files.find(file=>file.count<file.expected);
-    if(!target)return {status:"SKIPPED" as const,reason:"No missing horoscope files"};
+    if(!target)return {status:"SKIPPED" as const,reason:"All available horoscope files already imported"};
     const result=await this.importFile(target.fileName);
     return {status:result.status,fileName:target.fileName,...result};
   }
