@@ -200,5 +200,7 @@ jobs:
         run: |
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/20261017_scheduler_foundations.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/20261017_scheduler_job_ownership.sql
+      - name: Build database workspace for Prisma integration test
+        run: pnpm --filter @lmn24/database build
       - name: Run real Node crash and PostgreSQL recovery tests
         run: pnpm --filter @lmn24/parser exec vitest run src/global-parser-lock-process.test.ts src/scheduler-recovery-process.test.ts
