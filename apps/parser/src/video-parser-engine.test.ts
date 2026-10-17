@@ -38,6 +38,20 @@ function feed(id: string, locale: string) {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("SCRUM-46 — batch video parser", () => {
+  it("does not persist a video after lease cancellation", async () => {
+    const db = mockDb([feed("a", "fr")], [1]);
+    const controller = new AbortController();
+    vi.stubGlobal("fetch", vi.fn(async () => {
+      controller.abort();
+      return new Response(xml, { status: 200 });
+    }));
+    await expect(new VideoParserEngine(db.database as never)
+      .run({}, undefined, undefined, controller.signal))
+      .rejects.toThrow("Video parser global lease lost");
+    expect(db.createMany).not.toHaveBeenCalled();
+    expect(db.update).not.toHaveBeenCalled();
+  });
+
   it("selects every active channel with no filters, inserts only new videos, and emits progress", async () => {
     const db = mockDb([feed("a", "fr"), feed("b", "de")], [1, 0]);
     vi.stubGlobal("fetch", vi.fn(async () => new Response(xml, { status: 200 })));
