@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feat/scrum-91-scheduler-validation
   pull_request:
     branches:
       - main
@@ -117,3 +118,34 @@ jobs:
       - name: End-to-end weather database acceptance (SCRUM-79)
         run: |
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/tests/scrum_79_weather_end_to_end_smoke.sql
+
+
+  scheduler-schema:
+    name: PostgreSQL scheduler schema
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: lmn24_scheduler_test
+        options: >-
+          --health-cmd "pg_isready -U postgres -d lmn24_scheduler_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Apply base scheduler migration
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_foundations.sql
+      - name: Apply owner fencing migration
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_job_ownership.sql
+      - name: Verify constraints and disabled defaults
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_scheduler_schema_smoke.sql
+      - name: Replay additive migrations
+        run: |
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_foundations.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_job_ownership.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_scheduler_schema_smoke.sql
