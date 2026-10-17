@@ -87,6 +87,7 @@ export class ParserEngine {
     emit: (event: ParserEvent) => void,
     batchRunId?: string,
     signal?: AbortSignal,
+    ownerToken?: string,
   ): Promise<void> {
     const settings = await this.loadSettings();
     const feeds = await this.loadFeeds(filters);
@@ -128,7 +129,7 @@ export class ParserEngine {
 
       try {
         this.assertLease(signal);
-        const result = await this.processFeed(feed, settings, batchRunId, signal);
+        const result = await this.processFeed(feed, settings, batchRunId, signal, ownerToken);
 
         if (result.ok) {
           successfulFeeds += 1;
@@ -306,6 +307,7 @@ export class ParserEngine {
     settings: ParserSettings,
     batchRunId?: string,
     signal?: AbortSignal,
+    ownerToken?: string,
   ): Promise<FeedResult> {
     const startedAt = new Date();
     const feedRun = await this.database.feedRun.create({
@@ -347,7 +349,7 @@ export class ParserEngine {
         const xml = await response.text();
         const parsed = await parseFeedXml(xml, response.url || feed.feedUrl);
         this.assertLease(signal);
-        const imported = await this.importArticles(feed, parsed.articles, signal);
+        const imported = await this.importArticles(feed, parsed.articles, signal, ownerToken);
         const finishedAt = new Date();
         const durationMs = Math.max(
           0,
@@ -432,6 +434,7 @@ export class ParserEngine {
       ReturnType<typeof parseFeedXml>
     >["articles"],
     signal?: AbortSignal,
+    ownerToken?: string,
   ): Promise<{ imported: number; matched: number }> {
     if (parsedArticles.length === 0) {
       return { imported: 0, matched: 0 };
@@ -487,6 +490,7 @@ export class ParserEngine {
           articleUrl: article.articleUrl,
           publishedAt: article.publishedAt,
         })),
+        new Date(), ownerToken,
       );
       imported += result.imported;
       matched += result.matched;
