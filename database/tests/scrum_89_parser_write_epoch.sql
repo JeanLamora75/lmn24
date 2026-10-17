@@ -9,10 +9,12 @@ SELECT assert_parser_write_epoch('11111111-1111-4111-8111-111111111111'::uuid);
 DO $fence_test$
 DECLARE acquired BOOLEAN;
 BEGIN
-  SELECT locked INTO acquired FROM dblink(
-    'dbname='||current_database()||' user=postgres password=postgres',
-    'BEGIN; SELECT pg_try_advisory_xact_lock(241024,86) AS locked; ROLLBACK'
-  ) AS t(locked BOOLEAN);
+  PERFORM dblink_connect('fence_peer', 'dbname='||current_database()||' user=postgres password=postgres');
+  PERFORM dblink_exec('fence_peer','BEGIN');
+  SELECT locked INTO acquired FROM dblink('fence_peer',
+    'SELECT pg_try_advisory_xact_lock(241024,86) AS locked') AS t(locked BOOLEAN);
+  PERFORM dblink_exec('fence_peer','ROLLBACK');
+  PERFORM dblink_disconnect('fence_peer');
   IF acquired THEN
     RAISE EXCEPTION 'Successor acquired exclusive fence while old writer active';
   END IF;
