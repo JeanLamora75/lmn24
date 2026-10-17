@@ -203,4 +203,4 @@ jobs:
       - name: Build database and dependent workspaces for Prisma integration test
         run: pnpm --filter '@lmn24/database^...' build && pnpm --filter @lmn24/database build
       - name: Run real Node crash and PostgreSQL recovery tests
-        run: pnpm --filter @lmn24/parser exec vitest run src/global-parser-lock-process.test.ts src/scheduler-recovery-process.test.ts src/lease-loss-process.test.ts
+        run: pnpm --filter @lmn24/parser exec vitest run src/global-parser-lock-process.test.ts src/scheduler-recovery-process.test.ts src/lease-loss-process.test.ts --no-file-parallelism
