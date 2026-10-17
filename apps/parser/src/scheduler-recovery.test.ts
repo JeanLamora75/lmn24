@@ -1,8 +1,10 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { GlobalParserBusyError } from "./global-parser-lock.js";
 
-const lease = { release: vi.fn(async () => undefined), signal: new AbortController().signal };
-const acquire = vi.fn(async () => lease);
+const { lease, acquire } = vi.hoisted(() => {
+  const lease = { release: vi.fn(async () => undefined), signal: new AbortController().signal };
+  return { lease, acquire: vi.fn(async () => lease) };
+});
 vi.mock("./global-parser-lock.js", async importOriginal => {
   const original = await importOriginal<typeof import("./global-parser-lock.js")>();
   return { ...original, acquireGlobalParserLease: acquire };
