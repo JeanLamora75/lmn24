@@ -1,4 +1,5 @@
 import type { SchedulerExecutor } from "./scheduler-dispatcher.js";
+import { GlobalParserBusyError } from "./global-parser-lock.js";
 
 /**
  * Calls the EXISTING NestJS horoscope importer instead of duplicating its
@@ -31,9 +32,7 @@ export function horoscopeImportExecutor(
       redirect: "error",
     });
     if (response.status === 409) {
-      const error = new Error("Horoscope parser global lock busy.");
-      error.name = "GlobalParserBusyError";
-      throw error;
+      throw new GlobalParserBusyError();
     }
     if (!response.ok) throw new Error("Horoscope import returned HTTP " + response.status);
     const body = await response.json() as { status?: unknown };
