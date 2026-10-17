@@ -7,9 +7,8 @@ import type { WeatherParserEngine } from "./weather-parser-engine.js";
  * SCRUM-87: adapter to the ALREADY EXISTING manual parsers.
  * This module contains no timer and never starts automatically.
  *
- * IMPORTANT: the orchestrator must acquire the cross-parser, process-wide
- * execution lock before invoking an adapter; local RunManager locks do not
- * provide this guarantee. Do not deploy scheduling until SCRUM-84/85 is done.
+ * All launch functions MUST acquire the global parser lease through the
+ * same wrappers used by manual endpoints; raw RunManager.start is unsafe.
  */
 export type ExistingParserType = "INFOS" | "VIDEOS" | "WEATHER";
 export type ExistingParserResult = {
@@ -69,19 +68,24 @@ async function awaitWeatherRun(
 export function existingParserAdapters(
   infos: FeedRunManager,
   videos: VideoRunManager,
-  weather: Pick<WeatherParserEngine, "start" | "get">,
+  weather: Pick<WeatherParserEngine, "get">,
+  launch: {
+    infos: () => Promise<string>;
+    videos: () => Promise<string>;
+    weather: () => Promise<string>;
+  },
 ): Record<ExistingParserType, ExistingParserAdapter> {
   return {
     INFOS: async () => {
-      const runId = infos.start({}, "AUTOMATIC");
+      const runId = await launch.infos();
       return { parserType: "INFOS", runId, status: await awaitFeedRun(infos, runId) };
     },
     VIDEOS: async () => {
-      const runId = videos.start({}, "AUTOMATIC");
+      const runId = await launch.videos();
       return { parserType: "VIDEOS", runId, status: await awaitFeedRun(videos, runId) };
     },
     WEATHER: async () => {
-      const runId = await weather.start({}, "AUTOMATIC");
+      const runId = await launch.weather();
       return { parserType: "WEATHER", runId, status: await awaitWeatherRun(weather, runId) };
     },
   };
