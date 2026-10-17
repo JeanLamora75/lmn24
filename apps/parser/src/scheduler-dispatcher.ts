@@ -8,6 +8,10 @@ export type SchedulerOutcome = "SUCCESS" | "ERROR" | "PARTIAL" | "INTERRUPTED" |
 export type SchedulerExecutor = () => Promise<{ status: SchedulerOutcome }>;
 export type SchedulerExecutors = Record<SchedulerParserType, SchedulerExecutor>;
 
+export function isRetryableParserOutcome(status: SchedulerOutcome): boolean {
+  return status === "ERROR" || status === "INTERRUPTED";
+}
+
 const PRIORITIES: Record<SchedulerParserType, number> = {
   HOROSCOPE_IMPORT: 0, INFOS: 1, VIDEOS: 2, WEATHER: 3,
 };
@@ -86,6 +90,11 @@ export async function dispatchOneSchedulerJob(
   try {
     const result = await executor();
     const status = result.status;
+    // ERROR and INTERRUPTED are unsuccessful executions: send them through
+    // the bounded retry/backoff path, not straight to a terminal state.
+    if (isRetryableParserOutcome(status)) {
+      throw new Error("Parser ended with status: " + status);
+    }
     // PARTIAL is not a full success; it remains visible but does not trigger
     // blind retries that might overload provider APIs.
     if (heartbeatLost) throw new Error("Scheduler ownership heartbeat lost");
