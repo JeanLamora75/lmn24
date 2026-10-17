@@ -20,6 +20,7 @@ export function SchedulerSettings() {
   const [draft,setDraft] = useState<Record<string,string>>({});
   const [loading,setLoading] = useState(true);
   const [saving,setSaving] = useState<Type|null>(null);
+  const [enabledDraft,setEnabledDraft] = useState<Record<string,boolean>>({});
   const [error,setError] = useState("");
   const [notice,setNotice] = useState("");
   async function load() {
@@ -29,6 +30,7 @@ export function SchedulerSettings() {
     const body=await res.json() as {configured:Config[]};
     if(!Array.isArray(body.configured)) throw new Error("Configuration incorrecte.");
     setRows(body.configured);
+    setEnabledDraft(Object.fromEntries(body.configured.map(x=>[x.parserType,x.isEnabled])));
     setDraft(Object.fromEntries(body.configured.map(x=>[
       x.parserType, x.parserType==="HOROSCOPE_IMPORT" ? x.localTime??"06:15" : String(x.intervalMinutes??60)
     ])));
@@ -37,6 +39,7 @@ export function SchedulerSettings() {
   async function save(row:Config) {
     setError("");setNotice("");
     const horoscope=row.parserType==="HOROSCOPE_IMPORT";
+    const enabled=enabledDraft[row.parserType]??row.isEnabled;
     const v=draft[row.parserType]??"";
     const num=Number(v);
     if(!horoscope && (!Number.isInteger(num)||num<15||num>1440)) {
@@ -49,14 +52,14 @@ export function SchedulerSettings() {
     try {
       const res=await fetch("/api/admin/scheduler-settings",{
         method:"PATCH",headers:{"content-type":"application/json"},
-        body:JSON.stringify({parserType:row.parserType,isEnabled:false,
+        body:JSON.stringify({parserType:row.parserType,isEnabled:enabled,
           intervalMinutes:horoscope?null:num,localTime:horoscope?v:null,
           expectedUpdatedAt:row.updatedAt})
       });
       if(res.status===401){router.replace("/admin/login");return}
       if(!res.ok){const b=await res.json().catch(()=>({})) as {message?:string};throw new Error(b.message||"Enregistrement impossible.")}
       await load();
-      setNotice("Configuration enregistrée. L'automatisation reste désactivée.");
+      setNotice(enabled ? "Configuration enregistrée : parser activé." : "Configuration enregistrée : parser désactivé.");
     }catch(e){setError(e instanceof Error?e.message:String(e))}finally{setSaving(null)}
   }
   return <main className="container py-4 py-lg-5">
@@ -65,7 +68,7 @@ export function SchedulerSettings() {
       <p className="text-body-secondary mb-0">Préparer les horaires des moteurs de collecte existants.</p></div>
       <Link href="/admin" className="btn btn-outline-secondary">Retour administration</Link>
     </div>
-    <div role="note" className="alert alert-warning"><strong>Planificateur non actif.</strong> Le verrou global et l&apos;orchestrateur sont intégrés. L&apos;activation en production reste suspendue à la validation finale de l&apos;exécution automatique. Les boutons de lancement manuel restent inchangés.</div>
+    <div role="note" className="alert alert-warning"><strong>Planification automatique.</strong> Chaque parser peut être activé séparément. Les exécutions suivent un verrou global partagé avec les lancements manuels. Les changements ne sont effectifs qu&apos;après enregistrement.</div>
     {error&&<div role="alert" className="alert alert-danger">{error}</div>}
     {notice&&<div role="status" className="alert alert-success">{notice}</div>}
     {loading&&<p>Chargement des paramètres…</p>}
@@ -78,7 +81,16 @@ export function SchedulerSettings() {
         <div className="card-body">
           <div className="d-flex justify-content-between gap-2">
             <h2 className="h5">{names[type]}</h2>
-            <span className="badge text-bg-secondary">Désactivé</span>
+            <span className={"badge "+(row.isEnabled?"text-bg-success":"text-bg-secondary")}>{row.isEnabled?"Activé":"Désactivé"}</span>
+          </div>
+          <div className="form-check form-switch mb-3">
+            <input className="form-check-input" type="checkbox" role="switch"
+              id={"sched-enabled-"+type} checked={enabledDraft[type]??row.isEnabled}
+              disabled={saving!==null}
+              onChange={e=>setEnabledDraft(old=>({...old,[type]:e.target.checked}))}/>
+            <label className="form-check-label" htmlFor={"sched-enabled-"+type}>
+              Activer les exécutions automatiques
+            </label>
           </div>
           <label htmlFor={"sched-"+type} className="form-label">{daily?"Heure quotidienne (Europe/Paris)":"Intervalle (minutes)"}</label>
           <input id={"sched-"+type} className="form-control" type={daily?"time":"number"}
@@ -86,7 +98,7 @@ export function SchedulerSettings() {
             value={draft[type]??""} disabled={saving!==null}
             onChange={e=>setDraft(old=>({...old,[type]:e.target.value}))}/>
           <p className="text-body-secondary small mt-2 mb-2">
-            Prochaine exécution : non planifiée — activation suspendue.
+            {row.isEnabled ? "Planification activée. Prochaine échéance : " + (row.nextDueAt ? new Date(row.nextDueAt).toLocaleString("fr-FR") : "initialisation en cours") : "Aucune exécution automatique planifiée."}
           </p>
           <button className="btn btn-primary" type="button" disabled={saving!==null}
             onClick={()=>void save(row)}>{saving===type?"Enregistrement…":"Enregistrer les paramètres"}</button>
