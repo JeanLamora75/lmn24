@@ -25,14 +25,14 @@ describe("SCRUM-13 — administration home registry and grouping", () => {
       "Collecte et supervision", "Analyse et configuration",
       "Données et maintenance",
     ]);
-    expect(ADMIN_SECTIONS.map((section) => section.features.length)).toEqual([3, 5, 4, 4, 3]);
+    expect(ADMIN_SECTIONS.map((section) => section.features.length)).toEqual([3, 5, 5, 4, 3]);
   });
 
   it("preserves existing navigation and adds Villes météo", () => {
     const links = ADMIN_SECTIONS.flatMap(section => section.features.map(feature => feature.href));
-    expect(links).toHaveLength(19);
-    expect(new Set(links).size).toBe(19);
-    expect([...links].sort()).toEqual([...oldRoutes, "/admin/horoscopes", "/admin/weather-cities", "/admin/weather-parser"].sort());
+    expect(links).toHaveLength(20);
+    expect(new Set(links).size).toBe(20);
+    expect([...links].sort()).toEqual([...oldRoutes, "/admin/horoscopes", "/admin/weather-cities", "/admin/weather-parser", "/admin/scheduler"].sort());
   });
 
   it("keeps the parser monitoring title and direct links intact", () => {
@@ -65,9 +65,9 @@ describe("SCRUM-13 — instant local search", () => {
     expect(normalizeAdminSearch("Purgé")).toBe("purge");
   });
 
-  it("returns all five groups and 19 cards for a blank search", () => {
+  it("returns all five groups and 20 cards for a blank search", () => {
     expect(filterAdminSections(ADMIN_SECTIONS, " ").map(section => section.features.length))
-      .toEqual([3, 5, 4, 4, 3]);
+      .toEqual([3, 5, 5, 4, 3]);
   });
 
   it("finds Video cards across different groups without accents", () => {
@@ -99,7 +99,7 @@ describe("SCRUM-13 — instant local search", () => {
   it("handles zero results without modifying original content", () => {
     const noMatches = filterAdminSections(ADMIN_SECTIONS, "zz-unknown-admin-menu");
     expect(noMatches).toEqual([]);
-    expect(ADMIN_SECTIONS.map(section => section.features.length)).toEqual([3, 5, 4, 4, 3]);
+    expect(ADMIN_SECTIONS.map(section => section.features.length)).toEqual([3, 5, 5, 4, 3]);
   });
 });
 
