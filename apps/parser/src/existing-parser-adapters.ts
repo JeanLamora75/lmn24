@@ -1,4 +1,3 @@
-import type { DatabaseClient } from "@lmn24/database";
 import { ActiveRunError, type RunManager } from "./run-manager.js";
 import type { ParserFilters } from "./parser-engine.js";
 import type { VideoParserFilters } from "./video-parser-engine.js";
@@ -68,7 +67,6 @@ async function awaitWeatherRun(
 }
 
 export function existingParserAdapters(
-  _database: DatabaseClient,
   infos: FeedRunManager,
   videos: VideoRunManager,
   weather: Pick<WeatherParserEngine, "start" | "get">,
