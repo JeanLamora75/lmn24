@@ -40,10 +40,13 @@ export async function acquireGlobalParserLease(
   let closed = false;
   let lost = false;
   let acquired = false;
+  let watchdog: ReturnType<typeof setInterval> | undefined;
+  let probeStartedAt = 0;
   const abort = new AbortController();
   const markLost = () => {
     if (closed || lost) return;
     lost = true;
+    if (watchdog) clearInterval(watchdog);
     abort.abort(new GlobalParserLockLostError());
   };
   const onError = () => markLost();
@@ -67,11 +70,28 @@ export async function acquireGlobalParserLease(
     throw error;
   }
 
+  // Probe the SAME dedicated lock session: an idle TCP connection can remain
+  // undetected after a network partition while other processes recover work.
+  // Fail closed if a probe fails or takes too long (no queued probes).
+  watchdog = setInterval(() => {
+    if (closed || lost) return;
+    if (probeStartedAt) {
+      if (Date.now() - probeStartedAt > 10_000) markLost();
+      return;
+    }
+    probeStartedAt = Date.now();
+    void client.query("SELECT 1")
+      .catch(markLost)
+      .finally(() => { probeStartedAt = 0; });
+  }, 5_000);
+  watchdog.unref();
+
   return {
     signal: abort.signal,
     async release() {
       if (closed) return;
       closed = true;
+      if (watchdog) clearInterval(watchdog);
       try {
         if (acquired && !lost) {
           await client.query("SELECT pg_advisory_unlock($1, $2)", [
