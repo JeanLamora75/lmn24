@@ -193,25 +193,37 @@ async function bootstrap(): Promise<void> {
     VIDEOS: parserAdapters.VIDEOS,
     WEATHER: parserAdapters.WEATHER,
   };
-  // This runner is restricted to non-production integration experiments.
-  // The administrator API still refuses activation of scheduler config rows.
-  const schedulerExperiment = process.env.NODE_ENV !== "production" &&
-    process.env.SCHEDULER_EXPERIMENTAL_RUN === "true";
+  // Production activation is a separate explicit operator opt-in.
+  // All four database configurations remain disabled by default.
+  const schedulerExperiment = process.env.NODE_ENV === "production"
+    ? process.env.SCHEDULER_ENABLED === "true"
+    : process.env.SCHEDULER_EXPERIMENTAL_RUN === "true";
   let schedulerTimer: ReturnType<typeof setInterval> | undefined;
   if (schedulerExperiment) {
+    if (process.env.PARSER_INFOS_CRON?.trim() || process.env.PARSER_VIDEOS_CRON?.trim()) {
+      throw new Error("Disable legacy PARSER_*_CRON schedules before enabling the central scheduler.");
+    }
     const secret = process.env.SCHEDULER_INTERNAL_SECRET ?? "";
     const backendUrl = process.env.SCHEDULER_BACKEND_URL ?? "http://127.0.0.1:3001";
+    const horoscopeEnabled = await database.schedulerConfig.findUnique({
+      where: { parserType: "HOROSCOPE_IMPORT" },
+      select: { isEnabled: true },
+    });
+    if (horoscopeEnabled?.isEnabled && secret.length < 32) {
+      throw new Error("SCHEDULER_INTERNAL_SECRET (>=32 chars) is required when the horoscope scheduler is enabled.");
+    }
     const executors: SchedulerExecutors = {
       ...scheduledCollectExecutors,
-      HOROSCOPE_IMPORT: horoscopeImportExecutor(backendUrl, secret),
+      HOROSCOPE_IMPORT: secret.length >= 32
+        ? horoscopeImportExecutor(backendUrl, secret)
+        : async () => { throw new Error("Missing SCHEDULER_INTERNAL_SECRET for horoscope import."); },
     };
     let runningTick = false;
     const tick = async () => {
       if (runningTick) return;
       runningTick = true;
       try {
-        // Recovery is conservative and only available in non-production
-        // experiments. It first acquires the same global lease as all engines
+        // Recovery first acquires the same global lease as all engines
         // and only touches jobs whose ownership heartbeat is stale.
         const databaseUrl = process.env.DATABASE_URL;
         if (!databaseUrl) throw new Error("DATABASE_URL is required for recovery.");
@@ -230,7 +242,7 @@ async function bootstrap(): Promise<void> {
       }
     };
     schedulerTimer = setInterval(() => { void tick(); }, 30_000);
-    logger.warn("Experimental scheduler enabled in NON-PRODUCTION only");
+    logger.info({ production: process.env.NODE_ENV === "production" }, "Central scheduler enabled");
   }
 
 
