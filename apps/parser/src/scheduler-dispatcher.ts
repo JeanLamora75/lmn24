@@ -86,6 +86,11 @@ export async function dispatchOneSchedulerJob(
   try {
     const result = await executor();
     const status = result.status;
+    // ERROR and INTERRUPTED are unsuccessful executions: send them through
+    // the bounded retry/backoff path, not straight to a terminal state.
+    if (status === "ERROR" || status === "INTERRUPTED") {
+      throw new Error("Parser ended with status: " + status);
+    }
     // PARTIAL is not a full success; it remains visible but does not trigger
     // blind retries that might overload provider APIs.
     if (heartbeatLost) throw new Error("Scheduler ownership heartbeat lost");
