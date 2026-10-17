@@ -13,6 +13,8 @@ import cron from "node-cron";
 import { z } from "zod";
 
 import { ParserEngine } from "./parser-engine.js";
+import { existingParserAdapters } from "./existing-parser-adapters.js";
+import type { SchedulerExecutors } from "./scheduler-dispatcher.js";
 import { acquireGuardedParserLease } from "./guarded-parser-lease.js";
 import { GlobalParserBusyError } from "./global-parser-lock.js";
 import { PersistentRunLog } from "./persistent-run-log.js";
@@ -173,6 +175,23 @@ async function bootstrap(): Promise<void> {
     try { return await weatherEngine.start(filters, trigger, lease); }
     catch (error) { await lease.release(); throw error; }
   }
+
+  // Integration seam for SCRUM-84. Existing launch wrappers already acquire
+  // and retain the same global lock used by the manual endpoints.
+  // DO NOT install a dispatcher timer until the Horoscope backend bridge,
+  // recovery policy and PostgreSQL integration tests are completed.
+  const parserAdapters = existingParserAdapters(runs, videoRuns, weatherEngine, {
+    infos: () => startInfos({}, "AUTOMATIC"),
+    videos: () => startVideos({}, "AUTOMATIC"),
+    weather: () => startWeather({}, "AUTOMATIC"),
+  });
+  const scheduledCollectExecutors: Pick<SchedulerExecutors, "INFOS" | "VIDEOS" | "WEATHER"> = {
+    INFOS: parserAdapters.INFOS,
+    VIDEOS: parserAdapters.VIDEOS,
+    WEATHER: parserAdapters.WEATHER,
+  };
+  // Keep the seam typed and discoverable; no scheduler invokes it yet.
+  void scheduledCollectExecutors;
 
   let rebuildingStats = false;
   let lastStatsResult: {
