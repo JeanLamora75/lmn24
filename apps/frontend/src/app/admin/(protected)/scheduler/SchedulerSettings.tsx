@@ -65,7 +65,7 @@ export function SchedulerSettings() {
       <p className="text-body-secondary mb-0">Préparer les horaires des moteurs de collecte existants.</p></div>
       <Link href="/admin" className="btn btn-outline-secondary">Retour administration</Link>
     </div>
-    <div role="note" className="alert alert-warning"><strong>Planificateur non actif.</strong> Le lancement automatique sera disponible après la mise en place du verrou global et de l&apos;orchestrateur (SCRUM-84/85). Les boutons de lancement manuel restent inchangés.</div>
+    <div role="note" className="alert alert-warning"><strong>Planificateur non actif.</strong> Le verrou global et l&apos;orchestrateur sont intégrés. L&apos;activation en production reste suspendue à la validation finale de l&apos;exécution automatique. Les boutons de lancement manuel restent inchangés.</div>
     {error&&<div role="alert" className="alert alert-danger">{error}</div>}
     {notice&&<div role="status" className="alert alert-success">{notice}</div>}
     {loading&&<p>Chargement des paramètres…</p>}
