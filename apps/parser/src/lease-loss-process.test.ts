@@ -26,7 +26,7 @@ describe.skipIf(!enabled)("global parser lease disconnection safety",()=>{
       new Promise<number>((resolve,reject)=>{
         child.stdout?.on("data",(part:Buffer)=>{
           output+=part.toString();
-          const match=/LEASE_HELD:(\\d+)/.exec(output);
+          const match=/LEASE_HELD:(\d+)/.exec(output);
           if(match)resolve(Number(match[1]));
         });
         child.once("error",reject);
