@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS parser_write_epoch (
 );
 ALTER TABLE parser_write_epoch ADD COLUMN IF NOT EXISTS lock_backend_pid INTEGER;
 CREATE OR REPLACE FUNCTION assert_parser_write_epoch(expected_owner UUID)
-RETURNS VOID LANGUAGE plpgsql AS $parser_fence$
+RETURNS BOOLEAN LANGUAGE plpgsql AS $parser_fence$
 DECLARE active_owner UUID;
 DECLARE lock_pid INTEGER;
 BEGIN
@@ -24,5 +24,6 @@ BEGIN
     RAISE EXCEPTION 'Parser write denied: superseded owner token'
       USING ERRCODE = 'P0001';
   END IF;
+  RETURN TRUE;
 END $parser_fence$;
 COMMIT;
