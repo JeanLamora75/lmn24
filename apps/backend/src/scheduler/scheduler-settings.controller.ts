@@ -69,8 +69,18 @@ export class SchedulerSettingsController {
     if (!previous || previous.updatedAt.toISOString() !== new Date(item.expectedUpdatedAt).toISOString()) {
       throw new ConflictException("Les paramètres ont changé. Actualisez la page.");
     }
+    // PostgreSQL stores microseconds, whereas JavaScript Date has millisecond precision.
+    // Match the DB timestamp within the original millisecond to avoid false conflicts.
+    const updatedAtMs = previous.updatedAt.getTime();
     const result = await this.db.prisma.schedulerConfig.updateMany({
-      where: { parserType: item.parserType, updatedAt: previous.updatedAt, isEnabled: false },
+      where: {
+        parserType: item.parserType,
+        updatedAt: {
+          gte: new Date(updatedAtMs),
+          lt: new Date(updatedAtMs + 1),
+        },
+        isEnabled: false,
+      },
       data: {
         intervalMinutes: item.intervalMinutes,
         localTime: item.localTime,
