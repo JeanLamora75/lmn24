@@ -120,6 +120,7 @@ export class WeatherParserEngine {
   // PostgreSQL serializes the "check active then create" transaction even when
   // several parser instances try to start at the same time.
   async start(filters:WeatherFilters={},trigger:WeatherTrigger="MANUAL", lease?:GlobalParserLease):Promise<string> {
+    if (lease?.signal.aborted) throw new Error("Parser lease lost before weather run start");
     const started=await this.db.$transaction(async tx=>{
       await tx.$queryRaw`SELECT 1::int FROM pg_advisory_xact_lock(241024,71)`;
       const cutoff=new Date(Date.now()-ACTIVE_TTL_MS);
@@ -145,7 +146,7 @@ export class WeatherParserEngine {
       return {id,cities};
     },{maxWait:10000,timeout:15000});
     // Request caller receives the id immediately; all progress is persisted.
-    void this.execute(started.id,started.cities).catch(async e=>{
+    void this.execute(started.id,started.cities,lease?.signal).catch(async e=>{
       const message=safeLogText(e instanceof Error?e.message:String(e));
       try{
         await this.db.weatherRun.update({
@@ -193,12 +194,14 @@ export class WeatherParserEngine {
     `;
   }
 
-  private async execute(id:string,cities:City[]) {
+  private async execute(id:string,cities:City[],signal?:AbortSignal) {
+    const assertActive=()=>{ if(signal?.aborted) throw new Error("Weather parser lease lost"); };
     const counters:Counters={
       totalCities:cities.length,processedCities:0,successfulCities:0,failedCities:0
     };
     const errors:string[]=[];
     for(let offset=0;offset<cities.length;offset+=BATCH_SIZE) {
+      assertActive();
       const group=cities.slice(offset,offset+BATCH_SIZE);
       try{
         const response=await this.fetchBatch(group);
@@ -208,20 +211,24 @@ export class WeatherParserEngine {
           const result=checked[index];
           try{
             if(!result?.reading)throw new Error(result?.error??"Lecture météo absente.");
+            assertActive();
             await this.save(city,result.reading);
             counters.successfulCities++;
           }catch(e){
+            assertActive();
             counters.failedCities++;
             errors.push(city.name+": "+safeLogText(e instanceof Error?e.message:String(e)));
           }
           counters.processedCities++;
         }
       }catch(e){
+        assertActive();
         const detail=safeLogText(e instanceof Error?e.message:String(e));
         counters.failedCities+=group.length;
         counters.processedCities+=group.length;
         for(const city of group)errors.push(city.name+": "+detail);
       }
+      assertActive();
       await this.db.weatherRun.update({
         where:{id},
         data:{
@@ -234,6 +241,7 @@ export class WeatherParserEngine {
     }
     const status=counters.failedCities===0?"SUCCESS":
       counters.successfulCities===0?"ERROR":"PARTIAL";
+    assertActive();
     await this.db.weatherRun.update({where:{id},data:{
       finishedAt:new Date(),status,
       errorMessage:errors.length?safeLogText(errors.slice(0,6).join(" | ")):null
