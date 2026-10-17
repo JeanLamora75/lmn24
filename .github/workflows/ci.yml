@@ -6,6 +6,7 @@ on:
       - main
       - 'feat/scrum-*'
       - 'fix/scrum-*'
+      - 'test/scrum-*'
   pull_request:
     branches:
       - main
@@ -145,6 +146,8 @@ jobs:
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_job_ownership.sql
       - name: Verify constraints and disabled defaults
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_scheduler_schema_smoke.sql
+      - name: Verify parser lock exclusion across PostgreSQL sessions
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_global_lock_smoke.sql
       - name: Replay additive migrations
         run: |
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_foundations.sql
