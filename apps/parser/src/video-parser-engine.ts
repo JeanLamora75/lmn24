@@ -1,3 +1,4 @@
+import { fencedParserWrite } from "@lmn24/database";
 import type { DatabaseClient } from "@lmn24/database";
 import type { ParserEvent, ParserFilters } from "./parser-engine.js";
 
@@ -42,7 +43,7 @@ async function boundedResponse(response: Response): Promise<string> {
 export class VideoParserEngine {
   constructor(private readonly database: DatabaseClient) {}
 
-  async run(filters: VideoParserFilters = {}, emit?: VideoEmitter, batchRunId?: string, signal?: AbortSignal): Promise<VideoSummary> {
+  async run(filters: VideoParserFilters = {}, emit?: VideoEmitter, batchRunId?: string, signal?: AbortSignal, ownerToken?: string): Promise<VideoSummary> {
     const assertLease=()=>{ if(signal?.aborted) throw new Error('Video parser global lease lost'); };
     const feeds = await this.database.feedVideo.findMany({
       where: {
@@ -75,7 +76,7 @@ export class VideoParserEngine {
         feedUrl: feed.feedUrl,
       });
       const startedAt = new Date();
-      const run = await this.database.feedVideoRun.create({ data: { feedVideoId: feed.id, ...(batchRunId ? { batchRunId } : {}), startedAt, status: "RUNNING" }, select: { id: true } });
+      const run = await fencedParserWrite(this.database, ownerToken, tx => tx.feedVideoRun.create({ data: { feedVideoId: feed.id, ...(batchRunId ? { batchRunId } : {}), startedAt, status: "RUNNING" }, select: { id: true } }));
       let error: string | null = null;
       let itemsFound = 0, videosImported = 0, videosSkipped = 0;
       try {
@@ -91,14 +92,14 @@ export class VideoParserEngine {
         const unique = new Map(parsed.videos.map(video => [video.platformVideoId, video]));
         for (const video of unique.values()) {
           assertLease();
-          const created = await this.database.video.createMany({
+          const created = await fencedParserWrite(this.database, ownerToken, tx => tx.video.createMany({
             data: [{
               sourceId: feed.sourceId, feedVideoId: feed.id, categoryId: feed.categoryId,
               languageIsoCode2: feed.languageIsoCode2.trim().toLowerCase(), platform: "YOUTUBE",
               ...video,
             }],
             skipDuplicates: true,
-          });
+          }));
           videosImported += created.count;
         }
         videosSkipped = Math.max(0, itemsFound - videosImported);
@@ -114,12 +115,12 @@ export class VideoParserEngine {
       const durationMs = Math.max(0, finishedAt.getTime() - startedAt.getTime());
       const status = error ? "ERROR" : "SUCCESS";
       assertLease();
-      await this.database.$transaction([
-        this.database.feedVideo.update({ where: { id: feed.id },
-          data: { lastFetchedAt: finishedAt, lastFetchDurationMs: durationMs, lastFetchStatus: status, lastError: error } }),
-        this.database.feedVideoRun.update({ where: { id: run.id },
-          data: { finishedAt, durationMs, status, itemsFound, videosImported, videosSkipped, errorMessage: error } }),
-      ]);
+      await fencedParserWrite(this.database, ownerToken, async tx => {
+        await tx.feedVideo.update({ where: { id: feed.id },
+          data: { lastFetchedAt: finishedAt, lastFetchDurationMs: durationMs, lastFetchStatus: status, lastError: error } });
+        await tx.feedVideoRun.update({ where: { id: run.id },
+          data: { finishedAt, durationMs, status, itemsFound, videosImported, videosSkipped, errorMessage: error } });
+      });
       emit?.({
         type: error ? "feed-error" : "feed-success",
         timestamp: new Date().toISOString(),
