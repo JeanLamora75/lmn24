@@ -78,10 +78,15 @@ function splitIntoChunks<T>(items: readonly T[], size: number): T[][] {
 export class ParserEngine {
   constructor(private readonly database: DatabaseClient) {}
 
+  private assertLease(signal?: AbortSignal): void {
+    if (signal?.aborted) throw new Error('RSS parser global lease lost');
+  }
+
   async run(
     filters: ParserFilters,
     emit: (event: ParserEvent) => void,
     batchRunId?: string,
+    signal?: AbortSignal,
   ): Promise<void> {
     const settings = await this.loadSettings();
     const feeds = await this.loadFeeds(filters);
@@ -122,7 +127,8 @@ export class ParserEngine {
       });
 
       try {
-        const result = await this.processFeed(feed, settings, batchRunId);
+        this.assertLease(signal);
+        const result = await this.processFeed(feed, settings, batchRunId, signal);
 
         if (result.ok) {
           successfulFeeds += 1;
@@ -163,6 +169,7 @@ export class ParserEngine {
           });
         }
       } catch (error) {
+        this.assertLease(signal);
         failedFeeds += 1;
 
         emit({
@@ -298,6 +305,7 @@ export class ParserEngine {
     feed: FeedRow,
     settings: ParserSettings,
     batchRunId?: string,
+    signal?: AbortSignal,
   ): Promise<FeedResult> {
     const startedAt = new Date();
     const feedRun = await this.database.feedRun.create({
@@ -338,7 +346,8 @@ export class ParserEngine {
 
         const xml = await response.text();
         const parsed = await parseFeedXml(xml, response.url || feed.feedUrl);
-        const imported = await this.importArticles(feed, parsed.articles);
+        this.assertLease(signal);
+        const imported = await this.importArticles(feed, parsed.articles, signal);
         const finishedAt = new Date();
         const durationMs = Math.max(
           0,
@@ -378,10 +387,12 @@ export class ParserEngine {
           articlesWithHashtags: imported.matched,
         };
       } catch (error) {
+        this.assertLease(signal);
         finalError = errorMessage(error);
       }
     }
 
+    this.assertLease(signal);
     const finishedAt = new Date();
     const durationMs = Math.max(
       0,
@@ -420,6 +431,7 @@ export class ParserEngine {
     parsedArticles: Awaited<
       ReturnType<typeof parseFeedXml>
     >["articles"],
+    signal?: AbortSignal,
   ): Promise<{ imported: number; matched: number }> {
     if (parsedArticles.length === 0) {
       return { imported: 0, matched: 0 };
@@ -462,6 +474,7 @@ export class ParserEngine {
       newArticles,
       INSERT_CHUNK_SIZE,
     )) {
+      this.assertLease(signal);
       const result = await insertArticlesAndCount(
         this.database,
         chunk.map((article) => ({
