@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { Client } from "pg";
 
 /**
@@ -27,6 +28,7 @@ const LOCK_ID = 85;
 
 export interface GlobalParserLease {
   readonly signal: AbortSignal;
+  readonly ownerToken: string;
   release(): Promise<void>;
 }
 
@@ -40,6 +42,7 @@ export async function acquireGlobalParserLease(
   let closed = false;
   let lost = false;
   let acquired = false;
+  const ownerToken = randomUUID();
   let probeStartedAt = 0;
   const watchdogState: { timer?: ReturnType<typeof setInterval> } = {};
   const abort = new AbortController();
@@ -62,6 +65,19 @@ export async function acquireGlobalParserLease(
     );
     acquired = result.rows[0]?.acquired === true;
     if (!acquired) throw new GlobalParserBusyError();
+    // A new owner waits for previously authorized writes to COMMIT.
+    await client.query("BEGIN");
+    try {
+      await client.query("SELECT pg_advisory_xact_lock($1,$2)", [241024,86]);
+      await client.query(
+        "INSERT INTO parser_write_epoch(singleton_id,owner_token,updated_at) VALUES (1,$1::uuid,NOW()) ON CONFLICT(singleton_id) DO UPDATE SET owner_token=EXCLUDED.owner_token,updated_at=NOW()",
+        [ownerToken],
+      );
+      await client.query("COMMIT");
+    } catch (error) {
+      await client.query("ROLLBACK").catch(() => undefined);
+      throw error;
+    }
   } catch (error) {
     closed = true;
     client.off("error", onError);
@@ -88,6 +104,7 @@ export async function acquireGlobalParserLease(
 
   return {
     signal: abort.signal,
+    ownerToken,
     async release() {
       if (closed) return;
       closed = true;
