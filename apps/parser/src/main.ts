@@ -14,7 +14,9 @@ import { z } from "zod";
 
 import { ParserEngine } from "./parser-engine.js";
 import { existingParserAdapters } from "./existing-parser-adapters.js";
-import type { SchedulerExecutors } from "./scheduler-dispatcher.js";
+import { dispatchOneSchedulerJob, type SchedulerExecutors } from "./scheduler-dispatcher.js";
+import { reconcileSchedulerQueue } from "./scheduler-queue.js";
+import { horoscopeImportExecutor } from "./horoscope-scheduler-adapter.js";
 import { acquireGuardedParserLease } from "./guarded-parser-lease.js";
 import { GlobalParserBusyError } from "./global-parser-lock.js";
 import { PersistentRunLog } from "./persistent-run-log.js";
@@ -190,8 +192,35 @@ async function bootstrap(): Promise<void> {
     VIDEOS: parserAdapters.VIDEOS,
     WEATHER: parserAdapters.WEATHER,
   };
-  // Keep the seam typed and discoverable; no scheduler invokes it yet.
-  void scheduledCollectExecutors;
+  // This runner is restricted to non-production integration experiments.
+  // The administrator API still refuses activation of scheduler config rows.
+  const schedulerExperiment = process.env.NODE_ENV !== "production" &&
+    process.env.SCHEDULER_EXPERIMENTAL_RUN === "true";
+  let schedulerTimer: ReturnType<typeof setInterval> | undefined;
+  if (schedulerExperiment) {
+    const secret = process.env.SCHEDULER_INTERNAL_SECRET ?? "";
+    const backendUrl = process.env.SCHEDULER_BACKEND_URL ?? "http://127.0.0.1:3001";
+    const executors: SchedulerExecutors = {
+      ...scheduledCollectExecutors,
+      HOROSCOPE_IMPORT: horoscopeImportExecutor(backendUrl, secret),
+    };
+    let runningTick = false;
+    const tick = async () => {
+      if (runningTick) return;
+      runningTick = true;
+      try {
+        await reconcileSchedulerQueue(database);
+        await dispatchOneSchedulerJob(database, executors);
+      } catch (error) {
+        logger.error({ error }, "Experimental scheduler tick failed");
+      } finally {
+        runningTick = false;
+      }
+    };
+    schedulerTimer = setInterval(() => { void tick(); }, 30_000);
+    logger.warn("Experimental scheduler enabled in NON-PRODUCTION only");
+  }
+
 
   let rebuildingStats = false;
   let lastStatsResult: {
@@ -507,6 +536,7 @@ async function bootstrap(): Promise<void> {
   async function shutdown(signal: string): Promise<void> {
     logger.info({ signal }, "LMN24 parser shutting down");
 
+    if (schedulerTimer) clearInterval(schedulerTimer);
     hourlyStatsJob.stop();
     fullStatsJob.stop();
     for (const job of scheduledJobs) job.stop();
