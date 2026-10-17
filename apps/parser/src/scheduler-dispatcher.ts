@@ -1,5 +1,6 @@
 import type { DatabaseClient } from "@lmn24/database";
 import { GlobalParserBusyError } from "./global-parser-lock.js";
+import { acquireGuardedParserLease } from "./guarded-parser-lease.js";
 
 export type SchedulerParserType = "INFOS" | "VIDEOS" | "WEATHER" | "HOROSCOPE_IMPORT";
 export type SchedulerOutcome = "SUCCESS" | "ERROR" | "PARTIAL" | "INTERRUPTED" | "SKIPPED";
@@ -30,7 +31,15 @@ export async function dispatchOneSchedulerJob(
   executors: SchedulerExecutors,
   now: Date = new Date(),
 ): Promise<"EMPTY" | "BUSY" | "PROCESSED"> {
-  const job = await database.$transaction(async tx => {
+  // Lock before claiming: recovery holds the identical advisory lock, so it
+  // cannot mistake a newly claimed RUNNING task for an orphan.
+  // Executor wrappers are independently guarded; do not retain this claim
+  // lease while invoking them, or the same process would deadlock itself.
+  let claimLease;
+  try { claimLease = await acquireGuardedParserLease(); }
+  catch (error) { if (error instanceof GlobalParserBusyError) return "BUSY"; throw error; }
+  let job;
+  try { job = await database.$transaction(async tx => {
     // SKIP LOCKED makes concurrent schedulers claim different jobs. The
     // advisory lock inside every executor guarantees only one parser runs.
     const eligible = await tx.$queryRaw<Array<{ id: string; parser_type: string }>>`
@@ -53,6 +62,7 @@ export async function dispatchOneSchedulerJob(
       data: { status: "RUNNING", startedAt: new Date(), attempt: { increment: 1 } },
     });
   }, { maxWait: 10_000, timeout: 15_000 });
+  } finally { await claimLease.release(); }
   if (!job || !isParserType(job.parserType)) return "EMPTY";
 
   const executor = executors[job.parserType];
