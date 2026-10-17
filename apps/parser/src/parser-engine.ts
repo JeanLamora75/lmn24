@@ -1,3 +1,4 @@
+import { fencedParserWrite } from "@lmn24/database";
 import { insertArticlesAndCount, type DatabaseClient } from "@lmn24/database";
 
 import { parseFeedXml } from "./feed-parser.js";
@@ -310,7 +311,7 @@ export class ParserEngine {
     ownerToken?: string,
   ): Promise<FeedResult> {
     const startedAt = new Date();
-    const feedRun = await this.database.feedRun.create({
+    const feedRun = await fencedParserWrite(this.database, ownerToken, tx => tx.feedRun.create({
       data: {
         feedId: feed.id,
         ...(batchRunId ? { batchRunId } : {}),
@@ -320,7 +321,7 @@ export class ParserEngine {
       select: {
         id: true,
       },
-    });
+    }));
 
     let finalError = "Échec du traitement du flux.";
 
@@ -357,8 +358,8 @@ export class ParserEngine {
         );
         const skipped = Math.max(0, parsed.itemsFound - imported.imported);
 
-        await this.database.$transaction([
-          this.database.feed.update({
+        await fencedParserWrite(this.database, ownerToken, async tx => {
+          await tx.feed.update({
             where: { id: feed.id },
             data: {
               lastFetchedAt: finishedAt,
@@ -366,8 +367,8 @@ export class ParserEngine {
               lastFetchStatus: "SUCCESS",
               lastError: null,
             },
-          }),
-          this.database.feedRun.update({
+          });
+          await tx.feedRun.update({
             where: { id: feedRun.id },
             data: {
               finishedAt,
@@ -378,8 +379,8 @@ export class ParserEngine {
               articlesSkipped: skipped,
               errorMessage: null,
             },
-          }),
-        ]);
+          });
+        });
 
         return {
           ok: true,
@@ -401,8 +402,8 @@ export class ParserEngine {
       finishedAt.getTime() - startedAt.getTime(),
     );
 
-    await this.database.$transaction([
-      this.database.feed.update({
+    await fencedParserWrite(this.database, ownerToken, async tx => {
+      await tx.feed.update({
         where: { id: feed.id },
         data: {
           lastFetchedAt: finishedAt,
@@ -410,8 +411,8 @@ export class ParserEngine {
           lastFetchStatus: "ERROR",
           lastError: finalError,
         },
-      }),
-      this.database.feedRun.update({
+      });
+          await tx.feedRun.update({
         where: { id: feedRun.id },
         data: {
           finishedAt,
@@ -419,8 +420,8 @@ export class ParserEngine {
           status: "ERROR",
           errorMessage: finalError,
         },
-      }),
-    ]);
+      });
+        });
 
     return {
       ok: false,
