@@ -76,7 +76,7 @@ export class HoroscopeImportService {
     const today=part("year")+"-"+part("month")+"-"+part("day");
     const expectedFile="horoscopes-"+today+".json";
     const target=files.find(file=>file.fileName===expectedFile);
-    if(!target)throw new Error("Fichier Horoscope attendu absent : "+expectedFile);
+    if(!target)throw new NotFoundException("Fichier Horoscope attendu absent : "+expectedFile);
     if(target.count===target.expected)
       return {status:"SKIPPED" as const,reason:"Horoscope du jour déjà importé"};
     const result=await this.importFile(target.fileName);
