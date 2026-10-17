@@ -8,8 +8,18 @@ CREATE INDEX IF NOT EXISTS idx_scheduler_job_heartbeat
   WHERE status = 'RUNNING';
 -- Invariant: a RUNNING job must have an owner and a heartbeat. Existing legacy
 -- RUNNING rows must be reconciled before validating this CHECK in deployment.
-ALTER TABLE scheduler_job
-  ADD CONSTRAINT scheduler_job_running_owner_chk
-  CHECK (status <> 'RUNNING' OR (owner_token IS NOT NULL AND heartbeat_at IS NOT NULL))
-  NOT VALID;
+DO $
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint
+    WHERE conrelid = 'scheduler_job'::regclass
+      AND conname = 'scheduler_job_running_owner_chk'
+  ) THEN
+    ALTER TABLE scheduler_job
+      ADD CONSTRAINT scheduler_job_running_owner_chk
+      CHECK (status <> 'RUNNING' OR (owner_token IS NOT NULL AND heartbeat_at IS NOT NULL))
+      NOT VALID;
+  END IF;
+END $;
 COMMIT;
