@@ -67,11 +67,18 @@ export class HoroscopeImportService {
    */
   async importScheduledAvailable() {
     const files=await this.overview();
-    // Missing repository files are transient: never record a false SUCCESS.
-    // The scheduler must retry later rather than treating the day as imported.
-    if(files.length===0)throw new Error("Aucun fichier Horoscope disponible : nouvel essai nécessaire.");
-    const target=files.find(file=>file.count<file.expected);
-    if(!target)return {status:"SKIPPED" as const,reason:"All available horoscope files already imported"};
+    // At 06:15 Paris time the scheduled import must serve the current civil
+    // day. Other files from previous or future dates cannot satisfy it.
+    const parts=new Intl.DateTimeFormat("en-GB",{
+      timeZone:"Europe/Paris",year:"numeric",month:"2-digit",day:"2-digit",
+    }).formatToParts(new Date());
+    const part=(name:string)=>parts.find(item=>item.type===name)?.value??"";
+    const today=part("year")+"-"+part("month")+"-"+part("day");
+    const expectedFile="horoscopes-"+today+".json";
+    const target=files.find(file=>file.fileName===expectedFile);
+    if(!target)throw new Error("Fichier Horoscope attendu absent : "+expectedFile);
+    if(target.count===target.expected)
+      return {status:"SKIPPED" as const,reason:"Horoscope du jour déjà importé"};
     const result=await this.importFile(target.fileName);
     return {status:result.status,fileName:target.fileName,...result};
   }
