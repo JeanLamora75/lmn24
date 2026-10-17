@@ -604,6 +604,7 @@ model SchedulerJob {
 
   config SchedulerConfig @relation(fields: [parserType], references: [parserType], onDelete: Restrict)
 
+  @@unique([parserType, scheduledFor], map: "scheduler_job_unique_due")
   @@index([status, notBefore, scheduledFor], map: "idx_scheduler_job_dispatch")
   @@index([parserType, scheduledFor(sort: Desc)], map: "idx_scheduler_job_parser_date")
   @@map("scheduler_job")
