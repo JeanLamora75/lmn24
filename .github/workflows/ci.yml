@@ -10,6 +10,10 @@ on:
   pull_request:
     branches:
       - main
+      - 'feat/scrum-*'
+      - 'fix/scrum-*'
+      - 'test/scrum-*'
+  workflow_dispatch:
 
 permissions:
   contents: read
