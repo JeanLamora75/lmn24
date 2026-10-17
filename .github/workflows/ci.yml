@@ -148,6 +148,10 @@ jobs:
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_foundations.sql
       - name: Apply owner fencing migration
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_job_ownership.sql
+      - name: Apply transactional writer fencing migration
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_parser_write_fence.sql
+      - name: Verify stale-owner denial across PostgreSQL sessions
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_89_parser_write_epoch.sql
       - name: Verify constraints and disabled defaults
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_scheduler_schema_smoke.sql
       - name: Verify parser lock exclusion across PostgreSQL sessions
@@ -200,6 +204,7 @@ jobs:
         run: |
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/20261017_scheduler_foundations.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/20261017_scheduler_job_ownership.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/20261017_parser_write_fence.sql
       - name: Build database and dependent workspaces for Prisma integration test
         run: pnpm --filter '@lmn24/database^...' build && pnpm --filter @lmn24/database build
       - name: Run real Node crash and PostgreSQL recovery tests
