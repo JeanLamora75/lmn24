@@ -598,6 +598,8 @@ model SchedulerJob {
   notBefore       DateTime  @default(now()) @map("not_before") @db.Timestamptz(6)
   startedAt       DateTime? @map("started_at") @db.Timestamptz(6)
   finishedAt      DateTime? @map("finished_at") @db.Timestamptz(6)
+  ownerToken      String?   @map("owner_token") @db.Uuid
+  heartbeatAt     DateTime? @map("heartbeat_at") @db.Timestamptz(6)
   lastError       String?   @map("last_error") @db.Text
   createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)

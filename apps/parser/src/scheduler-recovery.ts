@@ -26,16 +26,18 @@ export async function recoverOrphanedSchedulerJobs(
   }
   try {
     const orphaned = await database.schedulerJob.findMany({
-      where: { status: "RUNNING", startedAt: { lt: startedBefore } },
-      select: { id: true, attempt: true },
+      where: { status: "RUNNING", heartbeatAt: { lt: startedBefore } },
+      select: { id: true, attempt: true, ownerToken: true },
     });
     let recovered = 0;
     for (const job of orphaned) {
       const retry = job.attempt < 3;
       const updated = await database.schedulerJob.updateMany({
-        where: { id: job.id, status: "RUNNING", startedAt: { lt: startedBefore } },
+        where: { id: job.id, status: "RUNNING", ownerToken: job.ownerToken,
+          heartbeatAt: { lt: startedBefore } },
         data: {
           status: retry ? "PENDING" : "INTERRUPTED",
+          ownerToken: null, heartbeatAt: null,
           startedAt: retry ? null : undefined,
           finishedAt: retry ? null : new Date(),
           notBefore: new Date(Date.now() + 60_000),
