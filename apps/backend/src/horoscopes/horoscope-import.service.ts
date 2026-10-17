@@ -2,6 +2,7 @@ import { BadRequestException, ConflictException, Injectable, Logger, NotFoundExc
 import { ConfigService } from "@nestjs/config";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { Client } from "pg";
 import { DatabaseService } from "../database/database.service";
 import { validateHoroscopeJson } from "./horoscope-import.validation";
 
@@ -58,14 +59,66 @@ export class HoroscopeImportService {
   async history() {
     return this.db.prisma.horoscopeImportRun.findMany({take:100,orderBy:{startedAt:"desc"}});
   }
-  async importFile(fileName:string,userId:string) {
+  /**
+   * Scheduled entry point (SCRUM-88): reuse the manual repository import
+   * with identical JSON validation, idempotency and global serialization.
+   * Dispatcher calls this method only after 06:00 Europe/Paris.
+   * Process a maximum of one missing date per call to keep runs bounded.
+   */
+  async importScheduledAvailable() {
+    const files=await this.overview();
+    const target=files.find(file=>file.count<file.expected);
+    if(!target)return {status:"SKIPPED" as const,reason:"No missing horoscope files"};
+    const result=await this.importFile(target.fileName);
+    return {status:result.status,fileName:target.fileName,...result};
+  }
+
+  async importFile(fileName:string,userId?:string) {
     if(!FILE_RE.test(fileName)) throw new BadRequestException("Nom de fichier invalide.");
     let content:string;
     try {content=await fs.readFile(path.join(this.storage,fileName),"utf8");}
     catch(e) {if((e as NodeJS.ErrnoException).code==="ENOENT")throw new NotFoundException("Fichier introuvable.");throw e;}
     return this.importContent(content,fileName,userId,"REPOSITORY");
   }
-  async importContent(content:string,fileName:string,userId:string,sourceType:"UPLOAD"|"REPOSITORY"="UPLOAD") {
+  async importContent(content:string,fileName:string,userId:string|undefined,sourceType:"UPLOAD"|"REPOSITORY"="UPLOAD") {
+    // Same two-key advisory lock as apps/parser/src/global-parser-lock.ts.
+    // The dedicated session lives for the *entire* database import, not only
+    // for its opening transaction. Both manual upload and repository imports
+    // pass this single entry point.
+    const connectionString=process.env.DATABASE_URL;
+    if(!connectionString)throw new Error("DATABASE_URL requise pour l'import.");
+    const session=new Client({connectionString,connectionTimeoutMillis:10000});
+    let acquired=false;
+    let intentionalClose=false;
+    const failClosed=()=>{
+      if(!intentionalClose && acquired){
+        this.logger.error("Horoscope: verrou global perdu; arrêt du backend pour éviter un import concurrent.");
+        process.exit(1);
+      }
+    };
+    session.on("error",failClosed);
+    session.on("end",failClosed);
+    try {
+      await session.connect();
+      const lock=await session.query<{acquired:boolean}>(
+        "SELECT pg_try_advisory_lock($1, $2) AS acquired",[241024,85]);
+      if(lock.rows[0]?.acquired!==true)
+        throw new ConflictException("Un autre parser est déjà en cours d'exécution.");
+      acquired=true;
+      return await this.importContentLocked(content,fileName,userId,sourceType);
+    } finally {
+      intentionalClose=true;
+      try {
+        if(acquired)await session.query("SELECT pg_advisory_unlock($1, $2)",[241024,85]);
+      } finally {
+        session.off("error",failClosed);
+        session.off("end",failClosed);
+        await session.end().catch(()=>undefined);
+      }
+    }
+  }
+
+  private async importContentLocked(content:string,fileName:string,userId:string|undefined,sourceType:"UPLOAD"|"REPOSITORY") {
     if(!FILE_RE.test(fileName))throw new BadRequestException("Nom de fichier invalide.");
     // Validate before any published content is written.
     let validated:ReturnType<typeof validateHoroscopeJson>;
