@@ -36,8 +36,43 @@ Write-Host ' LMN24 - Deploiement manuel OVHcloud'
 Write-Host '==============================================' -ForegroundColor Cyan
 Write-Host ''
 
-$git = Get-Tool 'git' 'Installe Git for Windows ou ajoute Git au PATH Windows.'
-$gh = Get-Tool 'gh' 'Installe GitHub CLI (winget install --id GitHub.cli -e), puis rouvre cette fenetre.'
+# Also support portable tools: no Windows administrator privileges required.
+# GitHub CLI portable is installed only under the current user's LOCALAPPDATA.
+function Resolve-Git {
+    $command = Get-Command git -ErrorAction SilentlyContinue
+    if ($command) { return $command.Source }
+
+    $candidates = @(
+        (Join-Path $env:ProgramFiles 'Git\cmd\git.exe'),
+        (Join-Path $env:LOCALAPPDATA 'Programs\Git\cmd\git.exe')
+    )
+    $desktopDir = Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+    if (Test-Path -LiteralPath $desktopDir -PathType Container) {
+        $desktopVersions = @(Get-ChildItem -LiteralPath $desktopDir -Directory -Filter 'app-*' |
+            Sort-Object Name -Descending)
+        foreach ($versionDir in $desktopVersions) {
+            $candidates += (Join-Path $versionDir.FullName 'resources\app\git\cmd\git.exe')
+            $candidates += (Join-Path $versionDir.FullName 'resources\app\git\mingw64\bin\git.exe')
+        }
+    }
+    foreach ($candidate in $candidates) {
+        if (Test-Path -LiteralPath $candidate -PathType Leaf) { return $candidate }
+    }
+    Stop-Deployment 'Git est introuvable. Ouvre GitHub Desktop puis installe Git for Windows sans admin si disponible.'
+}
+
+function Resolve-Gh {
+    $command = Get-Command gh -ErrorAction SilentlyContinue
+    if ($command) { return $command.Source }
+    $portable = Join-Path $env:LOCALAPPDATA 'LMN24\GitHubCLI\gh.exe'
+    if (Test-Path -LiteralPath $portable -PathType Leaf) { return $portable }
+    Stop-Deployment 'GitHub CLI introuvable. Lance Installer-GitHubCLI-Portable.cmd dans le dossier LMN24 (sans droits administrateur).'
+}
+
+$git = Resolve-Git
+$gh = Resolve-Gh
+Write-Host "Git         : $git"
+Write-Host "GitHub CLI  : $gh"
 Write-Host '[1/4] Verification du depot Git local...'
 
 $isGitRepo = (& $git -C $repoRoot rev-parse --is-inside-work-tree 2>$null | Out-String).Trim()
