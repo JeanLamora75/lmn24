@@ -9,22 +9,20 @@ Aucun push GitHub Desktop, aucune fusion dans `main` et aucun lancement du véri
 Sur Windows 11 :
 
 - GitHub Desktop et le dépôt `JeanLamora75/lmn24` cloné, déjà fonctionnels.
-- `git.exe` accessible depuis PowerShell. GitHub Desktop possède son propre Git, qui n'est pas toujours accessible depuis les scripts PowerShell. Si la commande `git --version` échoue, installer **Git for Windows** ou l'ajouter au `PATH` utilisateur.
-- GitHub CLI (`gh.exe`) accessible dans PowerShell. Pour l'installer via Windows Package Manager, si autorisé par l'entreprise :
+- `git.exe` accessible depuis PowerShell. Le lanceur recherche aussi le Git fourni avec GitHub Desktop lorsqu'il n'est pas présent dans le PATH. Si la commande `git --version` échoue, installer **Git for Windows** ou l'ajouter au `PATH` utilisateur.
+- **GitHub CLI portable, sans droits administrateur :** dans le dossier LMN24, double-cliquer sur `Installer-GitHubCLI-Portable.cmd`. Le programme télécharge l'archive officielle depuis https://github.com/cli/cli/releases/latest, vérifie sa somme SHA256 officielle, puis installe uniquement `gh.exe` dans `%LOCALAPPDATA%\LMN24\GitHubCLI\gh.exe`. Il ne modifie aucun PATH et n'utilise pas winget.
+
+  Si le réseau professionnel bloque ce téléchargement, récupérer manuellement l'archive ZIP `windows_amd64.zip` correspondant à Windows x64 sur la page officielle ; vérifier son SHA256 avec le fichier de sommes officiel, puis extraire et copier `gh.exe` dans `%LOCALAPPDATA%\LMN24\GitHubCLI\gh.exe`.
+
+  Dans PowerShell, se connecter une seule fois à GitHub :
 
   ```powershell
-  winget install --id GitHub.cli --exact
+  & "$env:LOCALAPPDATA\\LMN24\\GitHubCLI\\gh.exe" auth login
+  & "$env:LOCALAPPDATA\\LMN24\\GitHubCLI\\gh.exe" auth status
   ```
 
-  Redémarrer PowerShell puis vérifier :
+  Sélectionner GitHub.com, HTTPS et la connexion via le navigateur. **Ne jamais transmettre ni publier les jetons et mots de passe.** Le lanceur reconnaît automatiquement cette installation portable, sans modification du PATH.
 
-  ```powershell
-  gh --version
-  gh auth login
-  gh auth status
-  ```
-
-  Dans `gh auth login`, utiliser `GitHub.com`, `HTTPS` et l'authentification par navigateur proposée, avec le compte autorisé à lancer les Actions dans le dépôt. **Ne coller aucun jeton ni mot de passe dans les scripts LMN24.**
 
 - GitHub Actions doit être activé pour le dépôt. Les secrets SSH `LMN24_DEPLOY_SSH_KEY` et `LMN24_DEPLOY_KNOWN_HOSTS` sont déjà configurés sur GitHub : ne pas les copier sur le PC.
 
@@ -86,9 +84,9 @@ Vérifier :
 
 ## Dépannage courant
 
-- `gh est introuvable` → installer GitHub CLI puis rouvrir l'explorateur/PowerShell si besoin.
+- `gh est introuvable` → lancer `Installer-GitHubCLI-Portable.cmd` ou vérifier le dossier utilisateur de GitHub CLI.
 - `git est introuvable` → installer Git for Windows ou ajouter Git au `PATH`.
-- `gh auth status` échoue → exécuter `gh auth login` dans PowerShell.
+- `gh auth status` échoue → relancer l'authentification GitHub CLI portable depuis PowerShell.
 - `branche locale != main` → GitHub Desktop → **Current branch → main**.
 - `SHA local != SHA GitHub` → GitHub Desktop → **Fetch origin / Pull origin**, puis **retester** la nouvelle version.
 - `modifications locales` → regarder **Changes** dans GitHub Desktop, ne rien supprimer sans vérifier.
@@ -97,6 +95,7 @@ Vérifier :
 
 ## Pour les développeurs
 
+- Installation sans administrateur : `Installer-GitHubCLI-Portable.cmd`
 - Lanceur réel : `Deployer-LMN24.cmd`
 - Vérification sans publication : `Verifier-Deploiement-LMN24.cmd`
 - Script PowerShell : `scripts/windows/Deploy-LMN24.ps1`
@@ -104,3 +103,7 @@ Vérifier :
 - Script côté VPS : `scripts/deploy-production.sh`
 
 Le workflow conserve son déclenchement **strictement manuel** (`workflow_dispatch`). Le champ optionnel `expected_sha` est vérifié lorsqu'il est fourni par le lanceur Windows. Aucun webhook `push` n'est ajouté.
+
+## Politique de sécurité du poste professionnel
+
+La version portable n'exige pas de droits administrateur. Si l'entreprise bloque l'exécution ou le téléchargement d'exécutables non approuvés, ne pas contourner cette restriction et demander une solution autorisée au support informatique.
