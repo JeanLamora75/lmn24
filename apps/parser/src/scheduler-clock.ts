@@ -26,7 +26,7 @@ export function nextScheduledAt(config: Schedule, after: Date): Date {
   if (config.parserType !== "HOROSCOPE_IMPORT") {
     const minutes = config.intervalMinutes;
     if (!minutes || !Number.isInteger(minutes) || minutes < 15 ||
-        minutes > 1440 || 1440 % minutes !== 0) {
+        minutes > 1440) {
       throw new Error("Invalid periodic interval");
     }
     const quantum = minutes * 60_000;
