@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, describe, expect, it } from "vitest";
 import { createPrismaClient } from "@lmn24/database";
 import { randomUUID } from "node:crypto";
 import { dispatchOneSchedulerJob, type SchedulerExecutors } from "./scheduler-dispatcher.js";
@@ -125,7 +125,4 @@ describe.skipIf(!enabled)("isolated PostgreSQL four-parser scheduler acceptance"
   }, 20_000);
 });
 
-afterEach(async () => {
-  // Keep connection reusable for the next test; Vitest tears down the worker
-  // after this file, and Prisma's pool closes with the process.
-});
+afterAll(async () => { await db?.$disconnect(); });
