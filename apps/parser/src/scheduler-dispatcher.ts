@@ -1,10 +1,9 @@
 import type { DatabaseClient } from "@lmn24/database";
 import { GlobalParserBusyError } from "./global-parser-lock.js";
-import { acquireGuardedParserLease } from "./guarded-parser-lease.js";
 
 export type SchedulerParserType = "INFOS" | "VIDEOS" | "WEATHER" | "HOROSCOPE_IMPORT";
 export type SchedulerOutcome = "SUCCESS" | "ERROR" | "PARTIAL" | "INTERRUPTED" | "SKIPPED";
-export type SchedulerExecutor = (lease: import("./global-parser-lock.js").GlobalParserLease) => Promise<{ status: SchedulerOutcome }>;
+export type SchedulerExecutor = () => Promise<{ status: SchedulerOutcome }>;
 export type SchedulerExecutors = Record<SchedulerParserType, SchedulerExecutor>;
 
 const PRIORITIES: Record<SchedulerParserType, number> = {
@@ -31,13 +30,6 @@ export async function dispatchOneSchedulerJob(
   executors: SchedulerExecutors,
   now: Date = new Date(),
 ): Promise<"EMPTY" | "BUSY" | "PROCESSED"> {
-  // Hold the global lease continuously from claim through outcome persistence.
-  // Executor functions must accept this lease and transfer it to the existing
-  // RunManager/Weather engine; no second acquisition is allowed.
-  let lease;
-  try { lease = await acquireGuardedParserLease(); }
-  catch (error) { if (error instanceof GlobalParserBusyError) return "BUSY"; throw error; }
-  try {
   const job = await database.$transaction(async tx => {
     // SKIP LOCKED makes concurrent schedulers claim different jobs. The
     // advisory lock inside every executor guarantees only one parser runs.
@@ -65,7 +57,7 @@ export async function dispatchOneSchedulerJob(
 
   const executor = executors[job.parserType];
   try {
-    const result = await executor(lease);
+    const result = await executor();
     const status = result.status;
     // PARTIAL is not a full success; it remains visible but does not trigger
     // blind retries that might overload provider APIs.
@@ -106,7 +98,6 @@ export async function dispatchOneSchedulerJob(
     });
     return "PROCESSED";
   }
-  } finally { await lease.release(); }
 }
 
 export const SCHEDULER_PRIORITIES = PRIORITIES;
