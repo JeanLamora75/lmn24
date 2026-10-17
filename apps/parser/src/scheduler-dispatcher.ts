@@ -67,7 +67,8 @@ export async function dispatchOneSchedulerJob(
         status: status === "SUCCESS" || status === "SKIPPED" ? "SUCCESS" :
           status === "PARTIAL" ? "ERROR" : status,
         finishedAt: new Date(),
-        lastError: status === "PARTIAL" ? "Traitement partiel." : null,
+        lastError: status === "PARTIAL" ? "Traitement partiel." :
+          status === "ERROR" || status === "INTERRUPTED" ? "Exécution terminée sans succès." : null,
       },
     });
     return "PROCESSED";
