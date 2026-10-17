@@ -16,6 +16,7 @@ import { ParserEngine } from "./parser-engine.js";
 import { existingParserAdapters } from "./existing-parser-adapters.js";
 import { dispatchOneSchedulerJob, type SchedulerExecutors } from "./scheduler-dispatcher.js";
 import { reconcileSchedulerQueue } from "./scheduler-queue.js";
+import { recoverOrphanedSchedulerJobs } from "./scheduler-recovery.js";
 import { horoscopeImportExecutor } from "./horoscope-scheduler-adapter.js";
 import { acquireGuardedParserLease } from "./guarded-parser-lease.js";
 import { GlobalParserBusyError } from "./global-parser-lock.js";
@@ -209,6 +210,17 @@ async function bootstrap(): Promise<void> {
       if (runningTick) return;
       runningTick = true;
       try {
+        // Recovery is conservative and only available in non-production
+        // experiments. It first acquires the same global lease as all engines
+        // and only touches jobs whose ownership heartbeat is stale.
+        const databaseUrl = process.env.DATABASE_URL;
+        if (!databaseUrl) throw new Error("DATABASE_URL is required for recovery.");
+        const recovered = await recoverOrphanedSchedulerJobs(
+          database, databaseUrl, new Date(Date.now() - 5 * 60_000),
+        );
+        if (recovered && recovered > 0) {
+          logger.warn({ recovered }, "Recovered orphaned scheduler jobs");
+        }
         await reconcileSchedulerQueue(database);
         await dispatchOneSchedulerJob(database, executors);
       } catch (error) {
