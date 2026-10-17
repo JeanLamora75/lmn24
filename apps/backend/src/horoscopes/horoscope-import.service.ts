@@ -100,8 +100,11 @@ export class HoroscopeImportService {
     const session=new Client({connectionString,connectionTimeoutMillis:10000});
     let acquired=false;
     let intentionalClose=false;
+    let probeStartedAt=0;
+    const probeState:{timer?:ReturnType<typeof setInterval>}={};
     const failClosed=()=>{
       if(!intentionalClose && acquired){
+        if(probeState.timer)clearInterval(probeState.timer);
         this.logger.error("Horoscope: verrou global perdu; arrêt du backend pour éviter un import concurrent.");
         process.exit(1);
       }
@@ -115,9 +118,22 @@ export class HoroscopeImportService {
       if(lock.rows[0]?.acquired!==true)
         throw new ConflictException("Un autre parser est déjà en cours d'exécution.");
       acquired=true;
+      // Proactively detect a lost idle TCP session while the Prisma importer
+      // writes on a different pooled connection. Never overlap probes.
+      probeState.timer=setInterval(()=>{
+        if(intentionalClose)return;
+        if(probeStartedAt){
+          if(Date.now()-probeStartedAt>10_000)failClosed();
+          return;
+        }
+        probeStartedAt=Date.now();
+        void session.query("SELECT 1").catch(failClosed).finally(()=>{probeStartedAt=0;});
+      },5_000);
+      probeState.timer.unref();
       return await this.importContentLocked(content,fileName,userId,sourceType);
     } finally {
       intentionalClose=true;
+      if(probeState.timer)clearInterval(probeState.timer);
       try {
         if(acquired)await session.query("SELECT pg_advisory_unlock($1, $2)",[241024,85]);
       } finally {
