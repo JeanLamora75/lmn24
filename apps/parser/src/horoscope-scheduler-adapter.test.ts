@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { horoscopeImportExecutor } from "./horoscope-scheduler-adapter.js";
+import { horoscopeImportExecutor, HoroscopeFileMissingError } from "./horoscope-scheduler-adapter.js";
 import { GlobalParserBusyError } from "./global-parser-lock.js";
 
 const secret = "test-only-internal-secret-with-more-than-32-characters";
@@ -11,6 +11,11 @@ describe("Horoscope scheduler adapter", () => {
   it("propagates a busy global lease to the dispatcher", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => new Response(null, { status: 409 })));
     await expect(horoscopeImportExecutor(url, secret)()).rejects.toBeInstanceOf(GlobalParserBusyError);
+  });
+
+  it("treats HTTP 404 as a missing daily file", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(null, { status: 404 })));
+    await expect(horoscopeImportExecutor(url, secret)()).rejects.toBeInstanceOf(HoroscopeFileMissingError);
   });
 
   it("returns SUCCESS only for an acknowledged backend import", async () => {
