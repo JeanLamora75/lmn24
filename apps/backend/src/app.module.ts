@@ -11,6 +11,7 @@ import { HealthController } from "./health.controller";
 import { HoroscopesModule } from "./horoscopes/horoscopes.module";
 import { ParserModule } from "./parser/parser.module";
 import { RetentionSettingsModule } from "./retention/retention-settings.module";
+import { SchedulerSettingsModule } from "./scheduler/scheduler-settings.module";
 import { SourcesModule } from "./sources/sources.module";
 import { StatisticsModule } from "./statistics/statistics.module";
 import { VideoFeedsModule } from "./video-feeds/video-feeds.module";
@@ -34,6 +35,7 @@ import { PublicWeatherModule } from "./weather/public-weather.module";
     HoroscopesModule,
     ParserModule,
     RetentionSettingsModule,
+    SchedulerSettingsModule,
     StatisticsModule,
     VideoFeedsModule,
     VideosModule,
