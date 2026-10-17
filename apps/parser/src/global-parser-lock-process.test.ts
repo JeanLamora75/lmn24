@@ -2,15 +2,13 @@ import { afterEach, describe, expect, it } from "vitest";
 import { spawn, type ChildProcess } from "node:child_process";
 import { once } from "node:events";
 import { fileURLToPath } from "node:url";
-import { resolve } from "node:path";
 
 const enabled=Boolean(process.env.SCHEDULER_PG_INTEGRATION && process.env.DATABASE_URL);
 const children: ChildProcess[]=[];
 const fixture=fileURLToPath(new URL("./global-parser-lock-child.ts", import.meta.url));
-const tsx=resolve(process.cwd(),"node_modules","tsx","dist","cli.mjs");
 
 async function launch(): Promise<{child:ChildProcess; outcome:string}> {
-  const child=spawn(process.execPath,[tsx,fixture],{
+  const child=spawn(process.execPath,["--import","tsx",fixture],{
     env:process.env,stdio:["ignore","pipe","pipe"],
   });
   children.push(child);

@@ -80,7 +80,7 @@ export class HoroscopeImportService {
     if(target.count===target.expected)
       return {status:"SKIPPED" as const,reason:"Horoscope du jour déjà importé"};
     const result=await this.importFile(target.fileName);
-    return {status:result.status,fileName:target.fileName,...result};
+    return {...result,fileName:target.fileName};
   }
 
   async importFile(fileName:string,userId?:string) {
@@ -137,14 +137,14 @@ export class HoroscopeImportService {
       const message=e instanceof Error?e.message:"Fichier invalide.";
       await this.db.prisma.horoscopeImportRun.create({data:{
         sourceType,sourceFile:fileName,status:"ERROR",itemsExpected:96,itemsErrored:96,
-        errorMessage:message,triggeredByUserId:userId,finishedAt:new Date(),
+        errorMessage:message,...(userId ? {triggeredByUserId:userId} : {}),finishedAt:new Date(),
       }});
       throw new BadRequestException(message);
     }
     const {data,fingerprint}=validated;
     const date=new Date(data.date+"T00:00:00.000Z");
     const run=await this.db.prisma.horoscopeImportRun.create({data:{
-      sourceType,sourceFile:fileName,fileFingerprint:fingerprint,targetDate:date,triggeredByUserId:userId,
+      sourceType,sourceFile:fileName,fileFingerprint:fingerprint,targetDate:date,...(userId ? {triggeredByUserId:userId} : {}),
       itemsExpected:96,itemsValid:96,status:"RUNNING",
     }});
     try {
