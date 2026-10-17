@@ -46,7 +46,7 @@ describe.skipIf(!enabled)("global parser lock across Node processes",()=>{
     const competing=await launch();
     expect(competing.outcome).toBe("LOCK_BUSY");
     first.child.kill("SIGKILL");
-    await once(first.child,"exit");
+    if(first.child.exitCode===null && first.child.signalCode===null) await once(first.child,"exit");
     const successor=await launch();
     expect(successor.outcome).toBe("LOCK_ACQUIRED");
   },45000);
