@@ -3,6 +3,11 @@ name: Deploy LMN24 to OVH (manual)
 # Deploying to production is NEVER triggered by push or pull request.
 on:
   workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: "Optional exact main commit approved after local tests"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -26,6 +31,23 @@ jobs:
         uses: actions/checkout@v7
         with:
           persist-credentials: false
+
+      - name: Verify explicitly approved commit (when supplied)
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+          ACTUAL_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          if [ -n "$EXPECTED_SHA" ]; then
+            if [[ ! "$EXPECTED_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "Invalid approved commit SHA." >&2
+              exit 1
+            fi
+            if [ "$EXPECTED_SHA" != "$ACTUAL_SHA" ]; then
+              echo "Main changed since local approval. Refusing deployment." >&2
+              exit 1
+            fi
+          fi
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6.1.0
