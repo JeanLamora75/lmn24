@@ -6,13 +6,17 @@ import { acquireGlobalParserLease, GlobalParserBusyError } from "./global-parser
  * separate from the web request path and must not run on a public page hit.
  *
  * Returns null when another process currently holds the global lock.
+ * A caller MUST provide a conservative cutoff and ensure no live dispatcher
+ * owns an older job. This alone is not a complete fencing mechanism.
  * Retry policy: interrupted RUNNING jobs are returned to PENDING once, up to
  * three attempts, otherwise marked INTERRUPTED.
  */
 export async function recoverOrphanedSchedulerJobs(
   database: DatabaseClient,
   connectionString: string,
+  startedBefore: Date,
 ): Promise<number | null> {
+  if (!Number.isFinite(startedBefore.getTime())) throw new Error("Invalid recovery cutoff");
   let lease;
   try {
     lease = await acquireGlobalParserLease(connectionString);
@@ -22,13 +26,14 @@ export async function recoverOrphanedSchedulerJobs(
   }
   try {
     const orphaned = await database.schedulerJob.findMany({
-      where: { status: "RUNNING" }, select: { id: true, attempt: true },
+      where: { status: "RUNNING", startedAt: { lt: startedBefore } },
+      select: { id: true, attempt: true },
     });
     let recovered = 0;
     for (const job of orphaned) {
       const retry = job.attempt < 3;
       const updated = await database.schedulerJob.updateMany({
-        where: { id: job.id, status: "RUNNING" },
+        where: { id: job.id, status: "RUNNING", startedAt: { lt: startedBefore } },
         data: {
           status: retry ? "PENDING" : "INTERRUPTED",
           startedAt: retry ? null : undefined,
