@@ -1,3 +1,5 @@
+import { fencedParserWrite } from "@lmn24/database";
+import { randomUUID } from "node:crypto";
 import { BadRequestException, ConflictException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { promises as fs } from "node:fs";
@@ -99,6 +101,7 @@ export class HoroscopeImportService {
     if(!connectionString)throw new Error("DATABASE_URL requise pour l'import.");
     const session=new Client({connectionString,connectionTimeoutMillis:10000});
     let acquired=false;
+    const ownerToken=randomUUID();
     let intentionalClose=false;
     let probeStartedAt=0;
     const probeState:{timer?:ReturnType<typeof setInterval>}={};
@@ -118,6 +121,19 @@ export class HoroscopeImportService {
       if(lock.rows[0]?.acquired!==true)
         throw new ConflictException("Un autre parser est déjà en cours d'exécution.");
       acquired=true;
+      // Atomic owner rotation waits for all earlier fenced write transactions.
+      await session.query("BEGIN");
+      try {
+        await session.query("SELECT pg_advisory_xact_lock($1,$2)",[241024,86]);
+        await session.query(
+          "INSERT INTO parser_write_epoch(singleton_id,owner_token,updated_at) VALUES(1,$1::uuid,NOW()) ON CONFLICT(singleton_id) DO UPDATE SET owner_token=EXCLUDED.owner_token,updated_at=NOW()",
+          [ownerToken],
+        );
+        await session.query("COMMIT");
+      } catch(error) {
+        await session.query("ROLLBACK").catch(()=>undefined);
+        throw error;
+      }
       // Proactively detect a lost idle TCP session while the Prisma importer
       // writes on a different pooled connection. Never overlap probes.
       probeState.timer=setInterval(()=>{
@@ -130,7 +146,7 @@ export class HoroscopeImportService {
         void session.query("SELECT 1").catch(failClosed).finally(()=>{probeStartedAt=0;});
       },5_000);
       probeState.timer.unref();
-      return await this.importContentLocked(content,fileName,userId,sourceType);
+      return await this.importContentLocked(content,fileName,userId,sourceType,ownerToken);
     } finally {
       intentionalClose=true;
       if(probeState.timer)clearInterval(probeState.timer);
@@ -144,17 +160,17 @@ export class HoroscopeImportService {
     }
   }
 
-  private async importContentLocked(content:string,fileName:string,userId:string|undefined,sourceType:"UPLOAD"|"REPOSITORY") {
+  private async importContentLocked(content:string,fileName:string,userId:string|undefined,sourceType:"UPLOAD"|"REPOSITORY",ownerToken:string) {
     if(!FILE_RE.test(fileName))throw new BadRequestException("Nom de fichier invalide.");
     // Validate before any published content is written.
     let validated:ReturnType<typeof validateHoroscopeJson>;
     try {validated=validateHoroscopeJson(content,fileName);}
     catch(e) {
       const message=e instanceof Error?e.message:"Fichier invalide.";
-      await this.db.prisma.horoscopeImportRun.create({data:{
+      await fencedParserWrite(this.db.prisma,ownerToken,tx=>tx.horoscopeImportRun.create({data:{
         sourceType,sourceFile:fileName,status:"ERROR",itemsExpected:96,itemsErrored:96,
         errorMessage:message,...(userId ? {triggeredByUserId:userId} : {}),finishedAt:new Date(),
-      }});
+      }}));
       throw new BadRequestException(message);
     }
     const {data,fingerprint}=validated;
@@ -162,9 +178,10 @@ export class HoroscopeImportService {
     const run=await this.db.prisma.horoscopeImportRun.create({data:{
       sourceType,sourceFile:fileName,fileFingerprint:fingerprint,targetDate:date,...(userId ? {triggeredByUserId:userId} : {}),
       itemsExpected:96,itemsValid:96,status:"RUNNING",
-    }});
+    }}));
     try {
       const result=await this.db.prisma.$transaction(async tx=>{
+        await tx.$queryRaw`SELECT assert_parser_write_epoch(${ownerToken}::uuid)`;
         // A PostgreSQL advisory lock serializes all writers to the same civil date.
         await tx.$queryRaw`SELECT 1 AS acquired FROM pg_advisory_xact_lock(hashtext(${data.date}))`;
         const existing=await tx.horoscope.findMany({where:{date},select:{sign:true,languageIsoCode2:true,sourceFingerprint:true}});
@@ -186,17 +203,17 @@ export class HoroscopeImportService {
         }))});
         return {inserted:missing.length,skipped:96-missing.length};
       });
-      await this.db.prisma.horoscopeImportRun.update({where:{id:run.id},data:{
+      await fencedParserWrite(this.db.prisma,ownerToken,tx=>tx.horoscopeImportRun.update({where:{id:run.id},data:{
         status:result.inserted?"SUCCESS":"SKIPPED",itemsInserted:result.inserted,
         itemsSkipped:result.skipped,finishedAt:new Date(),
-      }});
+      }}));
       return {date:data.date,...result,status:result.inserted?"SUCCESS":"SKIPPED"};
     }catch(e){
       this.logger.error(`Horoscope import failed: ${fileName}`, e instanceof Error ? e.stack : String(e));
       await this.db.prisma.horoscopeImportRun.update({where:{id:run.id},data:{
         status:"ERROR",errorMessage:e instanceof ConflictException?e.message:"Échec technique d'import.",
         finishedAt:new Date(),
-      }});
+      }}));
       throw e;
     }
   }
