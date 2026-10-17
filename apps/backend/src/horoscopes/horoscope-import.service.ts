@@ -59,14 +59,28 @@ export class HoroscopeImportService {
   async history() {
     return this.db.prisma.horoscopeImportRun.findMany({take:100,orderBy:{startedAt:"desc"}});
   }
-  async importFile(fileName:string,userId:string) {
+  /**
+   * Scheduled entry point (SCRUM-88): reuse the manual repository import
+   * with identical JSON validation, idempotency and global serialization.
+   * Dispatcher calls this method only after 06:00 Europe/Paris.
+   * Process a maximum of one missing date per call to keep runs bounded.
+   */
+  async importScheduledAvailable() {
+    const files=await this.overview();
+    const target=files.find(file=>file.count<file.expected);
+    if(!target)return {status:"SKIPPED" as const,reason:"No missing horoscope files"};
+    const result=await this.importFile(target.fileName);
+    return {status:result.status,fileName:target.fileName,...result};
+  }
+
+  async importFile(fileName:string,userId?:string) {
     if(!FILE_RE.test(fileName)) throw new BadRequestException("Nom de fichier invalide.");
     let content:string;
     try {content=await fs.readFile(path.join(this.storage,fileName),"utf8");}
     catch(e) {if((e as NodeJS.ErrnoException).code==="ENOENT")throw new NotFoundException("Fichier introuvable.");throw e;}
     return this.importContent(content,fileName,userId,"REPOSITORY");
   }
-  async importContent(content:string,fileName:string,userId:string,sourceType:"UPLOAD"|"REPOSITORY"="UPLOAD") {
+  async importContent(content:string,fileName:string,userId:string|undefined,sourceType:"UPLOAD"|"REPOSITORY"="UPLOAD") {
     // Same two-key advisory lock as apps/parser/src/global-parser-lock.ts.
     // The dedicated session lives for the *entire* database import, not only
     // for its opening transaction. Both manual upload and repository imports
@@ -104,7 +118,7 @@ export class HoroscopeImportService {
     }
   }
 
-  private async importContentLocked(content:string,fileName:string,userId:string,sourceType:"UPLOAD"|"REPOSITORY") {
+  private async importContentLocked(content:string,fileName:string,userId:string|undefined,sourceType:"UPLOAD"|"REPOSITORY") {
     if(!FILE_RE.test(fileName))throw new BadRequestException("Nom de fichier invalide.");
     // Validate before any published content is written.
     let validated:ReturnType<typeof validateHoroscopeJson>;
