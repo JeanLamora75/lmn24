@@ -69,9 +69,11 @@ export class HoroscopeImportService {
     const files=await this.overview();
     // At 06:15 Paris time the scheduled import must serve the current civil
     // day. Other files from previous or future dates cannot satisfy it.
-    const today=new Intl.DateTimeFormat("en-CA",{
+    const parts=new Intl.DateTimeFormat("en-GB",{
       timeZone:"Europe/Paris",year:"numeric",month:"2-digit",day:"2-digit",
-    }).format(new Date());
+    }).formatToParts(new Date());
+    const part=(name:string)=>parts.find(item=>item.type===name)?.value??"";
+    const today=part("year")+"-"+part("month")+"-"+part("day");
     const expectedFile="horoscopes-"+today+".json";
     const target=files.find(file=>file.fileName===expectedFile);
     if(!target)throw new Error("Fichier Horoscope attendu absent : "+expectedFile);
