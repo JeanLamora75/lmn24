@@ -54,9 +54,6 @@ export class SchedulerSettingsController {
     const parsed = input.safeParse(body);
     if (!parsed.success) throw new BadRequestException("Configuration invalide.");
     const item = parsed.data;
-    if (item.isEnabled) {
-      throw new ConflictException("Activation indisponible avant validation du verrou global SCRUM-85.");
-    }
     const horoscope = item.parserType === "HOROSCOPE_IMPORT";
     if (horoscope
       ? item.intervalMinutes !== null || !item.localTime || item.localTime < "06:00"
@@ -79,9 +76,9 @@ export class SchedulerSettingsController {
           gte: new Date(updatedAtMs),
           lt: new Date(updatedAtMs + 1),
         },
-        isEnabled: false,
       },
       data: {
+        isEnabled: item.isEnabled,
         intervalMinutes: item.intervalMinutes,
         localTime: item.localTime,
         nextDueAt: null,
