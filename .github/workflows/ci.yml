@@ -150,6 +150,8 @@ jobs:
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_global_lock_smoke.sql
       - name: Verify scheduler dispatch priority and disabled parsers
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_scheduler_dispatch_priority.sql
+      - name: Verify concurrent scheduler row claims
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_scheduler_claim_concurrency.sql
       - name: Replay additive migrations
         run: |
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_foundations.sql
