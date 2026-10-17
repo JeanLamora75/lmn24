@@ -12,38 +12,102 @@ export class WeatherRunActiveError extends Error {
 type City={id:string;name:string;latitude:number;longitude:number};
 type Counters={totalCities:number;processedCities:number;successfulCities:number;failedCities:number};
 const BATCH_SIZE=8;
-const RETRY_COUNT=2;
-const TIMEOUT_MS=6000;
+const REQUEST_ATTEMPTS=3;
+const TIMEOUT_MS=15_000;
+const RETRY_DELAYS_MS=[1_500,4_000] as const;
+const MAX_RETRY_AFTER_MS=30_000;
 const MAX_BYTES=250_000;
 const ACTIVE_TTL_MS=45*60_000;
 const retryable=(status:number)=>status===429||status>=500;
 
-async function weatherHttp(cities:City[]):Promise<unknown> {
+class PermanentWeatherHttpError extends Error {}
+
+function retryAfterMs(response:Response):number|null {
+  const raw=response.headers.get("retry-after")?.trim();
+  if(!raw)return null;
+  const seconds=Number(raw);
+  if(Number.isFinite(seconds)&&seconds>=0)return Math.ceil(seconds*1000);
+  const date=Date.parse(raw);
+  return Number.isFinite(date)?Math.max(0,date-Date.now()):null;
+}
+
+async function providerReason(response:Response):Promise<string|null> {
+  // A structured Open-Meteo error may explain which argument or quota failed.
+  // Never forward arbitrary upstream HTML as an error message.
+  const type=response.headers.get("content-type")?.toLowerCase()??"";
+  const length=Number(response.headers.get("content-length")??0);
+  if(!type.includes("json") || length>2048)return null;
+  try {
+    const body:unknown=await response.json();
+    if(typeof body!=="object"||body===null||!("reason" in body))return null;
+    const reason=(body as {reason:unknown}).reason;
+    return typeof reason==="string"
+      ? reason.replace(/[\r\n\t]+/g," ").trim().slice(0,200)||null
+      : null;
+  }catch{return null;}
+}
+
+function readableWeatherError(error:unknown):Error {
+  if(!(error instanceof Error))return new Error("Open-Meteo : erreur réseau inconnue.");
+  if(error.name==="TimeoutError"||error.name==="AbortError")
+    return new Error("Open-Meteo : délai dépassé ("+(TIMEOUT_MS/1000)+" s par tentative)");
+  if(error.message==="fetch failed") {
+    const cause=error.cause as {code?:unknown}|undefined;
+    const code=typeof cause?.code==="string" ? cause.code : null;
+    return new Error("Connexion Open-Meteo impossible"+(code?" ("+code+")":""));
+  }
+  return error;
+}
+
+/** Bounded retries for temporary upstream failures; permanent HTTP errors fail immediately. */
+export async function weatherHttp(
+  cities:City[],
+  requester:typeof fetch=fetch,
+):Promise<unknown> {
   const url=weatherApiUrl(cities);
-  let lastError:unknown;
-  for(let attempt=0;attempt<RETRY_COUNT;attempt++){
+  let lastError:Error=new Error("Open-Meteo indisponible.");
+  for(let attempt=0;attempt<REQUEST_ATTEMPTS;attempt++){
+    let minimumDelay=0;
     try{
-      const response=await fetch(url,{
+      const response=await requester(url,{
         signal:AbortSignal.timeout(TIMEOUT_MS),
         redirect:"error",
         headers:{accept:"application/json","user-agent":"LMN24-Weather/1.0 (non-commercial)"}
       });
       if(!response.ok){
-        const error=new Error("Open-Meteo HTTP "+response.status);
-        if(!retryable(response.status))throw error;
-        lastError=error;
+        const reason=await providerReason(response);
+        const message="Open-Meteo HTTP "+response.status+(reason?" : "+reason:"");
+        if(!retryable(response.status))throw new PermanentWeatherHttpError(message);
+        const retryAfter=retryAfterMs(response);
+        if(retryAfter!==null&&retryAfter>MAX_RETRY_AFTER_MS)
+          throw new PermanentWeatherHttpError(
+            message+" (Retry-After trop long : différer la prochaine collecte)"
+          );
+        minimumDelay=retryAfter??0;
+        lastError=new Error(message);
       }else{
         const length=Number(response.headers.get("content-length"));
-        if(Number.isFinite(length)&&length>MAX_BYTES)throw new Error("Réponse météo trop volumineuse.");
+        if(Number.isFinite(length)&&length>MAX_BYTES)
+          throw new PermanentWeatherHttpError("Réponse météo trop volumineuse.");
         // Limit the response before parsing to avoid excessive JSON allocations.
         const body=await response.text();
-        if(body.length>MAX_BYTES)throw new Error("Réponse météo trop volumineuse.");
+        if(body.length>MAX_BYTES)
+          throw new PermanentWeatherHttpError("Réponse météo trop volumineuse.");
         return JSON.parse(body) as unknown;
       }
-    }catch(e){lastError=e;}
-    if(attempt+1<RETRY_COUNT)await new Promise(r=>setTimeout(r,400*(attempt+1)));
+    }catch(error){
+      if(error instanceof PermanentWeatherHttpError)throw error;
+      // An invalid JSON payload is diagnosed as an upstream error, not retried.
+      if(error instanceof SyntaxError)
+        throw new Error("Réponse JSON Open-Meteo invalide.");
+      lastError=readableWeatherError(error);
+    }
+    if(attempt+1<REQUEST_ATTEMPTS){
+      const delay=Math.max(RETRY_DELAYS_MS[attempt]??4_000,minimumDelay);
+      await new Promise<void>(resolve=>setTimeout(resolve,delay));
+    }
   }
-  throw lastError instanceof Error?lastError:new Error("Open-Meteo indisponible.");
+  throw new Error(lastError.message+" ("+REQUEST_ATTEMPTS+" tentatives)");
 }
 
 export class WeatherParserEngine {
