@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feat/scrum-91-scheduler-validation
   pull_request:
     branches:
       - main
