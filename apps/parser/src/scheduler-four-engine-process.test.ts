@@ -79,6 +79,30 @@ describe.skipIf(!enabled)("isolated PostgreSQL four-parser scheduler acceptance"
     } finally { await manualLease.release(); }
   }, 50_000);
 
+  it("retries a failed parser without scheduling another type and respects bounded retry", async () => {
+    if (!db) throw new Error("Database required");
+    await insertJobs();
+    const run = executors();
+    const fail = async () => {
+      const lease = await acquireGuardedParserLease();
+      try { return { status: "ERROR" as const }; }
+      finally { await lease.release(); }
+    };
+    run.HOROSCOPE_IMPORT = fail;
+    expect(await dispatchOneSchedulerJob(db, run)).toBe("PROCESSED");
+    const id=ids[0]!;
+    const first=await db.schedulerJob.findUniqueOrThrow({where:{id}});
+    expect(first.status).toBe("PENDING");
+    expect(first.attempt).toBe(1);
+    expect(first.lastError).toContain("ERROR");
+    await db.schedulerJob.update({where:{id},data:{notBefore:new Date("2020-01-01T00:00:00Z"),attempt:2}});
+    expect(await dispatchOneSchedulerJob(db, run)).toBe("PROCESSED");
+    const final=await db.schedulerJob.findUniqueOrThrow({where:{id}});
+    expect(final.status).toBe("ERROR");
+    expect(final.attempt).toBe(3);
+    expect(observed).toHaveLength(0);
+  }, 35_000);
+
   it("returns a busy lease conflict instead of starting a second parser", async () => {
     const lease = await acquireGuardedParserLease();
     try {
