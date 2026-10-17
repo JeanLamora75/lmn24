@@ -38,7 +38,7 @@ export async function recoverOrphanedSchedulerJobs(
         data: {
           status: retry ? "PENDING" : "INTERRUPTED",
           ownerToken: null, heartbeatAt: null,
-          startedAt: retry ? null : undefined,
+          ...(retry ? { startedAt: null } : {}),
           finishedAt: retry ? null : new Date(),
           notBefore: new Date(Date.now() + 60_000),
           lastError: "Redémarrage détecté : exécution précédente interrompue.",

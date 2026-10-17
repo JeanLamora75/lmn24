@@ -47,7 +47,18 @@ describe.skipIf(!enabled)("global parser lock across Node processes",()=>{
     expect(competing.outcome).toBe("LOCK_BUSY");
     first.child.kill("SIGKILL");
     if(first.child.exitCode===null && first.child.signalCode===null) await once(first.child,"exit");
-    const successor=await launch();
-    expect(successor.outcome).toBe("LOCK_ACQUIRED");
+    // PostgreSQL may need a brief interval to detect the killed client's
+    // closed socket and release its advisory session lock.
+    let recovered=false;
+    const deadline=Date.now()+10_000;
+    while(Date.now()<deadline) {
+      const successor=await launch();
+      if(successor.outcome==="LOCK_ACQUIRED") {
+        recovered=true;
+        break;
+      }
+      await new Promise(resolve=>setTimeout(resolve,250));
+    }
+    expect(recovered).toBe(true);
   },45000);
 });

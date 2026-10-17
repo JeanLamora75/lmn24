@@ -8,7 +8,7 @@ CREATE INDEX IF NOT EXISTS idx_scheduler_job_heartbeat
   WHERE status = 'RUNNING';
 -- Invariant: a RUNNING job must have an owner and a heartbeat. Existing legacy
 -- RUNNING rows must be reconciled before validating this CHECK in deployment.
-DO $
+DO $scheduler_owner$
 BEGIN
   IF NOT EXISTS (
     SELECT 1
@@ -21,5 +21,5 @@ BEGIN
       CHECK (status <> 'RUNNING' OR (owner_token IS NOT NULL AND heartbeat_at IS NOT NULL))
       NOT VALID;
   END IF;
-END $;
+END $scheduler_owner$;
 COMMIT;
