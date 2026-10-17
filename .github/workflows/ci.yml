@@ -32,14 +32,19 @@ jobs:
         run: |
           $tokens = $null
           $parseErrors = $null
-          [System.Management.Automation.Language.Parser]::ParseFile(
-            "scripts/windows/Deploy-LMN24.ps1",
-            [ref]$tokens,
-            [ref]$parseErrors
-          ) | Out-Null
-          if ($parseErrors.Count -gt 0) {
-            $parseErrors | ForEach-Object { Write-Error $_ }
-            exit 1
+          foreach ($path in @("scripts/windows/Deploy-LMN24.ps1", "scripts/windows/Install-GitHubCLI-Portable.ps1")) {
+            $tokens = $null
+            $parseErrors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              $path,
+              [ref]$tokens,
+              [ref]$parseErrors
+            ) | Out-Null
+            if ($parseErrors.Count -gt 0) {
+              Write-Host "Syntax errors in $path"
+              $parseErrors | ForEach-Object { Write-Error $_ }
+              exit 1
+            }
           }
 
       - name: Setup pnpm
