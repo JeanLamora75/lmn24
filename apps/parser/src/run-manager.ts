@@ -29,9 +29,9 @@ type RunEngine<Filters extends ParserFilters> = {
 };
 
 export type RunObserver<Filters extends ParserFilters> = {
-  start(id: string, filters: Filters, trigger: Trigger): Promise<void>;
-  event(id: string, event: ParserEvent): Promise<void>;
-  finish(id: string, failed: boolean): Promise<void>;
+  start(id: string, filters: Filters, trigger: Trigger, ownerToken?: string): Promise<void>;
+  event(id: string, event: ParserEvent, ownerToken?: string): Promise<void>;
+  finish(id: string, failed: boolean, ownerToken?: string): Promise<void>;
 };
 
 export class RunManager<Filters extends ParserFilters = ParserFilters> {
@@ -100,13 +100,13 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
     const persist = (event: ParserEvent) => {
       // Serialized writes keep events in the same order as the live SSE stream.
       pending = pending.then(async () => {
-        await this.observer?.event(record.id, event);
+        await this.observer?.event(record.id, event, lease?.ownerToken);
       }).catch((error: unknown) => {
         console.error("Parser monitoring event persistence failed:", error);
       });
     };
     try {
-      if (this.observer) await this.observer.start(record.id, filters, trigger);
+      if (this.observer) await this.observer.start(record.id, filters, trigger, lease?.ownerToken);
       await this.engine.run(filters, (event) => {
         this.emit(record, event);
         persist(event);
@@ -125,7 +125,7 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
     } finally {
       await pending;
       if (this.observer) {
-        try { await this.observer.finish(record.id, failed); }
+        try { await this.observer.finish(record.id, failed, lease?.ownerToken); }
         catch (error) { console.error("Parser monitoring completion failed:", error); }
       }
       try { await lease?.release(); }
