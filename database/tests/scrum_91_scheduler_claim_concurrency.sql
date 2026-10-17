@@ -1,11 +1,11 @@
 -- Concurrent reservation smoke test using two independent PostgreSQL sessions.
 -- session A holds a row lock; session B must SKIP LOCKED and select another row.
 CREATE EXTENSION IF NOT EXISTS dblink;
-BEGIN;
 INSERT INTO scheduler_job(parser_type,scheduled_for,status,not_before)
 VALUES ('INFOS','2031-01-01T00:00:00Z','PENDING','2020-01-01T00:00:00Z'),
        ('VIDEOS','2031-01-01T00:00:00Z','PENDING','2020-01-01T00:00:00Z')
 ON CONFLICT (parser_type,scheduled_for) DO NOTHING;
+BEGIN;
 -- Separate session B owns the INFOS row lock and stays in its transaction.
 SELECT dblink_connect('claim_peer',
   'dbname=' || current_database() || ' user=postgres password=postgres');
@@ -28,3 +28,4 @@ END $$;
 SELECT dblink_exec('claim_peer','ROLLBACK');
 SELECT dblink_disconnect('claim_peer');
 ROLLBACK;
+DELETE FROM scheduler_job WHERE scheduled_for='2031-01-01T00:00:00Z' AND parser_type IN ('INFOS','VIDEOS');
