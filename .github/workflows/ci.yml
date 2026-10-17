@@ -153,3 +153,38 @@ jobs:
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_foundations.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_job_ownership.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_scheduler_schema_smoke.sql
+
+  scheduler-node-lock:
+    name: PostgreSQL cross-process parser lock
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: lmn24_lock_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d lmn24_lock_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/lmn24_lock_test
+      SCHEDULER_PG_INTEGRATION: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.10.0
+          run_install: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.21.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Run real child-process PostgreSQL lock tests
+        run: pnpm --filter @lmn24/parser exec vitest run src/global-parser-lock-process.test.ts
