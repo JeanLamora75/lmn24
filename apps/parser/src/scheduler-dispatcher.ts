@@ -1,6 +1,7 @@
 import type { DatabaseClient } from "@lmn24/database";
 import { GlobalParserBusyError } from "./global-parser-lock.js";
 import { randomUUID } from "node:crypto";
+import { HoroscopeFileMissingError } from "./horoscope-scheduler-adapter.js";
 import { finishSchedulerJob, heartbeatSchedulerJob, retrySchedulerJob } from "./scheduler-job-ownership.js";
 
 export type SchedulerParserType = "INFOS" | "VIDEOS" | "WEATHER" | "HOROSCOPE_IMPORT";
@@ -17,6 +18,30 @@ const PRIORITIES: Record<SchedulerParserType, number> = {
 };
 const WAIT_FOR_LOCK_MS = 30_000;
 const MAX_ATTEMPTS = 3;
+const HOROSCOPE_RETRY_MS = 30 * 60_000;
+
+/** Retry until a configurable Paris-local HH:mm cutoff, default 12:00. */
+export function nextHoroscopeMissingRetry(
+  now: Date,
+  cutoff: string = process.env.SCHEDULER_HOROSCOPE_RETRY_CUTOFF ?? "12:00",
+): Date | null {
+  if (!/^([01]\\d|2[0-3]):[0-5]\\d$/.test(cutoff) || cutoff < "06:00")
+    throw new Error("Invalid SCHEDULER_HOROSCOPE_RETRY_CUTOFF (HH:mm after 06:00)");
+  const next = new Date(now.getTime() + HOROSCOPE_RETRY_MS);
+  const format = (at: Date) => {
+    const parts = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/Paris", year: "numeric", month: "2-digit",
+      day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+    }).formatToParts(at);
+    const part = (key: string) => parts.find(p => p.type === key)?.value ?? "";
+    return { day: part("year") + "-" + part("month") + "-" + part("day"),
+      time: part("hour") + ":" + part("minute") };
+  };
+  const current = format(now);
+  const planned = format(next);
+  return current.day === planned.day && planned.time <= cutoff ? next : null;
+}
+
 
 function isParserType(value: string): value is SchedulerParserType {
   return value === "INFOS" || value === "VIDEOS" ||
@@ -110,6 +135,17 @@ export async function dispatchOneSchedulerJob(
       await retrySchedulerJob(database, job.id, ownerToken,
         new Date(Date.now() + WAIT_FOR_LOCK_MS), "Global parser lock busy", false);
       return "BUSY";
+    }
+    if (job.parserType === "HOROSCOPE_IMPORT" && error instanceof HoroscopeFileMissingError) {
+      const next = nextHoroscopeMissingRetry(new Date());
+      if (next) {
+        await retrySchedulerJob(database, job.id, ownerToken, next,
+          "Fichier Horoscope du jour absent : nouvelle tentative dans 30 minutes.");
+      } else {
+        await finishSchedulerJob(database, job.id, ownerToken, "ERROR",
+          "Fichier Horoscope absent après l'heure limite de reprise.");
+      }
+      return "PROCESSED";
     }
     const message = error instanceof Error ? error.message : "Erreur inconnue";
     const retry = job.attempt < MAX_ATTEMPTS;

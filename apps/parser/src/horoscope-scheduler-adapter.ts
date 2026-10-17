@@ -10,6 +10,13 @@ import { GlobalParserBusyError } from "./global-parser-lock.js";
  *   SCHEDULER_BACKEND_URL=http://127.0.0.1:3001
  *   SCHEDULER_INTERNAL_SECRET=<high-entropy shared secret>
  */
+export class HoroscopeFileMissingError extends Error {
+  constructor() {
+    super("Le fichier Horoscope du jour n'est pas encore disponible.");
+    this.name = "HoroscopeFileMissingError";
+  }
+}
+
 export function horoscopeImportExecutor(
   backendUrl: string,
   secret: string,
@@ -31,6 +38,7 @@ export function horoscopeImportExecutor(
       signal: AbortSignal.timeout(120_000),
       redirect: "error",
     });
+    if (response.status === 404) throw new HoroscopeFileMissingError();
     if (response.status === 409) {
       throw new GlobalParserBusyError();
     }
