@@ -36,3 +36,31 @@ Désactiver chaque interrupteur admin: la selection de nouveaux jobs est bloquee
 ## Note sécurité
 
 Les anciennes variables PARSER_*_CRON utilisent un systeme de planification distinct. Ne pas activer simultanement les deux systemes. Les statistiques horaires des hashtags sont un traitement separe et restent actives.
+
+
+## Constat d'exploitation OVH du 17 octobre 2026
+
+Le mode de mise en route décrit ci-dessus a été effectivement suivi sur le VPS : configuration `NODE_ENV=production`, `SCHEDULER_ENABLED=true`, `SCHEDULER_INTERNAL_SECRET` configuré sur le fichier `/home/ubuntu/lmn24/.env` lu par les services, et aucun ancien CRON Infos/Vidéos déclaré dans ce fichier. Le journal du parser confirme `Central scheduler enabled` en mode production. Quatre `scheduler_config.is_enabled=true` et échéances planifiées. **Ne pas interpréter cela comme la preuve d'exécutions métier déjà réussies.**
+
+### Vérification après les premières échéances
+
+```bash
+sudo -u postgres psql -d lmn24 -c "
+SELECT parser_type,status,attempt,
+  scheduled_for AT TIME ZONE 'Europe/Paris' AS prevue_paris,
+  started_at AT TIME ZONE 'Europe/Paris' AS debut_paris,
+  finished_at AT TIME ZONE 'Europe/Paris' AS fin_paris,
+  LEFT(last_error,160) AS erreur
+FROM scheduler_job ORDER BY created_at DESC LIMIT 20;"
+
+sudo -u postgres psql -d lmn24 -c "
+SELECT parser_type,is_enabled,
+ next_due_at AT TIME ZONE 'Europe/Paris' AS prochaine_paris,
+ last_scheduled_at AT TIME ZONE 'Europe/Paris' AS derniere_paris
+FROM scheduler_config ORDER BY parser_type;"
+
+sudo journalctl -u lmn24-parser --since '2026-10-17 19:45:00' --no-pager -l \
+  | grep -Ei 'scheduler|error|retry|lease|failed|lock'
+```
+
+Pour chaque parser, corréler un statut `SUCCESS` avec les logs et les tables métier (articles, vidéos, météo, horoscopes) ; contrôler aussi `PENDING`/`RUNNING` prolongés, `ERROR`/`INTERRUPTED`, les reprises et les éventuels blocages du verrou global. Priorité prévue : Horoscope > Infos > Vidéos > Météo. Les premières échéances simultanées Infos/Vidéos à 20h00 constituent le premier test d'arbitrage en production.

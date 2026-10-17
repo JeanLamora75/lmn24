@@ -1881,3 +1881,19 @@ Téléversement admin JSON                ─┘              │
 - Exposer la nouvelle durée dans **« Conservation des données »** existant (SCRUM-56) ; prévoir ensuite son traitement par la purge automatique SCRUM-57 ou extension future sans annoncer que cette automatisation est déjà réalisée.
 - Test de reprise après vidage complet des relevés : parser manuel réhydrate `weather_current` et toutes les villes conservent nom, ordre, coordonnées et fuseau.
 
+
+
+## Mise en production du planificateur central — 17 octobre 2026
+
+**État constaté sur OVH (17/10/2026 vers 19h50 Europe/Paris) : planification opérationnelle, premières exécutions non encore validées.**
+
+- Monorepo GitHub `JeanLamora75/lmn24`, branche `main`; frontend Next.js (`lmn24-frontend.service`, port 3000), backend NestJS (`lmn24-backend.service`, 3001), parser Node.js (`lmn24-parser.service`, 3002). Tous sont sous systemd sur le VPS Ubuntu OVH, pas sous PM2.
+- Planificateur central dans `apps/parser/src/main.ts`, activé en production **seulement** si `SCHEDULER_ENABLED=true` dans le fichier `/home/ubuntu/lmn24/.env` chargé par le service parser. `NODE_ENV=production`. Les anciens `PARSER_INFOS_CRON`/`PARSER_VIDEOS_CRON` sont absents du fichier vérifié, et leur coexistence avec le scheduler central est refusée par le code.
+- La base `lmn24` (propriétaire applicatif `lmn24_app`) comprend `scheduler_config`, `scheduler_job`, `parser_write_epoch`. Le compte applicatif doit avoir les privilèges nécessaires (migration `20261017_scheduler_application_grants.sql`) ; les scripts structurels ont été appliqués : `20261017_scheduler_foundations.sql`, `20261017_scheduler_job_ownership.sql`, `20261017_parser_write_fence.sql`.
+- Les quatre moteurs partagent un verrou PostgreSQL global, une file persistante et des règles de priorité **HOROSCOPE_IMPORT > INFOS > VIDEOS > WEATHER**. Les actions manuelles conservent leur propre accès mais utilisent le verrou commun. Reprise bornée des jobs interrompus et protection des écritures par fencing.
+- Contrôle d'accès : interface admin `/admin/scheduler`, endpoint backend protégé `/admin/scheduler-settings` relayé par le frontend `/api/admin/scheduler-settings`. Quatre interrupteurs individuels et paramètres de fréquence/heure ; le contrôle de concurrence tient compte de la précision `timestamptz(6)` PostgreSQL.
+- Le secret `SCHEDULER_INTERNAL_SECRET` (64 caractères hexadécimaux, **ne jamais consigner sa valeur**) est partagé via le fichier d'environnement pour l'appel privé backend d'import Horoscope. `SCHEDULER_BACKEND_URL` est limitée à une URL loopback par l'adaptateur.
+- Le traitement horaire des statistiques hashtag reste un traitement séparé, actif indépendamment des quatre parsers.
+- **Validation d'exploitation incomplète au 17/10 avant 20h** : quatre configurations activées et `next_due_at` calculé, mais aucun `scheduler_job` encore présent. Contrôler les jobs, volumes insérés, reprise, logs et verrou global avant de déclarer le système entièrement opérationnel.
+
+Voir `docs/SCHEDULER_PRODUCTION_ENABLEMENT.md` et `docs/SCHEDULER_PRODUCTION_REPORT_20261017.md` pour les commandes de vérification et les constats.
