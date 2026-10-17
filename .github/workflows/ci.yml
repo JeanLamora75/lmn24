@@ -206,6 +206,7 @@ jobs:
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/009_video_aggregation.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/010_parser_monitoring.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/011_weather_data_model.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < packages/database/migrations/20261015102000_horoscope_data_model/migration.sql
       - name: Apply scheduler tables for crash recovery scenario
         run: |
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/20261017_scheduler_foundations.sql
@@ -215,3 +216,5 @@ jobs:
         run: pnpm --filter '@lmn24/database^...' build && pnpm --filter @lmn24/database build
       - name: Run real Node crash and PostgreSQL recovery tests
         run: pnpm --filter @lmn24/parser exec vitest run src/global-parser-lock-process.test.ts src/scheduler-recovery-process.test.ts src/lease-loss-process.test.ts src/parser-write-fence-process.test.ts src/scheduler-four-engine-process.test.ts src/parser-content-e2e-process.test.ts --no-file-parallelism
+      - name: Run real Horoscope repository importer with PostgreSQL (96 rows x 8 languages)
+        run: pnpm --filter @lmn24/backend exec vitest run src/horoscopes/horoscope-persistence-process.test.ts --no-file-parallelism
