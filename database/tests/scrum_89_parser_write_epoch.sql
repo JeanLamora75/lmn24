@@ -1,8 +1,9 @@
 -- SCRUM-89: real PostgreSQL transaction-level parser epoch fencing.
 CREATE EXTENSION IF NOT EXISTS dblink;
-INSERT INTO parser_write_epoch(singleton_id,owner_token)
-VALUES (1,'11111111-1111-4111-8111-111111111111')
-ON CONFLICT(singleton_id) DO UPDATE SET owner_token=EXCLUDED.owner_token;
+SELECT pg_advisory_lock(241024,85);
+INSERT INTO parser_write_epoch(singleton_id,owner_token,lock_backend_pid)
+VALUES (1,'11111111-1111-4111-8111-111111111111',pg_backend_pid())
+ON CONFLICT(singleton_id) DO UPDATE SET owner_token=EXCLUDED.owner_token,lock_backend_pid=EXCLUDED.lock_backend_pid;
 
 BEGIN;
 SELECT assert_parser_write_epoch('11111111-1111-4111-8111-111111111111'::uuid);
@@ -41,4 +42,17 @@ BEGIN
   END IF;
 END $fence_test$;
 SELECT assert_parser_write_epoch('22222222-2222-4222-8222-222222222222'::uuid);
+SELECT pg_advisory_unlock(241024,85);
+DO $fence_test$
+DECLARE rejected BOOLEAN:=FALSE;
+BEGIN
+  BEGIN
+    PERFORM assert_parser_write_epoch('22222222-2222-4222-8222-222222222222'::uuid);
+  EXCEPTION WHEN SQLSTATE 'P0001' THEN
+    rejected:=TRUE;
+  END;
+  IF NOT rejected THEN
+    RAISE EXCEPTION 'Owner was accepted despite its global lock having disappeared';
+  END IF;
+END $fence_test$;
 DELETE FROM parser_write_epoch WHERE singleton_id=1;
