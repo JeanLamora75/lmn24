@@ -25,7 +25,7 @@ export class ActiveRunError extends Error {
 }
 
 type RunEngine<Filters extends ParserFilters> = {
-  run(filters: Filters, emit: (event: ParserEvent) => void, batchRunId?: string): Promise<unknown>;
+  run(filters: Filters, emit: (event: ParserEvent) => void, batchRunId?: string, signal?: AbortSignal): Promise<unknown>;
 };
 
 export type RunObserver<Filters extends ParserFilters> = {
@@ -111,7 +111,7 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
         this.emit(record, event);
         persist(event);
         if (event.type === "run-error") failed = true;
-      }, record.id);
+      }, record.id, lease?.signal);
     } catch (error) {
       failed = true;
       const message = error instanceof Error ? error.message : "Erreur inconnue.";
