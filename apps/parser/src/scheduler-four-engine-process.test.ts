@@ -103,6 +103,20 @@ describe.skipIf(!enabled)("isolated PostgreSQL four-parser scheduler acceptance"
     expect(observed).toHaveLength(0);
   }, 35_000);
 
+  it("never dispatches any pending work while all four configurations are disabled", async () => {
+    if (!db) throw new Error("Database required");
+    await insertJobs();
+    await db.schedulerConfig.updateMany({
+      where: { parserType: { in: [...types] } },
+      data: { isEnabled: false },
+    });
+    expect(await dispatchOneSchedulerJob(db, executors())).toBe("EMPTY");
+    expect(observed).toHaveLength(0);
+    expect(await db.schedulerJob.count({
+      where: { id: { in: ids }, status: "PENDING", attempt: 0 },
+    })).toBe(4);
+  }, 30_000);
+
   it("returns a busy lease conflict instead of starting a second parser", async () => {
     const lease = await acquireGuardedParserLease();
     try {
