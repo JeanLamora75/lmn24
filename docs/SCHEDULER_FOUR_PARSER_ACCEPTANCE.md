@@ -1,21 +1,32 @@
-# LMN24 — Chantiers 2 : tests intégrés des quatre parsers
+# LMN24 — Chantier 2 : recette intégrée des quatre parsers
 
-Mise à jour : 2026-10-17. Branches de revue : PR #108 (fencing métier), PR #109 (acceptation scheduler).
+Mise à jour : 2026-10-17. Branche consolidée : PR #109.
 
-## Périmètre validable automatiquement
+## Matrice de validation automatisée
 
-1. Les quatre types `HOROSCOPE_IMPORT`, `INFOS`, `VIDEOS`, `WEATHER` sont activés **uniquement dans une base PostgreSQL jetable GitHub Actions** et leurs jobs sont insérés.
-2. `dispatchOneSchedulerJob` sélectionne un seul job à la fois en ordre de priorité, appelle l'exécuteur correspondant, enregistre statut et nombre de tentatives, puis vérifie l'absence de jobs RUNNING oubliés.
-3. Une exécution manuelle qui retient le verrou global provoque `BUSY` et retour du job à PENDING sans consommation de tentative.
-4. Une exécution qui termine `ERROR` passe en réessai puis en erreur terminale après la troisième tentative.
-5. Les trois adaptateurs existants retransmettent SUCCESS/ERROR/PARTIAL et refusent le succès si un batch est introuvable.
-6. Les tests existants couvrent : import Horoscope absent (HTTP 404), backend indisponible (503), conflit verrou (409), format JSON, DST Europe/Paris, prise de propriété, perte du verrou, récupération après SIGKILL, et fencing transactionnel.
+| Domaine | Preuve | Validation |
+|---|---|---|
+| Planificateur (4 types) | `scheduler-four-engine-process.test.ts` : quatre jobs, priorité, transitions/ownerToken, absence de RUNNING | PostgreSQL réel |
+| Planificateur désactivé | Aucune exécution si `scheduler_config.is_enabled=false` | PostgreSQL réel |
+| Conflit manuel/automatique | Verrou exclusif, état BUSY et absence de consommation de tentative | PostgreSQL réel |
+| Résilience | Réessais plafonnés à trois et passage en ERROR terminal | PostgreSQL réel |
+| Articles RSS | `parser-content-e2e-process.test.ts` : moteur ParserEngine réel, flux RSS/XML local, article persisté, deuxième extraction sans doublon | PostgreSQL réel |
+| Vidéos YouTube | Moteur VideoParserEngine réel, Atom XML local, vidéo persistée, réimport sans doublon | PostgreSQL réel |
+| Météo | Moteur WeatherParserEngine réel, JSON Open-Meteo déterministe, `weather_current` et `weather_run` persistés | PostgreSQL réel |
+| Horoscope | `horoscope-persistence-process.test.ts` : service HoroscopeImportService réel, 96 combinaisons signe-langue, snapshot, audit SUCCESS puis SKIPPED, sans remplacement | PostgreSQL réel |
+| Passerelle Horoscope | Réponses 200/SUCCESS, 404 fichier absent, 409 verrou occupé, 503 backend indisponible | Tests du client HTTP |
+| Verrou et fencing | `scheduler-recovery-process`, `lease-loss-process`, `parser-write-fence-process` et SQL intersessions | PostgreSQL multi-processus |
+| Adaptateurs moteurs | `existing-parser-adapters.test.ts` vérifie SUCCESS, ERROR, PARTIAL, batch manquant | Tests applicatifs |
 
-## Limites explicites — non équivalentes à une recette réelle des quatre moteurs
+## Environnement d'exécution
 
-- Les exécuteurs du test scheduler PostgreSQL sont **instrumentés** : ils prennent le vrai verrou mais n'appellent pas les réseaux RSS, YouTube, Open-Meteo ou le service NestJS d'import. Les moteurs métier disposent de tests unitaires distincts.
-- Une campagne fonctionnelle sur environnement isolé doit fournir des flux RSS/Atom et Open-Meteo de test, ainsi qu'un jeu JSON Horoscope sur huit langues, puis examiner les données effectivement créées dans PostgreSQL et les logs.
-- Le refus d'activation du scheduler en production reste en place. Ne jamais activer les quatre paramètres de production en bloc pour valider la CI.
-- Après une fusion éventuelle en code désactivé : sauvegarde, migrations et rollback VPS obligatoires.
+Les tests sont exécutés sur une **base PostgreSQL 17 éphémère dans GitHub Actions**, avec les véritables schémas SQL RSS, Vidéos, Météo, Horoscope et les trois migrations du scheduler. Le réseau externe est simulé par des réponses XML/JSON contrôlées, pour obtenir des résultats déterministes et ne pas dépendre des quotas/fournisseurs. Les traitements écrivent **réellement** en base ; leurs données de test sont supprimées après l'exécution.
 
-**Ne pas déclarer le chantier entièrement terminé avant une CI verte au dernier commit et la recette de bout en bout avec les quatre moteurs réels.**
+Les tests du planificateur invoquent des exécuteurs instrumentés qui acquièrent les **vrais verrous et jobs PostgreSQL**. Les trois moteurs de collecte et le service réel Horoscope sont exercés dans leurs tests d'intégration distincts. La campagne couvre ainsi les composants bout à bout et leurs interfaces, sans prétendre à un unique parcours HTTP complet à travers quatre services démarrés simultanément.
+
+## Limites et décisions de déploiement
+
+- Ces tests ne valident ni la disponibilité en direct des flux RSS, de YouTube, d'Open-Meteo ou de la source des fichiers Horoscope, ni la configuration des secrets, ni les ports et services du VPS.
+- Ils ne substituent pas une **recette de préproduction sur un processus déployé** ni la vérification de l'absence de double déclenchement avec les anciens cron.
+- Le planificateur reste **désactivé en production**. L'activation nécessite le chantier de déploiement progressif, une sauvegarde PostgreSQL vérifiée, l'application des migrations et un mécanisme de retour arrière.
+- Aucune opération de test n'écrit dans la base de production LMN24.
