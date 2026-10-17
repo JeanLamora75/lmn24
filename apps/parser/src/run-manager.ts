@@ -1,3 +1,4 @@
+import type { GlobalParserLease } from "./global-parser-lock.js";
 import { randomUUID } from "node:crypto";
 import type { Trigger } from "./persistent-run-log.js";
 
@@ -42,7 +43,7 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
     private readonly observer?: RunObserver<Filters>,
   ) {}
 
-  start(filters: Filters, trigger: Trigger = "MANUAL"): string {
+  start(filters: Filters, trigger: Trigger = "MANUAL", lease?: GlobalParserLease): string {
     if (this.activeRunId) {
       throw new ActiveRunError();
     }
@@ -60,7 +61,7 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
     this.activeRunId = runId;
     this.prune();
 
-    void this.execute(record, filters, trigger);
+    void this.execute(record, filters, trigger, lease);
 
     return runId;
   }
@@ -92,6 +93,7 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
     record: RunRecord,
     filters: Filters,
     trigger: Trigger,
+    lease?: GlobalParserLease,
   ): Promise<void> {
     let failed = false;
     let pending: Promise<void> = Promise.resolve();
@@ -126,6 +128,8 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
         try { await this.observer.finish(record.id, failed); }
         catch (error) { console.error("Parser monitoring completion failed:", error); }
       }
+      try { await lease?.release(); }
+      catch (error) { console.error("Failed to release parser lease:", error); }
       record.done = true;
       if (this.activeRunId === record.id) this.activeRunId = null;
     }
