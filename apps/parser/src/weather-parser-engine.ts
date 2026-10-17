@@ -1,3 +1,4 @@
+import type { GlobalParserLease } from "./global-parser-lock.js";
 import type { DatabaseClient } from "@lmn24/database";
 import { randomUUID } from "node:crypto";
 import { safeLogText } from "./persistent-run-log.js";
@@ -118,7 +119,7 @@ export class WeatherParserEngine {
 
   // PostgreSQL serializes the "check active then create" transaction even when
   // several parser instances try to start at the same time.
-  async start(filters:WeatherFilters={},trigger:WeatherTrigger="MANUAL"):Promise<string> {
+  async start(filters:WeatherFilters={},trigger:WeatherTrigger="MANUAL", lease?:GlobalParserLease):Promise<string> {
     const started=await this.db.$transaction(async tx=>{
       await tx.$queryRaw`SELECT 1::int FROM pg_advisory_xact_lock(241024,71)`;
       const cutoff=new Date(Date.now()-ACTIVE_TTL_MS);
@@ -153,7 +154,7 @@ export class WeatherParserEngine {
           }
         });
       }catch(err){console.error("Weather run completion persistence failed:",err);}
-    });
+    }).finally(async () => { await lease?.release(); });
     return started.id;
   }
 
