@@ -79,9 +79,11 @@ export async function insertArticlesAndCount(
   database: DatabaseClient,
   data: Prisma.ArticleCreateManyInput[],
   now = new Date(),
+  ownerToken?: string,
 ): Promise<{ imported: number; matched: number }> {
   if (!data.length) return { imported: 0, matched: 0 };
   return database.$transaction(async (tx) => {
+    if (ownerToken) await tx.$queryRaw`SELECT assert_parser_write_epoch(${ownerToken}::uuid)`;
     await tx.$queryRaw`SELECT 1 AS acquired FROM pg_advisory_xact_lock(52024, 52)`;
     const retentionDays = await readRetentionDays(tx);
     const cutoff = new Date(now.getTime() - retentionDays * DAY_MS);
