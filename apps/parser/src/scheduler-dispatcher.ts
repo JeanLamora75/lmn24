@@ -25,7 +25,7 @@ export function nextHoroscopeMissingRetry(
   now: Date,
   cutoff: string = process.env.SCHEDULER_HOROSCOPE_RETRY_CUTOFF ?? "12:00",
 ): Date | null {
-  if (!/^([01]\\d|2[0-3]):[0-5]\\d$/.test(cutoff) || cutoff < "06:00")
+  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(cutoff) || cutoff < "06:00")
     throw new Error("Invalid SCHEDULER_HOROSCOPE_RETRY_CUTOFF (HH:mm after 06:00)");
   const next = new Date(now.getTime() + HOROSCOPE_RETRY_MS);
   const format = (at: Date) => {
