@@ -1,3 +1,4 @@
+import { fencedParserWrite } from "@lmn24/database";
 import type { DatabaseClient } from "@lmn24/database";
 import type { ParserEvent, ParserFilters } from "./parser-engine.js";
 
@@ -18,7 +19,7 @@ export function safeLogText(value: string): string {
 export class PersistentRunLog {
   constructor(private readonly db: DatabaseClient, private readonly parserType: RunType) {}
 
-  async start(id: string, filters: ParserFilters, trigger: Trigger): Promise<void> {
+  async start(id: string, filters: ParserFilters, trigger: Trigger, ownerToken?: string): Promise<void> {
     // Only permitted filter keys can be persisted; never persist arbitrary request body.
     const saved = {
       ...(filters.categoryId ? { categoryId: filters.categoryId } : {}),
@@ -27,14 +28,28 @@ export class PersistentRunLog {
       ...("feedId" in filters && typeof filters.feedId === "string"
         ? { feedId: filters.feedId } : {}),
     };
-    await this.db.parserBatchRun.create({
+    await fencedParserWrite(this.db, ownerToken, tx => tx.parserBatchRun.create({
       data: { id, parserType: this.parserType, trigger, filters: saved, status: "RUNNING" },
-    });
+    }));
   }
 
-  async event(id: string, e: ParserEvent): Promise<void> {
+  async event(id: string, e: ParserEvent, ownerToken?: string): Promise<void> {
     const level = e.type === "run-error" || e.type === "feed-error" ? "ERROR" : "INFO";
     // Keep at most one compact event for each meaningful transition.
+    if (ownerToken) {
+      await fencedParserWrite(this.db, ownerToken, async tx => {
+        await tx.parserRunEvent.create({ data: {
+          batchRunId: id, timestamp: new Date(e.timestamp), level,
+          eventType: e.type, message: safeLogText(e.message),
+        } });
+        await tx.parserBatchRun.update({ where: { id }, data: {
+          lastHeartbeatAt: new Date(),
+          ...(e.type === "run-started" && typeof e.feedTotal === "number" && Number.isInteger(e.feedTotal)
+            ? { totalFeeds: e.feedTotal } : {}),
+        } });
+      });
+      return;
+    }
     await this.db.$transaction([
       this.db.parserRunEvent.create({
         data: {
@@ -53,7 +68,7 @@ export class PersistentRunLog {
     ]);
   }
 
-  async finish(id: string, failed: boolean): Promise<void> {
+  async finish(id: string, failed: boolean, ownerToken?: string): Promise<void> {
     const runRows = this.parserType === "INFOS"
       ? await this.db.feedRun.findMany({
         where: { batchRunId: id },
@@ -70,7 +85,7 @@ export class PersistentRunLog {
     const skipped = runRows.reduce((n, r) => n +
       ("articlesSkipped" in r ? r.articlesSkipped : r.videosSkipped), 0);
     const finalStatus = failed || errors > 0 ? "ERROR" : "SUCCESS";
-    await this.db.parserBatchRun.update({
+    await fencedParserWrite(this.db, ownerToken, tx => tx.parserBatchRun.update({
       where: { id }, data: {
         finishedAt: new Date(), lastHeartbeatAt: new Date(),
         status: finalStatus, processedFeeds: runRows.length,
@@ -78,7 +93,7 @@ export class PersistentRunLog {
         itemsFound: runRows.reduce((n, r) => n + r.itemsFound, 0),
         itemsImported: imported, itemsSkipped: skipped,
       },
-    });
+    }));
   }
 
   /** Runs with no heartbeat for 15 minutes can no longer be declared successful.

@@ -1,0 +1,127 @@
+import { randomUUID } from "node:crypto";
+import { Client } from "pg";
+
+/**
+ * SCRUM-85 — exclusive PostgreSQL session lock.
+ *
+ * IMPORTANT: this is the low-level primitive, NOT the completed safety policy.
+ * Every manual and automatic parser entry point must be adapted before use.
+ * Callers must also abort the underlying work on loss of the connection;
+ * otherwise Postgres may release the lock while that work is still running.
+ */
+export class GlobalParserBusyError extends Error {
+  constructor() {
+    super("Un autre parser est déjà en cours d'exécution.");
+    this.name = "GlobalParserBusyError";
+  }
+}
+
+export class GlobalParserLockLostError extends Error {
+  constructor() {
+    super("La connexion du verrou global a été perdue.");
+    this.name = "GlobalParserLockLostError";
+  }
+}
+
+const LOCK_NAMESPACE = 241024;
+const LOCK_ID = 85;
+
+export interface GlobalParserLease {
+  readonly signal: AbortSignal;
+  readonly ownerToken: string;
+  release(): Promise<void>;
+}
+
+export async function acquireGlobalParserLease(
+  connectionString: string,
+): Promise<GlobalParserLease> {
+  if (!connectionString.trim()) throw new Error("DATABASE_URL requis pour le verrou global.");
+  // Keep one dedicated PostgreSQL session open for the entire job. Never
+  // acquire a session lock through Prisma's connection pool.
+  const client = new Client({ connectionString, connectionTimeoutMillis: 10_000 });
+  let closed = false;
+  let lost = false;
+  let acquired = false;
+  const ownerToken = randomUUID();
+  let probeStartedAt = 0;
+  const watchdogState: { timer?: ReturnType<typeof setInterval> } = {};
+  const abort = new AbortController();
+  const markLost = () => {
+    if (closed || lost) return;
+    lost = true;
+    if (watchdogState.timer) clearInterval(watchdogState.timer);
+    abort.abort(new GlobalParserLockLostError());
+  };
+  const onError = () => markLost();
+  const onEnd = () => markLost();
+  client.on("error", onError);
+  client.on("end", onEnd);
+
+  try {
+    await client.connect();
+    const result = await client.query<{ acquired: boolean }>(
+      "SELECT pg_try_advisory_lock($1, $2) AS acquired",
+      [LOCK_NAMESPACE, LOCK_ID],
+    );
+    acquired = result.rows[0]?.acquired === true;
+    if (!acquired) throw new GlobalParserBusyError();
+    // A new owner waits for previously authorized writes to COMMIT.
+    await client.query("BEGIN");
+    try {
+      await client.query("SELECT pg_advisory_xact_lock($1,$2)", [241024,86]);
+      await client.query(
+        "INSERT INTO parser_write_epoch(singleton_id,owner_token,lock_backend_pid,updated_at) VALUES (1,$1::uuid,pg_backend_pid(),NOW()) ON CONFLICT(singleton_id) DO UPDATE SET owner_token=EXCLUDED.owner_token,lock_backend_pid=EXCLUDED.lock_backend_pid,updated_at=NOW()",
+        [ownerToken],
+      );
+      await client.query("COMMIT");
+    } catch (error) {
+      await client.query("ROLLBACK").catch(() => undefined);
+      throw error;
+    }
+  } catch (error) {
+    closed = true;
+    client.off("error", onError);
+    client.off("end", onEnd);
+    await client.end().catch(() => undefined);
+    throw error;
+  }
+
+  // Probe the SAME dedicated lock session: an idle TCP connection can remain
+  // undetected after a network partition while other processes recover work.
+  // Fail closed if a probe fails or takes too long (no queued probes).
+  watchdogState.timer = setInterval(() => {
+    if (closed || lost) return;
+    if (probeStartedAt) {
+      if (Date.now() - probeStartedAt > 10_000) markLost();
+      return;
+    }
+    probeStartedAt = Date.now();
+    void client.query("SELECT 1")
+      .catch(markLost)
+      .finally(() => { probeStartedAt = 0; });
+  }, 5_000);
+  watchdogState.timer.unref();
+
+  return {
+    signal: abort.signal,
+    ownerToken,
+    async release() {
+      if (closed) return;
+      closed = true;
+      if (watchdogState.timer) clearInterval(watchdogState.timer);
+      try {
+        if (acquired && !lost) {
+          await client.query("SELECT pg_advisory_unlock($1, $2)", [
+            LOCK_NAMESPACE, LOCK_ID,
+          ]);
+        }
+      } finally {
+        // Ending the PostgreSQL session releases its lock even if unlocking
+        // explicitly fails; no pooled session may retain an advisory lock.
+        client.off("error", onError);
+        client.off("end", onEnd);
+        await client.end().catch(() => undefined);
+      }
+    },
+  };
+}

@@ -1,3 +1,4 @@
+import { fencedParserWrite } from "@lmn24/database";
 import { insertArticlesAndCount, type DatabaseClient } from "@lmn24/database";
 
 import { parseFeedXml } from "./feed-parser.js";
@@ -78,10 +79,16 @@ function splitIntoChunks<T>(items: readonly T[], size: number): T[][] {
 export class ParserEngine {
   constructor(private readonly database: DatabaseClient) {}
 
+  private assertLease(signal?: AbortSignal): void {
+    if (signal?.aborted) throw new Error('RSS parser global lease lost');
+  }
+
   async run(
     filters: ParserFilters,
     emit: (event: ParserEvent) => void,
     batchRunId?: string,
+    signal?: AbortSignal,
+    ownerToken?: string,
   ): Promise<void> {
     const settings = await this.loadSettings();
     const feeds = await this.loadFeeds(filters);
@@ -122,7 +129,8 @@ export class ParserEngine {
       });
 
       try {
-        const result = await this.processFeed(feed, settings, batchRunId);
+        this.assertLease(signal);
+        const result = await this.processFeed(feed, settings, batchRunId, signal, ownerToken);
 
         if (result.ok) {
           successfulFeeds += 1;
@@ -163,6 +171,7 @@ export class ParserEngine {
           });
         }
       } catch (error) {
+        this.assertLease(signal);
         failedFeeds += 1;
 
         emit({
@@ -298,9 +307,11 @@ export class ParserEngine {
     feed: FeedRow,
     settings: ParserSettings,
     batchRunId?: string,
+    signal?: AbortSignal,
+    ownerToken?: string,
   ): Promise<FeedResult> {
     const startedAt = new Date();
-    const feedRun = await this.database.feedRun.create({
+    const feedRun = await fencedParserWrite(this.database, ownerToken, tx => tx.feedRun.create({
       data: {
         feedId: feed.id,
         ...(batchRunId ? { batchRunId } : {}),
@@ -310,7 +321,7 @@ export class ParserEngine {
       select: {
         id: true,
       },
-    });
+    }));
 
     let finalError = "Échec du traitement du flux.";
 
@@ -338,7 +349,8 @@ export class ParserEngine {
 
         const xml = await response.text();
         const parsed = await parseFeedXml(xml, response.url || feed.feedUrl);
-        const imported = await this.importArticles(feed, parsed.articles);
+        this.assertLease(signal);
+        const imported = await this.importArticles(feed, parsed.articles, signal, ownerToken);
         const finishedAt = new Date();
         const durationMs = Math.max(
           0,
@@ -346,8 +358,8 @@ export class ParserEngine {
         );
         const skipped = Math.max(0, parsed.itemsFound - imported.imported);
 
-        await this.database.$transaction([
-          this.database.feed.update({
+        await fencedParserWrite(this.database, ownerToken, async tx => {
+          await tx.feed.update({
             where: { id: feed.id },
             data: {
               lastFetchedAt: finishedAt,
@@ -355,8 +367,8 @@ export class ParserEngine {
               lastFetchStatus: "SUCCESS",
               lastError: null,
             },
-          }),
-          this.database.feedRun.update({
+          });
+          await tx.feedRun.update({
             where: { id: feedRun.id },
             data: {
               finishedAt,
@@ -367,8 +379,8 @@ export class ParserEngine {
               articlesSkipped: skipped,
               errorMessage: null,
             },
-          }),
-        ]);
+          });
+        });
 
         return {
           ok: true,
@@ -378,18 +390,20 @@ export class ParserEngine {
           articlesWithHashtags: imported.matched,
         };
       } catch (error) {
+        this.assertLease(signal);
         finalError = errorMessage(error);
       }
     }
 
+    this.assertLease(signal);
     const finishedAt = new Date();
     const durationMs = Math.max(
       0,
       finishedAt.getTime() - startedAt.getTime(),
     );
 
-    await this.database.$transaction([
-      this.database.feed.update({
+    await fencedParserWrite(this.database, ownerToken, async tx => {
+      await tx.feed.update({
         where: { id: feed.id },
         data: {
           lastFetchedAt: finishedAt,
@@ -397,8 +411,8 @@ export class ParserEngine {
           lastFetchStatus: "ERROR",
           lastError: finalError,
         },
-      }),
-      this.database.feedRun.update({
+      });
+          await tx.feedRun.update({
         where: { id: feedRun.id },
         data: {
           finishedAt,
@@ -406,8 +420,8 @@ export class ParserEngine {
           status: "ERROR",
           errorMessage: finalError,
         },
-      }),
-    ]);
+      });
+        });
 
     return {
       ok: false,
@@ -420,6 +434,8 @@ export class ParserEngine {
     parsedArticles: Awaited<
       ReturnType<typeof parseFeedXml>
     >["articles"],
+    signal?: AbortSignal,
+    ownerToken?: string,
   ): Promise<{ imported: number; matched: number }> {
     if (parsedArticles.length === 0) {
       return { imported: 0, matched: 0 };
@@ -462,6 +478,7 @@ export class ParserEngine {
       newArticles,
       INSERT_CHUNK_SIZE,
     )) {
+      this.assertLease(signal);
       const result = await insertArticlesAndCount(
         this.database,
         chunk.map((article) => ({
@@ -474,6 +491,7 @@ export class ParserEngine {
           articleUrl: article.articleUrl,
           publishedAt: article.publishedAt,
         })),
+        new Date(), ownerToken,
       );
       imported += result.imported;
       matched += result.matched;

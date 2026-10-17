@@ -25,7 +25,8 @@
     "zod": "^4.0.0",
     "@lmn24/contracts": "workspace:*",
     "playwright": "1.63.0",
-    "sharp": "0.35.5"
+    "sharp": "0.35.5",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
     "@nestjs/cli": "12.0.8",
@@ -33,6 +34,7 @@
     "eslint": "^9.0.0",
     "typescript": "^5.9.0",
     "vitest": "^3.2.0",
-    "@lmn24/eslint-config": "workspace:*"
+    "@lmn24/eslint-config": "workspace:*",
+    "@types/pg": "^8.23.1"
   }
 }

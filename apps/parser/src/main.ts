@@ -13,6 +13,13 @@ import cron from "node-cron";
 import { z } from "zod";
 
 import { ParserEngine } from "./parser-engine.js";
+import { existingParserAdapters } from "./existing-parser-adapters.js";
+import { dispatchOneSchedulerJob, type SchedulerExecutors } from "./scheduler-dispatcher.js";
+import { reconcileSchedulerQueue } from "./scheduler-queue.js";
+import { recoverOrphanedSchedulerJobs } from "./scheduler-recovery.js";
+import { horoscopeImportExecutor } from "./horoscope-scheduler-adapter.js";
+import { acquireGuardedParserLease } from "./guarded-parser-lease.js";
+import { GlobalParserBusyError } from "./global-parser-lock.js";
 import { PersistentRunLog } from "./persistent-run-log.js";
 import { VideoParserEngine, type VideoParserFilters } from "./video-parser-engine.js";
 import { WeatherParserEngine, WeatherRunActiveError } from "./weather-parser-engine.js";
@@ -153,6 +160,80 @@ async function bootstrap(): Promise<void> {
   const videoEngine = new VideoParserEngine(database);
   const videoRuns = new RunManager<VideoParserFilters>(videoEngine, videoLog);
   const weatherEngine = new WeatherParserEngine(database);
+
+  // Every parser entry point MUST use these wrappers; acquired lease ownership
+  // moves to the manager and is released only after engine completion.
+  async function startInfos(filters: Parameters<typeof runs.start>[0], trigger: "MANUAL" | "AUTOMATIC") {
+    const lease = await acquireGuardedParserLease();
+    try { return runs.start(filters, trigger, lease); }
+    catch (error) { await lease.release(); throw error; }
+  }
+  async function startVideos(filters: VideoParserFilters, trigger: "MANUAL" | "AUTOMATIC") {
+    const lease = await acquireGuardedParserLease();
+    try { return videoRuns.start(filters, trigger, lease); }
+    catch (error) { await lease.release(); throw error; }
+  }
+  async function startWeather(filters: Parameters<typeof weatherEngine.start>[0], trigger: "MANUAL" | "AUTOMATIC") {
+    const lease = await acquireGuardedParserLease();
+    try { return await weatherEngine.start(filters, trigger, lease); }
+    catch (error) { await lease.release(); throw error; }
+  }
+
+  // Integration seam for SCRUM-84. Existing launch wrappers already acquire
+  // and retain the same global lock used by the manual endpoints.
+  // DO NOT install a dispatcher timer until the Horoscope backend bridge,
+  // recovery policy and PostgreSQL integration tests are completed.
+  const parserAdapters = existingParserAdapters(runs, videoRuns, weatherEngine, {
+    infos: () => startInfos({}, "AUTOMATIC"),
+    videos: () => startVideos({}, "AUTOMATIC"),
+    weather: () => startWeather({}, "AUTOMATIC"),
+  });
+  const scheduledCollectExecutors: Pick<SchedulerExecutors, "INFOS" | "VIDEOS" | "WEATHER"> = {
+    INFOS: parserAdapters.INFOS,
+    VIDEOS: parserAdapters.VIDEOS,
+    WEATHER: parserAdapters.WEATHER,
+  };
+  // This runner is restricted to non-production integration experiments.
+  // The administrator API still refuses activation of scheduler config rows.
+  const schedulerExperiment = process.env.NODE_ENV !== "production" &&
+    process.env.SCHEDULER_EXPERIMENTAL_RUN === "true";
+  let schedulerTimer: ReturnType<typeof setInterval> | undefined;
+  if (schedulerExperiment) {
+    const secret = process.env.SCHEDULER_INTERNAL_SECRET ?? "";
+    const backendUrl = process.env.SCHEDULER_BACKEND_URL ?? "http://127.0.0.1:3001";
+    const executors: SchedulerExecutors = {
+      ...scheduledCollectExecutors,
+      HOROSCOPE_IMPORT: horoscopeImportExecutor(backendUrl, secret),
+    };
+    let runningTick = false;
+    const tick = async () => {
+      if (runningTick) return;
+      runningTick = true;
+      try {
+        // Recovery is conservative and only available in non-production
+        // experiments. It first acquires the same global lease as all engines
+        // and only touches jobs whose ownership heartbeat is stale.
+        const databaseUrl = process.env.DATABASE_URL;
+        if (!databaseUrl) throw new Error("DATABASE_URL is required for recovery.");
+        const recovered = await recoverOrphanedSchedulerJobs(
+          database, databaseUrl, new Date(Date.now() - 5 * 60_000),
+        );
+        if (recovered && recovered > 0) {
+          logger.warn({ recovered }, "Recovered orphaned scheduler jobs");
+        }
+        await reconcileSchedulerQueue(database);
+        await dispatchOneSchedulerJob(database, executors);
+      } catch (error) {
+        logger.error({ error }, "Experimental scheduler tick failed");
+      } finally {
+        runningTick = false;
+      }
+    };
+    schedulerTimer = setInterval(() => { void tick(); }, 30_000);
+    logger.warn("Experimental scheduler enabled in NON-PRODUCTION only");
+  }
+
+
   let rebuildingStats = false;
   let lastStatsResult: {
     finishedAt: string | null;
@@ -209,8 +290,12 @@ async function bootstrap(): Promise<void> {
     }
     scheduledJobs.push(cron.schedule(schedule.expression, () => {
       try {
-        if (schedule.type === "INFOS") runs.start({}, "AUTOMATIC");
-        else videoRuns.start({}, "AUTOMATIC");
+        void (schedule.type === "INFOS"
+          ? startInfos({}, "AUTOMATIC") : startVideos({}, "AUTOMATIC"))
+          .catch(error => {
+            if (!(error instanceof GlobalParserBusyError) && !(error instanceof ActiveRunError))
+              logger.error({ error }, "Automatic parser start failed");
+          });
       } catch (error) {
         if (!(error instanceof ActiveRunError))
           logger.error({ error }, "Automatic parser start failed");
@@ -288,11 +373,11 @@ async function bootstrap(): Promise<void> {
           return;
         }
         try{
-          const runId=await weatherEngine.start(parsed.data,
+          const runId=await startWeather(parsed.data,
             request.headers["x-parser-trigger"]==="AUTOMATIC"?"AUTOMATIC":"MANUAL");
           writeJson(response,202,{accepted:true,runId});
         }catch(e){
-          if(e instanceof WeatherRunActiveError){
+          if(e instanceof WeatherRunActiveError || e instanceof GlobalParserBusyError){
             writeApiError(response,409,"WEATHER_RUN_ACTIVE",e.message);return;
           }
           throw e;
@@ -320,11 +405,11 @@ async function bootstrap(): Promise<void> {
           return;
         }
         try {
-          const runId = videoRuns.start(parsedVideo.data,
+          const runId = await startVideos(parsedVideo.data,
             request.headers["x-parser-trigger"] === "AUTOMATIC" ? "AUTOMATIC" : "MANUAL");
           writeJson(response, 202, { accepted: true, runId });
         } catch (error) {
-          if (error instanceof ActiveRunError) {
+          if (error instanceof ActiveRunError || error instanceof GlobalParserBusyError) {
             writeApiError(response, 409, "VIDEO_RUN_ACTIVE", "Une extraction vidéo est déjà en cours.");
             return;
           }
@@ -348,7 +433,7 @@ async function bootstrap(): Promise<void> {
         }
 
         try {
-          const runId = runs.start(parsed.data,
+          const runId = await startInfos(parsed.data,
             request.headers["x-parser-trigger"] === "AUTOMATIC" ? "AUTOMATIC" : "MANUAL");
 
           writeJson(response, 202, { runId });
@@ -463,6 +548,7 @@ async function bootstrap(): Promise<void> {
   async function shutdown(signal: string): Promise<void> {
     logger.info({ signal }, "LMN24 parser shutting down");
 
+    if (schedulerTimer) clearInterval(schedulerTimer);
     hourlyStatsJob.stop();
     fullStatsJob.stop();
     for (const job of scheduledJobs) job.stop();

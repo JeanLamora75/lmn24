@@ -569,3 +569,45 @@ model WeatherRun {
   @@index([status], map: "idx_weather_run_status")
   @@map("weather_run")
 }
+
+
+// SCRUM-83/84 — Durable scheduler configuration and coalesced work queue.
+// Scheduling is opt-in: no process may run from these rows until enabled by an administrator.
+model SchedulerConfig {
+  parserType        String    @id @map("parser_type") @db.VarChar(24)
+  isEnabled         Boolean   @default(false) @map("is_enabled")
+  intervalMinutes   Int?      @map("interval_minutes")
+  localTime         String?   @map("local_time") @db.VarChar(5)
+  timezone          String    @default("Europe/Paris") @db.VarChar(64)
+  nextDueAt         DateTime? @map("next_due_at") @db.Timestamptz(6)
+  lastScheduledAt    DateTime? @map("last_scheduled_at") @db.Timestamptz(6)
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  jobs SchedulerJob[]
+
+  @@map("scheduler_config")
+}
+
+model SchedulerJob {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  parserType      String    @map("parser_type") @db.VarChar(24)
+  scheduledFor    DateTime  @map("scheduled_for") @db.Timestamptz(6)
+  status          String    @default("PENDING") @db.VarChar(16)
+  attempt         Int       @default(0)
+  notBefore       DateTime  @default(now()) @map("not_before") @db.Timestamptz(6)
+  startedAt       DateTime? @map("started_at") @db.Timestamptz(6)
+  finishedAt      DateTime? @map("finished_at") @db.Timestamptz(6)
+  ownerToken      String?   @map("owner_token") @db.Uuid
+  heartbeatAt     DateTime? @map("heartbeat_at") @db.Timestamptz(6)
+  lastError       String?   @map("last_error") @db.Text
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  config SchedulerConfig @relation(fields: [parserType], references: [parserType], onDelete: Restrict)
+
+  @@unique([parserType, scheduledFor], map: "scheduler_job_unique_due")
+  @@index([status, notBefore, scheduledFor], map: "idx_scheduler_job_dispatch")
+  @@index([parserType, scheduledFor(sort: Desc)], map: "idx_scheduler_job_parser_date")
+  @@map("scheduler_job")
+}

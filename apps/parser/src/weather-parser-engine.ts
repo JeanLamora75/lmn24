@@ -1,3 +1,5 @@
+import { fencedParserWrite } from "@lmn24/database";
+import type { GlobalParserLease } from "./global-parser-lock.js";
 import type { DatabaseClient } from "@lmn24/database";
 import { randomUUID } from "node:crypto";
 import { safeLogText } from "./persistent-run-log.js";
@@ -118,9 +120,11 @@ export class WeatherParserEngine {
 
   // PostgreSQL serializes the "check active then create" transaction even when
   // several parser instances try to start at the same time.
-  async start(filters:WeatherFilters={},trigger:WeatherTrigger="MANUAL"):Promise<string> {
+  async start(filters:WeatherFilters={},trigger:WeatherTrigger="MANUAL", lease?:GlobalParserLease):Promise<string> {
+    if (lease?.signal.aborted) throw new Error("Parser lease lost before weather run start");
     const started=await this.db.$transaction(async tx=>{
       await tx.$queryRaw`SELECT 1::int FROM pg_advisory_xact_lock(241024,71)`;
+      if(lease?.ownerToken)await tx.$queryRaw`SELECT assert_parser_write_epoch(${lease.ownerToken}::uuid)`;
       const cutoff=new Date(Date.now()-ACTIVE_TTL_MS);
       await tx.weatherRun.updateMany({
         where:{status:"RUNNING",startedAt:{lt:cutoff}},
@@ -144,16 +148,17 @@ export class WeatherParserEngine {
       return {id,cities};
     },{maxWait:10000,timeout:15000});
     // Request caller receives the id immediately; all progress is persisted.
-    void this.execute(started.id,started.cities).catch(async e=>{
+    void this.execute(started.id,started.cities,lease?.signal,lease?.ownerToken).catch(async e=>{
+      if(lease?.signal.aborted)return;
       const message=safeLogText(e instanceof Error?e.message:String(e));
       try{
-        await this.db.weatherRun.update({
+        await fencedParserWrite(this.db,lease?.ownerToken,tx=>tx.weatherRun.update({
           where:{id:started.id},data:{
             finishedAt:new Date(),status:"ERROR",errorMessage:message
           }
-        });
+        }));
       }catch(err){console.error("Weather run completion persistence failed:",err);}
-    });
+    }).finally(async () => { await lease?.release(); });
     return started.id;
   }
 
@@ -167,10 +172,10 @@ export class WeatherParserEngine {
     });
   }
 
-  private async save(city:City,reading:WeatherReading) {
+  private async save(city:City,reading:WeatherReading,ownerToken?:string) {
     // Single SQL statement prevents older observations from overwriting newer data.
     const fetchedAt=new Date();
-    await this.db.$executeRaw`
+    await fencedParserWrite(this.db,ownerToken,tx=>tx.$executeRaw`
       INSERT INTO weather_current
         (city_id,temperature_c,apparent_temperature_c,humidity_pct,
           wind_speed_kmh,weather_code,is_day,observed_at,fetched_at,provider)
@@ -189,15 +194,17 @@ export class WeatherParserEngine {
         fetched_at=EXCLUDED.fetched_at,
         provider=EXCLUDED.provider
       WHERE weather_current.observed_at <= EXCLUDED.observed_at
-    `;
+    `);
   }
 
-  private async execute(id:string,cities:City[]) {
+  private async execute(id:string,cities:City[],signal?:AbortSignal,ownerToken?:string) {
+    const assertActive=()=>{ if(signal?.aborted) throw new Error("Weather parser lease lost"); };
     const counters:Counters={
       totalCities:cities.length,processedCities:0,successfulCities:0,failedCities:0
     };
     const errors:string[]=[];
     for(let offset=0;offset<cities.length;offset+=BATCH_SIZE) {
+      assertActive();
       const group=cities.slice(offset,offset+BATCH_SIZE);
       try{
         const response=await this.fetchBatch(group);
@@ -207,21 +214,25 @@ export class WeatherParserEngine {
           const result=checked[index];
           try{
             if(!result?.reading)throw new Error(result?.error??"Lecture météo absente.");
-            await this.save(city,result.reading);
+            assertActive();
+            await this.save(city,result.reading,ownerToken);
             counters.successfulCities++;
           }catch(e){
+            assertActive();
             counters.failedCities++;
             errors.push(city.name+": "+safeLogText(e instanceof Error?e.message:String(e)));
           }
           counters.processedCities++;
         }
       }catch(e){
+        assertActive();
         const detail=safeLogText(e instanceof Error?e.message:String(e));
         counters.failedCities+=group.length;
         counters.processedCities+=group.length;
         for(const city of group)errors.push(city.name+": "+detail);
       }
-      await this.db.weatherRun.update({
+      assertActive();
+      await fencedParserWrite(this.db,ownerToken,tx=>tx.weatherRun.update({
         where:{id},
         data:{
           processedCities:counters.processedCities,
@@ -229,13 +240,14 @@ export class WeatherParserEngine {
           failedCities:counters.failedCities,
           errorMessage:errors.length?safeLogText(errors.slice(0,6).join(" | ")):null
         }
-      });
+      }));
     }
     const status=counters.failedCities===0?"SUCCESS":
       counters.successfulCities===0?"ERROR":"PARTIAL";
-    await this.db.weatherRun.update({where:{id},data:{
+    assertActive();
+    await fencedParserWrite(this.db,ownerToken,tx=>tx.weatherRun.update({where:{id},data:{
       finishedAt:new Date(),status,
       errorMessage:errors.length?safeLogText(errors.slice(0,6).join(" | ")):null
-    }});
+    }}));
   }
 }

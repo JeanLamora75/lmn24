@@ -4,9 +4,16 @@ on:
   push:
     branches:
       - main
+      - 'feat/scrum-*'
+      - 'fix/scrum-*'
+      - 'test/scrum-*'
   pull_request:
     branches:
       - main
+      - 'feat/scrum-*'
+      - 'fix/scrum-*'
+      - 'test/scrum-*'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -117,3 +124,97 @@ jobs:
       - name: End-to-end weather database acceptance (SCRUM-79)
         run: |
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_schema_test < database/tests/scrum_79_weather_end_to_end_smoke.sql
+
+
+  scheduler-schema:
+    name: PostgreSQL scheduler schema
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: lmn24_scheduler_test
+        options: >-
+          --health-cmd "pg_isready -U postgres -d lmn24_scheduler_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Apply base scheduler migration
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_foundations.sql
+      - name: Apply owner fencing migration
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_job_ownership.sql
+      - name: Apply transactional writer fencing migration
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_parser_write_fence.sql
+      - name: Verify stale-owner denial across PostgreSQL sessions
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_89_parser_write_epoch.sql
+      - name: Verify constraints and disabled defaults
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_scheduler_schema_smoke.sql
+      - name: Verify parser lock exclusion across PostgreSQL sessions
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_global_lock_smoke.sql
+      - name: Verify scheduler dispatch priority and disabled parsers
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_scheduler_dispatch_priority.sql
+      - name: Verify concurrent scheduler row claims
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_scheduler_claim_concurrency.sql
+      - name: Verify orphan recovery across independent PostgreSQL sessions (SCRUM-89)
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_89_recovery_fencing_sessions.sql
+      - name: Replay additive migrations
+        run: |
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_foundations.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/migrations/20261017_scheduler_job_ownership.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_scheduler_test < database/tests/scrum_91_scheduler_schema_smoke.sql
+
+  scheduler-node-lock:
+    name: PostgreSQL cross-process parser lock
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: lmn24_lock_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d lmn24_lock_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/lmn24_lock_test
+      SCHEDULER_PG_INTEGRATION: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.10.0
+          run_install: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.21.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Apply real content schema for isolated engine acceptance
+        run: |
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/schema.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/009_video_aggregation.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/010_parser_monitoring.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/011_weather_data_model.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < packages/database/migrations/20261015102000_horoscope_data_model/migration.sql
+      - name: Apply scheduler tables for crash recovery scenario
+        run: |
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/20261017_scheduler_foundations.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/20261017_scheduler_job_ownership.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/20261017_parser_write_fence.sql
+      - name: Build database and dependent workspaces for Prisma integration test
+        run: pnpm --filter '@lmn24/database^...' build && pnpm --filter @lmn24/database build
+      - name: Run real Node crash and PostgreSQL recovery tests
+        run: pnpm --filter @lmn24/parser exec vitest run src/global-parser-lock-process.test.ts src/scheduler-recovery-process.test.ts src/lease-loss-process.test.ts src/parser-write-fence-process.test.ts src/scheduler-four-engine-process.test.ts src/parser-content-e2e-process.test.ts --no-file-parallelism
+      - name: Run real Horoscope repository importer with PostgreSQL (96 rows x 8 languages)
+        run: pnpm --filter @lmn24/backend exec vitest run src/horoscopes/horoscope-persistence-process.test.ts --no-file-parallelism

@@ -1,3 +1,4 @@
+import type { GlobalParserLease } from "./global-parser-lock.js";
 import { randomUUID } from "node:crypto";
 import type { Trigger } from "./persistent-run-log.js";
 
@@ -24,13 +25,13 @@ export class ActiveRunError extends Error {
 }
 
 type RunEngine<Filters extends ParserFilters> = {
-  run(filters: Filters, emit: (event: ParserEvent) => void, batchRunId?: string): Promise<unknown>;
+  run(filters: Filters, emit: (event: ParserEvent) => void, batchRunId?: string, signal?: AbortSignal, ownerToken?: string): Promise<unknown>;
 };
 
 export type RunObserver<Filters extends ParserFilters> = {
-  start(id: string, filters: Filters, trigger: Trigger): Promise<void>;
-  event(id: string, event: ParserEvent): Promise<void>;
-  finish(id: string, failed: boolean): Promise<void>;
+  start(id: string, filters: Filters, trigger: Trigger, ownerToken?: string): Promise<void>;
+  event(id: string, event: ParserEvent, ownerToken?: string): Promise<void>;
+  finish(id: string, failed: boolean, ownerToken?: string): Promise<void>;
 };
 
 export class RunManager<Filters extends ParserFilters = ParserFilters> {
@@ -42,7 +43,7 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
     private readonly observer?: RunObserver<Filters>,
   ) {}
 
-  start(filters: Filters, trigger: Trigger = "MANUAL"): string {
+  start(filters: Filters, trigger: Trigger = "MANUAL", lease?: GlobalParserLease): string {
     if (this.activeRunId) {
       throw new ActiveRunError();
     }
@@ -60,7 +61,7 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
     this.activeRunId = runId;
     this.prune();
 
-    void this.execute(record, filters, trigger);
+    void this.execute(record, filters, trigger, lease);
 
     return runId;
   }
@@ -92,24 +93,25 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
     record: RunRecord,
     filters: Filters,
     trigger: Trigger,
+    lease?: GlobalParserLease,
   ): Promise<void> {
     let failed = false;
     let pending: Promise<void> = Promise.resolve();
     const persist = (event: ParserEvent) => {
       // Serialized writes keep events in the same order as the live SSE stream.
       pending = pending.then(async () => {
-        await this.observer?.event(record.id, event);
+        await this.observer?.event(record.id, event, lease?.ownerToken);
       }).catch((error: unknown) => {
         console.error("Parser monitoring event persistence failed:", error);
       });
     };
     try {
-      if (this.observer) await this.observer.start(record.id, filters, trigger);
+      if (this.observer) await this.observer.start(record.id, filters, trigger, lease?.ownerToken);
       await this.engine.run(filters, (event) => {
         this.emit(record, event);
         persist(event);
         if (event.type === "run-error") failed = true;
-      }, record.id);
+      }, record.id, lease?.signal, lease?.ownerToken);
     } catch (error) {
       failed = true;
       const message = error instanceof Error ? error.message : "Erreur inconnue.";
@@ -123,9 +125,11 @@ export class RunManager<Filters extends ParserFilters = ParserFilters> {
     } finally {
       await pending;
       if (this.observer) {
-        try { await this.observer.finish(record.id, failed); }
+        try { await this.observer.finish(record.id, failed, lease?.ownerToken); }
         catch (error) { console.error("Parser monitoring completion failed:", error); }
       }
+      try { await lease?.release(); }
+      catch (error) { console.error("Failed to release parser lease:", error); }
       record.done = true;
       if (this.activeRunId === record.id) this.activeRunId = null;
     }
