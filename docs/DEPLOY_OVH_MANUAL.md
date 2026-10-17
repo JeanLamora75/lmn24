@@ -76,6 +76,39 @@ En cas de `libatk-1.0.so.0: cannot open shared object file` (ou autre bibliothè
 
 Documentation : [Playwright — installation des navigateurs et dépendances](https://playwright.dev/docs/browsers).
 
+### Administration météo : origine publique derrière le reverse proxy
+
+Les routes d'écriture pour les villes météo et le lancement du parser Météo protègent les requêtes contre les origines externes (contrôle CSRF). Sur OVH, le navigateur utilise `https://www.lmn24.com`, tandis que Next.js peut voir son URL interne `http://127.0.0.1:3000` derrière le reverse proxy.
+
+**Symptôme :** le bouton « Lancer le Parser Météo » renvoie HTTP **403** avec `{"message":"Origine non autorisée."}`, y compris sans session lorsque l'en-tête `Origin: https://www.lmn24.com` est envoyé.
+
+Sur le VPS, renseigner l'origine publique exacte dans **`/home/ubuntu/lmn24/.env`** (ne jamais publier le fichier complet) :
+
+```dotenv
+WEATHER_ADMIN_PUBLIC_ORIGIN=https://www.lmn24.com
+```
+
+L'option doit contenir une **origine** complète (schéma + hôte et éventuellement port), sans chemin, identifiants, query string ou fragment. Ne pas utiliser `*` ni des domaines génériques. En développement local, cette variable peut rester vide : la route accepte alors seulement l'origine correspondant à l'URL reçue par Next.js.
+
+Cette configuration est lue par **le frontend Next.js** au lancement. Après avoir fusionné le correctif applicatif, effectuer un déploiement manuel GitHub Actions sur `main` ; le workflow reconstruit et redémarre le frontend. Pour une modification ultérieure de cette seule variable, redémarrer le frontend après avoir vérifié l'absence d'opération critique :
+
+```bash
+sudo systemctl restart lmn24-frontend.service
+```
+
+Test non authentifié **sans démarrer le parser** :
+
+```bash
+curl -sS -o /dev/null -w "HTTP %{http_code}\n" \
+  -X POST https://www.lmn24.com/api/admin/parser/weather-runs \
+  -H "Origin: https://www.lmn24.com" \
+  -H "Sec-Fetch-Site: same-origin" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+Attendu après correction : **HTTP 401**, car le contrôle d'origine passe mais aucune session n'est fournie. Si le résultat reste **403**, vérifier la présence de la variable dans `.env`, le redémarrage du frontend et le SHA déployé. **Ne pas désactiver le contrôle d'origine pour corriger le problème.** Une fois le test à 401, relancer le parser Météo depuis une session administrateur authentifiée et contrôler l'historique d'exécution.
+
 ### Flux RSS : préférence IPv4 limitée au service parser
 
 Depuis le VPS OVH, le flux `https://www.7sur7.be/sciences/rss.xml` a répondu **HTTP 200 en IPv4** et **HTTP 403 en IPv6**, à en-têtes équivalents ; le test Node.js `fetch` avec une préférence IPv4 a également répondu **200**. Cela identifie un écart lié au chemin réseau pour **ce flux**, pas une cause universelle des erreurs HTTP 403.
