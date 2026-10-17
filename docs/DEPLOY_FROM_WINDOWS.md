@@ -9,7 +9,7 @@ Aucun push GitHub Desktop, aucune fusion dans `main` et aucun lancement du véri
 Sur Windows 11 :
 
 - GitHub Desktop et le dépôt `JeanLamora75/lmn24` cloné, déjà fonctionnels.
-- `git.exe` accessible depuis PowerShell. Le lanceur recherche aussi le Git fourni avec GitHub Desktop lorsqu'il n'est pas présent dans le PATH. Si la commande `git --version` échoue, installer **Git for Windows** ou l'ajouter au `PATH` utilisateur.
+- `git.exe` accessible depuis PowerShell. Le lanceur recherche aussi le Git fourni avec GitHub Desktop lorsqu'il n'est pas présent dans le PATH. Le Git fourni par GitHub Desktop suffit normalement ; aucune installation administrateur supplémentaire n'est prévue.
 - **GitHub CLI portable, sans droits administrateur :** dans le dossier LMN24, double-cliquer sur `Installer-GitHubCLI-Portable.cmd`. Le programme télécharge l'archive officielle depuis https://github.com/cli/cli/releases/latest, vérifie sa somme SHA256 officielle, puis installe uniquement `gh.exe` dans `%LOCALAPPDATA%\LMN24\GitHubCLI\gh.exe`. Il ne modifie aucun PATH et n'utilise pas winget.
 
   Si le réseau professionnel bloque ce téléchargement, récupérer manuellement l'archive ZIP `windows_amd64.zip` correspondant à Windows x64 sur la page officielle ; vérifier son SHA256 avec le fichier de sommes officiel, puis extraire et copier `gh.exe` dans `%LOCALAPPDATA%\LMN24\GitHubCLI\gh.exe`.
@@ -17,8 +17,8 @@ Sur Windows 11 :
   Dans PowerShell, se connecter une seule fois à GitHub :
 
   ```powershell
-  & "$env:LOCALAPPDATA\\LMN24\\GitHubCLI\\gh.exe" auth login
-  & "$env:LOCALAPPDATA\\LMN24\\GitHubCLI\\gh.exe" auth status
+  & "$env:LOCALAPPDATA\LMN24\GitHubCLI\gh.exe" auth login
+  & "$env:LOCALAPPDATA\LMN24\GitHubCLI\gh.exe" auth status
   ```
 
   Sélectionner GitHub.com, HTTPS et la connexion via le navigateur. **Ne jamais transmettre ni publier les jetons et mots de passe.** Le lanceur reconnaît automatiquement cette installation portable, sans modification du PATH.
