@@ -16,12 +16,12 @@ async function run() {
   `);
   const pid=result.rows[0]?.pid;
   if(!pid)throw new Error("Global advisory lock holder missing");
-  process.stdout.write("LEASE_HELD:"+pid+"\\n");
+  process.stdout.write("LEASE_HELD:"+pid+"\n");
   await client.end();
   // The loss handler must exit the process before this delayed write marker.
   // A non-terminating process constitutes a failing safety test.
   await new Promise(resolve=>setTimeout(resolve,20_000));
-  process.stdout.write("UNSAFE_CONTINUATION\\n");
+  process.stdout.write("UNSAFE_CONTINUATION\n");
   await lease.release();
 }
 run().catch(error=>{console.error(error);process.exitCode=2});
