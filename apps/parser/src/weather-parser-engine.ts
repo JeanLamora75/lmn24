@@ -147,6 +147,7 @@ export class WeatherParserEngine {
     },{maxWait:10000,timeout:15000});
     // Request caller receives the id immediately; all progress is persisted.
     void this.execute(started.id,started.cities,lease?.signal).catch(async e=>{
+      if(lease?.signal.aborted)return;
       const message=safeLogText(e instanceof Error?e.message:String(e));
       try{
         await this.db.weatherRun.update({
