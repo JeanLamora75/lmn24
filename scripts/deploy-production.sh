@@ -22,9 +22,18 @@ if [ ! -f .env ]; then
   exit 1
 fi
 
-if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
-  echo "Tracked files were modified on the VPS; deployment stopped to protect them" >&2
+# Next.js may regenerate its tracked next-env.d.ts during a build.
+# Only that specific unstaged generated file may be reset; block every other
+# tracked/staged change so no human edits are silently discarded.
+if [ -n "$(git status --porcelain --untracked-files=no -- . ':(exclude)apps/frontend/next-env.d.ts')" ] ||
+   ! git diff --cached --quiet -- apps/frontend/next-env.d.ts; then
+  echo "Tracked files other than generated next-env.d.ts were modified on the VPS; deployment stopped" >&2
   exit 1
+fi
+
+if ! git diff --quiet -- apps/frontend/next-env.d.ts; then
+  echo "Resetting only Next.js-generated apps/frontend/next-env.d.ts before deploying..."
+  git restore --worktree -- apps/frontend/next-env.d.ts
 fi
 
 # Refuse a deploy when required privileges or services are unavailable.
