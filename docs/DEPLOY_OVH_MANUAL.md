@@ -34,7 +34,7 @@ command -v node
 git status --porcelain --untracked-files=no
 ```
 
-La dernière commande doit être vide. Si `sudo -n` échoue, ajuster les droits de façon minimale **avant** le premier déploiement. Ne pas désactiver l'authentification SSH.
+La dernière commande doit normalement être vide. Le seul écart accepté par le script est une modification **non indexée** de `apps/frontend/next-env.d.ts`, fichier généré par Next.js ; le script restaure alors uniquement ce fichier avant le changement de version. Examiner tout autre écart avant déploiement. Si `sudo -n` échoue, ajuster les droits de façon minimale **avant** le premier déploiement. Vérifier les autorisations sans cache avec `sudo -k` suivi de `sudo -n /usr/bin/systemctl is-active lmn24-backend.service`. Ne pas désactiver l'authentification SSH.
 
 ## 1. Créer une clé SSH dédiée aux déploiements
 
@@ -111,7 +111,7 @@ Le site OVH conserve sa version précédente jusqu'au clic explicite sur **Run w
 
 Sur le VPS, le script `scripts/deploy-production.sh` :
 
-1. Refuse de continuer si les fichiers suivis ont été modifiés directement sur le VPS, si `.env` est absent ou si les services ne tournent pas.
+1. Refuse de continuer si les fichiers suivis ont été modifiés directement sur le VPS (à l'exception de `apps/frontend/next-env.d.ts` généré et non indexé, restauré explicitement), si `.env` est absent ou si les services ne tournent pas.
 2. Vérifie que le SHA demandé appartient à l'historique de `origin/main`.
 3. Déclenche le service de sauvegarde local `lmn24-backup.service`.
 4. Place le dépôt sur ce commit exact en mode `detached HEAD`, sans supprimer les fichiers ignorés.
