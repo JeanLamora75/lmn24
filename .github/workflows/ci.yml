@@ -196,5 +196,9 @@ jobs:
           node-version: 24.21.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Run real child-process PostgreSQL lock tests
-        run: pnpm --filter @lmn24/parser exec vitest run src/global-parser-lock-process.test.ts
+      - name: Apply scheduler tables for crash recovery scenario
+        run: |
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/20261017_scheduler_foundations.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d lmn24_lock_test < database/migrations/20261017_scheduler_job_ownership.sql
+      - name: Run real Node crash and PostgreSQL recovery tests
+        run: pnpm --filter @lmn24/parser exec vitest run src/global-parser-lock-process.test.ts src/scheduler-recovery-process.test.ts
