@@ -916,3 +916,14 @@ Country (référentiel existant, liaison logique via country_iso2 sans FK initia
 - **Automatisation future** : ajouter une programmation horaire configurable, désactivable, qui invoque le **même moteur que le bouton manuel**, produit `weather_run.trigger = AUTOMATIC` et conserve les mêmes garanties de supervision. Ce n'est pas une condition de livraison du MVP manuel.
 - Conformité : pas de sauvegarde IP dans les tables météo ; sélection de continent sans couplage à la langue ; accessibilité et état d'erreur avec alternative textuelle ; monitoring des collectes, gestion des fuseaux et tests huit langues.
 
+
+
+## Planificateur central — état déployé le 17 octobre 2026
+
+**`scheduler_config`** : une ligne par `parser_type` parmi `INFOS`, `VIDEOS`, `WEATHER`, `HOROSCOPE_IMPORT`. Champs : `parser_type` (PK), `is_enabled` (booléen), `interval_minutes` (entier nullable), `local_time` (HH:mm nullable), `timezone` (défaut `Europe/Paris`), `next_due_at`, `last_scheduled_at`, `created_at`, `updated_at`. Horoscope suit un horaire quotidien (>=06:00), les trois autres un intervalle entre 15 et 1440 minutes. La configuration est modifiable par l'administrateur et relue périodiquement par le parser.
+
+**`scheduler_job`** : file persistante, avec `id` UUID PK, `parser_type` FK vers `scheduler_config`, `scheduled_for`, `status` (`PENDING`, `RUNNING`, `SUCCESS`, `ERROR`, `INTERRUPTED`, `CANCELLED`), `attempt`, `not_before`, `started_at`, `finished_at`, `last_error`, `created_at`, `updated_at` et colonnes d'ownership (`owner_token`, `heartbeat_at`) ajoutées par migration. Unicité `(parser_type,scheduled_for)`. Les jobs sont créés à échéance, pas à la simple activation du parser.
+
+**`parser_write_epoch`** : état de fencing des écritures métier, utilisé avec `assert_parser_write_epoch(uuid)`, pour empêcher un processus ayant perdu son lease d'écrire. La colonne `lock_backend_pid` a été confirmée présente lors de la migration du 17/10.
+
+Migrations SQL appliquées sur `lmn24` : `20261017_scheduler_foundations.sql`, `20261017_scheduler_job_ownership.sql`, `20261017_parser_write_fence.sql`. Les droits ont été accordés à `lmn24_app` pour résoudre une erreur PostgreSQL 42501 ; un script reproductible `20261017_scheduler_application_grants.sql` existe dans le dépôt. Valeurs constatées sur OVH : Infos 60 minutes, Vidéos 120 minutes, Météo 240 minutes, Horoscope 06:15 Europe/Paris, `is_enabled=true` pour les quatre. Au 17/10 avant les premières échéances, `scheduler_job` était vide : **aucune réussite métier ne doit être inférée de cette seule mise en service**.
