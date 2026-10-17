@@ -20,6 +20,8 @@ describe.skipIf(!enabled)("global parser lease disconnection safety",()=>{
     });
     spawned.push(child);
     let output="";
+    let errors="";
+    child.stderr?.on("data",(part:Buffer)=>{errors+=part.toString();});
     const pid=await Promise.race([
       new Promise<number>((resolve,reject)=>{
         child.stdout?.on("data",(part:Buffer)=>{
@@ -28,7 +30,7 @@ describe.skipIf(!enabled)("global parser lease disconnection safety",()=>{
           if(match)resolve(Number(match[1]));
         });
         child.once("error",reject);
-        child.once("exit",code=>reject(new Error("Child exited prematurely: "+code+" "+output)));
+        child.once("exit",code=>reject(new Error("Child exited prematurely: "+code+" stdout="+output+" stderr="+errors)));
       }),
       new Promise<never>((_,reject)=>setTimeout(()=>reject(new Error("Lock holder timeout")),15_000)),
     ]);
