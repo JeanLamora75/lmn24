@@ -80,6 +80,51 @@ internes. Le navigateur ne doit pas appeler Open-Meteo directement.
    de test / sans réseau sortant : les données déjà stockées ne sont pas
    supprimées et un nouvel historique d'erreur est créé.
 
+### 3.1. Recette de production OVH — sécurité et collecte (retour du 17/10/2026)
+
+Cette recette complémentaire a été ajoutée après deux incidents distincts rencontrés sur OVH :
+
+1. **HTTP 403 « Origine non autorisée »** lors du lancement du parser par l'administration ; corrigé par [PR #57](https://github.com/JeanLamora75/lmn24/pull/57) en prenant en compte une origine publique explicitement autorisée derrière le reverse proxy, sans supprimer le contrôle anti-CSRF.
+2. **HTTP 503 et connection timeout** pour les lots Open-Meteo ; corrigés par [PR #58](https://github.com/JeanLamora75/lmn24/pull/58), qui allonge les délais, borne les tentatives, respecte `Retry-After` et améliore les diagnostics.
+
+**Prérequis de l'environnement de production** : les correctifs sont déployés et `WEATHER_ADMIN_PUBLIC_ORIGIN=https://www.lmn24.com` est présent dans le `.env` **non versionné** du VPS. Ne jamais copier le fichier `.env` ni les cookies de session dans une preuve de recette.
+
+#### Contrôle des origines et de l'authentification (sans lancer la collecte)
+
+Depuis un terminal, exécuter le POST **sans cookie** ci-dessous : le code attendu est **401** (contrôle d'origine validé, session absente), et **pas 403**.
+
+```bash
+curl -sS -o /dev/null -w "HTTP %{http_code}\n" \
+  -X POST https://www.lmn24.com/api/admin/parser/weather-runs \
+  -H "Origin: https://www.lmn24.com" \
+  -H "Sec-Fetch-Site: same-origin" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+Une origine étrangère doit au contraire produire **403**, toujours sans cookie :
+
+```bash
+curl -sS -o /dev/null -w "HTTP %{http_code}\n" \
+  -X POST https://www.lmn24.com/api/admin/parser/weather-runs \
+  -H "Origin: https://site-tiers.example" \
+  -H "Sec-Fetch-Site: cross-site" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+Ces tests **ne peuvent pas lancer la collecte** sans session valide. Ensuite, dans l'administration, vérifier avec un compte ADMIN que le lancement manuel sur un continent démarre et que les compteurs et l'historique se mettent à jour.
+
+#### Contrôle réel d'Open-Meteo
+
+- Depuis le VPS, comparer **ponctuellement** un appel `curl -4` pour une ville et un lot de huit villes ; vérifier la réponse HTTP et les paramètres exacts de l'URL utilisée. Un appel isolé **200** ne prouve pas que toutes les collectes fonctionneront.
+- Pour lever un doute lié au client HTTP, tester la même URL avec `node --dns-result-order=ipv4first` et `fetch` ; vérifier les journaux `journalctl -u lmn24-parser -n 150 --no-pager`.
+- Si la collecte échoue : distinguer une erreur du **fournisseur** (`Open-Meteo HTTP 503`), un **timeout réseau**, et une erreur **503 de l'API publique LMN24** (contexte distinct).
+- Ne pas répéter les requêtes en boucle pour tester les quotas ; ne pas forcer une collecte en parallèle d'un traitement déjà actif.
+- Confirmer qu'un lot en échec conserve les derniers relevés valides et que la rubrique affiche correctement les données périmées ou indisponibles.
+
+**Résultat historique :** après déploiement des PR #57 et #58, le fonctionnement du parser Météo sur OVH a été **confirmé par l'utilisateur**. Ce retour valide le sous-parcours concerné, **pas l'intégralité** des contrôles de cette recette (66 villes, six continents, huit langues, responsive, purge et performance). Voir [SCRUM-71](https://lmn24.atlassian.net/browse/SCRUM-71), [SCRUM-72](https://lmn24.atlassian.net/browse/SCRUM-72) et [SCRUM-79](https://lmn24.atlassian.net/browse/SCRUM-79). Procédures détaillées : [DEPLOY_OVH_MANUAL.md](DEPLOY_OVH_MANUAL.md).
+
 ## 4. Rubrique publique et responsivité
 
 Ouvrir `http://localhost:3000/fr/weather` et vérifier :
@@ -136,7 +181,9 @@ Les tests exécutés à chaque PR vérifient, **sans fournisseur réel** :
   statuts RUNNING/PARTIAL, nettoyage météo sans perdre le référentiel ;
 - route Next.js : entrée continent invalidée → 400,
   backend indisponible ou réponse invalide → 503 non caché,
-  taille bornée et aucune transmission des cookies privés.
+  taille bornée et aucune transmission des cookies privés ;
+- contrôle d'origine côté administration : origine publique configurée acceptée derrière le reverse proxy, origine tierce ou en-têtes suspects rejetés ;
+- client Open-Meteo : **15 secondes par tentative, trois tentatives maximum**, attente progressive **1,5 s puis 4 s**, prise en compte bornée de `Retry-After`, distinction des HTTP 503, timeouts, HTTP 400 et 429 ; non-régression sur les relevés précédents.
 
 Exécution automatisée :
 
@@ -157,7 +204,8 @@ sur le futur hébergement OVH.
 ## 7. Conditions de clôture
 
 - La CI doit être verte pour l'ensemble des packages.
-- Les points de recette manuelle doivent être exécutés sur la base locale.
+- Les points de recette manuelle doivent être exécutés sur la base locale ; les contrôles réseau et de reverse proxy doivent également être vérifiés sur l'hébergement réel.
+- Le lancement et la collecte sur OVH ont été confirmés après les PR #57/#58 ; **ne pas en déduire que tous les critères de SCRUM-79 sont automatiquement validés**.
 - Noter dans Jira : anomalies, captures éventuelles, latences réellement
   observées et décision de validation ou de correction.
 - **Aucune planification automatique de collecte ou de purge n'est
