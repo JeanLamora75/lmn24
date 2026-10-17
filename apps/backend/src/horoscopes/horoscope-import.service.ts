@@ -126,7 +126,7 @@ export class HoroscopeImportService {
       try {
         await session.query("SELECT pg_advisory_xact_lock($1,$2)",[241024,86]);
         await session.query(
-          "INSERT INTO parser_write_epoch(singleton_id,owner_token,updated_at) VALUES(1,$1::uuid,NOW()) ON CONFLICT(singleton_id) DO UPDATE SET owner_token=EXCLUDED.owner_token,updated_at=NOW()",
+          "INSERT INTO parser_write_epoch(singleton_id,owner_token,lock_backend_pid,updated_at) VALUES(1,$1::uuid,pg_backend_pid(),NOW()) ON CONFLICT(singleton_id) DO UPDATE SET owner_token=EXCLUDED.owner_token,lock_backend_pid=EXCLUDED.lock_backend_pid,updated_at=NOW()",
           [ownerToken],
         );
         await session.query("COMMIT");
