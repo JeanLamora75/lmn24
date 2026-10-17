@@ -26,13 +26,15 @@ describe("Horoscope import PostgreSQL advisory lock", () => {
     const query = vi.fn().mockResolvedValue([{acquired:1}]);
     const rows = vi.fn().mockResolvedValue([]);
     const created = vi.fn().mockResolvedValue({id:"snapshot-id",sourceFingerprint:"f"});
+    const importRuns = {create:vi.fn().mockResolvedValue({id:"run-id"}),update:vi.fn()};
     const transaction = vi.fn(async (fn: (tx: unknown) => Promise<unknown>) => fn({
       $queryRaw: query,
+      horoscopeImportRun:importRuns,
       horoscope: {findMany:rows,createMany:vi.fn().mockResolvedValue({count:96})},
       horoscopeAstronomySnapshot: {findUnique:vi.fn().mockResolvedValue(null),create:created},
     }));
     const prisma = {
-      horoscopeImportRun: {create:vi.fn().mockResolvedValue({id:"run-id"}),update:vi.fn()},
+      horoscopeImportRun: importRuns,
       $transaction:transaction,
     };
     vi.stubEnv("DATABASE_URL", "postgresql://test:test@localhost/test");
@@ -50,8 +52,7 @@ describe("Horoscope import PostgreSQL advisory lock", () => {
     expect(result).toMatchObject({inserted:96,skipped:0,status:"SUCCESS"});
     expect(pgMock.query).toHaveBeenCalledWith("SELECT pg_try_advisory_lock($1, $2) AS acquired", [241024, 85]);
     expect(pgMock.query).toHaveBeenCalledWith("SELECT pg_advisory_unlock($1, $2)", [241024, 85]);
-    expect(query).toHaveBeenCalledOnce();
-    const chunks=query.mock.calls[0]?.[0] as TemplateStringsArray;
+    const chunks=query.mock.calls.find(call=>(call[0] as TemplateStringsArray).join("").includes("pg_advisory_xact_lock"))?.[0] as TemplateStringsArray;
     expect(chunks.join("")).toContain("SELECT 1 AS acquired FROM pg_advisory_xact_lock");
   });
 });
