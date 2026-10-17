@@ -61,11 +61,27 @@ export async function dispatchOneSchedulerJob(
   const executor = executors[job.parserType];
   // A heartbeat prevents recovering a live reservation while it is waiting
   // for the guarded parser wrapper to begin execution.
+  // A worker which can no longer prove ownership must NOT continue writing
+  // content. Fail closed immediately rather than waiting for executor().
+  // The final job state is repaired by crash recovery, never marked SUCCESS.
   let heartbeatLost = false;
+  let heartbeatInFlight = false;
+  const ownershipLost = (cause: unknown) => {
+    if (heartbeatLost) return;
+    heartbeatLost = true;
+    console.error("LMN24 scheduler ownership lost; stopping worker", cause);
+    process.exit(1);
+  };
   const timer = setInterval(() => {
+    if (heartbeatInFlight) {
+      ownershipLost("Previous heartbeat did not complete within 10 seconds");
+      return;
+    }
+    heartbeatInFlight = true;
     void heartbeatSchedulerJob(database, job.id, ownerToken)
-      .then(ok => { if (!ok) heartbeatLost = true; })
-      .catch(() => { heartbeatLost = true; });
+      .then(ok => { if (!ok) ownershipLost("Scheduler owner token rejected"); })
+      .catch(ownershipLost)
+      .finally(() => { heartbeatInFlight = false; });
   }, 10_000);
   try {
     const result = await executor();
