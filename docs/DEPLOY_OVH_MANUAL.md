@@ -36,6 +36,141 @@ git status --porcelain --untracked-files=no
 
 La dernière commande doit normalement être vide. Le seul écart accepté par le script est une modification **non indexée** de `apps/frontend/next-env.d.ts`, fichier généré par Next.js ; le script restaure alors uniquement ce fichier avant le changement de version. Examiner tout autre écart avant déploiement. Si `sudo -n` échoue, ajuster les droits de façon minimale **avant** le premier déploiement. Vérifier les autorisations sans cache avec `sudo -k` suivi de `sudo -n /usr/bin/systemctl is-active lmn24-backend.service`. Ne pas désactiver l'authentification SSH.
 
+## Prérequis complémentaires : captures, RSS et médias
+
+Ces prérequis ont été validés sur le VPS Ubuntu 24.04 en octobre 2026. Ils relèvent de la **préparation ou reconstruction d'un VPS**, et non du déploiement GitHub Actions habituel. Les opérations qui utilisent `sudo` supposent les droits système correspondants.
+
+### Capture de sites : Chromium et Playwright
+
+Le bouton **Administration > Sources > Capturer image** et la découverte automatique de certains liens sociaux lancent Chromium depuis le **backend** avec Playwright. Sur un Ubuntu minimal, il faut installer à la fois le navigateur et ses dépendances système :
+
+```bash
+systemctl show lmn24-backend.service -p User
+cd /home/ubuntu/lmn24
+pnpm --filter @lmn24/backend exec playwright install chromium
+pnpm --filter @lmn24/backend exec playwright install-deps chromium
+```
+
+- `playwright install chromium` télécharge le navigateur dans le cache du **compte exécutant la commande** (sur le VPS documenté : `/home/ubuntu/.cache/ms-playwright/`). Vérifier que le service backend utilise ce même compte ou qu'il accède au navigateur installé.
+- `playwright install-deps chromium` installe les bibliothèques Linux via le gestionnaire de paquets (`apt`), avec les privilèges requis. À faire lors du provisionnement ou d'une maintenance autorisée.
+- Les mises à jour du code ne nécessitent **normalement pas** de réinstaller ces bibliothèques, mais une mise à jour majeure de Playwright peut exiger un nouveau navigateur.
+
+Tester le lancement local, sans modifier PostgreSQL :
+
+```bash
+cd /home/ubuntu/lmn24
+pnpm --filter @lmn24/backend exec node -e '
+const { chromium } = require("playwright");
+chromium.launch({ headless: true })
+  .then(async browser => {
+    console.log("Chromium fonctionne correctement !");
+    await browser.close();
+  })
+  .catch(error => { console.error(error.message); process.exitCode = 1; });
+'
+```
+
+En cas de `libatk-1.0.so.0: cannot open shared object file` (ou autre bibliothèque `.so` manquante), installer les **dépendances Linux**, pas seulement Chromium. Si le test CLI réussit mais pas l'administration, vérifier l'utilisateur systemd et la configuration facultative `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
+
+**Diagnostic HTTP :** un `POST /admin/sources/capture` sans cookie retourne normalement **401** : la route existe, mais cela **ne valide pas** le lancement du navigateur. Une réponse **503** avec le message `Chrome/Chromium n’est pas disponible pour la capture.` correspond à un navigateur absent ou incapable de démarrer.
+
+Documentation : [Playwright — installation des navigateurs et dépendances](https://playwright.dev/docs/browsers).
+
+### Flux RSS : préférence IPv4 limitée au service parser
+
+Depuis le VPS OVH, le flux `https://www.7sur7.be/sciences/rss.xml` a répondu **HTTP 200 en IPv4** et **HTTP 403 en IPv6**, à en-têtes équivalents ; le test Node.js `fetch` avec une préférence IPv4 a également répondu **200**. Cela identifie un écart lié au chemin réseau pour **ce flux**, pas une cause universelle des erreurs HTTP 403.
+
+Pour diagnostiquer un flux en échec, comparer IPv4 et IPv6 :
+
+```bash
+URL="https://www.7sur7.be/sciences/rss.xml"
+for family in -4 -6; do
+  curl "$family" -sS -L --max-time 15 -o /dev/null \
+    -w "HTTP %{http_code} | IP %{remote_ip}\n" \
+    -H "User-Agent: LMN24 RSS/XML Parser" \
+    -H "Accept: application/rss+xml, application/atom+xml, application/xml, text/xml, */*;q=0.8" \
+    "$URL"
+done
+```
+
+Si IPv4 fonctionne, confirmer avec le même client HTTP que LMN24 :
+
+```bash
+cd /home/ubuntu/lmn24
+node --dns-result-order=ipv4first -e '
+fetch("https://www.7sur7.be/sciences/rss.xml", {
+  headers: {
+    "user-agent": "LMN24 RSS/XML Parser",
+    "accept": "application/rss+xml, application/atom+xml, application/xml, text/xml, */*;q=0.8"
+  },
+  signal: AbortSignal.timeout(15000)
+})
+.then(response => console.log("HTTP", response.status))
+.catch(error => { console.error(error); process.exitCode = 1; });
+'
+```
+
+Si le test est concluant, configurer **uniquement le service systemd du parser** avec une surcharge persistante, plutôt que désactiver IPv6 globalement :
+
+```bash
+sudo mkdir -p /etc/systemd/system/lmn24-parser.service.d
+printf '[Service]\nEnvironment="NODE_OPTIONS=--dns-result-order=ipv4first"\n' \
+  | sudo tee /etc/systemd/system/lmn24-parser.service.d/90-ipv4.conf
+sudo systemctl daemon-reload
+```
+
+**Attendre la fin de toute extraction en cours**, puis :
+
+```bash
+sudo systemctl restart lmn24-parser.service
+systemctl is-active lmn24-parser.service
+systemctl show lmn24-parser.service -p Environment \
+  | grep -o -- '--dns-result-order=ipv4first'
+```
+
+Attendu : `active` puis `--dns-result-order=ipv4first`. Tester ensuite le flux dans l'administration. La préférence IPv4 **n'interdit pas IPv6** ; elle s'applique à tout le processus `lmn24-parser.service` (Infos et Vidéos). Le fichier `/etc/systemd/system/lmn24-parser.service.d/90-ipv4.conf` est conservé entre les déploiements, mais doit être **recréé sur un nouveau VPS**. Pour l'annuler, retirer uniquement cette surcharge, faire `daemon-reload` et redémarrer le service hors extraction.
+
+Ne pas multiplier les tentatives sur des sites qui bloquent volontairement les robots. Un `403` sur les deux protocoles peut exiger une autre URL RSS officielle ou l'abandon du flux ; un `429` appelle une temporisation respectant `Retry-After`.
+
+Documentation : [Node.js — ordre de résolution DNS](https://nodejs.org/api/cli.html#--dns-result-orderorder).
+
+### Stockage persistant des logos et captures
+
+Le backend lit et écrit les images de sources dans le répertoire configuré par `SOURCE_MEDIA_DIR`. Sur ce VPS :
+
+```dotenv
+SOURCE_MEDIA_DIR=/home/ubuntu/lmn24-data/uploads/sources
+```
+
+La variable se trouve dans `/home/ubuntu/lmn24/.env`, **non versionné et confidentiel**. Le dossier média est **hors du dépôt Git** ; les images ne sont donc ni sauvegardées par GitHub ni transférées par GitHub Actions. Ne pas stocker les originaux dans `node_modules`, un cache ou un dossier de build.
+
+Contrôles :
+
+```bash
+grep '^SOURCE_MEDIA_DIR=' /home/ubuntu/lmn24/.env
+find /home/ubuntu/lmn24-data/uploads/sources -maxdepth 1 -type f \
+  \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) \
+  | wc -l
+systemctl show lmn24-backend.service -p User
+```
+
+Les colonnes `source.logo_url` peuvent référencer des chemins `/source-media/<uuid>.png` (ou JPG/WebP). Lors d'une migration, copier les fichiers en **conservant les noms exacts**, sans écraser aveuglément les médias déjà présents. En octobre 2026, 151 images ont été copiées sur OVH depuis le poste local ; ce nombre n'est qu'un repère historique, à revérifier.
+
+**Sauvegarde :** une sauvegarde PostgreSQL ne protège **pas** ces fichiers. Vérifier explicitement que le service de sauvegarde inclut ce répertoire, tester une restauration et prévoir une copie **hors du VPS** ; ne pas supposer que le simple succès de `lmn24-backup.service` garantit les médias.
+
+### Contrôles fonctionnels après reconstruction
+
+- Backend : `curl -fsS http://127.0.0.1:3001/health`.
+- Parser : `curl -fsS http://127.0.0.1:3002/health`.
+- Frontend : `curl -fsS http://127.0.0.1:3000/fr > /dev/null`.
+- Capture : tester Chromium en CLI, puis réaliser une capture réelle depuis une session d'administration.
+- RSS : comparer les résultats IPv4/IPv6 d'un flux en erreur, puis lancer un petit périmètre du parser Infos.
+- Médias : vérifier qu'un logo importé s'affiche sur une page publique.
+- Journaux : `journalctl -u lmn24-backend -u lmn24-parser -n 150 --no-pager`.
+
+Les *health checks* du déploiement ne testent ni le lancement réel de Chromium ni les flux externes. **Ne jamais publier les secrets du fichier `.env`, ni des cookies ou clés SSH privées.**
+
+
 ## 1. Créer une clé SSH dédiée aux déploiements
 
 Sur le VPS, dans la session de `ubuntu` :
