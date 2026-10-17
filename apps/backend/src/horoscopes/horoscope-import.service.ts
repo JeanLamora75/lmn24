@@ -175,7 +175,7 @@ export class HoroscopeImportService {
     }
     const {data,fingerprint}=validated;
     const date=new Date(data.date+"T00:00:00.000Z");
-    const run=await this.db.prisma.horoscopeImportRun.create({data:{
+    const run=await fencedParserWrite(this.db.prisma,ownerToken,tx=>tx.horoscopeImportRun.create({data:{
       sourceType,sourceFile:fileName,fileFingerprint:fingerprint,targetDate:date,...(userId ? {triggeredByUserId:userId} : {}),
       itemsExpected:96,itemsValid:96,status:"RUNNING",
     }}));
@@ -210,7 +210,7 @@ export class HoroscopeImportService {
       return {date:data.date,...result,status:result.inserted?"SUCCESS":"SKIPPED"};
     }catch(e){
       this.logger.error(`Horoscope import failed: ${fileName}`, e instanceof Error ? e.stack : String(e));
-      await this.db.prisma.horoscopeImportRun.update({where:{id:run.id},data:{
+      await fencedParserWrite(this.db.prisma,ownerToken,tx=>tx.horoscopeImportRun.update({where:{id:run.id},data:{
         status:"ERROR",errorMessage:e instanceof ConflictException?e.message:"Échec technique d'import.",
         finishedAt:new Date(),
       }}));
