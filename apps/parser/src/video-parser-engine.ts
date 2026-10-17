@@ -42,7 +42,8 @@ async function boundedResponse(response: Response): Promise<string> {
 export class VideoParserEngine {
   constructor(private readonly database: DatabaseClient) {}
 
-  async run(filters: VideoParserFilters = {}, emit?: VideoEmitter, batchRunId?: string): Promise<VideoSummary> {
+  async run(filters: VideoParserFilters = {}, emit?: VideoEmitter, batchRunId?: string, signal?: AbortSignal): Promise<VideoSummary> {
+    const assertLease=()=>{ if(signal?.aborted) throw new Error('Video parser global lease lost'); };
     const feeds = await this.database.feedVideo.findMany({
       where: {
         isActive: true,
@@ -64,6 +65,7 @@ export class VideoParserEngine {
       feedTotal: feeds.length,
     });
     for (const [index, feed] of feeds.entries()) {
+      assertLease();
       emit?.({
         type: "feed-started",
         timestamp: new Date().toISOString(),
@@ -88,6 +90,7 @@ export class VideoParserEngine {
         itemsFound = parsed.itemsFound;
         const unique = new Map(parsed.videos.map(video => [video.platformVideoId, video]));
         for (const video of unique.values()) {
+          assertLease();
           const created = await this.database.video.createMany({
             data: [{
               sourceId: feed.sourceId, feedVideoId: feed.id, categoryId: feed.categoryId,
@@ -103,12 +106,14 @@ export class VideoParserEngine {
         result.imported += videosImported;
         result.skipped += videosSkipped;
       } catch (caught) {
+        assertLease();
         error = caught instanceof Error ? caught.message.slice(0, 2000) : "Erreur inconnue.";
         result.failed++;
       }
       const finishedAt = new Date();
       const durationMs = Math.max(0, finishedAt.getTime() - startedAt.getTime());
       const status = error ? "ERROR" : "SUCCESS";
+      assertLease();
       await this.database.$transaction([
         this.database.feedVideo.update({ where: { id: feed.id },
           data: { lastFetchedAt: finishedAt, lastFetchDurationMs: durationMs, lastFetchStatus: status, lastError: error } }),
