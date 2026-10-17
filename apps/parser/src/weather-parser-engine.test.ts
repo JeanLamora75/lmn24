@@ -1,5 +1,5 @@
 import { describe,expect,it,vi } from "vitest";
-import { WeatherParserEngine,WeatherRunActiveError } from "./weather-parser-engine.js";
+import { WeatherParserEngine,WeatherRunActiveError,weatherHttp } from "./weather-parser-engine.js";
 const paris={id:"11111111-1111-4111-8111-111111111111",name:"Paris",latitude:48.86,longitude:2.35};
 const tokyo={id:"22222222-2222-4222-8222-222222222222",name:"Tokyo",latitude:35.68,longitude:139.65};
 function dbMock(cities=[paris,tokyo],active=0){
@@ -127,5 +127,72 @@ describe("SCRUM-71 weather parser engine",()=>{
    expect.objectContaining({data:expect.objectContaining({status:"SUCCESS"})})
   ));
   expect(fetchBatch).not.toHaveBeenCalled();
+ });
+});
+
+describe("Open-Meteo HTTP — retries and diagnostics",()=>{
+ const city=[paris];
+ const serviceUnavailable=()=>new Response(
+  JSON.stringify({error:true,reason:"Backend temporarily unavailable"}),
+  {status:503,headers:{"content-type":"application/json"}}
+ );
+ it("recovers after two transient 503s with bounded backoff",async()=>{
+  vi.useFakeTimers();
+  try{
+   const fetcher=vi.fn()
+    .mockResolvedValueOnce(serviceUnavailable())
+    .mockResolvedValueOnce(serviceUnavailable())
+    .mockResolvedValueOnce(new Response(JSON.stringify(weather(1)[0]),{
+      status:200,headers:{"content-type":"application/json"}
+    }));
+   const request=weatherHttp(city,fetcher as typeof fetch);
+   await vi.advanceTimersByTimeAsync(5_500);
+   await expect(request).resolves.toMatchObject({current:{temperature_2m:22}});
+   expect(fetcher).toHaveBeenCalledTimes(3);
+   expect(new URL(fetcher.mock.calls[0]![0]).hostname).toBe("api.open-meteo.com");
+   expect(fetcher.mock.calls[0]![1].signal).toBeInstanceOf(AbortSignal);
+  }finally{vi.useRealTimers();}
+ });
+ it("records provider HTTP reason and three attempts after persistent 503",async()=>{
+  vi.useFakeTimers();
+  try{
+   const fetcher=vi.fn().mockImplementation(async()=>serviceUnavailable());
+   const result=expect(weatherHttp(city,fetcher as typeof fetch))
+    .rejects.toThrow("Open-Meteo HTTP 503 : Backend temporarily unavailable (3 tentatives)");
+   await vi.advanceTimersByTimeAsync(5_500);
+   await result;
+   expect(fetcher).toHaveBeenCalledTimes(3);
+  }finally{vi.useRealTimers();}
+ });
+ it("does not retry permanent 400 errors",async()=>{
+  const fetcher=vi.fn().mockResolvedValue(new Response(
+   JSON.stringify({reason:"Invalid latitude"}),{
+    status:400,headers:{"content-type":"application/json"}
+   }
+  ));
+  await expect(weatherHttp(city,fetcher as typeof fetch))
+    .rejects.toThrow("Open-Meteo HTTP 400 : Invalid latitude");
+  expect(fetcher).toHaveBeenCalledTimes(1);
+ });
+ it("respects a long Retry-After by not making an early retry",async()=>{
+  const fetcher=vi.fn().mockResolvedValue(new Response("",{
+   status:429,headers:{"retry-after":"90"}
+  }));
+  await expect(weatherHttp(city,fetcher as typeof fetch))
+   .rejects.toThrow("Retry-After trop long");
+  expect(fetcher).toHaveBeenCalledTimes(1);
+ });
+ it("reports connection timeouts clearly after bounded retries",async()=>{
+  vi.useFakeTimers();
+  try{
+   const fetcher=vi.fn().mockRejectedValue(
+    new DOMException("The operation was aborted due to timeout","TimeoutError")
+   );
+   const result=expect(weatherHttp(city,fetcher as typeof fetch))
+    .rejects.toThrow("délai dépassé (15 s par tentative) (3 tentatives)");
+   await vi.advanceTimersByTimeAsync(5_500);
+   await result;
+   expect(fetcher).toHaveBeenCalledTimes(3);
+  }finally{vi.useRealTimers();}
  });
 });

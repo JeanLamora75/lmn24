@@ -109,6 +109,24 @@ curl -sS -o /dev/null -w "HTTP %{http_code}\n" \
 
 Attendu après correction : **HTTP 401**, car le contrôle d'origine passe mais aucune session n'est fournie. Si le résultat reste **403**, vérifier la présence de la variable dans `.env`, le redémarrage du frontend et le SHA déployé. **Ne pas désactiver le contrôle d'origine pour corriger le problème.** Une fois le test à 401, relancer le parser Météo depuis une session administrateur authentifiée et contrôler l'historique d'exécution.
 
+### Parser Météo : HTTP 503 et délais de connexion Open-Meteo
+
+Le parser Météo interroge `https://api.open-meteo.com/v1/forecast` **par lots de huit villes** (maximum neuf lots pour 66 villes). Une requête HTTP 503 échouée peut donc afficher **huit erreurs de villes identiques**, sans prouver un dysfonctionnement individuel de chaque ville.
+
+En octobre 2026, les appels directs au fournisseur depuis le VPS ont renvoyé HTTP 200 en IPv4 avec `curl` et `node fetch`, pour une ville comme pour huit villes, alors que les exécutions complètes renvoyaient des 503 ou des timeouts intermittents. Le domaine Open-Meteo ne présentait pas de résolution IPv6 sur ce VPS. **Ne pas en conclure automatiquement à un problème IPv6, ni à une panne définitive du fournisseur** : l'URL exacte des lots, leur fréquence et les conditions du réseau peuvent influer.
+
+Le parser dispose désormais de **trois tentatives au maximum par lot**, d'un **timeout de 15 secondes par tentative**, de délais croissants entre les tentatives et du respect de `Retry-After` dans une limite compatible avec une extraction manuelle. Les erreurs non temporaires (ex. HTTP 400) ne sont pas retentées. Les messages conservés affichent le code HTTP et, lorsqu'Open-Meteo retourne un JSON d'erreur, le champ `reason`. Les données météo existantes sont conservées lorsqu'une extraction échoue.
+
+En cas de nouvelles erreurs :
+
+1. Tester une requête simple et un lot de huit villes avec l'URL de l'API Open-Meteo depuis le **VPS**, en IPv4 ; noter le code HTTP et le corps de l'erreur, sans multiplier les appels.
+2. Tester la même requête avec `node --dns-result-order=ipv4first` et `fetch`, pour distinguer les comportements cURL / Node.js.
+3. Vérifier l'état du service `systemctl is-active lmn24-parser.service` et les journaux `journalctl -u lmn24-parser -n 150 --no-pager`.
+4. Relever le message et le nombre de villes en erreur dans **Administration > Lancer le Parser Météo**, puis comparer avec une extraction limitée à un continent.
+5. Ne pas désactiver l'authentification, désactiver IPv6 globalement ni lancer des boucles de requêtes agressives pour contourner d'éventuelles limites API.
+
+Cette correction est applicative et ne nécessite **ni migration PostgreSQL ni nouvelle variable d'environnement**. Publier sur `main` puis utiliser le déploiement manuel GitHub Actions pour la mettre en production. Le succès du déploiement ne garantit pas la disponibilité future d'Open-Meteo : vérifier une collecte réelle.
+
 ### Flux RSS : préférence IPv4 limitée au service parser
 
 Depuis le VPS OVH, le flux `https://www.7sur7.be/sciences/rss.xml` a répondu **HTTP 200 en IPv4** et **HTTP 403 en IPv6**, à en-têtes équivalents ; le test Node.js `fetch` avec une préférence IPv4 a également répondu **200**. Cela identifie un écart lié au chemin réseau pour **ce flux**, pas une cause universelle des erreurs HTTP 403.
