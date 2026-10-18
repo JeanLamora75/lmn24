@@ -1,0 +1,980 @@
+{
+  "date": "2026-10-26",
+  "validationStatus": "PARTIAL",
+  "source": "CosmyDay",
+  "sourceUrl": "https://api.cosmyday.com/natal",
+  "attribution": {
+    "text": "Astronomical data: CosmyDay",
+    "url": "https://cosmyday.com",
+    "requirement": "Display a visible link to CosmyDay wherever these data appear; do not present supplier calculations as original astronomical research."
+  },
+  "requestedDateTime": "2026-10-26T12:00:00+01:00",
+  "requestedTimezone": "Europe/Paris",
+  "requestedUtc": "2026-10-26T11:00:00+00:00",
+  "calculationParameters": {
+    "year": 2026,
+    "month": 10,
+    "day": 26,
+    "hour": 12,
+    "minute": 0,
+    "lat": 48.8566,
+    "lon": 2.3522
+  },
+  "confirmedParameters": {
+    "requestTimeConvention": "Local time at supplied coordinates; timezone resolved by supplier, according to API documentation read during this execution.",
+    "coordinates": {
+      "lat": 48.8566,
+      "lon": 2.3522
+    },
+    "providerClaim": "Swiss Ephemeris, according to supplier documentation.",
+    "commercialReuse": "Permitted by API documentation subject to mandatory visible source credit."
+  },
+  "unconfirmedParameters": [
+    "Actual UTC instant used, not returned in response",
+    "Explicit tropical zodiac flag",
+    "Explicit geocentric coordinate flag",
+    "Independent ephemeris comparison"
+  ],
+  "responseConfirmedDateTime": null,
+  "validationNotes": "Provider documentation checked during this run: /natal takes local time at supplied coordinates and resolves timezone. Requested noon in Paris on 2026-10-26 converts to 11:00 UTC (CET). Ten planetary longitude ranges, sign/longitude consistency and retrograde/speed consistency validated. Major aspects recomputed from received values with declared orbs. This arithmetic is not an independent verification of positions. Actual calculation epoch and explicit tropical/geocentric flags are not returned. Prose uses conditional symbolic themes, not claims of verified precise transits.",
+  "editorialMode": "symbolic",
+  "referenceVersion": "LMN24 technical V4.1",
+  "editorialVersion": "LMN24 V5 — Horoscope Premium",
+  "validationChecks": {
+    "tenBodiesPresent": true,
+    "longitudeRanges": true,
+    "signLongitudeConsistency": true,
+    "retrogradeSpeedConsistency": true,
+    "aspectArithmeticConsistency": true,
+    "independentAstronomicalVerification": false
+  },
+  "interpretationRules": {
+    "status": "Symbolic interpretation from PARTIAL supplier data; no scientifically established predictive validity.",
+    "zodiacConvention": "Western tropical as intended convention, supplier calculation flag unconfirmed.",
+    "houses": "Whole-sign solar sectors counted from each sign, used only as a conditional symbolic editorial device; not the supplier natal houses and not a reader natal chart.",
+    "traditionalRulers": {
+      "aries": "Mars",
+      "taurus": "Venus",
+      "gemini": "Mercury",
+      "cancer": "Moon",
+      "leo": "Sun",
+      "virgo": "Mercury",
+      "libra": "Venus",
+      "scorpio": "Mars",
+      "sagittarius": "Jupiter",
+      "capricorn": "Saturn",
+      "aquarius": "Saturn",
+      "pisces": "Jupiter"
+    },
+    "selectedAspects": [
+      {
+        "a": "Sun",
+        "b": "Moon",
+        "type": "opposition",
+        "separation": 176.1952,
+        "orb": 3.8048,
+        "dataValidationStatus": "PARTIAL"
+      },
+      {
+        "a": "Sun",
+        "b": "Venus",
+        "type": "conjunction",
+        "separation": 3.6985,
+        "orb": 3.6985,
+        "dataValidationStatus": "PARTIAL"
+      },
+      {
+        "a": "Sun",
+        "b": "Pluto",
+        "type": "square",
+        "separation": 90.0494,
+        "orb": 0.0494,
+        "dataValidationStatus": "PARTIAL"
+      },
+      {
+        "a": "Moon",
+        "b": "Pluto",
+        "type": "square",
+        "separation": 93.7554,
+        "orb": 3.7554,
+        "dataValidationStatus": "PARTIAL"
+      },
+      {
+        "a": "Mercury",
+        "b": "Mars",
+        "type": "square",
+        "separation": 94.874,
+        "orb": 4.874,
+        "dataValidationStatus": "PARTIAL"
+      },
+      {
+        "a": "Mercury",
+        "b": "Jupiter",
+        "type": "square",
+        "separation": 87.0418,
+        "orb": 2.9582,
+        "dataValidationStatus": "PARTIAL"
+      },
+      {
+        "a": "Mars",
+        "b": "Jupiter",
+        "type": "conjunction",
+        "separation": 7.8322,
+        "orb": 7.8322,
+        "dataValidationStatus": "PARTIAL"
+      }
+    ],
+    "dominantThemes": [
+      "Security, possession and personal presence versus mutual expectations: conditional reading of supplier Sun/Moon opposition across Scorpio/Taurus",
+      "Power, visibility and emotional resistance: conditional reading of supplier Sun/Pluto and Moon/Pluto squares",
+      "Assertive creative ambition meeting intensity of language: conditional reading of supplier Mercury/Mars and Mercury/Jupiter squares",
+      "Scale of initiative and appetite for expression: conditional reading of supplier Mars/Jupiter conjunction within declared 8-degree orb",
+      "No verified claim of lunation timing, ingress or celestial event is made"
+    ],
+    "individualNatalChartUsed": false,
+    "conditionalSolarSectors": {
+      "Sun": {
+        "aries": 8,
+        "taurus": 7,
+        "gemini": 6,
+        "cancer": 5,
+        "leo": 4,
+        "virgo": 3,
+        "libra": 2,
+        "scorpio": 1,
+        "sagittarius": 12,
+        "capricorn": 11,
+        "aquarius": 10,
+        "pisces": 9
+      },
+      "Moon": {
+        "aries": 2,
+        "taurus": 1,
+        "gemini": 12,
+        "cancer": 11,
+        "leo": 10,
+        "virgo": 9,
+        "libra": 8,
+        "scorpio": 7,
+        "sagittarius": 6,
+        "capricorn": 5,
+        "aquarius": 4,
+        "pisces": 3
+      },
+      "Venus": {
+        "aries": 7,
+        "taurus": 6,
+        "gemini": 5,
+        "cancer": 4,
+        "leo": 3,
+        "virgo": 2,
+        "libra": 1,
+        "scorpio": 12,
+        "sagittarius": 11,
+        "capricorn": 10,
+        "aquarius": 9,
+        "pisces": 8
+      },
+      "Mars": {
+        "aries": 5,
+        "taurus": 4,
+        "gemini": 3,
+        "cancer": 2,
+        "leo": 1,
+        "virgo": 12,
+        "libra": 11,
+        "scorpio": 10,
+        "sagittarius": 9,
+        "capricorn": 8,
+        "aquarius": 7,
+        "pisces": 6
+      },
+      "Jupiter": {
+        "aries": 5,
+        "taurus": 4,
+        "gemini": 3,
+        "cancer": 2,
+        "leo": 1,
+        "virgo": 12,
+        "libra": 11,
+        "scorpio": 10,
+        "sagittarius": 9,
+        "capricorn": 8,
+        "aquarius": 7,
+        "pisces": 6
+      }
+    }
+  },
+  "editorialTones": {
+    "aries": "grounded ambition and tangible desire",
+    "taurus": "assertive and quietly intense",
+    "gemini": "inward and creatively secluded",
+    "cancer": "warmly social and future-facing",
+    "leo": "demanding and proud yet vulnerable",
+    "virgo": "sensory curiosity and exploratory enthusiasm",
+    "libra": "intimate and quietly searching",
+    "scorpio": "magnetic and confrontationally curious",
+    "sagittarius": "engaged and hands-on",
+    "capricorn": "playful and unexpectedly light",
+    "aquarius": "rooted and emotionally reflective",
+    "pisces": "mischievous and conversationally sensitive"
+  },
+  "languageVariants": {
+    "en": "en-GB",
+    "pt": "pt-PT"
+  },
+  "historyNotes": "Fourteen preceding dates inspected in main tree: 2026-10-12 through 2026-10-25. Files present and read for 2026-10-15 through 2026-10-25; 12 through 14 absent. Themes and narrative forms reviewed, including V5 on 24 and 25. All eight languages checked for reused complete sentences and paragraphs.",
+  "ephemerisPath": "data/astrology/ephemeris/astrology-2026-10-26.json",
+  "editorialReview": {
+    "reference": "LMN24 V5 — Horoscope Premium",
+    "completed": true,
+    "assessmentNature": "Subjective AI editorial review, not objective proof of literary quality",
+    "criteria": [
+      "originality",
+      "natural phrasing",
+      "symbolic coherence",
+      "diversity of dominant themes and tones",
+      "vocabulary",
+      "distinct section identities",
+      "idiomatic adaptations"
+    ],
+    "secondPass": "All versions reread; Russian excess wording trimmed and Russian/Dutch idiomatic wording revised; technical checks rerun afterward."
+  },
+  "documentationUrl": "https://cosmyday.com/api-docs",
+  "retrievedAt": "2026-10-18T02:36:07.271715+02:00",
+  "providerResponse": {
+    "houseSystem": "Placidus",
+    "ascendant": 263.3015,
+    "midheaven": 203.9681,
+    "cusps": [
+      263.3015,
+      304.1949,
+      349.8239,
+      23.9681,
+      47.7675,
+      66.3256,
+      83.3015,
+      124.1949,
+      169.8239,
+      203.9681,
+      227.7675,
+      246.3256
+    ],
+    "planets": {
+      "Sun": {
+        "lon": 213.0444,
+        "lat": 0.0002,
+        "dist": 0.994129,
+        "speed_lon": 0.9967,
+        "retrograde": false,
+        "signIndex": 7,
+        "sign": "Scorpio",
+        "degInSign": 3.0444,
+        "house": 10,
+        "dignity": "neutral"
+      },
+      "Moon": {
+        "lon": 36.8492,
+        "lat": 4.7164,
+        "dist": 0.00246,
+        "speed_lon": 14.4573,
+        "retrograde": false,
+        "signIndex": 1,
+        "sign": "Taurus",
+        "degInSign": 6.8492,
+        "house": 4,
+        "dignity": "exaltation"
+      },
+      "Mercury": {
+        "lon": 230.6567,
+        "lat": -2.7613,
+        "dist": 0.748882,
+        "speed_lon": -0.3047,
+        "retrograde": true,
+        "signIndex": 7,
+        "sign": "Scorpio",
+        "degInSign": 20.6567,
+        "house": 11,
+        "dignity": "neutral"
+      },
+      "Venus": {
+        "lon": 209.3459,
+        "lat": -6.0915,
+        "dist": 0.27308,
+        "speed_lon": -0.6037,
+        "retrograde": true,
+        "signIndex": 6,
+        "sign": "Libra",
+        "degInSign": 29.3459,
+        "house": 10,
+        "dignity": "domicile"
+      },
+      "Mars": {
+        "lon": 135.7827,
+        "lat": 1.4869,
+        "dist": 1.47692,
+        "speed_lon": 0.5206,
+        "retrograde": false,
+        "signIndex": 4,
+        "sign": "Leo",
+        "degInSign": 15.7827,
+        "house": 8,
+        "dignity": "neutral"
+      },
+      "Jupiter": {
+        "lon": 143.6149,
+        "lat": 0.6717,
+        "dist": 5.582213,
+        "speed_lon": 0.1339,
+        "retrograde": false,
+        "signIndex": 4,
+        "sign": "Leo",
+        "degInSign": 23.6149,
+        "house": 8,
+        "dignity": "neutral"
+      },
+      "Saturn": {
+        "lon": 9.6509,
+        "lat": -2.6963,
+        "dist": 8.507224,
+        "speed_lon": -0.0685,
+        "retrograde": true,
+        "signIndex": 0,
+        "sign": "Aries",
+        "degInSign": 9.6509,
+        "house": 3,
+        "dignity": "fall"
+      },
+      "Uranus": {
+        "lon": 64.8701,
+        "lat": -0.1518,
+        "dist": 18.584852,
+        "speed_lon": -0.0337,
+        "retrograde": true,
+        "signIndex": 2,
+        "sign": "Gemini",
+        "degInSign": 4.8701,
+        "house": 5,
+        "dignity": "neutral"
+      },
+      "Neptune": {
+        "lon": 2.2053,
+        "lat": -1.4164,
+        "dist": 29.019871,
+        "speed_lon": -0.0228,
+        "retrograde": true,
+        "signIndex": 0,
+        "sign": "Aries",
+        "degInSign": 2.2053,
+        "house": 3,
+        "dignity": "neutral"
+      },
+      "Pluto": {
+        "lon": 303.0938,
+        "lat": -4.2765,
+        "dist": 35.613163,
+        "speed_lon": 0.0049,
+        "retrograde": false,
+        "signIndex": 10,
+        "sign": "Aquarius",
+        "degInSign": 3.0938,
+        "house": 1,
+        "dignity": "neutral"
+      },
+      "NorthNode": {
+        "lon": 327.5985,
+        "lat": 0,
+        "dist": 0.002617,
+        "speed_lon": -0.1733,
+        "retrograde": true,
+        "signIndex": 10,
+        "sign": "Aquarius",
+        "degInSign": 27.5985,
+        "house": 2,
+        "dignity": "neutral"
+      },
+      "Chiron": {
+        "lon": 28.3304,
+        "lat": 0.1422,
+        "dist": 17.242377,
+        "speed_lon": -0.0465,
+        "retrograde": true,
+        "signIndex": 0,
+        "sign": "Aries",
+        "degInSign": 28.3304,
+        "house": 4,
+        "dignity": "neutral"
+      },
+      "Lilith": {
+        "lon": 274.66,
+        "lat": -4.0425,
+        "dist": 0.002711,
+        "speed_lon": 0.1116,
+        "retrograde": false,
+        "signIndex": 9,
+        "sign": "Capricorn",
+        "degInSign": 4.66,
+        "house": 1,
+        "dignity": "neutral"
+      },
+      "SouthNode": {
+        "lon": 147.5985,
+        "lat": 0,
+        "dist": 0.002617,
+        "speed_lon": -0.1733,
+        "retrograde": true,
+        "signIndex": 4,
+        "sign": "Leo",
+        "degInSign": 27.5985,
+        "house": 8,
+        "dignity": "neutral"
+      }
+    },
+    "aspects": [
+      {
+        "a": "Sun",
+        "b": "Moon",
+        "type": "opposition",
+        "angle": 180,
+        "delta": 3.8048,
+        "applying": false
+      },
+      {
+        "a": "Sun",
+        "b": "Venus",
+        "type": "conjunction",
+        "angle": 0,
+        "delta": 3.6985,
+        "applying": false
+      },
+      {
+        "a": "Sun",
+        "b": "Uranus",
+        "type": "quincunx",
+        "angle": 150,
+        "delta": 1.8257,
+        "applying": true
+      },
+      {
+        "a": "Sun",
+        "b": "Neptune",
+        "type": "quincunx",
+        "angle": 150,
+        "delta": 0.8391,
+        "applying": false
+      },
+      {
+        "a": "Sun",
+        "b": "Pluto",
+        "type": "square",
+        "angle": 90,
+        "delta": 0.0494,
+        "applying": true
+      },
+      {
+        "a": "Sun",
+        "b": "NorthNode",
+        "type": "trine",
+        "angle": 120,
+        "delta": 5.4459,
+        "applying": false
+      },
+      {
+        "a": "Sun",
+        "b": "Chiron",
+        "type": "opposition",
+        "angle": 180,
+        "delta": 4.714,
+        "applying": false
+      },
+      {
+        "a": "Sun",
+        "b": "Lilith",
+        "type": "sextile",
+        "angle": 60,
+        "delta": 1.6156,
+        "applying": true
+      },
+      {
+        "a": "Sun",
+        "b": "SouthNode",
+        "type": "sextile",
+        "angle": 60,
+        "delta": 5.4459,
+        "applying": false
+      },
+      {
+        "a": "Sun",
+        "b": "PartOfFortune",
+        "type": "sesquiquadrate",
+        "angle": 135,
+        "delta": 1.4523,
+        "applying": false
+      },
+      {
+        "a": "Moon",
+        "b": "Venus",
+        "type": "opposition",
+        "angle": 180,
+        "delta": 7.5033,
+        "applying": false
+      },
+      {
+        "a": "Moon",
+        "b": "Uranus",
+        "type": "semisextile",
+        "angle": 30,
+        "delta": 1.9791,
+        "applying": false
+      },
+      {
+        "a": "Moon",
+        "b": "Pluto",
+        "type": "square",
+        "angle": 90,
+        "delta": 3.7554,
+        "applying": false
+      },
+      {
+        "a": "Moon",
+        "b": "Chiron",
+        "type": "conjunction",
+        "angle": 0,
+        "delta": 8.5188,
+        "applying": false
+      },
+      {
+        "a": "Moon",
+        "b": "Lilith",
+        "type": "trine",
+        "angle": 120,
+        "delta": 2.1892,
+        "applying": false
+      },
+      {
+        "a": "Mercury",
+        "b": "Mars",
+        "type": "square",
+        "angle": 90,
+        "delta": 4.874,
+        "applying": true
+      },
+      {
+        "a": "Mercury",
+        "b": "Jupiter",
+        "type": "square",
+        "angle": 90,
+        "delta": 2.9582,
+        "applying": false
+      },
+      {
+        "a": "Mercury",
+        "b": "NorthNode",
+        "type": "square",
+        "angle": 90,
+        "delta": 6.9418,
+        "applying": false
+      },
+      {
+        "a": "Mercury",
+        "b": "Lilith",
+        "type": "semisquare",
+        "angle": 45,
+        "delta": 0.9967,
+        "applying": true
+      },
+      {
+        "a": "Mercury",
+        "b": "SouthNode",
+        "type": "square",
+        "angle": 90,
+        "delta": 6.9418,
+        "applying": false
+      },
+      {
+        "a": "Mercury",
+        "b": "PartOfFortune",
+        "type": "quincunx",
+        "angle": 150,
+        "delta": 1.16,
+        "applying": false
+      },
+      {
+        "a": "Venus",
+        "b": "Pluto",
+        "type": "square",
+        "angle": 90,
+        "delta": 3.7479,
+        "applying": false
+      },
+      {
+        "a": "Venus",
+        "b": "NorthNode",
+        "type": "trine",
+        "angle": 120,
+        "delta": 1.7474,
+        "applying": true
+      },
+      {
+        "a": "Venus",
+        "b": "Chiron",
+        "type": "opposition",
+        "angle": 180,
+        "delta": 1.0155,
+        "applying": true
+      },
+      {
+        "a": "Venus",
+        "b": "SouthNode",
+        "type": "sextile",
+        "angle": 60,
+        "delta": 1.7474,
+        "applying": true
+      },
+      {
+        "a": "Mars",
+        "b": "Jupiter",
+        "type": "conjunction",
+        "angle": 0,
+        "delta": 7.8322,
+        "applying": true
+      },
+      {
+        "a": "Mars",
+        "b": "Saturn",
+        "type": "trine",
+        "angle": 120,
+        "delta": 6.1318,
+        "applying": false
+      },
+      {
+        "a": "Mars",
+        "b": "Neptune",
+        "type": "sesquiquadrate",
+        "angle": 135,
+        "delta": 1.4226,
+        "applying": true
+      },
+      {
+        "a": "Mars",
+        "b": "PartOfFortune",
+        "type": "sextile",
+        "angle": 60,
+        "delta": 3.714,
+        "applying": false
+      },
+      {
+        "a": "Jupiter",
+        "b": "Saturn",
+        "type": "sesquiquadrate",
+        "angle": 135,
+        "delta": 1.036,
+        "applying": true
+      },
+      {
+        "a": "Jupiter",
+        "b": "NorthNode",
+        "type": "opposition",
+        "angle": 180,
+        "delta": 3.9836,
+        "applying": true
+      },
+      {
+        "a": "Jupiter",
+        "b": "Chiron",
+        "type": "trine",
+        "angle": 120,
+        "delta": 4.7155,
+        "applying": true
+      },
+      {
+        "a": "Jupiter",
+        "b": "SouthNode",
+        "type": "conjunction",
+        "angle": 0,
+        "delta": 3.9836,
+        "applying": true
+      },
+      {
+        "a": "Jupiter",
+        "b": "PartOfFortune",
+        "type": "sextile",
+        "angle": 60,
+        "delta": 4.1182,
+        "applying": false
+      },
+      {
+        "a": "Saturn",
+        "b": "Uranus",
+        "type": "sextile",
+        "angle": 60,
+        "delta": 4.7808,
+        "applying": true
+      },
+      {
+        "a": "Saturn",
+        "b": "Neptune",
+        "type": "conjunction",
+        "angle": 0,
+        "delta": 7.4456,
+        "applying": true
+      },
+      {
+        "a": "Saturn",
+        "b": "Lilith",
+        "type": "square",
+        "angle": 90,
+        "delta": 4.9909,
+        "applying": true
+      },
+      {
+        "a": "Uranus",
+        "b": "Neptune",
+        "type": "sextile",
+        "angle": 60,
+        "delta": 2.6648,
+        "applying": true
+      },
+      {
+        "a": "Uranus",
+        "b": "Pluto",
+        "type": "trine",
+        "angle": 120,
+        "delta": 1.7762,
+        "applying": true
+      },
+      {
+        "a": "Uranus",
+        "b": "Lilith",
+        "type": "quincunx",
+        "angle": 150,
+        "delta": 0.21,
+        "applying": true
+      },
+      {
+        "a": "Neptune",
+        "b": "Pluto",
+        "type": "sextile",
+        "angle": 60,
+        "delta": 0.8885,
+        "applying": false
+      },
+      {
+        "a": "Neptune",
+        "b": "Lilith",
+        "type": "square",
+        "angle": 90,
+        "delta": 2.4547,
+        "applying": false
+      },
+      {
+        "a": "Pluto",
+        "b": "Chiron",
+        "type": "square",
+        "angle": 90,
+        "delta": 4.7635,
+        "applying": false
+      },
+      {
+        "a": "Pluto",
+        "b": "Lilith",
+        "type": "semisextile",
+        "angle": 30,
+        "delta": 1.5662,
+        "applying": false
+      },
+      {
+        "a": "Pluto",
+        "b": "PartOfFortune",
+        "type": "sesquiquadrate",
+        "angle": 135,
+        "delta": 1.4029,
+        "applying": false
+      },
+      {
+        "a": "NorthNode",
+        "b": "Chiron",
+        "type": "sextile",
+        "angle": 60,
+        "delta": 0.7319,
+        "applying": false
+      },
+      {
+        "a": "NorthNode",
+        "b": "SouthNode",
+        "type": "opposition",
+        "angle": 180,
+        "delta": 0,
+        "applying": true
+      },
+      {
+        "a": "Chiron",
+        "b": "Lilith",
+        "type": "trine",
+        "angle": 120,
+        "delta": 6.3296,
+        "applying": false
+      },
+      {
+        "a": "Chiron",
+        "b": "SouthNode",
+        "type": "trine",
+        "angle": 120,
+        "delta": 0.7319,
+        "applying": false
+      }
+    ],
+    "partOfFortune": {
+      "lon": 79.4967,
+      "signIndex": 2,
+      "sign": "Gemini",
+      "degInSign": 19.4967,
+      "house": 6
+    }
+  },
+  "aspectRules": {
+    "anglesAndOrbs": {
+      "conjunction": [
+        0,
+        8
+      ],
+      "sextile": [
+        60,
+        4
+      ],
+      "square": [
+        90,
+        6
+      ],
+      "trine": [
+        120,
+        6
+      ],
+      "opposition": [
+        180,
+        8
+      ]
+    },
+    "separationFormula": "min(abs(lonA-lonB),360-abs(lonA-lonB))",
+    "scope": [
+      "Sun",
+      "Moon",
+      "Mercury",
+      "Venus",
+      "Mars",
+      "Jupiter",
+      "Saturn",
+      "Uranus",
+      "Neptune",
+      "Pluto"
+    ],
+    "note": "Configurable astrological conventions, not scientific constants; supplier aspects with different orbs or minor aspect types are retained in raw response but not adopted."
+  },
+  "derivedMajorAspects": [
+    {
+      "a": "Sun",
+      "b": "Moon",
+      "type": "opposition",
+      "separation": 176.1952,
+      "orb": 3.8048,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Sun",
+      "b": "Venus",
+      "type": "conjunction",
+      "separation": 3.6985,
+      "orb": 3.6985,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Sun",
+      "b": "Pluto",
+      "type": "square",
+      "separation": 90.0494,
+      "orb": 0.0494,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Moon",
+      "b": "Venus",
+      "type": "opposition",
+      "separation": 172.4967,
+      "orb": 7.5033,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Moon",
+      "b": "Pluto",
+      "type": "square",
+      "separation": 93.7554,
+      "orb": 3.7554,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Mercury",
+      "b": "Mars",
+      "type": "square",
+      "separation": 94.874,
+      "orb": 4.874,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Mercury",
+      "b": "Jupiter",
+      "type": "square",
+      "separation": 87.0418,
+      "orb": 2.9582,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Venus",
+      "b": "Pluto",
+      "type": "square",
+      "separation": 93.7479,
+      "orb": 3.7479,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Mars",
+      "b": "Jupiter",
+      "type": "conjunction",
+      "separation": 7.8322,
+      "orb": 7.8322,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Saturn",
+      "b": "Neptune",
+      "type": "conjunction",
+      "separation": 7.4456,
+      "orb": 7.4456,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Uranus",
+      "b": "Neptune",
+      "type": "sextile",
+      "separation": 62.6648,
+      "orb": 2.6648,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Uranus",
+      "b": "Pluto",
+      "type": "trine",
+      "separation": 121.7763,
+      "orb": 1.7763,
+      "dataValidationStatus": "PARTIAL"
+    },
+    {
+      "a": "Neptune",
+      "b": "Pluto",
+      "type": "sextile",
+      "separation": 59.1115,
+      "orb": 0.8885,
+      "dataValidationStatus": "PARTIAL"
+    }
+  ]
+}
+
