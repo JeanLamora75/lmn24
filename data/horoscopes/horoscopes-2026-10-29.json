@@ -1,0 +1,1077 @@
+{
+  "date": "2026-10-29",
+  "generatedAt": "2026-10-21T02:38:42.920104+02:00",
+  "timezone": "Europe/Paris",
+  "astronomy": {
+    "validationStatus": "PARTIAL",
+    "source": "CosmyDay",
+    "sourceUrl": "https://api.cosmyday.com/",
+    "attribution": "Données astronomiques : CosmyDay — https://cosmyday.com (utilisation avec attribution requise).",
+    "requestedDateTime": "2026-10-29T12:00:00+01:00",
+    "requestedTimezone": "Europe/Paris",
+    "requestedUtc": "2026-10-29T11:00:00+00:00",
+    "calculationParameters": {
+      "year": 2026,
+      "month": 10,
+      "day": 29,
+      "hour": 12,
+      "minute": 0,
+      "lat": 48.8566,
+      "lon": 2.3522
+    },
+    "confirmedParameters": [
+      "Paramètres envoyés: date 2026-10-29, heure 12:00, latitude 48.8566, longitude 2.3522",
+      "Documentation fournisseur: l’heure de /natal est locale aux coordonnées et le fuseau est résolu par le fournisseur",
+      "Réponse identifiée contenant positions, signes, longitudes et vitesses pour les corps listés"
+    ],
+    "unconfirmedParameters": [
+      "Horodatage effectif absent de la réponse",
+      "Zodiaque tropical non déclaré explicitement dans la réponse",
+      "Référentiel géocentrique non déclaré explicitement dans la réponse",
+      "Aucune comparaison indépendante des positions"
+    ],
+    "responseConfirmedDateTime": null,
+    "validationNotes": "La documentation confirme que l'heure transmise à /natal est locale aux coordonnées et que le fournisseur résout le fuseau. La réponse fournit des positions exploitables et les vitesses longitudinales, mais ne confirme pas explicitement l'instant calculé, les drapeaux tropical/géocentrique ni une comparaison indépendante. Les aspects majeurs sont dérivés arithmétiquement des longitudes reçues; ce contrôle ne valide pas indépendamment l'éphéméride. Rédaction en mode symbolique prudent, sans présenter de configuration précise comme vérifiée.",
+    "editorialMode": "symbolic",
+    "referenceVersion": "LMN24 technical V4.1",
+    "editorialVersion": "LMN24 V5 — Horoscope Premium",
+    "validationChecks": {
+      "providerResponseRetrieved": true,
+      "requiredBodiesPresent": true,
+      "longitudeRangesChecked": true,
+      "signIndexConsistencyChecked": true,
+      "retrogradeSpeedConsistencyChecked": true,
+      "aspectArithmeticChecked": true,
+      "independentEphemerisVerification": false
+    },
+    "interpretationRules": {
+      "zodiac": "Western tropical convention used only as a symbolic editorial framework; provider response flag unconfirmed",
+      "coordinatePreference": "Geocentric preferred; not explicitly confirmed by provider response",
+      "solarMethod": "Conditional whole-sign solar sectors derived from the received sign indices, used only as symbolic prompts",
+      "traditionalRulers": {
+        "aries": "Mars",
+        "taurus": "Venus",
+        "gemini": "Mercury",
+        "cancer": "Moon",
+        "leo": "Sun",
+        "virgo": "Mercury",
+        "libra": "Venus",
+        "scorpio": "Mars",
+        "sagittarius": "Jupiter",
+        "capricorn": "Saturn",
+        "aquarius": "Saturn",
+        "pisces": "Jupiter"
+      },
+      "majorAspects": {
+        "conjunction": {
+          "angle": 0,
+          "orb": 8
+        },
+        "sextile": {
+          "angle": 60,
+          "orb": 4
+        },
+        "square": {
+          "angle": 90,
+          "orb": 6
+        },
+        "trine": {
+          "angle": 120,
+          "orb": 6
+        },
+        "opposition": {
+          "angle": 180,
+          "orb": 8
+        }
+      }
+    },
+    "editorialTones": {
+      "aries": "audacieuse et maîtrisée",
+      "taurus": "sensuelle et profonde",
+      "gemini": "vive et intrigante",
+      "cancer": "douce et joueuse",
+      "leo": "rayonnante et collective",
+      "virgo": "précise et inventive",
+      "libra": "élégante et décidée",
+      "scorpio": "magnétique et transformatrice",
+      "sagittarius": "exploratrice et lumineuse",
+      "capricorn": "ambitieuse et légère",
+      "aquarius": "originale et fédératrice",
+      "pisces": "poétique et sensible"
+    },
+    "languageVariants": {
+      "en": "en-GB",
+      "pt": "pt-PT"
+    },
+    "historyNotes": "Quatorze journées précédentes (2026-10-15 à 2026-10-28) consultées pour les thèmes, structures, ouvertures, chutes et phrases dans les huit langues.",
+    "ephemerisPath": "data/astrology/ephemeris/astrology-2026-10-29.json",
+    "editorialReview": {
+      "reference": "LMN24 V5 — Horoscope Premium",
+      "frenchPassCompleted": true,
+      "internationalPassCompleted": true,
+      "assessment": "Appréciation éditoriale subjective; contrôles techniques séparés."
+    }
+  },
+  "horoscopes": [
+    {
+      "date": "2026-10-29",
+      "sign": "aries",
+      "language": "fr",
+      "general": "Un désir de rayonner croise une conversation plus délicate que prévu. Votre franchise garde son charme, à condition de laisser aux silences le temps de révéler ce qu’ils cachent. Dans un échange collectif, une idée brillante peut naître d’un désaccord bien tenu. La journée ne manque ni d’allant ni de panache ; elle demande simplement de distinguer l’audace du bruit. Ce soir, la victoire la plus savoureuse pourrait être d’avoir déplacé les lignes sans hausser le ton.",
+      "love": "Le désir s’exprime avec feu, tandis que les mots cherchent encore leur juste mesure. Une complicité vive accepte très bien quelques étincelles, pourvu que chacun conserve sa part de mystère et de liberté.",
+      "work": "Une proposition audacieuse attire les regards, mais sa force réside dans les nuances que vous saurez lui donner. L’ambition gagne en relief lorsqu’un partenaire apporte une objection intelligente, même légèrement irritante.",
+      "finance": "Une envie spectaculaire tente le portefeuille. Elle n’est pas forcément déraisonnable, mais son éclat ne dit rien de sa valeur durable. Les plaisirs choisis avec panache restent plus séduisants que les achats de démonstration.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aries",
+      "language": "en",
+      "general": "A wish to shine meets a conversation more delicate than expected. Your candour keeps its charm when silence has time to reveal what it conceals. In a group exchange, a bright idea may spring from a disagreement handled with grace. The day lacks neither drive nor flair; it simply asks you to distinguish boldness from noise. By evening, the sweetest victory may be shifting the boundaries without raising your voice.",
+      "love": "Desire speaks with fire while words are still finding their proper measure. Lively chemistry can easily survive a few sparks, provided each person retains a share of mystery and freedom.",
+      "work": "A daring proposal draws attention, yet its strength lies in the nuances you give it. Ambition gains depth when a partner offers an intelligent objection, even a mildly irritating one.",
+      "finance": "A spectacular want tempts your wallet. It is not necessarily unreasonable, but its shine says little about lasting value. Pleasures chosen with flair remain more appealing than purchases made for show.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aries",
+      "language": "de",
+      "general": "Der Wunsch zu glänzen trifft auf ein Gespräch, das heikler wird als erwartet. Ihre Offenheit behält ihren Charme, wenn das Schweigen Zeit bekommt, Verborgenes zu zeigen. In einer Gruppe kann aus einem gut geführten Widerspruch eine brillante Idee entstehen. Dem Tag fehlen weder Schwung noch Stil; er verlangt nur, Kühnheit von Lärm zu unterscheiden. Am Abend könnte der schönste Sieg darin liegen, Grenzen verschoben zu haben, ohne die Stimme zu heben.",
+      "love": "Das Begehren spricht feurig, während die Worte noch ihr richtiges Maß suchen. Lebhafte Nähe verträgt einige Funken gut, solange beide ihre eigene Portion Geheimnis und Freiheit behalten.",
+      "work": "Ein kühner Vorschlag zieht Blicke an, doch seine Stärke liegt in den Nuancen, die Sie ihm geben. Ehrgeiz gewinnt Tiefe, wenn ein Partner einen klugen, wenn auch leicht reizenden Einwand vorbringt.",
+      "finance": "Ein spektakulärer Wunsch lockt den Geldbeutel. Er muss nicht unvernünftig sein, doch sein Glanz sagt wenig über bleibenden Wert. Mit Stil gewählte Freuden verführen mehr als Käufe zur Selbstdarstellung.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aries",
+      "language": "es",
+      "general": "Las ganas de brillar se cruzan con una conversación más delicada de lo previsto. Tu franqueza conserva su encanto si dejas que los silencios revelen lo que esconden. En un intercambio colectivo, una idea luminosa puede nacer de un desacuerdo bien llevado. Al día no le faltan impulso ni estilo; solo pide distinguir la audacia del ruido. Al caer la tarde, la victoria más sabrosa quizá consista en haber movido los límites sin alzar la voz.",
+      "love": "El deseo habla con fuego, mientras las palabras todavía buscan su medida. Una complicidad viva acepta algunas chispas, siempre que cada cual conserve su parte de misterio y libertad.",
+      "work": "Una propuesta audaz atrae miradas, pero su fuerza reside en los matices que sepas darle. La ambición gana relieve cuando un socio aporta una objeción inteligente, aunque resulte ligeramente irritante.",
+      "finance": "Un capricho espectacular tienta a tu cartera. No es necesariamente insensato, pero su brillo dice poco de su valor duradero. Los placeres elegidos con estilo seducen más que las compras de exhibición.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aries",
+      "language": "it",
+      "general": "La voglia di brillare incontra una conversazione più delicata del previsto. La vostra franchezza conserva fascino se lasciate ai silenzi il tempo di rivelare ciò che nascondono. In uno scambio collettivo, un’idea luminosa può nascere da un disaccordo gestito con stile. Alla giornata non mancano slancio né carattere; chiede soltanto di distinguere l’audacia dal rumore. In serata, la vittoria più gustosa potrebbe essere aver spostato i confini senza alzare la voce.",
+      "love": "Il desiderio parla con fuoco, mentre le parole cercano ancora la misura giusta. Una complicità vivace regge bene qualche scintilla, purché ciascuno conservi la propria parte di mistero e libertà.",
+      "work": "Una proposta audace attira gli sguardi, ma la sua forza risiede nelle sfumature che saprete darle. L’ambizione acquista spessore quando un partner solleva un’obiezione intelligente, anche se leggermente irritante.",
+      "finance": "Un desiderio spettacolare tenta il portafoglio. Non è necessariamente irragionevole, ma il suo splendore dice poco sul valore duraturo. I piaceri scelti con stile seducono più degli acquisti fatti per impressionare.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aries",
+      "language": "pt",
+      "general": "A vontade de brilhar cruza-se com uma conversa mais delicada do que o previsto. A sua franqueza conserva o encanto se der aos silêncios tempo para revelarem o que escondem. Num diálogo coletivo, uma ideia luminosa pode nascer de uma divergência bem conduzida. Ao dia não faltam impulso nem estilo; apenas pede que distinga ousadia de ruído. Ao anoitecer, a vitória mais saborosa poderá ter sido mover fronteiras sem levantar a voz.",
+      "love": "O desejo fala com fogo, enquanto as palavras ainda procuram a medida certa. Uma cumplicidade viva aceita algumas faíscas, desde que cada pessoa conserve a sua parte de mistério e liberdade.",
+      "work": "Uma proposta ousada atrai atenções, mas a força está nas nuances que lhe souber dar. A ambição ganha relevo quando um parceiro apresenta uma objeção inteligente, ainda que ligeiramente irritante.",
+      "finance": "Um desejo espetacular tenta a carteira. Não é necessariamente insensato, mas o brilho pouco diz sobre o valor duradouro. Os prazeres escolhidos com estilo seduzem mais do que as compras de exibição.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aries",
+      "language": "ru",
+      "general": "Желание блистать сталкивается с разговором, который оказывается деликатнее, чем ожидалось. Ваша прямота сохраняет очарование, если дать паузам время раскрыть скрытое. В общей беседе яркая идея способна родиться из достойно проведённого спора. Дню не недостаёт ни напора, ни эффектности; он лишь предлагает отличать смелость от шума. К вечеру самой приятной победой может стать умение изменить границы, не повышая голоса.",
+      "love": "Желание говорит языком огня, а слова ещё ищут точную меру. Живая близость прекрасно выдержит несколько искр, если каждый сохранит собственную долю тайны и свободы.",
+      "work": "Смелое предложение привлекает взгляды, однако его сила заключена в нюансах, которые вы ему придадите. Амбиции становятся объёмнее, когда партнёр высказывает умное, пусть и слегка раздражающее возражение.",
+      "finance": "Эффектное желание искушает кошелёк. Оно не обязательно неразумно, но блеск мало говорит о долговечности ценности. Удовольствия, выбранные со вкусом, привлекательнее покупок, призванных произвести впечатление.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aries",
+      "language": "nl",
+      "general": "De wens om te schitteren kruist een gesprek dat gevoeliger blijkt dan verwacht. Uw openhartigheid behoudt haar charme wanneer stiltes tijd krijgen om te tonen wat ze verbergen. In een groep kan een helder idee voortkomen uit een elegant gevoerd meningsverschil. De dag mist noch vaart, noch flair; hij vraagt alleen om durf van lawaai te onderscheiden. Vanavond schuilt de heerlijkste overwinning misschien in grenzen verleggen zonder uw stem te verheffen.",
+      "love": "Verlangen spreekt met vuur, terwijl woorden nog naar de juiste maat zoeken. Levendige chemie verdraagt best enkele vonken, zolang ieder een eigen deel mysterie en vrijheid behoudt.",
+      "work": "Een gedurfd voorstel trekt de aandacht, maar de kracht ligt in de nuances die u eraan geeft. Ambitie krijgt diepte wanneer een partner een slim, zij het licht irritant bezwaar maakt.",
+      "finance": "Een spectaculaire wens verleidt uw portemonnee. Hij is niet per se onredelijk, maar glans zegt weinig over blijvende waarde. Met flair gekozen genoegens verleiden meer dan aankopen voor de show.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "taurus",
+      "language": "fr",
+      "general": "Le décor se fait plus chaleureux, presque voluptueux, et pourtant une question de fond refuse de rester sous le tapis. Vous aspirez à la douceur sans vouloir sacrifier une vérité importante. Cette tension peut donner une conversation étonnamment féconde, notamment autour d’un projet partagé ou d’une promesse ancienne. Votre constance n’a rien d’immobile aujourd’hui : elle ressemble plutôt à une danse lente qui change subtilement la pièce. Ce qui semblait figé retrouve alors une respiration.",
+      "love": "La tendresse prend de la profondeur lorsqu’elle cesse de contourner le sujet sensible. Un aveu calme, une présence fidèle ou un geste très simple peuvent transformer l’atmosphère sans réclamer de grande déclaration.",
+      "work": "Votre savoir-faire rencontre une attente plus ambitieuse. On pourrait vous pousser hors d’un cadre familier, non pour vous déstabiliser, mais parce que votre solidité inspire davantage que vous ne le soupçonnez.",
+      "finance": "Le plaisir d’une belle matière ou d’un objet durable se défend, à condition qu’il ne masque pas une dépense plus essentielle. Votre sens des priorités retrouve vite son élégance naturelle.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "taurus",
+      "language": "en",
+      "general": "The setting grows warmer, almost voluptuous, yet an underlying question refuses to stay beneath the carpet. You want softness without sacrificing an important truth. That tension can produce a surprisingly fruitful conversation, especially around a shared project or an old promise. Your constancy is anything but static today: it resembles a slow dance that subtly changes the room. What seemed fixed begins to breathe again.",
+      "love": "Tenderness gains depth when it stops circling the sensitive subject. A calm admission, steady presence or very simple gesture can transform the mood without calling for a grand declaration.",
+      "work": "Your skill meets a more ambitious expectation. You may be nudged beyond familiar ground, not to unsettle you, but because your reliability inspires more confidence than you suspect.",
+      "finance": "The pleasure of beautiful material or a lasting object is defensible, provided it does not obscure a more essential expense. Your sense of priorities soon recovers its natural elegance.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "taurus",
+      "language": "de",
+      "general": "Die Kulisse wird wärmer, beinahe sinnlich, und doch weigert sich eine Grundsatzfrage, unter dem Teppich zu bleiben. Sie wünschen sich Sanftheit, ohne eine wichtige Wahrheit zu opfern. Diese Spannung kann zu einem überraschend fruchtbaren Gespräch führen, besonders über ein gemeinsames Projekt oder ein altes Versprechen. Ihre Beständigkeit ist heute keineswegs starr: Sie gleicht einem langsamen Tanz, der den Raum unmerklich verändert. Was festgefahren schien, beginnt wieder zu atmen.",
+      "love": "Zärtlichkeit gewinnt an Tiefe, sobald sie das heikle Thema nicht länger umkreist. Ein ruhiges Eingeständnis, verlässliche Nähe oder eine schlichte Geste können die Stimmung ohne große Erklärung verwandeln.",
+      "work": "Ihr Können begegnet höheren Erwartungen. Vielleicht führt man Sie aus vertrautem Gelände heraus, nicht um Sie zu verunsichern, sondern weil Ihre Verlässlichkeit mehr Vertrauen weckt, als Sie ahnen.",
+      "finance": "Die Freude an schönem Material oder einem langlebigen Gegenstand ist berechtigt, solange sie keine wichtigere Ausgabe verdeckt. Ihr Gespür für Prioritäten findet rasch zu natürlicher Eleganz zurück.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "taurus",
+      "language": "es",
+      "general": "El ambiente se vuelve más cálido, casi voluptuoso, y aun así una cuestión de fondo se niega a permanecer bajo la alfombra. Aspiras a la dulzura sin sacrificar una verdad importante. Esa tensión puede propiciar una conversación sorprendentemente fértil, especialmente en torno a un proyecto común o una antigua promesa. Tu constancia no tiene nada de inmóvil hoy: parece un baile lento que modifica sutilmente la estancia. Lo que parecía fijo vuelve entonces a respirar.",
+      "love": "La ternura gana profundidad cuando deja de rodear el tema sensible. Una confesión tranquila, una presencia fiel o un gesto muy sencillo pueden transformar el ambiente sin exigir grandes declaraciones.",
+      "work": "Tu saber hacer se encuentra con una expectativa más ambiciosa. Podrían empujarte fuera de un marco conocido, no para desestabilizarte, sino porque tu solidez inspira más de lo que imaginas.",
+      "finance": "El placer de una materia hermosa o un objeto duradero se justifica si no oculta un gasto más esencial. Tu sentido de las prioridades recupera enseguida su elegancia natural.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "taurus",
+      "language": "it",
+      "general": "L’atmosfera si fa più calda, quasi voluttuosa, eppure una questione di fondo rifiuta di restare sotto il tappeto. Desiderate dolcezza senza sacrificare una verità importante. Questa tensione può generare una conversazione sorprendentemente feconda, soprattutto intorno a un progetto condiviso o a una vecchia promessa. La vostra costanza oggi non ha nulla di immobile: somiglia a una danza lenta che cambia sottilmente la stanza. Ciò che pareva fisso riprende a respirare.",
+      "love": "La tenerezza acquista profondità quando smette di aggirare il tema sensibile. Una confessione pacata, una presenza fedele o un gesto semplice possono trasformare l’atmosfera senza richiedere grandi dichiarazioni.",
+      "work": "La vostra competenza incontra un’attesa più ambiziosa. Potrebbero spingervi oltre un terreno familiare, non per destabilizzarvi, ma perché la vostra solidità ispira più fiducia di quanto immaginiate.",
+      "finance": "Il piacere di un bel materiale o di un oggetto durevole ha senso, purché non nasconda una spesa più essenziale. Il vostro senso delle priorità ritrova presto la sua naturale eleganza.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "taurus",
+      "language": "pt",
+      "general": "O ambiente torna-se mais quente, quase voluptuoso, e mesmo assim uma questão de fundo recusa ficar debaixo do tapete. Procura doçura sem sacrificar uma verdade importante. Essa tensão pode gerar uma conversa surpreendentemente fértil, sobretudo em torno de um projeto partilhado ou de uma promessa antiga. A sua constância nada tem de imóvel hoje: parece uma dança lenta que altera subtilmente a sala. Aquilo que parecia fixo volta então a respirar.",
+      "love": "A ternura ganha profundidade quando deixa de contornar o assunto sensível. Uma confissão serena, uma presença fiel ou um gesto muito simples podem transformar o ambiente sem exigirem grandes declarações.",
+      "work": "A sua competência encontra uma expectativa mais ambiciosa. Poderão levá-lo para além do terreno habitual, não para o desestabilizar, mas porque a sua solidez inspira mais confiança do que imagina.",
+      "finance": "O prazer de um material bonito ou de um objeto duradouro justifica-se, desde que não esconda uma despesa mais essencial. O seu sentido de prioridades recupera depressa a elegância natural.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "taurus",
+      "language": "ru",
+      "general": "Обстановка становится теплее, почти чувственной, и всё же важный вопрос отказывается оставаться под ковром. Вам хочется мягкости без жертвы существенной правдой. Это напряжение может породить удивительно плодотворный разговор, особенно о совместном замысле или давнем обещании. Ваша устойчивость сегодня совсем не неподвижна: она напоминает медленный танец, незаметно меняющий комнату. То, что казалось застывшим, снова начинает дышать.",
+      "love": "Нежность обретает глубину, когда перестаёт обходить чувствительную тему. Спокойное признание, надёжное присутствие или очень простой жест способны преобразить атмосферу без громких заявлений.",
+      "work": "Ваше мастерство встречается с более высокими ожиданиями. Вас могут вывести за пределы знакомого поля не ради потрясения, а потому, что ваша надёжность внушает больше доверия, чем вы предполагаете.",
+      "finance": "Удовольствие от красивого материала или долговечной вещи вполне оправданно, если не заслоняет более важную трату. Ваше чувство приоритетов быстро возвращает себе естественную элегантность.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "taurus",
+      "language": "nl",
+      "general": "De sfeer wordt warmer, bijna weelderig, en toch weigert een fundamentele kwestie onder het tapijt te blijven. U verlangt naar zachtheid zonder een belangrijke waarheid op te offeren. Die spanning kan een verrassend vruchtbaar gesprek opleveren, vooral over een gedeeld plan of een oude belofte. Uw standvastigheid is vandaag allerminst onbeweeglijk: ze lijkt op een langzame dans die de kamer subtiel verandert. Wat vast leek te zitten, begint opnieuw te ademen.",
+      "love": "Tederheid wint aan diepte zodra ze niet langer om het gevoelige onderwerp heen draait. Een rustige bekentenis, trouwe aanwezigheid of eenvoudig gebaar kan de sfeer veranderen zonder grote verklaring.",
+      "work": "Uw vakmanschap ontmoet een ambitieuzere verwachting. Misschien wordt u buiten vertrouwd terrein geleid, niet om u uit balans te brengen, maar omdat uw degelijkheid meer vertrouwen wekt dan u vermoedt.",
+      "finance": "Het plezier van mooi materiaal of een duurzaam voorwerp is verdedigbaar, zolang het geen wezenlijker uitgave verbergt. Uw gevoel voor prioriteiten hervindt snel zijn natuurlijke elegantie.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "gemini",
+      "language": "fr",
+      "general": "Les idées courent vite et certaines empruntent des passages secrets. Cette vivacité vous amuse, mais elle peut aussi brouiller une consigne ou transformer une remarque anodine en énigme. Votre meilleur atout réside dans l’art de relier les détails sans les enfermer trop tôt dans une conclusion. Une discussion professionnelle ou quotidienne s’anime, portée par un trait d’esprit inattendu. Sous le mouvement, une vérité plus intime se précise : tout ce qui intrigue ne mérite pas forcément une réponse immédiate.",
+      "love": "Un message ambigu éveille la curiosité et peut-être un trouble délicieux. Le charme tient moins à la certitude qu’au jeu des sous-entendus. La légèreté n’empêche pas la sincérité ; elle lui offre parfois une entrée plus élégante.",
+      "work": "Une information manquante change la lecture d’un dossier. Votre souplesse intellectuelle permet d’en faire un rebondissement plutôt qu’un obstacle. Les échanges rapides favorisent l’invention, à condition que les décisions finales restent lisibles.",
+      "finance": "Plusieurs petites envies rivalisent avec un projet plus consistant. Le budget raconte vos curiosités du moment ; il gagne aujourd’hui à réserver une place à l’imprévu sans devenir une collection d’impulsions.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "gemini",
+      "language": "en",
+      "general": "Ideas move quickly and some take secret passages. This liveliness amuses you, yet it can also blur an instruction or turn an innocent remark into a riddle. Your best asset is linking details without locking them too soon into a conclusion. A professional or everyday discussion gathers pace, carried by an unexpected flash of wit. Beneath the movement, a more intimate truth becomes clearer: not everything intriguing deserves an immediate answer.",
+      "love": "An ambiguous message awakens curiosity and perhaps a delicious flutter. The charm lies less in certainty than in the play of implications. Lightness does not prevent sincerity; sometimes it gives sincerity a more elegant entrance.",
+      "work": "A missing piece of information changes how a file reads. Your mental agility turns it into a twist rather than an obstacle. Fast exchanges encourage invention, provided the final decisions remain clear.",
+      "finance": "Several small desires compete with a more substantial plan. The budget reflects your current curiosities; today it benefits from leaving room for the unexpected without becoming a collection of impulses.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "gemini",
+      "language": "de",
+      "general": "Gedanken eilen und manche nehmen geheime Gänge. Diese Lebendigkeit amüsiert Sie, kann aber auch eine Anweisung verwischen oder eine harmlose Bemerkung zum Rätsel machen. Ihre Stärke liegt darin, Details zu verbinden, ohne sie vorschnell in ein Ergebnis zu sperren. Ein berufliches oder alltägliches Gespräch gewinnt Tempo, getragen von unerwartetem Witz. Unter der Bewegung wird eine intimere Wahrheit klarer: Nicht alles, was fasziniert, verdient sofort eine Antwort.",
+      "love": "Eine doppeldeutige Nachricht weckt Neugier und vielleicht ein köstliches Flattern. Der Reiz liegt weniger in Gewissheit als im Spiel der Andeutungen. Leichtigkeit verhindert Aufrichtigkeit nicht; manchmal öffnet sie ihr eine elegantere Tür.",
+      "work": "Eine fehlende Information verändert die Lesart eines Vorgangs. Ihre geistige Beweglichkeit macht daraus eine Wendung statt eines Hindernisses. Schnelle Gespräche fördern Erfindungsgeist, sofern die endgültigen Entscheidungen verständlich bleiben.",
+      "finance": "Mehrere kleine Wünsche konkurrieren mit einem größeren Vorhaben. Das Budget spiegelt Ihre momentane Neugier; heute darf es dem Unerwarteten Raum geben, ohne zu einer Sammlung von Impulsen zu werden.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "gemini",
+      "language": "es",
+      "general": "Las ideas corren deprisa y algunas toman pasadizos secretos. Esa vivacidad te divierte, aunque también puede difuminar una consigna o convertir una observación inocente en enigma. Tu mejor baza consiste en relacionar detalles sin encerrarlos demasiado pronto en una conclusión. Una charla profesional o cotidiana cobra ritmo, impulsada por una ocurrencia inesperada. Bajo el movimiento se precisa una verdad más íntima: no todo cuanto intriga merece respuesta inmediata.",
+      "love": "Un mensaje ambiguo despierta curiosidad y quizá un delicioso cosquilleo. El encanto reside menos en la certeza que en el juego de insinuaciones. La ligereza no impide la sinceridad; a veces le ofrece una entrada más elegante.",
+      "work": "Un dato ausente cambia la lectura de un expediente. Tu flexibilidad mental permite convertirlo en giro y no en obstáculo. Los intercambios rápidos favorecen la invención, si las decisiones finales quedan claras.",
+      "finance": "Varios pequeños deseos compiten con un proyecto más consistente. El presupuesto refleja tus curiosidades actuales; hoy le conviene reservar espacio para lo imprevisto sin convertirse en una colección de impulsos.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "gemini",
+      "language": "it",
+      "general": "Le idee corrono veloci e alcune imboccano passaggi segreti. Questa vivacità vi diverte, ma può anche confondere un’istruzione o trasformare un’osservazione innocente in enigma. Il vostro talento consiste nel collegare i dettagli senza imprigionarli troppo presto in una conclusione. Una discussione professionale o quotidiana si anima, sostenuta da un guizzo inatteso. Sotto il movimento si precisa una verità più intima: non tutto ciò che incuriosisce merita una risposta immediata.",
+      "love": "Un messaggio ambiguo risveglia curiosità e forse un delizioso turbamento. Il fascino sta meno nella certezza che nel gioco dei sottintesi. La leggerezza non esclude la sincerità; talvolta le offre un ingresso più elegante.",
+      "work": "Un’informazione mancante cambia la lettura di un dossier. La vostra agilità mentale ne fa una svolta, non un ostacolo. Gli scambi rapidi favoriscono l’invenzione, purché le decisioni finali rimangano chiare.",
+      "finance": "Diversi piccoli desideri competono con un progetto più consistente. Il budget racconta le curiosità del momento; oggi può lasciare spazio all’imprevisto senza trasformarsi in una collezione di impulsi.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "gemini",
+      "language": "pt",
+      "general": "As ideias correm depressa e algumas usam passagens secretas. Esta vivacidade diverte-o, mas também pode baralhar uma instrução ou transformar uma observação inocente num enigma. O seu melhor trunfo está em ligar detalhes sem os fechar demasiado cedo numa conclusão. Uma conversa profissional ou quotidiana ganha ritmo, conduzida por um rasgo de humor inesperado. Sob o movimento, esclarece-se uma verdade mais íntima: nem tudo o que intriga merece resposta imediata.",
+      "love": "Uma mensagem ambígua desperta curiosidade e talvez um delicioso sobressalto. O encanto vive menos na certeza do que no jogo de sugestões. A leveza não impede a sinceridade; por vezes, oferece-lhe uma entrada mais elegante.",
+      "work": "Uma informação em falta altera a leitura de um processo. A sua agilidade mental transforma-a numa reviravolta, não num obstáculo. As trocas rápidas favorecem a invenção, desde que as decisões finais fiquem claras.",
+      "finance": "Vários pequenos desejos competem com um projeto mais consistente. O orçamento conta as curiosidades do momento; hoje ganha ao reservar espaço para o imprevisto sem se tornar numa coleção de impulsos.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "gemini",
+      "language": "ru",
+      "general": "Мысли бегут быстро, и некоторые выбирают потайные ходы. Эта живость вас забавляет, но может размыть поручение или превратить невинное замечание в загадку. Ваш главный талант — связывать детали, не запирая их слишком рано в окончательный вывод. Рабочая или бытовая беседа набирает темп благодаря неожиданной остроте. Под всей этой подвижностью проясняется более личная истина: не всё интригующее требует немедленного ответа.",
+      "love": "Двусмысленное сообщение пробуждает любопытство и, возможно, приятное волнение. Очарование живёт не столько в определённости, сколько в игре намёков. Лёгкость не мешает искренности; порой она открывает ей более изящный вход.",
+      "work": "Недостающая информация меняет прочтение дела. Гибкость ума позволяет превратить это в поворот, а не препятствие. Быстрый обмен мнениями помогает изобретательности, если итоговые решения остаются понятными.",
+      "finance": "Несколько маленьких желаний соперничают с более серьёзным планом. Бюджет отражает ваши нынешние интересы; сегодня ему полезно оставить место неожиданности, не превращаясь в коллекцию импульсов.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "gemini",
+      "language": "nl",
+      "general": "Ideeën bewegen snel en sommige nemen geheime doorgangen. Die levendigheid amuseert u, maar kan ook een instructie vertroebelen of een onschuldige opmerking tot raadsel maken. Uw sterkste troef is details verbinden zonder ze te vroeg in een conclusie op te sluiten. Een professioneel of alledaags gesprek krijgt vaart door onverwachte geestigheid. Onder alle beweging wordt een intiemere waarheid duidelijker: niet alles wat intrigeert, verdient meteen een antwoord.",
+      "love": "Een dubbelzinnig bericht wekt nieuwsgierigheid en misschien een heerlijk gefladder. De charme ligt minder in zekerheid dan in het spel van toespelingen. Lichtheid sluit oprechtheid niet uit; soms geeft ze die een sierlijker entree.",
+      "work": "Een ontbrekend gegeven verandert de lezing van een dossier. Uw mentale soepelheid maakt er een wending van in plaats van een hindernis. Snelle gesprekken bevorderen vernieuwing, zolang beslissingen helder blijven.",
+      "finance": "Verscheidene kleine verlangens wedijveren met een steviger plan. Het budget weerspiegelt uw huidige nieuwsgierigheid; vandaag mag het ruimte laten voor het onverwachte zonder een verzameling impulsen te worden.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "cancer",
+      "language": "fr",
+      "general": "Quelque chose s’allège dans l’air, comme si la maison intérieure ouvrait enfin une fenêtre. La sensibilité reste vive, mais elle se mêle à une humeur plus joueuse et plus mobile. Une tâche ordinaire, un trajet ou une conversation familière peut prendre une couleur presque romanesque. Attention toutefois aux émotions traduites trop vite en certitudes : le cœur connaît les nuances que les mots pressés oublient. En fin de journée, une présence discrète pourrait compter davantage qu’un grand spectacle.",
+      "love": "Le tendre et le malicieux se rencontrent. Une attention légère, un souvenir raconté autrement ou un silence confortable nourrit le lien. Les émotions n’ont pas besoin d’être solennelles pour laisser une trace profonde.",
+      "work": "Le rythme s’accélère autour de vous, sans forcément troubler votre concentration. Une collaboration fluide transforme les contraintes quotidiennes en terrain d’invention. Votre regard humain donne du relief à une mission apparemment banale.",
+      "finance": "Une dépense liée au confort séduit, surtout si elle embellit le quotidien. Le bon équilibre se trouve entre le refuge que vous aimez créer et la marge nécessaire aux projets encore invisibles.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "cancer",
+      "language": "en",
+      "general": "Something lightens in the air, as though an inner room had finally opened a window. Sensitivity remains vivid, now mixed with a more playful and mobile mood. An ordinary task, journey or familiar conversation can take on an almost romantic hue. Beware of feelings translated too quickly into certainties: the heart knows nuances that hurried words forget. By evening, a discreet presence may matter more than a grand performance.",
+      "love": "Tenderness and mischief meet. A light touch, a memory retold or a comfortable silence nourishes the bond. Feelings need not become solemn in order to leave a deep mark.",
+      "work": "The pace quickens around you without necessarily disturbing your focus. An easy collaboration turns daily constraints into inventive ground. Your humane perspective gives texture to a seemingly ordinary assignment.",
+      "finance": "A comfort-related expense appeals, especially if it beautifies daily life. The right balance lies between the refuge you love creating and the margin needed for projects still out of sight.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "cancer",
+      "language": "de",
+      "general": "Etwas wird leichter, als hätte das innere Zuhause endlich ein Fenster geöffnet. Ihre Empfindsamkeit bleibt wach, mischt sich jedoch mit einer verspielteren, beweglicheren Stimmung. Eine gewöhnliche Aufgabe, ein Weg oder ein vertrautes Gespräch kann beinahe romanhaft wirken. Gefühle sollten nicht zu schnell in Gewissheiten übersetzt werden: Das Herz kennt Nuancen, die hastige Worte vergessen. Am Abend könnte eine stille Anwesenheit mehr bedeuten als jede große Inszenierung.",
+      "love": "Zärtlichkeit und Schalk begegnen sich. Eine leichte Aufmerksamkeit, eine neu erzählte Erinnerung oder angenehmes Schweigen nähren die Verbindung. Gefühle müssen nicht feierlich sein, um tiefe Spuren zu hinterlassen.",
+      "work": "Das Tempo um Sie herum steigt, ohne zwingend Ihre Konzentration zu stören. Eine fließende Zusammenarbeit macht alltägliche Grenzen zum Erfindungsraum. Ihr menschlicher Blick verleiht einer scheinbar gewöhnlichen Aufgabe Kontur.",
+      "finance": "Eine Ausgabe für mehr Behaglichkeit reizt, besonders wenn sie den Alltag verschönert. Das Gleichgewicht liegt zwischen dem Schutzraum, den Sie gern schaffen, und dem Spielraum für noch unsichtbare Pläne.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "cancer",
+      "language": "es",
+      "general": "Algo se aligera en el ambiente, como si la casa interior abriera por fin una ventana. La sensibilidad sigue viva, mezclada con un humor más juguetón y móvil. Una tarea corriente, un trayecto o una conversación familiar puede adquirir un color casi novelesco. Cuidado con convertir demasiado pronto las emociones en certezas: el corazón conoce matices que las palabras apresuradas olvidan. Al final del día, una presencia discreta podría importar más que un gran espectáculo.",
+      "love": "Lo tierno y lo travieso se encuentran. Una atención ligera, un recuerdo contado de otro modo o un silencio cómodo alimentan el vínculo. Las emociones no necesitan solemnidad para dejar huella profunda.",
+      "work": "El ritmo se acelera alrededor sin alterar necesariamente tu concentración. Una colaboración fluida transforma las limitaciones cotidianas en terreno inventivo. Tu mirada humana da relieve a una misión aparentemente común.",
+      "finance": "Seduce un gasto ligado al confort, sobre todo si embellece lo cotidiano. El equilibrio está entre el refugio que te gusta crear y el margen necesario para proyectos todavía invisibles.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "cancer",
+      "language": "it",
+      "general": "Qualcosa si alleggerisce nell’aria, come se la casa interiore aprisse finalmente una finestra. La sensibilità resta viva, ma si mescola a un umore più giocoso e mobile. Un compito ordinario, un tragitto o una conversazione familiare può assumere un colore quasi romanzesco. Attenzione alle emozioni tradotte troppo in fretta in certezze: il cuore conosce sfumature che le parole affrettate dimenticano. A fine giornata, una presenza discreta potrebbe contare più di un grande spettacolo.",
+      "love": "Il tenero e il malizioso si incontrano. Un’attenzione leggera, un ricordo narrato diversamente o un silenzio confortevole nutrono il legame. Le emozioni non devono essere solenni per lasciare una traccia profonda.",
+      "work": "Il ritmo accelera intorno a voi senza necessariamente disturbare la concentrazione. Una collaborazione fluida trasforma i vincoli quotidiani in terreno creativo. Il vostro sguardo umano dà rilievo a un incarico apparentemente banale.",
+      "finance": "Una spesa legata al comfort seduce, soprattutto se abbellisce il quotidiano. L’equilibrio sta tra il rifugio che amate creare e il margine necessario ai progetti ancora invisibili.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "cancer",
+      "language": "pt",
+      "general": "Algo se torna mais leve no ar, como se a casa interior abrisse finalmente uma janela. A sensibilidade continua viva, agora misturada com um humor mais brincalhão e móvel. Uma tarefa comum, uma deslocação ou uma conversa familiar pode adquirir uma cor quase romanesca. Cuidado com as emoções traduzidas depressa demais em certezas: o coração conhece nuances que as palavras apressadas esquecem. Ao fim do dia, uma presença discreta poderá valer mais do que um grande espetáculo.",
+      "love": "A ternura encontra a malícia. Uma atenção ligeira, uma memória contada de outro modo ou um silêncio confortável alimentam o vínculo. As emoções não precisam de solenidade para deixarem uma marca profunda.",
+      "work": "O ritmo acelera à sua volta sem necessariamente perturbar a concentração. Uma colaboração fluida transforma limitações quotidianas em terreno inventivo. O seu olhar humano dá relevo a uma tarefa aparentemente banal.",
+      "finance": "Uma despesa ligada ao conforto seduz, sobretudo se embelezar o quotidiano. O equilíbrio está entre o refúgio que gosta de criar e a margem necessária para projetos ainda invisíveis.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "cancer",
+      "language": "ru",
+      "general": "В воздухе становится легче, словно внутренний дом наконец открыл окно. Чувствительность остаётся яркой, но соединяется с более игривым и подвижным настроением. Обычная задача, дорога или знакомый разговор могут обрести почти романную окраску. Не стоит слишком быстро превращать эмоции в уверенность: сердце знает оттенки, которые забывают поспешные слова. К вечеру тихое присутствие способно оказаться значительнее любого большого спектакля.",
+      "love": "Нежность встречается с озорством. Лёгкий знак внимания, по-новому рассказанное воспоминание или уютное молчание питают связь. Чувствам не нужна торжественность, чтобы оставить глубокий след.",
+      "work": "Ритм вокруг ускоряется, не обязательно нарушая вашу сосредоточенность. Лёгкое сотрудничество превращает повседневные ограничения в пространство изобретательности. Ваш человечный взгляд придаёт объём внешне обычной задаче.",
+      "finance": "Трата ради уюта особенно привлекательна, если украшает повседневность. Равновесие лежит между убежищем, которое вы любите создавать, и запасом для пока невидимых проектов.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "cancer",
+      "language": "nl",
+      "general": "Iets wordt lichter in de lucht, alsof het innerlijke huis eindelijk een raam opent. Gevoeligheid blijft levendig, maar vermengt zich met een speelsere, beweeglijkere stemming. Een gewone taak, rit of vertrouwd gesprek kan bijna een romantische kleur krijgen. Vertaal emoties niet te snel in zekerheden: het hart kent nuances die haastige woorden vergeten. Tegen de avond kan een stille aanwezigheid meer betekenen dan een groot spektakel.",
+      "love": "Tederheid en ondeugd ontmoeten elkaar. Een lichte attentie, een anders vertelde herinnering of comfortabel stilzwijgen voedt de band. Gevoelens hoeven niet plechtig te worden om een diepe indruk achter te laten.",
+      "work": "Het tempo om u heen stijgt zonder uw concentratie noodzakelijk te verstoren. Een soepele samenwerking maakt van dagelijkse beperkingen inventief terrein. Uw menselijke blik geeft reliëf aan een ogenschijnlijk gewone opdracht.",
+      "finance": "Een uitgave voor comfort lokt, vooral wanneer die het dagelijks leven verfraait. Het evenwicht ligt tussen de beschutting die u graag maakt en de ruimte voor plannen die nog onzichtbaar zijn.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "leo",
+      "language": "fr",
+      "general": "Le monde vous renvoie une lumière vive, parfois flatteuse, parfois un peu exigeante. Vous avez envie d’élargir le geste, d’entraîner les autres, de donner à une idée une allure mémorable. Pourtant, le détail qui résiste mérite sa place dans le scénario. Il pourrait même devenir la trouvaille qui distingue votre projet d’un simple coup d’éclat. La journée aime votre générosité, mais elle admire davantage encore votre capacité à partager la scène. Le panache devient alors une œuvre collective.",
+      "love": "Le désir de plaire se double d’une vraie chaleur. Un regard admiratif fait du bien, mais la complicité devient plus troublante lorsque les rôles s’effacent. La tendresse n’a pas besoin de public.",
+      "work": "Une ambition prend de l’ampleur et pourrait attirer un soutien enthousiaste. Les attentes sont élevées, les vôtres surtout. Un collaborateur moins spectaculaire apporte peut-être la pièce qui rend l’ensemble réellement convaincant.",
+      "finance": "Le goût du beau réclame une place, et votre budget n’est pas insensible à la mise en scène. Un achat choisi pour durer garde son éclat ; une dépense faite pour impressionner le perd vite.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "leo",
+      "language": "en",
+      "general": "The world reflects a vivid light towards you, flattering at times and rather demanding at others. You want to broaden the gesture, rally people and give an idea memorable stature. Yet the resistant detail deserves a place in the story. It may even become the discovery that distinguishes your project from a mere flourish. The day enjoys your generosity, but admires your willingness to share the stage even more. Flair then becomes a collective work.",
+      "love": "The wish to please is matched by genuine warmth. An admiring glance feels good, yet chemistry grows more beguiling when roles dissolve. Tenderness requires no audience.",
+      "work": "An ambition expands and may attract enthusiastic backing. Expectations are high, especially yours. A less showy colleague may provide the piece that makes the whole thing genuinely persuasive.",
+      "finance": "Beauty demands its place, and your budget is not immune to presentation. Something chosen to last keeps its lustre; spending intended to impress loses it quickly.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "leo",
+      "language": "de",
+      "general": "Die Welt wirft Ihnen ein lebhaftes Licht zurück, mal schmeichelhaft, mal etwas fordernd. Sie wollen größer denken, andere mitnehmen und einer Idee einen unvergesslichen Auftritt geben. Doch das widerspenstige Detail verdient seinen Platz im Stück. Es könnte sogar der Fund sein, der Ihr Projekt von einem bloßen Effekt unterscheidet. Der Tag mag Ihre Großzügigkeit, bewundert aber noch mehr Ihre Bereitschaft, die Bühne zu teilen. So wird Glanz zu einem gemeinsamen Werk.",
+      "love": "Der Wunsch zu gefallen verbindet sich mit echter Wärme. Ein bewundernder Blick tut gut, doch Nähe wird reizvoller, wenn die Rollen verschwimmen. Zärtlichkeit braucht kein Publikum.",
+      "work": "Ein ehrgeiziges Vorhaben wächst und könnte begeisterte Unterstützung anziehen. Die Erwartungen sind hoch, vor allem Ihre eigenen. Ein zurückhaltender Kollege liefert vielleicht genau das Teil, das alles wirklich überzeugend macht.",
+      "finance": "Das Schöne beansprucht Raum, und Ihr Budget ist für Inszenierung empfänglich. Was mit Blick auf Dauer gewählt wird, behält seinen Glanz; eine Ausgabe nur zum Beeindrucken verliert ihn rasch.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "leo",
+      "language": "es",
+      "general": "El mundo te devuelve una luz intensa, a veces halagadora y a veces algo exigente. Deseas ampliar el gesto, arrastrar a los demás y dar a una idea una presencia memorable. Sin embargo, el detalle que se resiste merece un lugar en el guion. Incluso podría ser el hallazgo que distinga tu proyecto de un simple golpe de efecto. El día aprecia tu generosidad, pero admira aún más tu capacidad de compartir escenario. El estilo se convierte entonces en obra colectiva.",
+      "love": "El deseo de gustar se acompaña de auténtica calidez. Una mirada admirativa sienta bien, pero la complicidad resulta más turbadora cuando desaparecen los papeles. La ternura no necesita público.",
+      "work": "Una ambición toma amplitud y puede atraer un apoyo entusiasta. Las expectativas son altas, sobre todo las tuyas. Un colega menos vistoso quizá aporte la pieza que vuelve el conjunto verdaderamente convincente.",
+      "finance": "El gusto por lo bello reclama sitio y tu presupuesto no es indiferente a la puesta en escena. Una compra pensada para durar mantiene su brillo; un gasto para impresionar lo pierde pronto.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "leo",
+      "language": "it",
+      "general": "Il mondo vi rimanda una luce intensa, talvolta lusinghiera, talvolta un po’ esigente. Volete ampliare il gesto, trascinare gli altri e dare a un’idea una presenza memorabile. Eppure il dettaglio resistente merita un posto nella storia. Potrebbe perfino diventare la scoperta che distingue il progetto da un semplice colpo di scena. La giornata apprezza la vostra generosità, ma ammira ancora di più la capacità di condividere il palcoscenico. Lo stile diventa allora opera collettiva.",
+      "love": "Il desiderio di piacere si accompagna a un calore autentico. Uno sguardo ammirato fa bene, ma la complicità diventa più intrigante quando i ruoli svaniscono. La tenerezza non ha bisogno di pubblico.",
+      "work": "Un’ambizione prende ampiezza e può attirare un sostegno entusiasta. Le aspettative sono alte, soprattutto le vostre. Un collega meno appariscente potrebbe offrire il tassello che rende l’insieme davvero convincente.",
+      "finance": "Il gusto del bello reclama spazio e il budget non è insensibile alla scena. Un acquisto scelto per durare conserva il suo splendore; una spesa fatta per impressionare lo perde presto.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "leo",
+      "language": "pt",
+      "general": "O mundo devolve-lhe uma luz viva, por vezes lisonjeira, por vezes um pouco exigente. Quer alargar o gesto, entusiasmar os outros e dar a uma ideia uma presença memorável. Contudo, o detalhe que resiste merece lugar no enredo. Poderá até tornar-se a descoberta que distingue o projeto de um simples golpe de efeito. O dia aprecia a sua generosidade, mas admira ainda mais a capacidade de partilhar o palco. O estilo torna-se então obra coletiva.",
+      "love": "A vontade de agradar junta-se a um calor genuíno. Um olhar de admiração sabe bem, mas a cumplicidade torna-se mais fascinante quando os papéis desaparecem. A ternura não precisa de público.",
+      "work": "Uma ambição cresce e pode atrair apoio entusiasta. As expectativas são elevadas, sobretudo as suas. Um colega menos exuberante talvez traga a peça que torna o conjunto verdadeiramente convincente.",
+      "finance": "O gosto pelo belo reclama espaço e o orçamento não é indiferente à encenação. Uma compra escolhida para durar conserva o brilho; uma despesa feita para impressionar perde-o depressa.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "leo",
+      "language": "ru",
+      "general": "Мир отражает на вас яркий свет — порой лестный, порой немного требовательный. Хочется расширить жест, увлечь других и придать идее запоминающийся размах. Однако сопротивляющаяся деталь заслуживает места в сюжете. Возможно, именно она станет находкой, отличающей проект от простого эффекта. Дню нравится ваша щедрость, но ещё больше он ценит способность делить сцену. Тогда блеск становится общим произведением.",
+      "love": "Желание нравиться соединяется с настоящим теплом. Восхищённый взгляд приятен, однако близость становится заманчивее, когда роли растворяются. Нежности не нужна публика.",
+      "work": "Амбициозный замысел растёт и может привлечь горячую поддержку. Ожидания высоки, особенно ваши собственные. Менее заметный коллега, возможно, принесёт деталь, которая сделает целое действительно убедительным.",
+      "finance": "Красота требует места, и ваш бюджет неравнодушен к эффектной подаче. Покупка, выбранная надолго, сохранит сияние; трата ради впечатления быстро его потеряет.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "leo",
+      "language": "nl",
+      "general": "De wereld kaatst helder licht naar u terug, soms vleiend en soms wat veeleisend. U wilt het gebaar vergroten, anderen meenemen en een idee een gedenkwaardige uitstraling geven. Toch verdient het tegendraadse detail een plek in het verhaal. Het kan zelfs de vondst worden die uw project van louter effectbejag onderscheidt. De dag houdt van uw gulheid, maar bewondert nog meer uw vermogen om het podium te delen. Flair wordt zo een gezamenlijk kunstwerk.",
+      "love": "De wens om te behagen gaat samen met echte warmte. Een bewonderende blik voelt prettig, maar de chemie wordt verleidelijker wanneer rollen vervagen. Tederheid heeft geen publiek nodig.",
+      "work": "Een ambitie groeit en kan enthousiaste steun aantrekken. De verwachtingen zijn hoog, vooral de uwe. Een minder opvallende collega levert misschien het onderdeel dat het geheel werkelijk overtuigend maakt.",
+      "finance": "Schoonheid eist haar plaats op en uw budget is niet ongevoelig voor presentatie. Wat voor de lange duur is gekozen, behoudt glans; een uitgave om indruk te maken verliest die snel.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "virgo",
+      "language": "fr",
+      "general": "Une mécanique bien réglée laisse soudain passer un rayon d’imprévu. Loin de déranger la journée, ce décalage peut révéler une solution que votre méthode n’avait pas envisagée. Les conversations vont vite, les informations se croisent, et votre œil précis distingue le fil utile dans cette joyeuse dispersion. Ne cherchez pas à tout refermer immédiatement : une question ouverte conserve aujourd’hui une puissance créatrice. La finesse consiste peut-être à laisser le monde vous surprendre sans abandonner votre exigence.",
+      "love": "Un détail tendre prend plus de valeur qu’une démonstration parfaite. Vous percevez ce que l’autre ne formule pas, sans avoir besoin de l’analyser jusqu’au bout. La proximité respire mieux quand elle garde une zone libre.",
+      "work": "Un dossier complexe s’éclaire grâce à une association inattendue. Votre précision reste décisive, mais l’idée neuve vient peut-être d’un détour, d’une conversation informelle ou d’un collègue au style très différent.",
+      "finance": "Le budget supporte mal les catégories trop rigides aujourd’hui. Une dépense atypique peut avoir du sens si elle sert longtemps. Votre discernement sépare aisément la vraie trouvaille du gadget séduisant.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "virgo",
+      "language": "en",
+      "general": "A well-tuned mechanism suddenly lets in a ray of unpredictability. Far from disrupting the day, the shift may reveal a solution your method had not considered. Conversations move quickly, information crosses paths, and your precise eye detects the useful thread in the cheerful scatter. Do not rush to close everything down: an open question retains creative power today. Finesse may mean letting the world surprise you without abandoning your standards.",
+      "love": "A tender detail matters more than a flawless performance. You notice what the other person does not voice, without needing to analyse it completely. Closeness breathes better when it retains some open space.",
+      "work": "A complex file brightens through an unexpected association. Your precision remains decisive, but the new idea may arrive through a detour, an informal conversation or a colleague with a very different style.",
+      "finance": "The budget resists overly rigid categories today. An unusual expense may make sense if it serves you for a long time. Your judgement readily separates a real find from an appealing gadget.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "virgo",
+      "language": "de",
+      "general": "Ein fein abgestimmtes System lässt plötzlich einen Strahl Unvorhergesehenes herein. Statt den Tag zu stören, kann diese Verschiebung eine Lösung zeigen, die Ihre Methode übersehen hatte. Gespräche laufen schnell, Informationen kreuzen sich, und Ihr präziser Blick entdeckt den nützlichen Faden im heiteren Durcheinander. Schließen Sie nicht alles sofort ab: Eine offene Frage besitzt heute schöpferische Kraft. Raffinesse kann bedeuten, sich überraschen zu lassen, ohne den eigenen Anspruch aufzugeben.",
+      "love": "Ein zärtliches Detail zählt mehr als eine makellose Darbietung. Sie spüren, was das Gegenüber nicht ausspricht, ohne es vollständig analysieren zu müssen. Nähe atmet besser, wenn etwas freier Raum bleibt.",
+      "work": "Ein komplexer Vorgang wird durch eine unerwartete Verbindung klarer. Ihre Genauigkeit bleibt entscheidend, doch die neue Idee kommt vielleicht über einen Umweg, ein lockeres Gespräch oder einen ganz anders arbeitenden Kollegen.",
+      "finance": "Das Budget verträgt heute keine zu starren Kategorien. Eine ungewöhnliche Ausgabe kann sinnvoll sein, wenn sie lange dient. Ihr Urteilsvermögen trennt einen echten Fund mühelos vom verführerischen Spielzeug.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "virgo",
+      "language": "es",
+      "general": "Un mecanismo bien ajustado deja pasar de pronto un rayo de improvisación. Lejos de perturbar la jornada, ese desfase puede revelar una solución que tu método no había contemplado. Las conversaciones avanzan deprisa, la información se cruza y tu mirada precisa encuentra el hilo útil en esta alegre dispersión. No cierres todo de inmediato: una pregunta abierta conserva hoy potencia creativa. La sutileza quizá consista en dejar que el mundo te sorprenda sin abandonar tu exigencia.",
+      "love": "Un detalle tierno adquiere más valor que una demostración perfecta. Percibes lo que la otra persona no formula, sin necesidad de analizarlo por completo. La cercanía respira mejor cuando conserva una zona libre.",
+      "work": "Un expediente complejo se ilumina gracias a una asociación inesperada. Tu precisión sigue siendo decisiva, aunque la idea nueva quizá llegue por un rodeo, una charla informal o un colega de estilo muy distinto.",
+      "finance": "El presupuesto tolera mal las categorías demasiado rígidas hoy. Un gasto atípico puede tener sentido si presta servicio durante mucho tiempo. Tu discernimiento separa fácilmente el verdadero hallazgo del artilugio seductor.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "virgo",
+      "language": "it",
+      "general": "Un meccanismo ben regolato lascia improvvisamente entrare un raggio d’imprevisto. Lontano dal disturbare la giornata, questo scarto può rivelare una soluzione che il vostro metodo non aveva considerato. Le conversazioni corrono, le informazioni si incrociano e il vostro occhio preciso trova il filo utile nella lieta dispersione. Non chiudete subito ogni questione: una domanda aperta conserva oggi potenza creativa. La finezza consiste forse nel lasciare che il mondo vi sorprenda senza abbandonare l’esigenza.",
+      "love": "Un dettaglio tenero vale più di una dimostrazione perfetta. Percepite ciò che l’altro non esprime, senza bisogno di analizzarlo fino in fondo. La vicinanza respira meglio quando conserva una zona libera.",
+      "work": "Un dossier complesso si illumina grazie a un’associazione inattesa. La vostra precisione resta decisiva, ma l’idea nuova può arrivare da una deviazione, da una conversazione informale o da un collega molto diverso.",
+      "finance": "Il budget sopporta male categorie troppo rigide. Una spesa insolita può avere senso se serve a lungo. Il vostro discernimento separa con facilità la vera scoperta dal gadget seducente.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "virgo",
+      "language": "pt",
+      "general": "Um mecanismo bem afinado deixa entrar subitamente um raio de imprevisto. Longe de perturbar o dia, esse desvio pode revelar uma solução que o seu método não tinha considerado. As conversas avançam depressa, a informação cruza-se e o seu olhar preciso encontra o fio útil nesta alegre dispersão. Não feche tudo de imediato: uma pergunta aberta conserva hoje força criativa. A subtileza talvez esteja em deixar o mundo surpreendê-lo sem abandonar a exigência.",
+      "love": "Um detalhe terno ganha mais valor do que uma demonstração perfeita. Percebe o que a outra pessoa não formula, sem precisar de analisar tudo. A proximidade respira melhor quando conserva uma zona livre.",
+      "work": "Um processo complexo ilumina-se graças a uma associação inesperada. A sua precisão continua decisiva, mas a ideia nova talvez chegue por um desvio, uma conversa informal ou um colega com estilo muito diferente.",
+      "finance": "O orçamento tolera mal categorias demasiado rígidas hoje. Uma despesa invulgar pode fazer sentido se servir durante muito tempo. O seu discernimento separa facilmente a verdadeira descoberta do aparelho sedutor.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "virgo",
+      "language": "ru",
+      "general": "Точно настроенный механизм внезапно пропускает луч непредсказуемости. Вместо помехи этот сдвиг может показать решение, которого ваш метод не предусматривал. Разговоры ускоряются, сведения пересекаются, а точный взгляд находит полезную нить в весёлом разнобое. Не спешите всё закрывать: открытый вопрос сегодня сохраняет творческую силу. Возможно, тонкость в том, чтобы позволить миру удивить вас, не отказываясь от собственной требовательности.",
+      "love": "Нежная деталь значит больше безупречного представления. Вы замечаете то, чего другой не произносит, и не обязаны анализировать это до конца. Близость дышит свободнее, когда оставляет открытое пространство.",
+      "work": "Сложное дело проясняется благодаря неожиданной связи. Ваша точность остаётся решающей, но новая идея может прийти обходным путём — из неформальной беседы или от коллеги с совершенно иным стилем.",
+      "finance": "Бюджет сегодня плохо переносит слишком жёсткие категории. Необычная трата может иметь смысл, если прослужит долго. Ваше чутьё легко отличает настоящую находку от привлекательной безделушки.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "virgo",
+      "language": "nl",
+      "general": "Een goed afgesteld mechanisme laat plotseling een straal onvoorspelbaarheid binnen. In plaats van de dag te verstoren, kan die verschuiving een oplossing tonen die uw methode niet had voorzien. Gesprekken gaan snel, informatie kruist elkaar en uw scherpe blik vindt de nuttige draad in de vrolijke wirwar. Sluit niet alles meteen af: een open vraag behoudt vandaag scheppingskracht. Verfijning kan betekenen dat u zich laat verrassen zonder uw normen te laten varen.",
+      "love": "Een teder detail telt zwaarder dan een vlekkeloze vertoning. U merkt wat de ander niet uitspreekt zonder het volledig te hoeven analyseren. Nabijheid ademt beter wanneer er vrije ruimte overblijft.",
+      "work": "Een ingewikkeld dossier klaart op dankzij een onverwachte verbinding. Uw precisie blijft doorslaggevend, maar het nieuwe idee komt misschien via een omweg, informeel gesprek of heel anders werkende collega.",
+      "finance": "Het budget verdraagt vandaag geen al te starre categorieën. Een ongewone uitgave kan zinvol zijn wanneer ze lang meegaat. Uw onderscheidingsvermogen scheidt moeiteloos een echte vondst van een verleidelijk speeltje.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "libra",
+      "language": "fr",
+      "general": "L’élégance de la journée tient à un contraste : les échanges sont rapides, tandis qu’une décision affective ou créative demande davantage de profondeur. Vous savez composer avec plusieurs voix, mais l’harmonie ne consiste pas à effacer votre préférence. Un projet, une invitation ou une conversation gagne en beauté dès que vous y laissez une empreinte personnelle. Le doute n’est pas un défaut de décor ; il peut être cette ombre délicate qui donne du volume au tableau. Puis vient le choix, clair et gracieux.",
+      "love": "Le charme circule avec facilité, relevé par une pointe d’intensité. Une attirance peut se lire dans les détails plutôt que dans les promesses. Votre goût du lien n’exige pas que tout soit immédiatement défini.",
+      "work": "Une collaboration séduisante ouvre plusieurs pistes à la fois. Votre sens de la composition rassemble les talents sans les uniformiser. Le défi consiste à préserver votre signature au milieu des attentes et des compliments.",
+      "finance": "Une envie raffinée vous tente et pourrait réellement embellir le quotidien. Son prix ne raconte pourtant qu’une partie de l’histoire. La qualité, l’usage et le plaisir futur forment un trio plus parlant.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "libra",
+      "language": "en",
+      "general": "The day's elegance rests on a contrast: exchanges are brisk, while an emotional or creative decision asks for greater depth. You can compose with several voices, but harmony does not mean erasing your preference. A project, invitation or conversation becomes more beautiful once you leave a personal imprint on it. Doubt is not a flaw in the décor; it can be the delicate shadow that gives the picture volume. Then comes the choice, clear and graceful.",
+      "love": "Charm circulates easily, sharpened by a hint of intensity. Attraction may be read in details rather than promises. Your taste for connection does not require everything to be defined at once.",
+      "work": "An appealing collaboration opens several routes simultaneously. Your sense of composition brings talents together without making them uniform. The challenge is keeping your signature amid expectations and compliments.",
+      "finance": "A refined desire tempts you and may genuinely enhance daily life. Its price tells only part of the story. Quality, use and future pleasure form a far more revealing trio.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "libra",
+      "language": "de",
+      "general": "Die Eleganz des Tages lebt von einem Gegensatz: Gespräche sind schnell, während eine emotionale oder kreative Entscheidung mehr Tiefe verlangt. Sie können mehrere Stimmen miteinander komponieren, doch Harmonie bedeutet nicht, die eigene Vorliebe auszulöschen. Ein Projekt, eine Einladung oder ein Gespräch gewinnt Schönheit, sobald Sie eine persönliche Spur hinterlassen. Zweifel sind kein Fehler im Bild; sie können der feine Schatten sein, der ihm Volumen gibt. Danach kommt die Wahl, klar und anmutig.",
+      "love": "Charme fließt leicht, geschärft von einem Hauch Intensität. Anziehung zeigt sich eher in Details als in Versprechen. Ihre Freude an Verbindung verlangt nicht, dass alles sofort einen Namen bekommt.",
+      "work": "Eine reizvolle Zusammenarbeit öffnet mehrere Wege zugleich. Ihr Sinn für Komposition führt Talente zusammen, ohne sie gleichzumachen. Die Herausforderung liegt darin, zwischen Erwartungen und Lob Ihre Handschrift zu bewahren.",
+      "finance": "Ein raffinierter Wunsch lockt und könnte den Alltag wirklich verschönern. Sein Preis erzählt nur einen Teil der Geschichte. Qualität, Nutzung und künftige Freude bilden ein weitaus aussagekräftigeres Trio.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "libra",
+      "language": "es",
+      "general": "La elegancia del día nace de un contraste: los intercambios son rápidos, mientras una decisión afectiva o creativa requiere mayor profundidad. Sabes componer con varias voces, pero armonía no significa borrar tu preferencia. Un proyecto, una invitación o una charla gana belleza cuando dejas en ella una huella personal. La duda no estropea el decorado; puede ser esa sombra delicada que da volumen al cuadro. Después llega la elección, clara y llena de gracia.",
+      "love": "El encanto circula con facilidad, realzado por un punto de intensidad. La atracción se lee quizá en los detalles más que en las promesas. Tu gusto por el vínculo no exige definirlo todo inmediatamente.",
+      "work": "Una colaboración atractiva abre varias vías a la vez. Tu sentido de la composición reúne talentos sin uniformarlos. El reto consiste en conservar tu firma entre las expectativas y los elogios.",
+      "finance": "Te tienta un deseo refinado que podría embellecer de verdad lo cotidiano. Su precio solo cuenta una parte de la historia. Calidad, uso y placer futuro forman un trío mucho más elocuente.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "libra",
+      "language": "it",
+      "general": "L’eleganza della giornata nasce da un contrasto: gli scambi sono rapidi, mentre una decisione affettiva o creativa richiede maggiore profondità. Sapete comporre con più voci, ma armonia non significa cancellare la vostra preferenza. Un progetto, un invito o una conversazione diventa più bello quando vi lasciate un’impronta personale. Il dubbio non è un difetto della scenografia; può essere l’ombra delicata che dà volume al quadro. Poi arriva la scelta, chiara e graziosa.",
+      "love": "Il fascino circola facilmente, ravvivato da una punta d’intensità. L’attrazione può leggersi nei dettagli più che nelle promesse. Il vostro gusto per il legame non richiede che tutto sia definito subito.",
+      "work": "Una collaborazione seducente apre più vie insieme. Il vostro senso della composizione riunisce i talenti senza uniformarli. La sfida consiste nel preservare la vostra firma tra aspettative e complimenti.",
+      "finance": "Un desiderio raffinato vi tenta e potrebbe davvero abbellire il quotidiano. Il prezzo racconta solo una parte della storia. Qualità, utilizzo e piacere futuro formano un trio molto più eloquente.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "libra",
+      "language": "pt",
+      "general": "A elegância do dia nasce de um contraste: as conversas são rápidas, enquanto uma decisão afetiva ou criativa exige maior profundidade. Sabe compor com várias vozes, mas harmonia não significa apagar a sua preferência. Um projeto, convite ou diálogo ganha beleza quando nele deixa uma marca pessoal. A dúvida não é um defeito no cenário; pode ser a sombra delicada que dá volume ao quadro. Depois chega a escolha, clara e graciosa.",
+      "love": "O charme circula com facilidade, realçado por um toque de intensidade. A atração pode ler-se nos detalhes, mais do que nas promessas. O seu gosto pelo vínculo não exige que tudo seja definido de imediato.",
+      "work": "Uma colaboração sedutora abre vários caminhos ao mesmo tempo. O seu sentido de composição reúne talentos sem os uniformizar. O desafio está em preservar a sua assinatura entre expectativas e elogios.",
+      "finance": "Um desejo refinado tenta-o e poderá realmente embelezar o quotidiano. O preço conta apenas parte da história. Qualidade, utilidade e prazer futuro formam um trio muito mais eloquente.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "libra",
+      "language": "ru",
+      "general": "Элегантность дня построена на контрасте: разговоры идут быстро, а эмоциональное или творческое решение требует глубины. Вы умеете сочетать разные голоса, но гармония не означает исчезновение собственного вкуса. Проект, приглашение или беседа становятся красивее, когда вы оставляете личный след. Сомнение — не изъян декорации; оно может быть тонкой тенью, придающей картине объём. Затем приходит выбор — ясный и изящный.",
+      "love": "Очарование движется легко, усиленное ноткой напряжённости. Притяжение читается скорее в деталях, чем в обещаниях. Ваша любовь к связи не требует немедленно дать всему точное определение.",
+      "work": "Привлекательное сотрудничество открывает несколько дорог одновременно. Ваше чувство композиции объединяет таланты, не делая их одинаковыми. Задача — сохранить собственный почерк среди ожиданий и комплиментов.",
+      "finance": "Изысканное желание манит и действительно может украсить повседневность. Цена рассказывает лишь часть истории. Качество, польза и будущее удовольствие образуют куда более красноречивое трио.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "libra",
+      "language": "nl",
+      "general": "De elegantie van de dag rust op contrast: gesprekken zijn snel, terwijl een emotionele of creatieve keuze meer diepte vraagt. U kunt met verschillende stemmen componeren, maar harmonie betekent niet dat uw voorkeur verdwijnt. Een project, uitnodiging of gesprek wordt mooier zodra u er een persoonlijk spoor in achterlaat. Twijfel is geen fout in het decor; hij kan de fijne schaduw zijn die het beeld volume geeft. Daarna komt de keuze, helder en gracieus.",
+      "love": "Charme stroomt gemakkelijk, verscherpt door een vleug intensiteit. Aantrekkingskracht laat zich wellicht in details lezen, meer dan in beloften. Uw liefde voor verbinding eist niet dat alles meteen wordt vastgelegd.",
+      "work": "Een aantrekkelijke samenwerking opent verscheidene wegen tegelijk. Uw gevoel voor compositie brengt talenten samen zonder ze gelijk te maken. De uitdaging is uw handschrift te bewaren tussen verwachtingen en complimenten.",
+      "finance": "Een verfijnde wens lokt en kan het dagelijks leven echt verfraaien. De prijs vertelt slechts een deel van het verhaal. Kwaliteit, gebruik en toekomstig plezier vormen een veelzeggender drietal.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "scorpio",
+      "language": "fr",
+      "general": "Vous entrez dans la journée avec une intensité calme, presque magnétique. Les conversations superficielles glissent, tandis qu’un détail, un regard ou une hésitation révèle un enjeu plus profond. Cette lucidité peut devenir créatrice si elle ne se transforme pas en enquête permanente. Autour d’un projet personnel, quelque chose demande à changer de peau : non pas tout détruire, mais ôter ce qui n’a plus de force. Votre présence suffit largement ; le mystère perd son charme lorsqu’on le force à parler.",
+      "love": "Le désir se fait dense, sans nécessairement devenir dramatique. Un rapprochement gagne à garder sa part d’inconnu. Vous sentez les non-dits, mais certains silences sont des chambres secrètes, pas des problèmes à résoudre.",
+      "work": "Une stratégie révèle ses failles et ses promesses. Votre instinct repère le véritable rapport de force, tandis qu’une idée audacieuse cherche sa forme. La discrétion peut donner à votre initiative une avance précieuse.",
+      "finance": "Les questions d’argent touchent aussi au contrôle et à la confiance. Un partage, une dépense commune ou un projet matériel gagne en clarté lorsque chaque marge de liberté reste visible.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "scorpio",
+      "language": "en",
+      "general": "You enter the day with calm, almost magnetic intensity. Superficial conversation slides past while a detail, a glance or hesitation reveals a deeper stake. This lucidity can become creative if it does not turn into a permanent investigation. Around a personal project, something needs to shed its skin: not to destroy everything, but to remove what has lost its force. Your presence is quite enough; mystery loses its charm when forced to speak.",
+      "love": "Desire grows dense without necessarily becoming dramatic. A closer connection benefits from keeping part of the unknown. You sense what goes unsaid, yet some silences are secret rooms, not problems to solve.",
+      "work": "A strategy reveals its flaws and promises. Your instinct spots the real balance of power while a daring idea seeks its form. Discretion may give your initiative a precious head start.",
+      "finance": "Questions of money also touch on control and trust. A shared expense, division or material project becomes clearer when each person's freedom and margin remain visible.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "scorpio",
+      "language": "de",
+      "general": "Sie beginnen den Tag mit ruhiger, fast magnetischer Intensität. Oberflächliche Gespräche gleiten vorbei, während ein Detail, ein Blick oder Zögern etwas Tieferes offenbart. Diese Klarheit kann schöpferisch werden, wenn sie nicht zur Dauerermittlung gerät. Rund um ein persönliches Projekt will etwas seine Haut wechseln: nicht alles zerstören, sondern entfernen, was keine Kraft mehr besitzt. Ihre Präsenz genügt vollkommen; Geheimnisse verlieren ihren Reiz, wenn man sie zum Reden zwingt.",
+      "love": "Begehren wird dicht, ohne dramatisch werden zu müssen. Eine Annäherung gewinnt, wenn sie einen unbekannten Anteil bewahrt. Sie spüren das Ungesagte, doch manches Schweigen ist ein geheimer Raum, kein Problem.",
+      "work": "Eine Strategie zeigt ihre Schwächen und Versprechen. Ihr Instinkt erkennt das wahre Kräfteverhältnis, während eine kühne Idee ihre Form sucht. Diskretion kann Ihrem Vorstoß einen kostbaren Vorsprung geben.",
+      "finance": "Geldfragen berühren auch Kontrolle und Vertrauen. Eine Teilung, gemeinsame Ausgabe oder ein materielles Vorhaben wird klarer, wenn der persönliche Spielraum aller Beteiligten sichtbar bleibt.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "scorpio",
+      "language": "es",
+      "general": "Entras en la jornada con una intensidad serena, casi magnética. Las conversaciones superficiales resbalan, mientras un detalle, una mirada o una vacilación revelan un asunto más profundo. Esa lucidez puede volverse creadora si no se transforma en investigación permanente. Alrededor de un proyecto personal, algo necesita mudar de piel: no destruirlo todo, sino retirar lo que ya no posee fuerza. Tu presencia basta; el misterio pierde encanto cuando se le obliga a hablar.",
+      "love": "El deseo se vuelve denso sin resultar necesariamente dramático. Un acercamiento gana si conserva una parte desconocida. Percibes lo no dicho, pero algunos silencios son habitaciones secretas, no problemas que resolver.",
+      "work": "Una estrategia revela sus fallos y sus promesas. Tu instinto detecta la verdadera relación de fuerzas mientras una idea audaz busca forma. La discreción puede dar a tu iniciativa una ventaja preciosa.",
+      "finance": "El dinero también toca cuestiones de control y confianza. Un reparto, un gasto común o un proyecto material gana claridad cuando el margen de libertad de cada cual permanece visible.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "scorpio",
+      "language": "it",
+      "general": "Entrate nella giornata con un’intensità calma, quasi magnetica. Le conversazioni superficiali scivolano via, mentre un dettaglio, uno sguardo o un’esitazione rivelano una posta più profonda. Questa lucidità può diventare creativa se non si trasforma in indagine permanente. Intorno a un progetto personale, qualcosa chiede di cambiare pelle: non distruggere tutto, ma togliere ciò che non ha più forza. La vostra presenza basta; il mistero perde fascino quando lo si costringe a parlare.",
+      "love": "Il desiderio diventa denso senza necessariamente farsi drammatico. Un avvicinamento guadagna dal conservare una parte ignota. Avvertite i non detti, ma alcuni silenzi sono stanze segrete, non problemi da risolvere.",
+      "work": "Una strategia rivela difetti e promesse. Il vostro istinto coglie il vero rapporto di forza, mentre un’idea audace cerca la sua forma. La discrezione può dare all’iniziativa un prezioso vantaggio.",
+      "finance": "Le questioni di denaro toccano anche controllo e fiducia. Una divisione, una spesa comune o un progetto materiale diventa più chiaro quando resta visibile il margine di libertà di ciascuno.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "scorpio",
+      "language": "pt",
+      "general": "Entra no dia com uma intensidade calma, quase magnética. As conversas superficiais deslizam, enquanto um detalhe, um olhar ou uma hesitação revelam algo mais profundo. Esta lucidez pode tornar-se criativa se não se transformar numa investigação permanente. Em torno de um projeto pessoal, algo precisa de mudar de pele: não destruir tudo, mas retirar o que perdeu força. A sua presença basta; o mistério perde encanto quando é obrigado a falar.",
+      "love": "O desejo adensa-se sem ter de se tornar dramático. Uma aproximação ganha ao conservar uma parte desconhecida. Sente o que não é dito, mas alguns silêncios são quartos secretos, não problemas para resolver.",
+      "work": "Uma estratégia revela falhas e promessas. O seu instinto identifica a verdadeira relação de forças, enquanto uma ideia ousada procura forma. A discrição pode dar à iniciativa um avanço precioso.",
+      "finance": "As questões de dinheiro também tocam controlo e confiança. Uma partilha, despesa comum ou projeto material ganha clareza quando a margem de liberdade de cada pessoa permanece visível.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "scorpio",
+      "language": "ru",
+      "general": "Вы входите в день со спокойной, почти магнетической интенсивностью. Поверхностные разговоры скользят мимо, а деталь, взгляд или заминка раскрывают более глубокую ставку. Эта ясность способна стать творческой, если не превратится в постоянное расследование. Личному проекту пора сменить кожу: не разрушить всё, а убрать утратившее силу. Вашего присутствия вполне достаточно; тайна теряет очарование, когда её заставляют говорить.",
+      "love": "Желание становится насыщенным, не обязательно превращаясь в драму. Сближение выигрывает, сохраняя часть неизвестного. Вы чувствуете невысказанное, но некоторые паузы — тайные комнаты, а не задачи для решения.",
+      "work": "Стратегия показывает свои слабости и обещания. Инстинкт видит настоящий расклад сил, пока смелая идея ищет форму. Сдержанность может дать вашей инициативе драгоценную фору.",
+      "finance": "Денежные вопросы затрагивают также контроль и доверие. Совместная трата, раздел или материальный проект становятся яснее, когда личное пространство каждого остаётся заметным.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "scorpio",
+      "language": "nl",
+      "general": "U betreedt de dag met kalme, bijna magnetische intensiteit. Oppervlakkige gesprekken glijden voorbij, terwijl een detail, blik of aarzeling iets diepers onthult. Die helderheid kan scheppend worden wanneer ze niet in permanent onderzoek verandert. Rond een persoonlijk plan wil iets van huid wisselen: niet alles vernietigen, maar verwijderen wat kracht verloren heeft. Uw aanwezigheid is ruim voldoende; mysterie verliest zijn charme wanneer het gedwongen wordt te spreken.",
+      "love": "Verlangen wordt intens zonder dramatisch te hoeven worden. Een toenadering wint wanneer ze een onbekend deel bewaart. U voelt wat niet gezegd wordt, maar sommige stiltes zijn geheime kamers, geen problemen.",
+      "work": "Een strategie toont haar zwaktes en beloften. Uw instinct ziet de ware krachtsverhouding, terwijl een gewaagd idee naar vorm zoekt. Discretie kan uw initiatief een kostbare voorsprong geven.",
+      "finance": "Geldvragen raken ook aan controle en vertrouwen. Een verdeling, gezamenlijke uitgave of materieel project wordt helderder wanneer ieders persoonlijke speelruimte zichtbaar blijft.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "sagittarius",
+      "language": "fr",
+      "general": "La journée ouvre plusieurs portes, parfois toutes en même temps. Votre enthousiasme adore ce vaste choix, mais une piste plus subtile mérite de ne pas être dépassée au galop. Une conversation venue d’un autre horizon bouscule agréablement vos certitudes et redonne du mouvement à un projet. L’aventure n’exige pas toujours un billet lointain : elle commence aussi lorsqu’une idée étrangère trouve place à votre table. La curiosité devient alors moins dispersée, plus généreuse, presque lumineuse.",
+      "love": "Un échange franc réveille l’attirance et l’envie de rire ensemble. L’espace compte autant que la proximité. Le lien se renforce quand chacun peut apporter un monde différent sans devoir le traduire entièrement.",
+      "work": "Une perspective ambitieuse se dessine derrière une discussion informelle. Votre vision entraîne, surtout lorsqu’elle laisse de la place aux questions concrètes. Le défi du jour n’est pas l’audace, mais la continuité.",
+      "finance": "Voyage, apprentissage ou expérience nouvelle éveillent votre désir de dépense. Le projet garde tout son charme avec des limites nettes. Une aventure bien financée offre plus de liberté qu’un élan coûteux.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "sagittarius",
+      "language": "en",
+      "general": "The day opens several doors, occasionally all at once. Your enthusiasm loves this broad choice, yet one subtler path deserves not to be galloped past. A conversation from another horizon pleasantly unsettles your certainties and restores movement to a project. Adventure does not always require a distant ticket: it also begins when an unfamiliar idea finds a place at your table. Curiosity then becomes less scattered, more generous and almost luminous.",
+      "love": "A candid exchange revives attraction and the desire to laugh together. Space matters as much as closeness. The bond strengthens when each person can bring a different world without translating it completely.",
+      "work": "An ambitious perspective emerges behind an informal discussion. Your vision carries others along, especially when it leaves room for practical questions. Today's challenge is not boldness, but continuity.",
+      "finance": "Travel, learning or a new experience awakens the urge to spend. The plan keeps all its charm within clear limits. A well-funded adventure offers more freedom than a costly impulse.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "sagittarius",
+      "language": "de",
+      "general": "Der Tag öffnet mehrere Türen, gelegentlich alle zugleich. Ihr Enthusiasmus liebt diese Auswahl, doch ein feinerer Weg sollte nicht im Galopp übersehen werden. Ein Gespräch aus einem anderen Horizont erschüttert angenehm Ihre Gewissheiten und bringt Bewegung in ein Projekt. Abenteuer brauchen nicht immer ein fernes Ticket: Sie beginnen auch, wenn eine fremde Idee an Ihrem Tisch Platz findet. Neugier wird dann weniger zerstreut, großzügiger und beinahe leuchtend.",
+      "love": "Ein offener Austausch weckt Anziehung und Lust auf gemeinsames Lachen. Freiraum zählt ebenso wie Nähe. Die Verbindung wächst, wenn beide eine andere Welt mitbringen dürfen, ohne sie vollständig übersetzen zu müssen.",
+      "work": "Hinter einem lockeren Gespräch zeichnet sich eine ehrgeizige Perspektive ab. Ihre Vision reißt mit, besonders wenn sie konkrete Fragen zulässt. Die Herausforderung des Tages ist nicht Mut, sondern Kontinuität.",
+      "finance": "Reisen, Lernen oder eine neue Erfahrung wecken Ausgabenlust. Mit klaren Grenzen behält der Plan seinen ganzen Reiz. Ein gut finanziertes Abenteuer schenkt mehr Freiheit als ein kostspieliger Impuls.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "sagittarius",
+      "language": "es",
+      "general": "El día abre varias puertas, en ocasiones todas a la vez. Tu entusiasmo adora tanta elección, pero una senda más sutil merece que no pases al galope. Una conversación llegada de otro horizonte sacude agradablemente tus certezas y devuelve movimiento a un proyecto. La aventura no siempre exige un billete lejano: también empieza cuando una idea extranjera encuentra sitio en tu mesa. La curiosidad se vuelve entonces menos dispersa, más generosa, casi luminosa.",
+      "love": "Un intercambio franco reaviva la atracción y las ganas de reír juntos. El espacio importa tanto como la cercanía. El vínculo se fortalece cuando cada cual aporta un mundo distinto sin traducirlo por completo.",
+      "work": "Una perspectiva ambiciosa aparece detrás de una charla informal. Tu visión arrastra, sobre todo cuando deja sitio a preguntas concretas. El desafío del día no es la audacia, sino la continuidad.",
+      "finance": "Viajar, aprender o probar algo nuevo despierta el deseo de gastar. El proyecto conserva todo su encanto con límites claros. Una aventura bien financiada ofrece más libertad que un impulso costoso.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "sagittarius",
+      "language": "it",
+      "general": "La giornata apre diverse porte, talvolta tutte insieme. Il vostro entusiasmo ama questa scelta vasta, ma una pista più sottile merita di non essere superata al galoppo. Una conversazione proveniente da un altro orizzonte scuote piacevolmente le certezze e rimette in moto un progetto. L’avventura non richiede sempre un biglietto lontano: comincia anche quando un’idea straniera trova posto alla vostra tavola. La curiosità diventa allora meno dispersa, più generosa, quasi luminosa.",
+      "love": "Uno scambio franco risveglia l’attrazione e la voglia di ridere insieme. Lo spazio conta quanto la vicinanza. Il legame si rafforza quando ognuno porta un mondo diverso senza doverlo tradurre completamente.",
+      "work": "Una prospettiva ambiziosa emerge dietro una discussione informale. La vostra visione trascina, soprattutto quando lascia spazio alle domande concrete. La sfida odierna non è l’audacia, ma la continuità.",
+      "finance": "Viaggio, apprendimento o nuova esperienza risvegliano il desiderio di spendere. Il progetto conserva tutto il suo fascino entro limiti chiari. Un’avventura ben finanziata offre più libertà di un impulso costoso.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "sagittarius",
+      "language": "pt",
+      "general": "O dia abre várias portas, por vezes todas ao mesmo tempo. O seu entusiasmo adora esta escolha ampla, mas um caminho mais subtil merece não ser ultrapassado a galope. Uma conversa vinda de outro horizonte abala agradavelmente as certezas e devolve movimento a um projeto. A aventura nem sempre exige um bilhete distante: começa também quando uma ideia estrangeira encontra lugar à sua mesa. A curiosidade torna-se então menos dispersa, mais generosa, quase luminosa.",
+      "love": "Uma troca franca reacende a atração e a vontade de rirem juntos. O espaço conta tanto como a proximidade. O vínculo fortalece-se quando cada um traz um mundo diferente sem ter de o traduzir por inteiro.",
+      "work": "Uma perspetiva ambiciosa surge por detrás de uma conversa informal. A sua visão entusiasma, sobretudo quando deixa espaço a questões concretas. O desafio do dia não é a ousadia, mas a continuidade.",
+      "finance": "Viagem, aprendizagem ou nova experiência despertam vontade de gastar. O projeto conserva todo o encanto com limites claros. Uma aventura bem financiada oferece mais liberdade do que um impulso dispendioso.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "sagittarius",
+      "language": "ru",
+      "general": "День открывает несколько дверей, иногда все сразу. Ваш энтузиазм любит широкий выбор, но более тонкую тропу не стоит проскакивать галопом. Разговор из другого мира приятно встряхивает убеждения и возвращает движение проекту. Приключение не всегда требует далёкого билета: оно начинается и тогда, когда незнакомая идея получает место за вашим столом. Любопытство становится менее рассеянным, более щедрым и почти сияющим.",
+      "love": "Откровенный обмен словами оживляет притяжение и желание смеяться вместе. Простор важен не меньше близости. Связь крепнет, когда каждый приносит иной мир, не переводя его до последней детали.",
+      "work": "За непринуждённой беседой возникает амбициозная перспектива. Ваше видение увлекает, особенно если допускает практические вопросы. Сегодняшний вызов заключён не в смелости, а в продолжении.",
+      "finance": "Путешествие, обучение или новый опыт будят желание потратить деньги. Чёткие границы не лишают план очарования. Хорошо обеспеченное приключение дарит больше свободы, чем дорогой порыв.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "sagittarius",
+      "language": "nl",
+      "general": "De dag opent verschillende deuren, soms allemaal tegelijk. Uw enthousiasme houdt van die ruime keuze, maar een subtieler pad verdient het niet voorbijgegaloppeerd te worden. Een gesprek vanuit een andere horizon schudt uw zekerheden aangenaam op en brengt een plan weer in beweging. Avontuur vraagt niet altijd om een verre reis: het begint ook wanneer een vreemd idee aan uw tafel plaatsneemt. Nieuwsgierigheid wordt dan minder versnipperd, guller en bijna stralend.",
+      "love": "Een open gesprek wekt aantrekkingskracht en zin om samen te lachen. Vrije ruimte telt evenzeer als nabijheid. De band groeit wanneer beiden een andere wereld mogen meebrengen zonder die volledig te vertalen.",
+      "work": "Achter een informeel gesprek tekent zich een ambitieus perspectief af. Uw visie neemt anderen mee, vooral wanneer ze concrete vragen toelaat. De uitdaging van vandaag is geen durf, maar continuïteit.",
+      "finance": "Reizen, leren of een nieuwe ervaring wekt kooplust. Met duidelijke grenzen behoudt het plan al zijn charme. Een goed gefinancierd avontuur biedt meer vrijheid dan een kostbare impuls.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "capricorn",
+      "language": "fr",
+      "general": "Une ambition sérieuse croise une humeur plus légère, et le mélange vous réussit. Vous pourriez découvrir qu’un détour, une plaisanterie ou une rencontre inattendue sert mieux votre progression qu’une démonstration de maîtrise. Les responsabilités restent présentes, mais elles ne monopolisent plus tout le paysage. Dans un échange professionnel, votre autorité gagne en portée lorsqu’elle laisse respirer les autres. La journée ne vous demande pas de renoncer à la montagne ; elle vous montre simplement un sentier moins austère.",
+      "love": "Une affection fidèle se colore d’humour et de spontanéité. Le lien devient plus vivant lorsque vous abandonnez un instant le rôle de pilier. Quelqu’un apprécie aussi vos hésitations, vos fantaisies et vos sourires imprévus.",
+      "work": "Votre réputation de solidité attire une proposition exigeante. Elle pourrait ouvrir un terrain intéressant, à condition que la réussite ne repose pas entièrement sur vos épaules. Le partage des responsabilités devient un signe de confiance.",
+      "finance": "Une amélioration matérielle semble justifiée, surtout si elle soutient un projet durable. Le budget préfère toutefois les choix réversibles aux engagements trop lourds. La sobriété peut avoir aujourd’hui beaucoup d’allure.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "capricorn",
+      "language": "en",
+      "general": "A serious ambition meets a lighter mood, and the mixture suits you. You may discover that a detour, a joke or an unexpected meeting advances your progress better than a display of mastery. Responsibilities remain present, but no longer monopolise the entire landscape. In a professional exchange, your authority gains reach when it lets others breathe. The day does not ask you to abandon the mountain; it simply shows you a less austere path.",
+      "love": "Loyal affection takes on humour and spontaneity. The bond feels more alive when you briefly surrender the role of pillar. Someone also appreciates your hesitations, whims and unexpected smiles.",
+      "work": "Your reputation for reliability attracts a demanding proposal. It may open worthwhile terrain, provided success does not rest entirely on your shoulders. Sharing responsibility becomes a sign of trust.",
+      "finance": "A material improvement seems justified, especially if it supports a lasting plan. The budget nevertheless favours reversible choices over heavy commitments. Restraint can look exceptionally stylish today.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "capricorn",
+      "language": "de",
+      "general": "Ein ernster Ehrgeiz trifft auf leichtere Stimmung, und die Mischung steht Ihnen gut. Vielleicht entdecken Sie, dass ein Umweg, ein Witz oder eine unerwartete Begegnung Ihren Fortschritt besser fördert als jede Demonstration von Kontrolle. Verantwortung bleibt präsent, besetzt aber nicht mehr die ganze Landschaft. Im beruflichen Austausch gewinnt Ihre Autorität an Reichweite, wenn andere Luft bekommen. Der Tag verlangt keinen Verzicht auf den Berg; er zeigt nur einen weniger strengen Pfad.",
+      "love": "Treue Zuneigung erhält Humor und Spontaneität. Die Verbindung wird lebendiger, wenn Sie die Rolle der tragenden Säule kurz ablegen. Jemand schätzt auch Ihr Zögern, Ihre Launen und unerwarteten Lächeln.",
+      "work": "Ihr Ruf der Verlässlichkeit zieht einen anspruchsvollen Vorschlag an. Er kann interessantes Gelände öffnen, sofern der Erfolg nicht allein auf Ihren Schultern liegt. Geteilte Verantwortung wird zum Zeichen von Vertrauen.",
+      "finance": "Eine materielle Verbesserung wirkt berechtigt, besonders wenn sie einem dauerhaften Plan dient. Das Budget bevorzugt dennoch umkehrbare Entscheidungen gegenüber schweren Bindungen. Schlichtheit kann heute außergewöhnlich stilvoll aussehen.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "capricorn",
+      "language": "es",
+      "general": "Una ambición seria se cruza con un humor más ligero, y la mezcla te favorece. Podrías descubrir que un rodeo, una broma o un encuentro inesperado impulsa mejor tu avance que una demostración de dominio. Las responsabilidades siguen presentes, pero ya no monopolizan todo el paisaje. En un intercambio profesional, tu autoridad gana alcance cuando deja respirar a los demás. El día no pide renunciar a la montaña; simplemente muestra un sendero menos austero.",
+      "love": "Un afecto fiel se tiñe de humor y espontaneidad. El vínculo cobra vida cuando abandonas por un momento el papel de pilar. Alguien aprecia también tus dudas, fantasías y sonrisas inesperadas.",
+      "work": "Tu fama de solidez atrae una propuesta exigente. Podría abrir un terreno interesante, siempre que el éxito no descanse entero sobre tus hombros. Compartir responsabilidades se convierte en señal de confianza.",
+      "finance": "Una mejora material parece justificada, sobre todo si sostiene un proyecto duradero. El presupuesto prefiere, no obstante, las opciones reversibles a compromisos demasiado pesados. La sobriedad puede lucir hoy con mucho estilo.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "capricorn",
+      "language": "it",
+      "general": "Un’ambizione seria incontra un umore più leggero e la miscela vi dona. Potreste scoprire che una deviazione, una battuta o un incontro inatteso favorisce il vostro progresso più di una prova di controllo. Le responsabilità restano, ma non monopolizzano più tutto il paesaggio. In uno scambio professionale, la vostra autorità acquista portata quando lascia respirare gli altri. La giornata non chiede di rinunciare alla montagna; mostra semplicemente un sentiero meno austero.",
+      "love": "Un affetto fedele si colora di umorismo e spontaneità. Il legame diventa più vivo quando lasciate per un momento il ruolo di pilastro. Qualcuno apprezza anche esitazioni, fantasie e sorrisi inattesi.",
+      "work": "La vostra fama di solidità attira una proposta impegnativa. Potrebbe aprire un terreno interessante, purché il successo non poggi interamente sulle vostre spalle. Condividere le responsabilità diventa un segno di fiducia.",
+      "finance": "Un miglioramento materiale sembra giustificato, soprattutto se sostiene un progetto duraturo. Il budget preferisce però scelte reversibili agli impegni troppo pesanti. La sobrietà oggi può avere moltissimo stile.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "capricorn",
+      "language": "pt",
+      "general": "Uma ambição séria cruza-se com um humor mais leve, e a mistura favorece-o. Poderá descobrir que um desvio, uma piada ou um encontro inesperado serve melhor o seu progresso do que uma demonstração de domínio. As responsabilidades continuam presentes, mas já não monopolizam a paisagem. Num diálogo profissional, a sua autoridade ganha alcance quando deixa os outros respirar. O dia não pede que abandone a montanha; mostra apenas um caminho menos austero.",
+      "love": "Um afeto fiel ganha humor e espontaneidade. O vínculo torna-se mais vivo quando abandona por instantes o papel de pilar. Alguém aprecia também as suas hesitações, fantasias e sorrisos inesperados.",
+      "work": "A sua reputação de solidez atrai uma proposta exigente. Poderá abrir terreno interessante, desde que o sucesso não fique inteiramente sobre os seus ombros. Partilhar responsabilidades torna-se sinal de confiança.",
+      "finance": "Uma melhoria material parece justificada, sobretudo se apoiar um projeto duradouro. O orçamento prefere, ainda assim, escolhas reversíveis a compromissos demasiado pesados. A sobriedade pode ter hoje muito estilo.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "capricorn",
+      "language": "ru",
+      "general": "Серьёзная амбиция встречается с более лёгким настроением, и это сочетание вам к лицу. Возможно, обходной путь, шутка или неожиданная встреча продвинут вас лучше, чем демонстрация полного контроля. Обязанности остаются, но больше не занимают весь пейзаж. В профессиональной беседе ваш авторитет действует шире, когда другим есть чем дышать. День не требует отказаться от горы; он лишь показывает менее суровую тропу.",
+      "love": "Верная привязанность обретает юмор и непосредственность. Связь оживает, когда вы ненадолго оставляете роль опоры. Кому-то также дороги ваши сомнения, причуды и неожиданные улыбки.",
+      "work": "Репутация надёжного человека притягивает требовательное предложение. Оно может открыть интересную территорию, если успех не ляжет полностью на ваши плечи. Разделённая ответственность становится знаком доверия.",
+      "finance": "Материальное улучшение выглядит оправданным, особенно если поддерживает долговременный план. И всё же бюджет предпочитает обратимые решения тяжёлым обязательствам. Сдержанность сегодня может выглядеть особенно стильно.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "capricorn",
+      "language": "nl",
+      "general": "Een ernstige ambitie ontmoet een lichtere stemming, en de mengeling past u goed. Misschien ontdekt u dat een omweg, grap of onverwachte ontmoeting uw vooruitgang beter dient dan een vertoon van beheersing. Verantwoordelijkheden blijven aanwezig, maar bezetten niet langer het hele landschap. In een professioneel gesprek reikt uw gezag verder wanneer anderen ademruimte krijgen. De dag vraagt niet de berg op te geven; hij toont eenvoudig een minder streng pad.",
+      "love": "Trouwe genegenheid krijgt humor en spontaniteit. De band leeft meer wanneer u even niet de dragende pijler hoeft te zijn. Iemand waardeert ook uw aarzeling, grillen en onverwachte glimlach.",
+      "work": "Uw reputatie van betrouwbaarheid trekt een veeleisend voorstel aan. Het kan interessant terrein openen, zolang succes niet volledig op uw schouders rust. Verantwoordelijkheid delen wordt een teken van vertrouwen.",
+      "finance": "Een materiële verbetering lijkt gerechtvaardigd, vooral wanneer ze een duurzaam plan ondersteunt. Het budget verkiest toch omkeerbare keuzes boven zware verplichtingen. Soberheid kan vandaag bijzonder stijlvol ogen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aquarius",
+      "language": "fr",
+      "general": "L’atmosphère pétille d’idées, de rencontres et de bifurcations réjouissantes. Vous vous sentez dans votre élément dès que les règles cessent d’être décoratives et recommencent à servir le vivant. Une conversation pourrait faire basculer un projet vers une version plus inventive, mais aussi plus accessible. Votre originalité n’a rien à prouver ; elle devient convaincante lorsqu’elle crée un passage pour les autres. Ce qui commence comme une excentricité pourrait bien finir en évidence élégante.",
+      "love": "Une complicité intellectuelle se charge d’un courant plus tendre. Les mots amusent, surprennent, rapprochent. L’attirance grandit dans l’espace généreux laissé à la différence réelle, sans contrat précipité ni froide distance.",
+      "work": "Un collectif accueille favorablement une idée peu conventionnelle. Votre capacité à relier technique et usage fait la différence. Une objection stimulante affine le projet au lieu de réduire son audace.",
+      "finance": "Une innovation, un abonnement ou un objet singulier attire votre attention. La question n’est pas seulement son prix, mais la liberté réelle qu’il apporte. La nouveauté inutile vieillit particulièrement vite.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aquarius",
+      "language": "en",
+      "general": "The atmosphere sparkles with ideas, encounters and delightful detours. You feel in your element whenever rules stop being decorative and begin serving real life again. A conversation may steer a project towards a version that is both more inventive and more accessible. Your originality has nothing to prove; it becomes persuasive when it creates a passage for others. What begins as an eccentricity may well end as an elegant statement of the obvious.",
+      "love": "An intellectual rapport carries a warmer current. Words amuse, surprise and draw you closer. Attraction grows in the generous space left for difference, without a hurried contract or chilly distance.",
+      "work": "A group welcomes an unconventional idea. Your ability to connect technology with use makes the difference. A stimulating objection sharpens the project instead of reducing its daring.",
+      "finance": "An innovation, subscription or unusual object draws your attention. The question is not merely its price, but the real freedom it brings. Useless novelty ages particularly quickly.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aquarius",
+      "language": "de",
+      "general": "Die Atmosphäre sprüht vor Ideen, Begegnungen und erfreulichen Abzweigungen. Sie sind in Ihrem Element, sobald Regeln nicht länger dekorativ wirken und wieder dem Leben dienen. Ein Gespräch kann ein Projekt in eine erfinderischere und zugleich zugänglichere Richtung lenken. Ihre Originalität muss nichts beweisen; sie überzeugt, wenn sie anderen einen Durchgang schafft. Was als Exzentrik beginnt, könnte als elegante Selbstverständlichkeit enden.",
+      "love": "Geistige Verbundenheit trägt einen wärmeren Strom. Worte amüsieren, überraschen und bringen Sie näher. Anziehung wächst im großzügigen Raum für Unterschiede, ohne vorschnellen Vertrag oder kühle Distanz.",
+      "work": "Eine Gruppe nimmt eine unkonventionelle Idee gut auf. Ihre Fähigkeit, Technik und Nutzen zu verbinden, macht den Unterschied. Ein anregender Einwand schärft das Projekt, statt seinen Mut zu mindern.",
+      "finance": "Eine Innovation, ein Abonnement oder ein ungewöhnlicher Gegenstand zieht Sie an. Die Frage ist nicht nur der Preis, sondern die wirkliche Freiheit, die er bringt. Nutzlose Neuheit altert besonders schnell.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aquarius",
+      "language": "es",
+      "general": "El ambiente chispea con ideas, encuentros y bifurcaciones estimulantes. Te sientes en tu elemento cuando las reglas dejan de ser decorativas y vuelven a servir a la vida. Una conversación podría llevar un proyecto hacia una versión más inventiva y también más accesible. Tu originalidad no necesita demostrar nada; resulta convincente cuando abre un paso para los demás. Lo que empieza como excentricidad bien podría terminar convertido en una evidencia elegante.",
+      "love": "Una complicidad intelectual se carga de una corriente más cálida. Las palabras divierten, sorprenden y acercan. La atracción crece en el espacio generoso dejado a la diferencia, sin contrato precipitado ni distancia fría.",
+      "work": "Un colectivo recibe bien una idea poco convencional. Tu capacidad para unir técnica y uso marca la diferencia. Una objeción estimulante afina el proyecto en lugar de reducir su audacia.",
+      "finance": "Una innovación, suscripción u objeto singular llama tu atención. La cuestión no es solo su precio, sino la libertad real que aporta. La novedad inútil envejece con especial rapidez.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aquarius",
+      "language": "it",
+      "general": "L’atmosfera scintilla di idee, incontri e deviazioni piacevoli. Vi sentite nel vostro elemento quando le regole smettono di essere decorative e tornano a servire la vita. Una conversazione potrebbe orientare un progetto verso una versione più inventiva e accessibile. La vostra originalità non deve dimostrare nulla; diventa convincente quando crea un passaggio per gli altri. Ciò che comincia come un’eccentricità potrebbe finire come un’evidenza elegante.",
+      "love": "Una complicità intellettuale si carica di una corrente più tenera. Le parole divertono, sorprendono e avvicinano. L’attrazione cresce nello spazio generoso lasciato alla differenza, senza contratti affrettati né fredde distanze.",
+      "work": "Un gruppo accoglie bene un’idea poco convenzionale. La capacità di unire tecnica e uso fa la differenza. Un’obiezione stimolante affina il progetto invece di ridurne l’audacia.",
+      "finance": "Un’innovazione, un abbonamento o un oggetto singolare attira l’attenzione. La questione non è solo il prezzo, ma la libertà reale che offre. La novità inutile invecchia particolarmente in fretta.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aquarius",
+      "language": "pt",
+      "general": "O ambiente cintila com ideias, encontros e desvios estimulantes. Sente-se no seu elemento quando as regras deixam de ser decorativas e voltam a servir a vida. Uma conversa poderá orientar um projeto para uma versão mais inventiva e acessível. A sua originalidade nada tem a provar; torna-se convincente quando abre passagem aos outros. O que começa como excentricidade poderá acabar como uma evidência elegante.",
+      "love": "Uma cumplicidade intelectual ganha uma corrente mais terna. As palavras divertem, surpreendem e aproximam. A atração cresce no espaço generoso deixado à diferença, sem contratos precipitados nem distância fria.",
+      "work": "Um coletivo recebe bem uma ideia pouco convencional. A sua capacidade de ligar técnica e utilização faz a diferença. Uma objeção estimulante aperfeiçoa o projeto em vez de diminuir a ousadia.",
+      "finance": "Uma inovação, subscrição ou objeto singular chama a atenção. A questão não é apenas o preço, mas a liberdade real que proporciona. A novidade inútil envelhece particularmente depressa.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aquarius",
+      "language": "ru",
+      "general": "Атмосфера искрится идеями, встречами и восхитительными поворотами. Вы чувствуете себя в своей стихии, когда правила перестают служить украшением и вновь помогают живой реальности. Разговор может направить проект к более изобретательной и одновременно доступной версии. Вашей оригинальности нечего доказывать; она убеждает, когда открывает проход другим. То, что начинается как эксцентричность, способно закончиться изящной очевидностью.",
+      "love": "Интеллектуальная близость наполняется более тёплым током. Слова веселят, удивляют и сближают. Притяжение растёт в щедром пространстве различий, без поспешного договора и холодной дистанции.",
+      "work": "Группа благосклонно принимает необычную идею. Ваше умение соединить технологию и удобство решает многое. Стимулирующее возражение оттачивает проект, а не уменьшает его смелость.",
+      "finance": "Новинка, подписка или необычная вещь привлекает внимание. Вопрос не только в цене, но и в реальной свободе, которую она приносит. Бесполезная новизна стареет особенно быстро.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "aquarius",
+      "language": "nl",
+      "general": "De sfeer bruist van ideeën, ontmoetingen en heerlijke zijwegen. U voelt zich in uw element zodra regels niet langer decoratief zijn en het leven opnieuw dienen. Een gesprek kan een project sturen naar een versie die inventiever én toegankelijker is. Uw originaliteit hoeft niets te bewijzen; ze overtuigt wanneer ze voor anderen een doorgang creëert. Wat als excentriciteit begint, kan eindigen als elegante vanzelfsprekendheid.",
+      "love": "Een geestelijke klik draagt een warmere stroom. Woorden amuseren, verrassen en brengen u dichterbij. Aantrekkingskracht groeit in de gulle ruimte voor verschil, zonder haastig contract of koele afstand.",
+      "work": "Een groep ontvangt een onconventioneel idee goed. Uw vermogen om techniek met gebruik te verbinden maakt het verschil. Een prikkelend bezwaar scherpt het project aan in plaats van de durf te beperken.",
+      "finance": "Een innovatie, abonnement of ongewoon voorwerp trekt uw aandacht. Het gaat niet alleen om de prijs, maar om de werkelijke vrijheid die het biedt. Nutteloze nieuwigheid veroudert bijzonder snel.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "pisces",
+      "language": "fr",
+      "general": "Le jour ressemble à une musique changeante : quelques notes claires, un passage plus brumeux, puis un motif qui revient avec une signification nouvelle. Votre imagination capte mille nuances, surtout dans les conversations et les lieux familiers. Cette richesse devient précieuse lorsqu’elle trouve une forme, même légère : une phrase, une image, un geste. Les émotions des autres circulent fort ; elles ne vous appartiennent pas toutes. En gardant votre propre rythme, vous transformez la porosité en poésie.",
+      "love": "Le romantisme affleure dans un détail presque invisible. Une présence attentive vaut davantage qu’une déclaration impeccable. Le lien se nourrit d’imaginaire partagé, tout en gardant les pieds posés dans le réel.",
+      "work": "Une intuition créative donne une âme particulière à un travail ordinaire. Pour être comprise, elle demande une forme simple et quelques repères concrets. Votre sensibilité devient alors une force de précision.",
+      "finance": "Une envie d’évasion peut prendre la forme d’un achat séduisant. Le plaisir reste intact lorsqu’il s’inscrit dans une limite douce. Le rêve n’a pas besoin d’être coûteux pour devenir tangible.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "pisces",
+      "language": "en",
+      "general": "The day resembles shifting music: several clear notes, a hazier passage, then a motif returning with new meaning. Your imagination catches countless nuances, especially in conversations and familiar places. This richness becomes precious when it finds a form, however light: a phrase, an image, a gesture. Other people's feelings circulate strongly; they do not all belong to you. By keeping your own tempo, you transform permeability into poetry.",
+      "love": "Romance surfaces in an almost invisible detail. An attentive presence matters more than a flawless declaration. The bond draws nourishment from shared imagination while keeping its feet planted in reality.",
+      "work": "A creative intuition gives an ordinary task a particular soul. To be understood, it needs a simple form and a few concrete markers. Your sensitivity then becomes a source of precision.",
+      "finance": "An urge to escape may take the form of an appealing purchase. Pleasure remains intact when held within a gentle limit. A dream need not be expensive to become tangible.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "pisces",
+      "language": "de",
+      "general": "Der Tag gleicht wechselnder Musik: einige klare Töne, eine nebligere Passage, dann kehrt ein Motiv mit neuer Bedeutung zurück. Ihre Fantasie erfasst zahllose Nuancen, besonders in Gesprächen und vertrauten Orten. Dieser Reichtum wird wertvoll, sobald er eine Form findet, sei sie noch so leicht: ein Satz, ein Bild, eine Geste. Fremde Gefühle zirkulieren stark; nicht alle gehören zu Ihnen. Im eigenen Takt verwandeln Sie Durchlässigkeit in Poesie.",
+      "love": "Romantik zeigt sich in einem fast unsichtbaren Detail. Aufmerksame Nähe wiegt mehr als eine makellose Erklärung. Die Verbindung nährt sich aus gemeinsamer Fantasie und behält dennoch beide Füße in der Wirklichkeit.",
+      "work": "Eine kreative Ahnung gibt einer gewöhnlichen Arbeit eine besondere Seele. Um verstanden zu werden, braucht sie eine einfache Form und einige konkrete Anhaltspunkte. So wird Ihre Sensibilität zu präziser Stärke.",
+      "finance": "Der Wunsch nach Flucht kann als verführerischer Kauf auftreten. Die Freude bleibt erhalten, wenn sie in einem sanften Rahmen liegt. Ein Traum muss nicht teuer sein, um greifbar zu werden.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "pisces",
+      "language": "es",
+      "general": "El día parece una música cambiante: algunas notas claras, un pasaje más brumoso y después un motivo que regresa con un significado nuevo. Tu imaginación capta mil matices, especialmente en conversaciones y lugares familiares. Esa riqueza se vuelve preciosa cuando encuentra una forma, aunque sea ligera: una frase, una imagen, un gesto. Las emociones ajenas circulan con fuerza; no todas te pertenecen. Al conservar tu propio ritmo, transformas la porosidad en poesía.",
+      "love": "El romanticismo asoma en un detalle casi invisible. Una presencia atenta vale más que una declaración impecable. El vínculo se nutre de imaginación compartida mientras mantiene los pies apoyados en la realidad.",
+      "work": "Una intuición creativa da un alma especial a un trabajo corriente. Para que se comprenda, necesita una forma sencilla y algunas referencias concretas. Tu sensibilidad se convierte entonces en fuerza de precisión.",
+      "finance": "Un deseo de evasión puede adoptar la forma de una compra seductora. El placer sigue intacto cuando cabe en un límite amable. El sueño no necesita ser caro para volverse tangible.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "pisces",
+      "language": "it",
+      "general": "Il giorno somiglia a una musica mutevole: alcune note chiare, un passaggio più nebbioso, poi un motivo che ritorna con un significato nuovo. La vostra immaginazione coglie mille sfumature, soprattutto nelle conversazioni e nei luoghi familiari. Questa ricchezza diventa preziosa quando trova una forma, anche lieve: una frase, un’immagine, un gesto. Le emozioni altrui circolano forti; non tutte vi appartengono. Conservando il vostro ritmo, trasformate la porosità in poesia.",
+      "love": "Il romanticismo affiora in un dettaglio quasi invisibile. Una presenza attenta vale più di una dichiarazione impeccabile. Il legame si nutre d’immaginazione condivisa, mantenendo i piedi ben posati nella realtà.",
+      "work": "Un’intuizione creativa dona un’anima particolare a un lavoro ordinario. Per essere compresa, chiede una forma semplice e alcuni riferimenti concreti. La vostra sensibilità diventa così una forza di precisione.",
+      "finance": "Un desiderio di evasione può assumere la forma di un acquisto seducente. Il piacere resta intatto quando rientra in un limite gentile. Il sogno non deve costare molto per diventare tangibile.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "pisces",
+      "language": "pt",
+      "general": "O dia parece uma música mutável: algumas notas claras, uma passagem mais enevoada, depois um motivo que regressa com novo significado. A sua imaginação capta mil nuances, sobretudo em conversas e lugares familiares. Essa riqueza torna-se preciosa quando encontra uma forma, mesmo ligeira: uma frase, uma imagem, um gesto. As emoções alheias circulam com força; nem todas lhe pertencem. Ao manter o seu ritmo, transforma a permeabilidade em poesia.",
+      "love": "O romantismo surge num detalhe quase invisível. Uma presença atenta vale mais do que uma declaração impecável. O vínculo alimenta-se da imaginação partilhada, mantendo os pés bem assentes na realidade.",
+      "work": "Uma intuição criativa dá uma alma especial a um trabalho comum. Para ser compreendida, precisa de uma forma simples e de algumas referências concretas. A sua sensibilidade torna-se então força de precisão.",
+      "finance": "Uma vontade de evasão pode assumir a forma de uma compra sedutora. O prazer permanece intacto dentro de um limite suave. O sonho não precisa de ser caro para se tornar tangível.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "pisces",
+      "language": "ru",
+      "general": "День похож на переменчивую музыку: несколько ясных нот, более туманный отрывок, затем мотив возвращается с новым смыслом. Ваше воображение ловит множество оттенков, особенно в беседах и знакомых местах. Это богатство становится ценным, когда обретает форму, пусть лёгкую: фразу, образ, жест. Чужие чувства движутся мощным потоком; не все они принадлежат вам. Сохраняя собственный темп, вы превращаете проницаемость в поэзию.",
+      "love": "Романтика проступает в почти незаметной детали. Внимательное присутствие важнее безупречного признания. Связь питается общим воображением и при этом сохраняет твёрдую опору в реальности.",
+      "work": "Творческая догадка придаёт обычной работе особую душу. Чтобы быть понятой, ей нужны простая форма и несколько конкретных ориентиров. Тогда ваша чувствительность превращается в силу точности.",
+      "finance": "Желание ускользнуть может принять форму заманчивой покупки. Удовольствие сохранится внутри мягкой границы. Мечте не обязательно быть дорогой, чтобы стать осязаемой.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-10-29",
+      "sign": "pisces",
+      "language": "nl",
+      "general": "De dag lijkt op wisselende muziek: enkele heldere noten, een neveliger passage en daarna een motief dat met nieuwe betekenis terugkeert. Uw verbeelding vangt talloze nuances, vooral in gesprekken en vertrouwde plaatsen. Die rijkdom wordt waardevol zodra ze een vorm vindt, hoe licht ook: een zin, een beeld, een gebaar. Gevoelens van anderen stromen sterk; ze horen niet allemaal bij u. In uw eigen tempo verandert doorlaatbaarheid in poëzie.",
+      "love": "Romantiek verschijnt in een bijna onzichtbaar detail. Aandachtige aanwezigheid telt meer dan een vlekkeloze verklaring. De band voedt zich met gedeelde verbeelding en houdt tegelijk beide voeten op de grond.",
+      "work": "Een creatieve ingeving geeft gewoon werk een bijzondere ziel. Om begrepen te worden heeft ze een eenvoudige vorm en enkele concrete bakens nodig. Uw gevoeligheid wordt zo een kracht van precisie.",
+      "finance": "Verlangen naar ontsnapping kan de vorm van een verleidelijke aankoop aannemen. Het plezier blijft intact binnen een zachte grens. Een droom hoeft niet duur te zijn om tastbaar te worden.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    }
+  ]
+}
