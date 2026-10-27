@@ -1,0 +1,1077 @@
+{
+  "date": "2026-11-04",
+  "generatedAt": "2026-10-27T01:36:16.767157+01:00",
+  "timezone": "Europe/Paris",
+  "astronomy": {
+    "validationStatus": "PARTIAL",
+    "source": "CosmyDay",
+    "sourceUrl": "https://api.cosmyday.com/",
+    "attribution": "Données astronomiques : CosmyDay — https://cosmyday.com (utilisation avec attribution requise).",
+    "requestedDateTime": "2026-11-04T12:00:00+01:00",
+    "requestedTimezone": "Europe/Paris",
+    "requestedUtc": "2026-11-04T11:00:00+00:00",
+    "calculationParameters": {
+      "year": 2026,
+      "month": 11,
+      "day": 4,
+      "hour": 12,
+      "minute": 0,
+      "lat": 48.8566,
+      "lon": 2.3522
+    },
+    "confirmedParameters": [
+      "Paramètres envoyés: date 2026-11-04, heure 12:00, latitude 48.8566, longitude 2.3522",
+      "Documentation fournisseur: heure locale aux coordonnées, fuseau résolu par le fournisseur",
+      "Réponse identifiée avec positions, signes, longitudes et vitesses"
+    ],
+    "unconfirmedParameters": [
+      "Horodatage effectif absent de la réponse",
+      "Zodiaque tropical non déclaré explicitement dans la réponse",
+      "Référentiel géocentrique non déclaré explicitement dans la réponse",
+      "Aucune comparaison indépendante des positions"
+    ],
+    "responseConfirmedDateTime": null,
+    "validationNotes": "La documentation confirme que l’heure transmise à /natal est locale aux coordonnées et que le fournisseur résout le fuseau. La réponse fournit des positions exploitables, sans confirmer explicitement l’instant calculé ni les drapeaux tropical et géocentrique. Les aspects majeurs sont dérivés arithmétiquement des longitudes reçues; ce contrôle ne valide pas indépendamment l’éphéméride. Rédaction symbolique prudente, sans présenter de configuration précise comme vérifiée.",
+    "editorialMode": "symbolic",
+    "referenceVersion": "LMN24 technical V4.1",
+    "editorialVersion": "LMN24 V5 — Horoscope Premium",
+    "validationChecks": {
+      "providerResponseRetrieved": true,
+      "requiredBodiesPresent": true,
+      "longitudeRangesChecked": true,
+      "signIndexConsistencyChecked": true,
+      "retrogradeSpeedConsistencyChecked": true,
+      "aspectArithmeticChecked": true,
+      "independentEphemerisVerification": false
+    },
+    "interpretationRules": {
+      "zodiac": "Western tropical convention used only as a symbolic editorial framework; provider response flag unconfirmed",
+      "coordinatePreference": "Geocentric preferred; not explicitly confirmed by provider response",
+      "solarMethod": "Conditional whole-sign solar sectors derived from received sign indices, used only as symbolic prompts",
+      "traditionalRulers": {
+        "aries": "Mars",
+        "taurus": "Venus",
+        "gemini": "Mercury",
+        "cancer": "Moon",
+        "leo": "Sun",
+        "virgo": "Mercury",
+        "libra": "Venus",
+        "scorpio": "Mars",
+        "sagittarius": "Jupiter",
+        "capricorn": "Saturn",
+        "aquarius": "Saturn",
+        "pisces": "Jupiter"
+      },
+      "majorAspects": {
+        "conjunction": {
+          "angle": 0,
+          "orb": 8
+        },
+        "sextile": {
+          "angle": 60,
+          "orb": 4
+        },
+        "square": {
+          "angle": 90,
+          "orb": 6
+        },
+        "trine": {
+          "angle": 120,
+          "orb": 6
+        },
+        "opposition": {
+          "angle": 180,
+          "orb": 8
+        }
+      }
+    },
+    "editorialTones": {
+      "aries": "audacieuse et précise",
+      "taurus": "veloutée et lucide",
+      "gemini": "vive et secrète",
+      "cancer": "protectrice et lumineuse",
+      "leo": "fière et méthodique",
+      "virgo": "fine et déterminée",
+      "libra": "romantique et ambitieuse",
+      "scorpio": "intense et joueuse",
+      "sagittarius": "exploratrice et exigeante",
+      "capricorn": "sobre et magnétique",
+      "aquarius": "inventive et chaleureuse",
+      "pisces": "poétique et concrète"
+    },
+    "languageVariants": {
+      "en": "en-GB",
+      "pt": "pt-PT"
+    },
+    "historyNotes": "Quatorze journées précédentes, du 21 octobre au 3 novembre 2026, consultées dans les huit langues pour les thèmes, structures, ouvertures et chutes.",
+    "ephemerisPath": "data/astrology/ephemeris/astrology-2026-11-04.json",
+    "editorialReview": {
+      "reference": "LMN24 V5 — Horoscope Premium",
+      "frenchPassCompleted": true,
+      "internationalPassCompleted": true,
+      "assessment": "Appréciation éditoriale subjective; contrôles techniques séparés."
+    }
+  },
+  "horoscopes": [
+    {
+      "date": "2026-11-04",
+      "sign": "aries",
+      "language": "fr",
+      "general": "À présent, vous n’avez rien perdu de votre feu ; vous apprenez simplement à lui donner une direction qui dure; Quelque chose réclame votre courage sans exiger de grand spectacle; La journée déplace l’action vers un territoire plus intime : une décision familiale, un espace à défendre, une ancienne promesse à regarder franchement; Votre premier réflexe sera d’accélérer, pourtant la vraie force se joue dans la précision du geste; Une conversation discrète peut changer l’atmosphère entière.",
+      "love": "Dans ce décor, ce léger dévoilement crée davantage de proximité qu’une déclaration trop brillante; La tendresse se glisse derrière une plaisanterie ou un silence inhabituel; Sous votre assurance, une attente demande à être reconnue.",
+      "work": "Curieusement, une initiative sobre peut remettre toute l’équipe en mouvement sereinement; Un sujet délicat gagne à sortir enfin des coulisses; Votre franchise impressionne lorsqu’elle éclaire le projet sans désigner de coupable.",
+      "finance": "Au bout du compte, un achat choisi pour sa durée procure plus de satisfaction qu’une accumulation décidée dans l’instant présent; L’envie d’améliorer votre confort est parfaitement légitime, mais elle réveille aussi quelques impulsions coûteuses.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aries",
+      "language": "en",
+      "general": "At present, none of your fire has disappeared; you are simply learning to give it a direction that lasts. In this setting, something calls for your courage without requiring a grand display. Curiously, the day shifts action towards a more intimate territory: a family decision, a space to protect, an old promise to face honestly. In the end, your first instinct is to accelerate, yet real strength lies in the precision of the gesture. At present, a quiet conversation may alter the whole atmosphere.",
+      "love": "In this setting, this slight unveiling creates more closeness than any dazzling declaration could manage. Curiously, tenderness hides behind a joke or an unusual silence. In the end, beneath your confidence, an expectation wants to be acknowledged.",
+      "work": "Curiously, one understated initiative can set the whole team moving again. In the end, a delicate subject deserves to leave the wings. At present, your frankness impresses when it illuminates the project without naming a culprit.",
+      "finance": "In the end, a purchase chosen for durability brings more satisfaction than a collection assembled in the heat of the moment. At present, the wish to improve your comfort is legitimate, though it also awakens costly impulses.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aries",
+      "language": "de",
+      "general": "Im Augenblick von Ihrem Feuer ist nichts verloren; es erhält lediglich eine Richtung, die Bestand hat. In dieser Szenerie etwas verlangt Ihren Mut, ohne eine große Vorstellung zu fordern. Merkwürdigerweise der Tag verlagert das Handeln in einen intimeren Bereich: eine familiäre Entscheidung, einen Raum, den es zu schützen gilt, oder ein altes Versprechen, dem Sie ehrlich begegnen. Am Ende ihr erster Impuls heißt Beschleunigung, doch wahre Stärke liegt in der Genauigkeit der Geste. Im Augenblick ein leises Gespräch kann die gesamte Atmosphäre verändern.",
+      "love": "In dieser Szenerie diese kleine Öffnung schafft mehr Nähe als jede glänzende Erklärung. Merkwürdigerweise zärtlichkeit verbirgt sich hinter einem Scherz oder einem ungewöhnlichen Schweigen. Am Ende unter Ihrer Sicherheit möchte eine Erwartung wahrgenommen werden.",
+      "work": "Merkwürdigerweise eine zurückhaltende Initiative kann das ganze Team wieder bewegen. Am Ende ein heikles Thema darf die Kulissen verlassen. Im Augenblick ihre Offenheit beeindruckt, wenn sie das Vorhaben erhellt, ohne Schuldige zu benennen.",
+      "finance": "Am Ende ein auf Dauer gewählter Kauf schenkt mehr Zufriedenheit als eine Ansammlung aus der Hitze des Augenblicks. Im Augenblick der Wunsch nach mehr Komfort ist berechtigt, weckt aber auch kostspielige Impulse.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aries",
+      "language": "es",
+      "general": "En este momento, no has perdido nada de tu fuego; sencillamente estás aprendiendo a darle una dirección que perdure. En este escenario, algo reclama tu valor sin exigir grandes demostraciones. Curiosamente, el día lleva la acción hacia un territorio más íntimo: una decisión familiar, un espacio que proteger o una antigua promesa que mirar de frente. Al final, tu primer impulso será acelerar, aunque la verdadera fuerza reside en la precisión del gesto. En este momento, una conversación discreta puede cambiar todo el ambiente.",
+      "love": "En este escenario, esta ligera apertura crea más cercanía que cualquier declaración deslumbrante. Curiosamente, la ternura se esconde tras una broma o un silencio poco habitual. Al final, bajo tu seguridad, una expectativa pide ser reconocida.",
+      "work": "Curiosamente, una iniciativa sobria puede volver a poner a todo el equipo en marcha. Al final, un asunto delicado merece salir de entre bastidores. En este momento, tu franqueza impresiona cuando ilumina el proyecto sin señalar culpables.",
+      "finance": "Al final, una compra elegida por su duración aporta más satisfacción que una acumulación decidida en caliente. En este momento, el deseo de mejorar tu comodidad es legítimo, aunque también despierta impulsos costosos.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aries",
+      "language": "it",
+      "general": "In questo momento, non avete perso nulla del vostro fuoco; state imparando a dargli una direzione che duri. In questo scenario, qualcosa chiede il vostro coraggio senza pretendere grandi dimostrazioni. Curiosamente, la giornata sposta l’azione verso un territorio più intimo: una decisione familiare, uno spazio da proteggere, una vecchia promessa da guardare con sincerità. Alla fine, il primo impulso sarà accelerare, eppure la forza vera sta nella precisione del gesto. In questo momento, una conversazione discreta può cambiare l’intera atmosfera.",
+      "love": "In questo scenario, questa lieve apertura crea più vicinanza di una dichiarazione abbagliante. Curiosamente, la tenerezza si nasconde dietro una battuta o un silenzio insolito. Alla fine, sotto la vostra sicurezza, un’attesa desidera essere riconosciuta.",
+      "work": "Curiosamente, un’iniziativa sobria può rimettere in moto tutta la squadra. Alla fine, un tema delicato merita di uscire dalle quinte. In questo momento, la vostra franchezza colpisce quando illumina il progetto senza cercare colpevoli.",
+      "finance": "Alla fine, un acquisto scelto per durare offre più soddisfazione di un accumulo deciso nell’euforia del momento. In questo momento, il desiderio di migliorare il comfort è legittimo, ma risveglia anche impulsi costosi.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aries",
+      "language": "pt",
+      "general": "Neste momento, nada se perdeu do vosso fogo; estão simplesmente a aprender a dar-lhe uma direção duradoura. Neste cenário, algo reclama a vossa coragem sem exigir uma grande exibição. Curiosamente, o dia conduz a ação para um território mais íntimo: uma decisão familiar, um espaço a proteger ou uma promessa antiga a encarar com franqueza. No fim, o primeiro impulso será acelerar, mas a verdadeira força reside na precisão do gesto. Neste momento, uma conversa discreta pode mudar toda a atmosfera.",
+      "love": "Neste cenário, esta pequena abertura cria mais proximidade do que uma declaração deslumbrante. Curiosamente, a ternura esconde-se atrás de uma brincadeira ou de um silêncio invulgar. No fim, sob a vossa segurança, uma expectativa deseja ser reconhecida.",
+      "work": "Curiosamente, uma iniciativa sóbria pode voltar a pôr toda a equipa em movimento. No fim, um assunto delicado merece sair dos bastidores. Neste momento, a vossa franqueza impressiona quando ilumina o projeto sem procurar culpados.",
+      "finance": "No fim, uma compra escolhida pela sua duração oferece mais satisfação do que uma acumulação decidida no calor do momento. Neste momento, o desejo de melhorar o conforto é legítimo, embora também desperte impulsos dispendiosos.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aries",
+      "language": "ru",
+      "general": "Сейчас ваш огонь никуда не исчез; вы лишь учитесь направлять его туда, где результат сохранится надолго. В этой обстановке сегодня от вас требуется смелость, но вовсе не громкий жест. Любопытно действие перемещается в более личную область: семейное решение, пространство, которое хочется защитить, или давнее обещание, на которое пора взглянуть честно. В итоге первым порывом станет ускорение, однако настоящая сила заключена в точности поступка. Сейчас тихий разговор способен изменить всю атмосферу.",
+      "love": "В этой обстановке такая небольшая открытость создаёт больше близости, чем эффектное признание. Любопытно нежность прячется за шуткой или непривычным молчанием. В итоге под внешней уверенностью живёт ожидание, которому важно быть замеченным.",
+      "work": "Любопытно спокойная инициатива может снова привести в движение всю команду. В итоге деликатной теме пора выйти из-за кулис. Сейчас ваша прямота впечатляет, когда освещает проект, а не ищет виноватого.",
+      "finance": "В итоге покупка, выбранная ради долговечности, принесёт больше удовлетворения, чем накопление вещей под влиянием момента. Сейчас желание повысить комфорт вполне естественно, но оно пробуждает дорогие импульсы.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aries",
+      "language": "nl",
+      "general": "Op dit moment niets van uw vuur is verdwenen; u leert het simpelweg een richting te geven die standhoudt. In dit decor iets vraagt om uw moed zonder een groot vertoon te eisen. Merkwaardig genoeg de dag verplaatst de actie naar een intiemer terrein: een familiebesluit, een ruimte die bescherming verdient of een oude belofte die u eerlijk moet bekijken. Uiteindelijk uw eerste impuls is versnellen, maar echte kracht schuilt in de precisie van het gebaar. Op dit moment een rustig gesprek kan de hele sfeer veranderen.",
+      "love": "In dit decor deze kleine onthulling schept meer nabijheid dan welke schitterende verklaring ook. Merkwaardig genoeg tederheid verschuilt zich achter een grap of ongebruikelijke stilte. Uiteindelijk onder uw zekerheid wil een verwachting worden erkend.",
+      "work": "Merkwaardig genoeg eén bescheiden initiatief kan het hele team weer bewegen. Uiteindelijk een gevoelig onderwerp mag uit de coulissen komen. Op dit moment uw openheid maakt indruk wanneer zij het project verheldert zonder een schuldige aan te wijzen.",
+      "finance": "Uiteindelijk een aankoop die lang meegaat geeft meer voldoening dan een verzameling uit de hitte van het moment. Op dit moment de wens om uw comfort te verbeteren is terecht, maar wekt ook kostbare impulsen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "taurus",
+      "language": "fr",
+      "general": "Dans ce décor, à la fin, une évidence simple pourrait valoir un long discours; Les mots ont aujourd’hui une texture particulière : certains rassurent, d’autres froissent plus vite que prévu; Vous avancez sur un terrain de conversations, de messages et de petits déplacements où votre calme fait merveille; Une information ancienne mérite peut-être une nouvelle lecture; Loin de ralentir la journée, cette attention révèle un raccourci élégant; Votre stabilité n’est pas immobile ; elle sait changer de forme sans perdre sa substance.",
+      "love": "Curieusement, ce langage discret vous ressemble et trouve facilement son destinataire; Une complicité renaît autour d’un détail partagé, d’une musique ou d’un souvenir; L’émotion préfère les gestes familiers aux effets de scène.",
+      "work": "Au bout du compte, la constance transforme une hésitation collective en base de travail; Votre parole porte davantage lorsqu’elle s’appuie sur un exemple concret; Une discussion restée floue peut enfin trouver son angle juste.",
+      "finance": "À présent, un choix matériel peut réunir beauté et utilité, à condition de ne pas payer seulement pour l’étiquette ou l’idée du prestige; Les plaisirs modestes séduisent plus que les dépenses voyantes.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "taurus",
+      "language": "en",
+      "general": "In this setting, by evening, one simple truth may be worth a long speech. Curiously, words have a particular texture today: some soothe, while others sting sooner than expected. In the end, you move through conversations, messages and short journeys where your calm works wonders. At present, an old piece of information may deserve another reading. In this setting, far from slowing the day, this attention reveals an elegant shortcut. Curiously, your stability is not static; it can change shape without losing substance.",
+      "love": "Curiously, this discreet language suits you and reaches its intended recipient with ease. In the end, complicity returns through a shared detail, a song or a memory. At present, emotion favours familiar gestures over theatrical effects.",
+      "work": "In the end, steadiness turns collective hesitation into a workable foundation. At present, your words carry further when grounded in a concrete example. In this setting, a discussion that remained vague can finally find its proper angle.",
+      "finance": "At present, a material choice can unite beauty and usefulness, provided you are not paying solely for a label or the idea of prestige. In this setting, modest pleasures attract more than showy spending.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "taurus",
+      "language": "de",
+      "general": "In dieser Szenerie am Ende kann eine einfache Wahrheit mehr wert sein als eine lange Rede. Merkwürdigerweise worte besitzen heute eine besondere Beschaffenheit: Manche beruhigen, andere verletzen früher als erwartet. Am Ende sie bewegen sich durch Gespräche, Nachrichten und kleine Wege, auf denen Ihre Ruhe Wunder wirkt. Im Augenblick eine ältere Information verdient vielleicht eine neue Lektüre. In dieser Szenerie diese Aufmerksamkeit bremst den Tag nicht, sondern zeigt eine elegante Abkürzung. Merkwürdigerweise ihre Stabilität ist nicht starr; sie wechselt die Form, ohne Substanz zu verlieren.",
+      "love": "Merkwürdigerweise diese diskrete Sprache passt zu Ihnen und erreicht ihr Gegenüber mühelos. Am Ende vertrautheit erwacht durch ein gemeinsames Detail, ein Lied oder eine Erinnerung. Im Augenblick gefühle bevorzugen bekannte Gesten statt großer Effekte.",
+      "work": "Am Ende beständigkeit verwandelt gemeinsames Zögern in eine tragfähige Arbeitsgrundlage. Im Augenblick ihre Worte tragen weiter, wenn ein konkretes Beispiel sie stützt. In dieser Szenerie ein vages Gespräch findet endlich seinen richtigen Blickwinkel.",
+      "finance": "Im Augenblick eine materielle Wahl kann Schönheit und Nutzen verbinden, solange Sie nicht nur für ein Etikett oder die Vorstellung von Prestige zahlen. In dieser Szenerie bescheidene Freuden reizen stärker als auffällige Ausgaben.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "taurus",
+      "language": "es",
+      "general": "En este escenario, al final, una evidencia sencilla puede valer más que un discurso extenso. Curiosamente, las palabras tienen hoy una textura particular: algunas tranquilizan y otras rozan más de lo previsto. Al final, avanzas entre conversaciones, mensajes y pequeños desplazamientos donde tu calma hace maravillas. En este momento, una información antigua quizá merezca otra lectura. En este escenario, lejos de frenar el día, esta atención revela un atajo elegante. Curiosamente, tu estabilidad no permanece inmóvil; sabe cambiar de forma sin perder sustancia.",
+      "love": "Curiosamente, este lenguaje discreto te representa y llega fácilmente a quien corresponde. Al final, la complicidad renace alrededor de un detalle compartido, una canción o un recuerdo. En este momento, la emoción prefiere los gestos familiares a los efectos teatrales.",
+      "work": "Al final, la constancia convierte una duda colectiva en base de trabajo. En este momento, tu palabra gana alcance cuando se apoya en un ejemplo concreto. En este escenario, una conversación que seguía difusa encuentra por fin su ángulo.",
+      "finance": "En este momento, una elección material puede reunir belleza y utilidad, siempre que no pagues únicamente por la etiqueta o la idea de prestigio. En este escenario, los placeres modestos atraen más que los gastos vistosos.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "taurus",
+      "language": "it",
+      "general": "In questo scenario, alla fine, una verità semplice può valere più di un lungo discorso. Curiosamente, le parole hanno oggi una consistenza particolare: alcune rassicurano, altre graffiano prima del previsto. Alla fine, vi muovete fra conversazioni, messaggi e piccoli spostamenti nei quali la calma fa meraviglie. In questo momento, un’informazione passata merita forse una nuova lettura. In questo scenario, lungi dal rallentare la giornata, questa attenzione rivela una scorciatoia elegante. Curiosamente, la vostra stabilità non è immobile; sa cambiare forma senza perdere sostanza.",
+      "love": "Curiosamente, questo linguaggio discreto vi somiglia e raggiunge facilmente la persona giusta. Alla fine, la complicità rinasce attorno a un dettaglio condiviso, una canzone o un ricordo. In questo momento, l’emozione preferisce i gesti familiari agli effetti teatrali.",
+      "work": "Alla fine, la costanza trasforma l’esitazione collettiva in base di lavoro. In questo momento, le vostre parole arrivano più lontano quando poggiano su un esempio concreto. In questo scenario, una discussione rimasta vaga trova finalmente l’angolo corretto.",
+      "finance": "In questo momento, una scelta materiale può unire bellezza e utilità, purché non paghiate soltanto l’etichetta o l’idea del prestigio. In questo scenario, i piaceri modesti attirano più delle spese vistose.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "taurus",
+      "language": "pt",
+      "general": "Neste cenário, no final, uma verdade simples pode valer mais do que um longo discurso. Curiosamente, as palavras têm hoje uma textura particular: algumas tranquilizam, outras ferem mais depressa do que seria de esperar. No fim, avançam entre conversas, mensagens e pequenas deslocações onde a vossa calma faz maravilhas. Neste momento, uma informação antiga talvez mereça nova leitura. Neste cenário, longe de atrasar o dia, esta atenção revela um atalho elegante. Curiosamente, a vossa estabilidade não está imóvel; sabe mudar de forma sem perder substância.",
+      "love": "Curiosamente, esta linguagem discreta combina convosco e chega facilmente ao destinatário. No fim, a cumplicidade renasce em torno de um pormenor partilhado, de uma canção ou de uma memória. Neste momento, a emoção prefere gestos familiares a efeitos teatrais.",
+      "work": "No fim, a constância transforma uma hesitação coletiva numa base de trabalho. Neste momento, as vossas palavras chegam mais longe quando assentam num exemplo concreto. Neste cenário, uma conversa que permanecia vaga encontra finalmente o ângulo certo.",
+      "finance": "Neste momento, uma escolha material pode unir beleza e utilidade, desde que não paguem apenas pela etiqueta ou pela ideia de prestígio. Neste cenário, os prazeres modestos atraem mais do que despesas ostensivas.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "taurus",
+      "language": "ru",
+      "general": "В этой обстановке в итоге простая истина может оказаться ценнее длинной речи. Любопытно слова сегодня обладают особой фактурой: одни успокаивают, другие задевают быстрее ожидаемого. В итоге вы движетесь среди разговоров, сообщений и коротких поездок, где ваше спокойствие творит чудеса. Сейчас старая информация, возможно, заслуживает нового прочтения. В этой обстановке такое внимание не тормозит день, а открывает изящный короткий путь. Любопытно ваша устойчивость не неподвижна; она умеет менять форму, не теряя содержания.",
+      "love": "Любопытно этот тихий язык вам подходит и без труда достигает нужного человека. В итоге близость возрождается благодаря общей детали, песне или воспоминанию. Сейчас чувства предпочитают знакомые жесты театральным эффектам.",
+      "work": "В итоге постоянство превращает общее сомнение в надёжную рабочую основу. Сейчас ваши слова звучат убедительнее, когда опираются на конкретный пример. В этой обстановке размытый разговор наконец получает правильный ракурс.",
+      "finance": "Сейчас материальный выбор способен соединить красоту и пользу, если вы платите не только за ярлык или представление о престиже. В этой обстановке скромные удовольствия привлекают сильнее показных трат.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "taurus",
+      "language": "nl",
+      "general": "In dit decor uiteindelijk kan één eenvoudige waarheid meer waard zijn dan een lange redevoering. Merkwaardig genoeg woorden hebben vandaag een bijzondere textuur: sommige stellen gerust, andere schuren eerder dan verwacht. Uiteindelijk u beweegt door gesprekken, berichten en korte verplaatsingen waarin uw kalmte wonderen doet. Op dit moment oude informatie verdient misschien een nieuwe lezing. In dit decor die aandacht vertraagt de dag niet, maar onthult een elegante kortere weg. Merkwaardig genoeg uw stabiliteit staat niet stil; zij kan van vorm veranderen zonder inhoud te verliezen.",
+      "love": "Merkwaardig genoeg deze discrete taal past bij u en bereikt moeiteloos de juiste persoon. Uiteindelijk vertrouwdheid keert terug rond een gedeeld detail, een lied of een herinnering. Op dit moment gevoelens verkiezen bekende gebaren boven theatraal effect.",
+      "work": "Uiteindelijk standvastigheid verandert collectieve twijfel in een bruikbare basis. Op dit moment uw woorden dragen verder wanneer een concreet voorbeeld ze ondersteunt. In dit decor een vaag gebleven gesprek vindt eindelijk de juiste invalshoek.",
+      "finance": "Op dit moment een materiële keuze kan schoonheid en nut verenigen, zolang u niet uitsluitend betaalt voor een label of het idee van prestige. In dit decor bescheiden genoegens verleiden meer dan opvallende uitgaven.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "gemini",
+      "language": "fr",
+      "general": "Curieusement, la journée devient alors un jeu de finesse où l’intelligence pratique rejoint le plaisir d’inventer; Votre esprit ouvre plusieurs fenêtres à la fois, et l’air circule enfin; Une question d’argent, de valeur ou de légitimité revient sous un jour moins austère; Ce que vous savez faire mérite peut-être d’être nommé plus clairement, sans fausse modestie ni surenchère; Quelques comparaisons risquent de brouiller votre boussole ; elles perdent leur pouvoir dès que vous revenez à vos propres critères.",
+      "love": "Au bout du compte, derrière l’humour, une curiosité affective cherche moins à séduire qu’à être réellement comprise; Le charme passe par une conversation vive, légèrement imprévisible; Quelqu’un peut vous surprendre par sa façon de répondre.",
+      "work": "À présent, la reconnaissance vient davantage de cette connexion que d’un discours brillant; Une idée gagne de la valeur parce qu’elle résout un problème concret; Votre souplesse permet de relier deux interlocuteurs éloignés.",
+      "finance": "Dans ce décor, l’arbitrage n’a rien de triste : il révèle ce qui vous procure encore du plaisir après l’excitation initiale; Une envie amusante tente le budget, tandis qu’un projet plus durable demande sa place.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "gemini",
+      "language": "en",
+      "general": "Curiously, the day then becomes a game of finesse, where practical intelligence meets the pleasure of invention. In the end, your mind opens several windows at once, and at last the air begins to circulate. At present, a question of money, value or legitimacy returns in a less austere light. In this setting, what you do well may deserve a clearer name, without false modesty or exaggeration. Curiously, comparisons could briefly blur your compass; they lose their hold once you return to your own criteria.",
+      "love": "In the end, beneath the humour, emotional curiosity wants less to seduce than to be genuinely understood. At present, charm travels through a lively, slightly unpredictable conversation. In this setting, someone may surprise you with their reply.",
+      "work": "At present, recognition comes more readily from that bridge than from a brilliant speech. In this setting, an idea gains value because it solves a tangible problem. Curiously, your flexibility connects two distant people or viewpoints.",
+      "finance": "In this setting, the choice is not dreary: it reveals what still gives you pleasure after the first excitement fades. Curiously, an amusing desire tempts the budget while a lasting project asks for room.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "gemini",
+      "language": "de",
+      "general": "Merkwürdigerweise so wird der Tag zu einem feinen Spiel, in dem praktische Klugheit auf Erfindungsfreude trifft. Am Ende ihr Geist öffnet mehrere Fenster zugleich, und endlich kommt Luft herein. Im Augenblick eine Frage nach Geld, Wert oder Berechtigung kehrt in weniger strenger Beleuchtung zurück. In dieser Szenerie was Sie gut können, verdient vielleicht eine klarere Bezeichnung, ohne falsche Bescheidenheit und Übertreibung. Merkwürdigerweise vergleiche könnten kurz den Kompass trüben; sie verlieren ihre Macht, sobald Sie zu eigenen Maßstäben zurückkehren.",
+      "love": "Am Ende hinter dem Humor möchte emotionale Neugier weniger verführen als wirklich verstanden werden. Im Augenblick charme reist durch ein lebhaftes, leicht unvorhersehbares Gespräch. In dieser Szenerie eine Antwort kann Sie überraschen.",
+      "work": "Im Augenblick anerkennung entsteht eher durch diese Brücke als durch eine glänzende Rede. In dieser Szenerie eine Idee gewinnt Wert, weil sie ein konkretes Problem löst. Merkwürdigerweise ihre Beweglichkeit verbindet entfernte Menschen oder Perspektiven.",
+      "finance": "In dieser Szenerie die Wahl ist keineswegs trostlos: Sie zeigt, was nach der ersten Begeisterung weiterhin Freude bereitet. Merkwürdigerweise ein amüsanter Wunsch lockt das Budget, während ein dauerhaftes Projekt Raum verlangt.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "gemini",
+      "language": "es",
+      "general": "Curiosamente, el día se convierte entonces en un juego de finura donde la inteligencia práctica se une al placer de inventar. Al final, tu mente abre varias ventanas a la vez y, por fin, el aire circula. En este momento, una cuestión de dinero, valor o legitimidad reaparece bajo una luz menos austera. En este escenario, lo que sabes hacer merece quizá un nombre más claro, sin falsa modestia ni exageraciones. Curiosamente, algunas comparaciones pueden nublar tu brújula; pierden poder cuando vuelves a tus propios criterios.",
+      "love": "Al final, bajo el humor, la curiosidad afectiva busca menos seducir que sentirse verdaderamente comprendida. En este momento, el encanto viaja por una conversación viva y ligeramente imprevisible. En este escenario, alguien puede sorprenderte con su respuesta.",
+      "work": "En este momento, el reconocimiento nace más de ese puente que de un discurso brillante. En este escenario, una idea gana valor porque resuelve un problema tangible. Curiosamente, tu flexibilidad conecta a dos personas o perspectivas alejadas.",
+      "finance": "En este escenario, la elección no resulta triste: revela qué te sigue dando placer cuando desaparece la primera excitación. Curiosamente, un capricho divertido tienta al presupuesto mientras un proyecto duradero reclama sitio.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "gemini",
+      "language": "it",
+      "general": "Curiosamente, la giornata diventa allora un gioco sottile, nel quale l’intelligenza pratica incontra il piacere di inventare. Alla fine, la mente apre più finestre insieme e finalmente l’aria circola. In questo momento, una questione di denaro, valore o legittimità ritorna sotto una luce meno severa. In questo scenario, ciò che sapete fare merita forse un nome più chiaro, senza falsa modestia né esagerazioni. Curiosamente, alcuni confronti possono confondere la bussola; perdono forza quando tornate ai vostri criteri.",
+      "love": "Alla fine, dietro l’umorismo, la curiosità affettiva desidera soprattutto essere davvero compresa. In questo momento, il fascino passa attraverso una conversazione vivace e leggermente imprevedibile. In questo scenario, qualcuno può sorprendervi con la sua risposta.",
+      "work": "In questo momento, il riconoscimento nasce più facilmente da questo ponte che da un discorso brillante. In questo scenario, un’idea acquista valore perché risolve un problema concreto. Curiosamente, la vostra flessibilità collega persone o prospettive lontane.",
+      "finance": "In questo scenario, la scelta non è triste: rivela ciò che continua a darvi piacere dopo l’entusiasmo iniziale. Curiosamente, un desiderio divertente tenta il budget mentre un progetto duraturo chiede spazio.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "gemini",
+      "language": "pt",
+      "general": "Curiosamente, o dia torna-se então um jogo de subtileza onde a inteligência prática encontra o prazer de inventar. No fim, a vossa mente abre várias janelas ao mesmo tempo e, finalmente, o ar circula. Neste momento, uma questão de dinheiro, valor ou legitimidade regressa sob uma luz menos austera. Neste cenário, aquilo que sabem fazer merece talvez um nome mais claro, sem falsa modéstia nem exagero. Curiosamente, algumas comparações podem baralhar a bússola; perdem força quando regressam aos vossos critérios.",
+      "love": "No fim, por detrás do humor, a curiosidade afetiva procura menos seduzir do que ser verdadeiramente compreendida. Neste momento, o encanto passa por uma conversa viva e ligeiramente imprevisível. Neste cenário, alguém pode surpreender-vos com a resposta.",
+      "work": "Neste momento, o reconhecimento nasce mais facilmente dessa ponte do que de um discurso brilhante. Neste cenário, uma ideia ganha valor porque resolve um problema concreto. Curiosamente, a vossa flexibilidade liga duas pessoas ou perspetivas afastadas.",
+      "finance": "Neste cenário, a escolha não é triste: revela aquilo que continua a dar prazer depois de passar o entusiasmo inicial. Curiosamente, um desejo divertido tenta o orçamento enquanto um projeto duradouro pede espaço.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "gemini",
+      "language": "ru",
+      "general": "Любопытно тогда день становится тонкой игрой, где практический ум встречается с удовольствием изобретать. В итоге ваш ум открывает сразу несколько окон, и воздух наконец начинает двигаться. Сейчас вопрос денег, ценности или признания возвращается в менее суровом свете. В этой обстановке то, что вы умеете, заслуживает более ясного названия — без ложной скромности и преувеличения. Любопытно сравнения ненадолго сбивают внутренний компас, но теряют власть, когда вы возвращаетесь к собственным критериям.",
+      "love": "В итоге за юмором скрыта эмоциональная любознательность, которой важнее быть понятой, чем соблазнить. Сейчас очарование рождается в живом и слегка непредсказуемом разговоре. В этой обстановке чей-то ответ может вас удивить.",
+      "work": "Сейчас признание приходит скорее благодаря этому мосту, чем яркой речи. В этой обстановке идея приобретает ценность, потому что решает конкретную проблему. Любопытно ваша гибкость соединяет далёких людей или разные взгляды.",
+      "finance": "В этой обстановке выбор не выглядит скучным: он показывает, что продолжает радовать после исчезновения первого восторга. Любопытно весёлое желание искушает бюджет, пока долгосрочный проект просит места.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "gemini",
+      "language": "nl",
+      "general": "Merkwaardig genoeg zo wordt de dag een verfijnd spel waarin praktisch inzicht het plezier van uitvinden ontmoet. Uiteindelijk uw geest opent meerdere ramen tegelijk en eindelijk stroomt er lucht. Op dit moment een vraag over geld, waarde of erkenning keert terug in een minder strenge belichting. In dit decor wat u goed kunt, verdient misschien een duidelijkere naam, zonder valse bescheidenheid of overdrijving. Merkwaardig genoeg vergelijkingen kunnen uw kompas even vertroebelen; ze verliezen hun greep zodra u terugkeert naar uw eigen maatstaven.",
+      "love": "Uiteindelijk achter de humor wil emotionele nieuwsgierigheid minder verleiden dan werkelijk begrepen worden. Op dit moment charme reist door een levendig en licht onvoorspelbaar gesprek. In dit decor iemand kan u verrassen met een antwoord.",
+      "work": "Op dit moment erkenning ontstaat eerder uit die brug dan uit een briljante toespraak. In dit decor een idee wint aan waarde omdat het een tastbaar probleem oplost. Merkwaardig genoeg uw soepelheid verbindt twee verre mensen of gezichtspunten.",
+      "finance": "In dit decor de keuze is niet somber: ze toont wat plezier blijft geven nadat de eerste opwinding verdwenen is. Merkwaardig genoeg een vrolijke wens verleidt het budget terwijl een duurzaam project ruimte vraagt.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "cancer",
+      "language": "fr",
+      "general": "Au bout du compte, un désir personnel retrouve enfin sa voix; Vous entrez dans la journée comme on entrouvre des rideaux : avec prudence, puis avec un plaisir croissant devant la lumière; Votre présence se remarque davantage, même si vous ne cherchez aucune scène; Une humeur plus expressive colore les échanges et permet de sortir d’un rôle devenu trop étroit; Attention seulement à ne pas porter les réactions d’autrui comme un verdict; Votre sensibilité capte beaucoup ; elle n’a pas à tout conserver.",
+      "love": "À présent, l’intensité reste douce lorsqu’elle laisse à chacun sa part de mystère; La chaleur affective monte d’un cran et votre regard devient plus direct; Une attention sincère suffit à créer un rapprochement.",
+      "work": "Dans ce décor, une réserve ancienne peut céder devant cette assurance tranquille et claire; Votre manière personnelle de présenter un dossier retient pleinement l’attention; Il ne s’agit pas d’en faire trop, mais d’assumer votre signature.",
+      "finance": "Curieusement, elle reste harmonieuse si elle célèbre un besoin réel, sans chercher à compenser artificiellement une humeur passagère; Une dépense liée à l’image, au foyer ou au plaisir personnel paraît séduisante.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "cancer",
+      "language": "en",
+      "general": "In the end, a personal desire finally recovers its voice. At present, you enter the day as one parts the curtains: cautiously at first, then with growing pleasure in the light. In this setting, your presence is more noticeable, although you seek no stage. Curiously, a more expressive mood colours conversations and lets you step beyond a role that has become too narrow. In the end, just avoid carrying other people’s reactions as a verdict. At present, your sensitivity catches a great deal; it need not retain everything.",
+      "love": "At present, intensity remains gentle when it allows each person to preserve a little mystery. In this setting, affection grows warmer and your gaze becomes more direct. Curiously, one sincere attention is enough to create closeness.",
+      "work": "In this setting, an old reservation may yield before this quiet confidence. Curiously, your personal way of presenting a proposal holds attention. In the end, there is no need to overplay it; simply own your signature.",
+      "finance": "Curiously, it remains harmonious when it honours a genuine need instead of trying to compensate for a passing mood. In the end, spending connected with appearance, home or personal pleasure looks tempting.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "cancer",
+      "language": "de",
+      "general": "Am Ende ein persönlicher Wunsch findet endlich seine Stimme wieder. Im Augenblick sie betreten den Tag wie einen Raum, dessen Vorhänge sich öffnen: zunächst vorsichtig, dann mit wachsender Freude am Licht. In dieser Szenerie ihre Präsenz fällt stärker auf, obwohl Sie keine Bühne suchen. Merkwürdigerweise eine ausdrucksvollere Stimmung färbt Gespräche und befreit Sie aus einer zu engen Rolle. Am Ende tragen Sie fremde Reaktionen nur nicht wie ein Urteil. Im Augenblick ihre Sensibilität nimmt viel wahr; sie muss nicht alles behalten.",
+      "love": "Im Augenblick intensität bleibt sanft, wenn jeder Mensch einen Teil seines Geheimnisses bewahren darf. In dieser Szenerie zuneigung wird wärmer und Ihr Blick direkter. Merkwürdigerweise eine aufrichtige Aufmerksamkeit genügt, um Nähe entstehen zu lassen.",
+      "work": "In dieser Szenerie ein alter Vorbehalt kann vor diesem ruhigen Selbstvertrauen weichen. Merkwürdigerweise ihre persönliche Art, einen Vorschlag zu präsentieren, bindet Aufmerksamkeit. Am Ende übertreibung ist unnötig; stehen Sie einfach zu Ihrer Handschrift.",
+      "finance": "Merkwürdigerweise harmonisch bleibt sie, wenn sie ein echtes Bedürfnis feiert, statt eine vorübergehende Stimmung auszugleichen. Am Ende eine Ausgabe für Erscheinung, Zuhause oder persönliches Vergnügen wirkt verlockend.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "cancer",
+      "language": "es",
+      "general": "Al final, un deseo personal recupera por fin su voz. En este momento, entras en el día como quien abre unas cortinas: con cautela al principio y después disfrutando cada vez más de la luz. En este escenario, tu presencia se nota, aunque no buscas escenario alguno. Curiosamente, un humor más expresivo colorea los intercambios y te permite salir de un papel demasiado estrecho. Al final, evita cargar las reacciones ajenas como si fueran un veredicto. En este momento, tu sensibilidad capta mucho; no necesita conservarlo todo.",
+      "love": "En este momento, la intensidad permanece dulce cuando permite que cada persona conserve una parte de misterio. En este escenario, el afecto gana calidez y tu mirada se vuelve más directa. Curiosamente, una atención sincera basta para crear cercanía.",
+      "work": "En este escenario, una antigua reserva puede ceder ante esta seguridad tranquila y clara. Curiosamente, tu forma personal de presentar una propuesta retiene la atención. Al final, no hace falta exagerar, sino asumir tu firma.",
+      "finance": "Curiosamente, mantiene la armonía si celebra una necesidad real en vez de compensar un ánimo pasajero. Al final, un gasto relacionado con la imagen, el hogar o el placer personal parece tentador.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "cancer",
+      "language": "it",
+      "general": "Alla fine, un desiderio personale ritrova finalmente la propria voce. In questo momento, entrate nella giornata come chi apre le tende: prima con cautela, poi con crescente piacere davanti alla luce. In questo scenario, la vostra presenza si nota, anche senza cercare una scena. Curiosamente, un umore più espressivo colora gli scambi e permette di uscire da un ruolo diventato stretto. Alla fine, evitate soltanto di portare le reazioni altrui come un verdetto. In questo momento, la sensibilità capta molto; non deve trattenere tutto.",
+      "love": "In questo momento, l’intensità rimane dolce quando lascia a ciascuno una parte di mistero. In questo scenario, l’affetto si scalda e il vostro sguardo diventa più diretto. Curiosamente, un’attenzione sincera basta a creare vicinanza.",
+      "work": "In questo scenario, una vecchia riserva può cedere davanti a questa sicurezza tranquilla. Curiosamente, il vostro modo personale di presentare una proposta cattura l’attenzione. Alla fine, non occorre esagerare, basta assumere la propria firma.",
+      "finance": "Curiosamente, rimane armoniosa se celebra un bisogno autentico, senza cercare di compensare un umore passeggero. Alla fine, una spesa legata all’immagine, alla casa o al piacere personale appare seducente.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "cancer",
+      "language": "pt",
+      "general": "No fim, um desejo pessoal recupera finalmente a sua voz. Neste momento, entram no dia como quem abre cortinas: primeiro com cautela, depois com prazer crescente diante da luz. Neste cenário, a vossa presença nota-se mais, mesmo sem procurarem palco. Curiosamente, um humor mais expressivo dá cor às conversas e permite sair de um papel demasiado estreito. No fim, evitem apenas carregar as reações alheias como um veredito. Neste momento, a vossa sensibilidade capta muito; não precisa de guardar tudo.",
+      "love": "Neste momento, a intensidade permanece doce quando permite que cada pessoa conserve a sua parte de mistério. Neste cenário, o afeto aquece e o vosso olhar torna-se mais direto. Curiosamente, uma atenção sincera basta para criar proximidade.",
+      "work": "Neste cenário, uma reserva antiga pode ceder perante esta confiança tranquila e clara. Curiosamente, a vossa forma pessoal de apresentar uma proposta prende a atenção. No fim, não é preciso exagerar, apenas assumir a assinatura.",
+      "finance": "Curiosamente, mantém-se harmoniosa se celebrar uma necessidade genuína, sem tentar compensar um estado de espírito passageiro. No fim, uma despesa ligada à imagem, à casa ou ao prazer pessoal parece tentadora.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "cancer",
+      "language": "ru",
+      "general": "В итоге личное желание наконец возвращает себе голос. Сейчас вы входите в день, словно раздвигаете шторы: сначала осторожно, потом всё больше радуясь свету. В этой обстановке ваше присутствие заметнее, хотя вы не ищете сцены. Любопытно более выразительное настроение окрашивает общение и позволяет выйти из ставшей тесной роли. В итоге не носите чужие реакции как приговор. Сейчас ваша чувствительность улавливает многое, но не обязана всё хранить.",
+      "love": "Сейчас интенсивность остаётся мягкой, если каждый сохраняет немного собственной тайны. В этой обстановке теплота чувств растёт, а взгляд становится прямее. Любопытно одного искреннего знака внимания достаточно для сближения.",
+      "work": "В этой обстановке давнее сомнение может отступить перед этой спокойной уверенностью. Любопытно ваша личная манера представить предложение удерживает внимание. В итоге не нужно усиливать эффект — достаточно признать свой почерк.",
+      "finance": "Любопытно они сохранят гармонию, если отвечают настоящей потребности, а не пытаются компенсировать мимолётное настроение. В итоге расходы на образ, дом или личное удовольствие выглядят заманчиво.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "cancer",
+      "language": "nl",
+      "general": "Uiteindelijk een persoonlijk verlangen vindt eindelijk zijn stem terug. Op dit moment u betreedt de dag zoals iemand gordijnen opent: eerst voorzichtig, daarna met groeiend plezier in het licht. In dit decor uw aanwezigheid valt meer op, ook zonder dat u een podium zoekt. Merkwaardig genoeg een expressievere stemming kleurt gesprekken en laat u buiten een te nauwe rol stappen. Uiteindelijk draag andermans reacties alleen niet als een vonnis. Op dit moment uw gevoeligheid vangt veel op; zij hoeft niet alles te bewaren.",
+      "love": "Op dit moment intensiteit blijft zacht wanneer ieder een deel van zijn mysterie mag behouden. In dit decor genegenheid wordt warmer en uw blik directer. Merkwaardig genoeg eén oprechte attentie volstaat om nabijheid te scheppen.",
+      "work": "In dit decor een oud voorbehoud kan wijken voor dit rustige vertrouwen. Merkwaardig genoeg uw persoonlijke manier om een voorstel te presenteren houdt de aandacht vast. Uiteindelijk overdrijven hoeft niet; sta gewoon voor uw handtekening.",
+      "finance": "Merkwaardig genoeg ze blijft harmonieus wanneer ze een echte behoefte viert, in plaats van een voorbijgaande stemming te compenseren. Uiteindelijk een uitgave voor uitstraling, thuis of persoonlijk plezier oogt verleidelijk.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "leo",
+      "language": "fr",
+      "general": "À présent, parfois, votre lumière se régénère précisément là où personne ne l’applaudit; Le rideau se ferme un instant, non pour vous écarter, mais pour préparer une scène plus juste; La journée favorise les coulisses, les rêves, les souvenirs et ce travail invisible qui nourrit votre prochain élan; Vous pourriez ressentir une fatigue face aux sollicitations trop bruyantes; Elle n’annonce aucun recul : elle protège une créativité en maturation; Un secret, une intuition symbolique ou une émotion ancienne prend une couleur nouvelle.",
+      "love": "Dans ce décor, le romantisme du jour préfère l’intimité à la démonstration; La douceur réclame un espace protégé, loin des regards et des commentaires; Un lien gagne en profondeur grâce à une confidence délicate.",
+      "work": "Curieusement, un détail longtemps oublié peut donner au projet sa cohérence la plus originale et durable; Une idée importante mûrit mieux avant d’être exposée; Les coulisses deviennent votre atelier, pas une zone d’attente.",
+      "finance": "Au bout du compte, le budget apprécie cette élégance discrète, sans frustration inutile ni austérité excessive; Le besoin de réconfort peut rendre certaines dépenses momentanément irrésistibles; Un plaisir simple apaise davantage qu’un achat spectaculaire.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "leo",
+      "language": "en",
+      "general": "At present, sometimes your light is renewed precisely where nobody is applauding. In this setting, the curtain closes for a moment, not to exclude you but to prepare a truer scene. Curiously, the day favours backstage work, dreams, memories and the invisible labour behind your next surge. In the end, noisy demands may feel unusually tiring. At present, this signals no retreat; it protects creativity that is still maturing. In this setting, a secret, symbolic intuition or old emotion takes on a new shade.",
+      "love": "In this setting, today’s romance prefers intimacy to display, and feels no poorer for it. Curiously, tenderness needs a protected space, away from scrutiny and commentary. In the end, a bond deepens through a delicate confidence.",
+      "work": "Curiously, one long-forgotten detail may give the project its most original and lasting coherence. In the end, an important idea matures better before exposure. At present, the wings become your workshop, not a waiting room.",
+      "finance": "In the end, the budget appreciates this discreet elegance, free from frustration or needless austerity. At present, the need for comfort may make certain purchases irresistible. In this setting, a simple pleasure soothes more than a spectacular acquisition.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "leo",
+      "language": "de",
+      "general": "Im Augenblick manchmal erneuert sich Ihr Licht genau dort, wo niemand applaudiert. In dieser Szenerie der Vorhang schließt sich kurz, nicht um Sie auszuschließen, sondern um eine wahrhaftigere Szene vorzubereiten. Merkwürdigerweise der Tag begünstigt Kulissenarbeit, Träume, Erinnerungen und jene unsichtbare Arbeit, die Ihren nächsten Schwung nährt. Am Ende laute Anforderungen können ungewöhnlich ermüden. Im Augenblick das ist kein Rückzug; eine reifende Kreativität wird geschützt. In dieser Szenerie ein Geheimnis, eine symbolische Ahnung oder ein altes Gefühl erhält eine neue Farbe.",
+      "love": "In dieser Szenerie die heutige Romantik zieht Intimität jeder öffentlichen Inszenierung vor. Merkwürdigerweise zärtlichkeit braucht einen geschützten Raum, fern von Blicken und Kommentaren. Am Ende eine behutsame Vertraulichkeit vertieft die Verbindung.",
+      "work": "Merkwürdigerweise ein vergessenes Detail kann dem Vorhaben seine originellste Geschlossenheit geben. Am Ende eine wichtige Idee reift besser, bevor sie gezeigt wird. Im Augenblick die Kulissen werden zur Werkstatt, nicht zum Wartesaal.",
+      "finance": "Am Ende das Budget schätzt diese diskrete Eleganz ohne unnötige Strenge. Im Augenblick das Bedürfnis nach Trost kann manche Ausgabe unwiderstehlich machen. In dieser Szenerie ein schlichtes Vergnügen beruhigt stärker als ein spektakulärer Kauf.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "leo",
+      "language": "es",
+      "general": "En este momento, a veces tu luz se regenera precisamente donde nadie aplaude. En este escenario, el telón se cierra por un momento, no para apartarte, sino para preparar una escena más auténtica. Curiosamente, el día favorece los bastidores, los sueños, los recuerdos y el trabajo invisible que alimenta tu próximo impulso. Al final, las exigencias ruidosas pueden cansarte más de lo habitual. En este momento, no es retirada: estás protegiendo una creatividad todavía en maduración. En este escenario, un secreto, una intuición simbólica o una emoción antigua adquiere otro color.",
+      "love": "En este escenario, el romanticismo del día prefiere la intimidad a la exhibición. Curiosamente, la ternura reclama un espacio protegido, lejos de miradas y comentarios. Al final, un vínculo gana profundidad gracias a una confidencia delicada.",
+      "work": "Curiosamente, un detalle olvidado puede dar al proyecto su coherencia más original. Al final, una idea importante madura mejor antes de exponerse. En este momento, los bastidores se convierten en tu taller, no en sala de espera.",
+      "finance": "Al final, el presupuesto agradece esta elegancia discreta, sin frustración ni austeridad innecesaria. En este momento, la necesidad de consuelo puede volver irresistibles ciertas compras. En este escenario, un placer sencillo calma más que una adquisición espectacular.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "leo",
+      "language": "it",
+      "general": "In questo momento, a volte la luce si rigenera proprio dove nessuno applaude. In questo scenario, il sipario si chiude per un istante, non per escludervi ma per preparare una scena più vera. Curiosamente, la giornata favorisce le quinte, i sogni, i ricordi e il lavoro invisibile che nutre il prossimo slancio. Alla fine, le richieste rumorose possono stancarvi più del solito. In questo momento, non è una ritirata: proteggete una creatività ancora in maturazione. In questo scenario, un segreto, un’intuizione simbolica o un’emozione antica cambia colore.",
+      "love": "In questo scenario, il romanticismo preferisce l’intimità alla dimostrazione pubblica. Curiosamente, la tenerezza reclama uno spazio protetto, lontano da sguardi e commenti. Alla fine, un legame si approfondisce grazie a una confidenza delicata.",
+      "work": "Curiosamente, un dettaglio dimenticato può dare al progetto coerenza originale. Alla fine, un’idea importante matura meglio prima di essere esposta. In questo momento, le quinte diventano il vostro laboratorio, non una sala d’attesa.",
+      "finance": "Alla fine, il budget apprezza questa eleganza discreta, senza frustrazione né austerità inutile. In questo momento, il bisogno di conforto può rendere irresistibili alcune spese. In questo scenario, un piacere semplice calma più di un acquisto spettacolare.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "leo",
+      "language": "pt",
+      "general": "Neste momento, por vezes, a vossa luz renova-se precisamente onde ninguém aplaude. Neste cenário, a cortina fecha-se por um instante, não para vos afastar, mas para preparar uma cena mais verdadeira. Curiosamente, o dia favorece os bastidores, os sonhos, as memórias e o trabalho invisível que alimenta o próximo impulso. No fim, exigências ruidosas podem cansar mais do que o habitual. Neste momento, não é recuo: estão a proteger uma criatividade ainda em maturação. Neste cenário, um segredo, uma intuição simbólica ou uma emoção antiga ganha outra cor.",
+      "love": "Neste cenário, o romantismo do dia prefere a intimidade à exibição pública. Curiosamente, a ternura reclama um espaço protegido, longe de olhares e comentários. No fim, um laço aprofunda-se graças a uma confidência delicada.",
+      "work": "Curiosamente, um pormenor esquecido pode dar ao projeto coerência original. No fim, uma ideia importante amadurece melhor antes de ser exposta. Neste momento, os bastidores tornam-se a vossa oficina, não uma sala de espera.",
+      "finance": "No fim, o orçamento aprecia esta elegância discreta, sem frustração nem austeridade desnecessária. Neste momento, a necessidade de conforto pode tornar irresistíveis algumas despesas. Neste cenário, um prazer simples acalma mais do que uma compra espetacular.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "leo",
+      "language": "ru",
+      "general": "Сейчас иногда ваш свет обновляется именно там, где никто не аплодирует. В этой обстановке занавес ненадолго закрывается не для того, чтобы вас исключить, а чтобы подготовить более честную сцену. Любопытно день благоволит закулисной работе, снам, воспоминаниям и невидимым усилиям, питающим следующий подъём. В итоге шумные требования могут утомлять сильнее обычного. Сейчас это не отступление, а защита созревающего творчества. В этой обстановке тайна, символическое предчувствие или старая эмоция приобретает новый оттенок.",
+      "love": "В этой обстановке сегодня романтика выбирает интимность, а не публичную демонстрацию чувств. Любопытно нежности требуется защищённое пространство вдали от взглядов и комментариев. В итоге деликатная откровенность делает связь глубже.",
+      "work": "Любопытно забытый штрих способен подарить проекту самую оригинальную цельность. В итоге важной идее полезно созреть до выхода на публику. Сейчас кулисы становятся мастерской, а не залом ожидания.",
+      "finance": "В итоге бюджет оценит эту сдержанную элегантность без лишней строгости. Сейчас потребность в утешении делает некоторые траты почти неотразимыми. В этой обстановке простое удовольствие успокаивает лучше эффектной покупки.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "leo",
+      "language": "nl",
+      "general": "Op dit moment soms vernieuwt uw licht zich precies waar niemand applaudisseert. In dit decor het doek sluit even, niet om u buiten te sluiten, maar om een waarachtiger scène voor te bereiden. Merkwaardig genoeg de dag bevordert werk achter de schermen, dromen, herinneringen en de onzichtbare inspanning die uw volgende elan voedt. Uiteindelijk luidruchtige eisen kunnen ongewoon vermoeien. Op dit moment dat betekent geen terugtocht; u beschermt creativiteit die nog rijpt. In dit decor een geheim, symbolisch vermoeden of oud gevoel krijgt een nieuwe kleur.",
+      "love": "In dit decor de romantiek van vandaag verkiest intimiteit boven zichtbaar vertoon. Merkwaardig genoeg tederheid verlangt een beschermde plek, ver van blikken en commentaar. Uiteindelijk een behoedzaam vertrouwen verdiept de band.",
+      "work": "Merkwaardig genoeg eén vergeten detail kan het project zijn meest oorspronkelijke samenhang geven. Uiteindelijk een belangrijk idee rijpt beter vóór het wordt getoond. Op dit moment de coulissen worden uw atelier, niet een wachtkamer.",
+      "finance": "Uiteindelijk het budget waardeert deze discrete elegantie, zonder onnodige strengheid. Op dit moment de behoefte aan troost kan bepaalde aankopen onweerstaanbaar maken. In dit decor eenvoudig plezier kalmeert meer dan een spectaculaire aanschaf.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "virgo",
+      "language": "fr",
+      "general": "Dans ce décor, votre place n’est pas seulement d’ordonner le monde, mais aussi de l’étonner; Un cercle s’élargit autour de vous; Amis, collègues ou communauté apportent des perspectives qui dérangent agréablement vos habitudes; Vous observez d’abord les détails, puis vous comprenez le dessin d’ensemble : un projet collectif possède plus de potentiel qu’il n’en montrait hier; Votre discernement reste précieux, à condition de ne pas corriger chaque imperfection avant que l’idée respire; La journée célèbre une forme d’intelligence partagée.",
+      "love": "Curieusement, cette liberté légère peut révéler une tendresse déjà bien installée et sincère; Une relation se colore d’amitié, de complicité et d’un peu d’inattendu; Les sentiments circulent beaucoup mieux sans définition immédiate.",
+      "work": "Au bout du compte, le collectif progresse quand votre précision devient ressource plutôt que filtre; Un réseau ou un échange informel ouvre une piste intéressante; Votre analyse donne de la crédibilité à l’enthousiasme ambiant.",
+      "finance": "À présent, votre sens pratique sait distinguer soutien réel et engagement pris par politesse; Un projet commun implique peut-être une contribution ou une dépense partagée; La clarté des règles préserve la générosité.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "virgo",
+      "language": "en",
+      "general": "In this setting, your place is not only to arrange the world, but also to surprise it. Curiously, a circle widens around you. In the end, friends, colleagues or a community bring perspectives that pleasantly disturb your habits. At present, you notice the details first, then grasp the whole design: a collective project contains more potential than it showed yesterday. In this setting, your discernment remains precious, provided you do not correct every flaw before the idea can breathe. Curiously, the day celebrates shared intelligence.",
+      "love": "Curiously, this lightness may reveal a tenderness that was already firmly established. In the end, a relationship takes on friendship, complicity and a touch of the unexpected. At present, feelings travel more freely without immediate definition.",
+      "work": "In the end, the group advances when your precision becomes a resource rather than a filter. At present, a network or informal exchange opens an interesting path. In this setting, your analysis lends credibility to the surrounding enthusiasm.",
+      "finance": "At present, your practical sense can distinguish genuine support from a commitment accepted merely out of politeness. In this setting, a shared project may involve a contribution or joint expense. Curiously, clear rules preserve generosity.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "virgo",
+      "language": "de",
+      "general": "In dieser Szenerie ihre Rolle besteht nicht nur darin, die Welt zu ordnen, sondern sie auch zu überraschen. Merkwürdigerweise ein Kreis um Sie herum wird größer. Am Ende freunde, Kollegen oder eine Gemeinschaft bringen Sichtweisen, die Ihre Gewohnheiten angenehm stören. Im Augenblick zuerst sehen Sie Details, dann das ganze Bild: Ein gemeinsames Vorhaben birgt mehr Potenzial als gestern erkennbar war. In dieser Szenerie ihr Urteilsvermögen bleibt kostbar, solange Sie nicht jeden Fehler korrigieren, bevor die Idee atmen kann. Merkwürdigerweise der Tag feiert geteilte Intelligenz.",
+      "love": "Merkwürdigerweise diese leichte Freiheit kann eine längst fest verwurzelte Zärtlichkeit sichtbar machen. Am Ende eine Beziehung färbt sich mit Freundschaft, Vertrautheit und etwas Unerwartetem. Im Augenblick gefühle fließen besser ohne sofortige Definition.",
+      "work": "Am Ende die Gruppe kommt voran, wenn Genauigkeit zur Ressource statt zum Filter wird. Im Augenblick ein Netzwerk oder informeller Austausch öffnet einen interessanten Weg. In dieser Szenerie ihre Analyse verleiht der Begeisterung Glaubwürdigkeit.",
+      "finance": "Im Augenblick ihr praktischer Sinn unterscheidet echte Unterstützung von einer Zusage aus bloßer Höflichkeit. In dieser Szenerie ein gemeinsames Projekt kann einen Beitrag oder geteilte Kosten verlangen. Merkwürdigerweise klare Regeln bewahren Großzügigkeit.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "virgo",
+      "language": "es",
+      "general": "En este escenario, tu lugar no consiste solo en ordenar el mundo, sino también en sorprenderlo. Curiosamente, un círculo se amplía a tu alrededor. Al final, amistades, colegas o una comunidad aportan perspectivas que alteran agradablemente tus hábitos. En este momento, primero observas los detalles y luego comprendes el dibujo completo: un proyecto colectivo contiene más potencial del que mostraba ayer. En este escenario, tu discernimiento sigue siendo valioso, siempre que no corrijas cada defecto antes de que la idea respire. Curiosamente, el día celebra una inteligencia compartida.",
+      "love": "Curiosamente, esta libertad ligera puede revelar una ternura que ya estaba firmemente instalada. Al final, una relación se tiñe de amistad, complicidad y un toque inesperado. En este momento, los sentimientos circulan mejor sin una definición inmediata.",
+      "work": "Al final, el grupo avanza cuando tu precisión se convierte en recurso y no en filtro. En este momento, una red o un intercambio informal abre una pista interesante. En este escenario, tu análisis aporta credibilidad al entusiasmo del entorno.",
+      "finance": "En este momento, tu sentido práctico distingue el apoyo real del compromiso aceptado solo por cortesía. En este escenario, un proyecto compartido puede implicar una contribución o gasto común. Curiosamente, las reglas claras preservan la generosidad.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "virgo",
+      "language": "it",
+      "general": "In questo scenario, il vostro ruolo non è soltanto ordinare il mondo, ma anche sorprenderlo. Curiosamente, un cerchio si allarga intorno a voi. Alla fine, amici, colleghi o una comunità portano prospettive che disturbano piacevolmente le abitudini. In questo momento, prima osservate i dettagli, poi comprendete il disegno complessivo: un progetto comune ha più potenziale di quanto mostrasse ieri. In questo scenario, il discernimento resta prezioso, purché non correggiate ogni imperfezione prima che l’idea respiri. Curiosamente, la giornata celebra un’intelligenza condivisa.",
+      "love": "Curiosamente, questa libertà leggera può rivelare una tenerezza già ben radicata. Alla fine, una relazione si tinge di amicizia, complicità e un tocco inatteso. In questo momento, i sentimenti circolano meglio senza definizioni immediate.",
+      "work": "Alla fine, il gruppo avanza quando la precisione diventa risorsa invece che filtro. In questo momento, una rete o uno scambio informale apre una strada interessante. In questo scenario, la vostra analisi dà credibilità all’entusiasmo circostante.",
+      "finance": "In questo momento, il vostro senso pratico distingue il sostegno vero dall’impegno accettato per cortesia. In questo scenario, un progetto condiviso può implicare un contributo o una spesa comune. Curiosamente, regole chiare preservano la generosità.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "virgo",
+      "language": "pt",
+      "general": "Neste cenário, o vosso lugar não é apenas organizar o mundo, mas também surpreendê-lo. Curiosamente, um círculo alarga-se à vossa volta. No fim, amigos, colegas ou uma comunidade trazem perspetivas que perturbam agradavelmente os hábitos. Neste momento, primeiro observam os pormenores, depois compreendem o desenho geral: um projeto coletivo tem mais potencial do que mostrava ontem. Neste cenário, o discernimento continua precioso, desde que não corrijam cada imperfeição antes de a ideia respirar. Curiosamente, o dia celebra uma inteligência partilhada.",
+      "love": "Curiosamente, esta liberdade leve pode revelar uma ternura que já estava solidamente instalada. No fim, uma relação ganha amizade, cumplicidade e um toque inesperado. Neste momento, os sentimentos circulam melhor sem uma definição imediata.",
+      "work": "No fim, o grupo avança quando a precisão se torna recurso em vez de filtro. Neste momento, uma rede ou troca informal abre um caminho interessante. Neste cenário, a vossa análise dá credibilidade ao entusiasmo em redor.",
+      "finance": "Neste momento, o vosso sentido prático distingue apoio genuíno de um compromisso aceite por mera cortesia. Neste cenário, um projeto comum pode implicar uma contribuição ou despesa partilhada. Curiosamente, regras claras preservam a generosidade.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "virgo",
+      "language": "ru",
+      "general": "В этой обстановке ваша роль состоит не только в упорядочивании мира, но и в умении его удивлять. Любопытно круг вокруг вас расширяется. В итоге друзья, коллеги или сообщество приносят взгляды, которые приятно нарушают привычки. Сейчас сначала вы замечаете детали, затем видите весь рисунок: общий проект скрывает больше потенциала, чем показывал вчера. В этой обстановке ваша проницательность ценна, если не исправлять каждый недостаток раньше, чем идея успеет вдохнуть. Любопытно день отмечен силой коллективного ума.",
+      "love": "Любопытно такая лёгкость может обнаружить нежность, которая уже давно пустила глубокие корни. В итоге в отношениях появляется оттенок дружбы, сообщничества и неожиданности. Сейчас чувства свободнее движутся без немедленных определений.",
+      "work": "В итоге группа продвигается, когда точность становится ресурсом, а не фильтром. Сейчас сеть контактов или неформальный разговор открывает интересное направление. В этой обстановке ваш анализ придаёт энтузиазму убедительность.",
+      "finance": "Сейчас практичность помогает отличить искреннюю поддержку от обязательства, принятого исключительно из вежливости. В этой обстановке общий проект может потребовать взноса или совместных расходов. Любопытно ясные правила сохраняют щедрость.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "virgo",
+      "language": "nl",
+      "general": "In dit decor uw plaats is niet alleen de wereld ordenen, maar haar ook verrassen. Merkwaardig genoeg een kring rondom u wordt ruimer. Uiteindelijk vrienden, collega’s of een gemeenschap brengen perspectieven die uw gewoonten aangenaam verstoren. Op dit moment eerst ziet u de details, daarna het hele ontwerp: een gezamenlijk project bezit meer potentieel dan gisteren zichtbaar was. In dit decor uw onderscheidingsvermogen blijft kostbaar, zolang u niet elke fout verbetert voordat het idee kan ademen. Merkwaardig genoeg de dag viert gedeelde intelligentie.",
+      "love": "Merkwaardig genoeg deze lichte vrijheid kan tederheid onthullen die al stevig geworteld was. Uiteindelijk een relatie krijgt vriendschap, vertrouwdheid en iets onverwachts. Op dit moment gevoelens stromen beter zonder onmiddellijke definitie.",
+      "work": "Uiteindelijk de groep vordert wanneer precisie een hulpmiddel wordt in plaats van een filter. Op dit moment een netwerk of informeel gesprek opent een interessant spoor. In dit decor uw analyse geeft geloofwaardigheid aan het enthousiasme eromheen.",
+      "finance": "Op dit moment uw praktische gevoel onderscheidt echte steun van een verplichting die uit beleefdheid is aanvaard. In dit decor een gedeeld project kan een bijdrage of gezamenlijke uitgave vragen. Merkwaardig genoeg duidelijke regels beschermen vrijgevigheid.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "libra",
+      "language": "fr",
+      "general": "Curieusement, votre diplomatie découvre enfin sa colonne vertébrale; La journée vous place face à une question d’ambition : quelle trace souhaitez-vous vraiment laisser ; Une responsabilité, un regard extérieur ou une décision publique ravive votre goût de l’équilibre, mais l’élégance ne suffit plus à différer le choix; Vous disposez d’une autorité plus naturelle que vous ne l’imaginez; Elle s’exprime sans dureté, par la cohérence entre vos paroles et votre position; Une ligne assumée attire davantage de respect qu’un compromis parfait.",
+      "love": "Au bout du compte, un échange fier, mais tendre, peut réveiller le désir de construire à deux; L’attirance se mêle à l’admiration; Vous êtes sensible à celles et ceux qui assument leur trajectoire sans écraser personne.",
+      "work": "À présent, le moment demande une position lisible; Une décision visible met votre sens politique en valeur; Les attentes sont fortes, pourtant votre capacité à réunir des intérêts différents demeure un atout.",
+      "finance": "Dans ce décor, la distinction personnelle n’a nul besoin de devenir compétition; L’image sociale peut encourager une dépense plus raffinée que nécessaire; Le beau conserve tout son charme lorsqu’il s’accorde naturellement à vos moyens.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "libra",
+      "language": "en",
+      "general": "Curiously, your diplomacy finally discovers its backbone. In the end, the day brings you face to face with ambition: what mark do you genuinely want to leave? At present, a responsibility, an outside gaze or a public decision revives your instinct for balance, yet elegance can no longer postpone the choice. In this setting, you possess more natural authority than you imagine. Curiously, it appears without harshness, through consistency between your words and your position. In the end, a line confidently held earns more respect than a perfect compromise.",
+      "love": "In the end, a proud yet tender exchange may rekindle the wish to build something together. At present, attraction mingles with admiration. In this setting, you respond to people who own their path without diminishing anyone else.",
+      "work": "At present, this moment asks for a position others can clearly read. In this setting, a visible decision highlights your political instinct. Curiously, expectations are strong, yet your ability to unite different interests remains valuable.",
+      "finance": "In this setting, distinction need not turn into competition to make an impression. Curiously, social image may encourage a more refined expense than necessary. In the end, beauty keeps all its charm when aligned with your means.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "libra",
+      "language": "de",
+      "general": "Merkwürdigerweise ihre Diplomatie entdeckt endlich ihr Rückgrat. Am Ende der Tag stellt Sie vor eine Frage des Ehrgeizes: Welche Spur möchten Sie wirklich hinterlassen? Im Augenblick verantwortung, ein äußerer Blick oder eine öffentliche Entscheidung belebt Ihren Sinn für Ausgleich, doch Eleganz kann die Wahl nicht länger vertagen. In dieser Szenerie sie besitzen mehr natürliche Autorität, als Sie vermuten. Merkwürdigerweise sie zeigt sich ohne Härte in der Übereinstimmung von Worten und Haltung. Am Ende eine klare Linie verdient mehr Respekt als ein vollkommener Kompromiss.",
+      "love": "Am Ende ein stolzer und zugleich zärtlicher Austausch kann den Wunsch nach Gemeinsamkeit wecken. Im Augenblick anziehung verbindet sich mit Bewunderung. In dieser Szenerie menschen, die ihren Weg gehen, ohne andere kleinzumachen, berühren Sie.",
+      "work": "Im Augenblick dieser Augenblick verlangt nach einer lesbaren Position. In dieser Szenerie eine sichtbare Entscheidung hebt Ihr politisches Gespür hervor. Merkwürdigerweise die Erwartungen sind hoch, doch unterschiedliche Interessen zu verbinden bleibt Ihre Stärke.",
+      "finance": "In dieser Szenerie besonderheit muss nicht zum Wettbewerb werden. Merkwürdigerweise das gesellschaftliche Bild könnte zu einer raffinierteren Ausgabe verleiten als nötig. Am Ende schönheit behält ihren Reiz, wenn sie zu Ihren Mitteln passt.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "libra",
+      "language": "es",
+      "general": "Curiosamente, tu diplomacia encuentra por fin su columna vertebral. Al final, el día te coloca ante una pregunta de ambición: ¿qué huella deseas dejar de verdad? En este momento, una responsabilidad, una mirada exterior o una decisión pública reaviva tu gusto por el equilibrio, pero la elegancia ya no basta para aplazar la elección. En este escenario, posees más autoridad natural de la que imaginas. Curiosamente, aparece sin dureza, mediante la coherencia entre tus palabras y tu postura. Al final, una línea asumida inspira más respeto que un compromiso perfecto.",
+      "love": "Al final, un intercambio orgulloso y tierno puede reavivar el deseo de construir algo entre dos. En este momento, la atracción se mezcla con la admiración. En este escenario, te interesan quienes asumen su trayectoria sin disminuir a nadie.",
+      "work": "En este momento, este momento pide una posición claramente legible. En este escenario, una decisión visible pone de relieve tu instinto político. Curiosamente, las expectativas son fuertes, pero tu capacidad para unir intereses distintos sigue siendo valiosa.",
+      "finance": "En este escenario, la distinción no necesita convertirse en competición. Curiosamente, la imagen social puede animar un gasto más refinado de lo necesario. Al final, la belleza conserva todo su encanto cuando encaja con tus medios.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "libra",
+      "language": "it",
+      "general": "Curiosamente, la diplomazia scopre finalmente la propria spina dorsale. Alla fine, la giornata vi pone davanti a una domanda d’ambizione: quale traccia desiderate davvero lasciare? In questo momento, una responsabilità, uno sguardo esterno o una decisione pubblica riaccende il gusto dell’equilibrio, ma l’eleganza non basta più a rinviare la scelta. In questo scenario, avete più autorità naturale di quanto immaginiate. Curiosamente, si esprime senza durezza, nella coerenza fra parole e posizione. Alla fine, una linea assunta ispira più rispetto di un compromesso perfetto.",
+      "love": "Alla fine, uno scambio fiero ma tenero può risvegliare il desiderio di costruire insieme. In questo momento, l’attrazione si mescola all’ammirazione. In questo scenario, vi colpisce chi segue la propria strada senza sminuire nessuno.",
+      "work": "In questo momento, il momento chiede una posizione chiaramente leggibile. In questo scenario, una decisione visibile valorizza il vostro istinto politico. Curiosamente, le aspettative sono forti, eppure la capacità di unire interessi diversi resta preziosa.",
+      "finance": "In questo scenario, la distinzione non deve diventare competizione. Curiosamente, l’immagine sociale può incoraggiare una spesa più raffinata del necessario. Alla fine, il bello conserva il suo fascino quando rispetta i vostri mezzi.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "libra",
+      "language": "pt",
+      "general": "Curiosamente, a vossa diplomacia descobre finalmente a sua coluna vertebral. No fim, o dia coloca-vos perante uma questão de ambição: que marca desejam realmente deixar? Neste momento, uma responsabilidade, um olhar exterior ou uma decisão pública reaviva o gosto pelo equilíbrio, mas a elegância já não basta para adiar a escolha. Neste cenário, possuem mais autoridade natural do que imaginam. Curiosamente, ela expressa-se sem dureza, pela coerência entre palavras e posição. No fim, uma linha assumida inspira mais respeito do que um compromisso perfeito.",
+      "love": "No fim, uma troca orgulhosa mas terna pode reacender o desejo de construir algo a dois. Neste momento, a atração mistura-se com admiração. Neste cenário, são sensíveis a quem assume o próprio caminho sem diminuir ninguém.",
+      "work": "Neste momento, este momento pede uma posição claramente legível. Neste cenário, uma decisão visível realça o vosso instinto político. Curiosamente, as expectativas são fortes, mas a capacidade de reunir interesses diferentes continua valiosa.",
+      "finance": "Neste cenário, a distinção não precisa de virar competição. Curiosamente, a imagem social pode incentivar uma despesa mais requintada do que necessário. No fim, a beleza conserva o encanto quando se ajusta aos vossos meios.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "libra",
+      "language": "ru",
+      "general": "Любопытно ваша дипломатия наконец обретает внутренний стержень. В итоге день ставит перед вами вопрос амбиций: какой след вы действительно хотите оставить? Сейчас ответственность, внешний взгляд или публичное решение оживляет чувство баланса, однако одной элегантности уже мало, чтобы откладывать выбор. В этой обстановке у вас больше естественного авторитета, чем кажется. Любопытно он проявляется без жёсткости — через согласие слов и позиции. В итоге уверенно проведённая линия вызывает больше уважения, чем безупречный компромисс.",
+      "love": "В итоге гордый, но нежный обмен может пробудить желание строить что-то вдвоём. Сейчас притяжение соединяется с восхищением. В этой обстановке вас трогают люди, которые идут своим путём, не принижая окружающих.",
+      "work": "Сейчас сейчас окружающим нужна ясно читаемая позиция. В этой обстановке заметное решение подчёркивает ваше политическое чутьё. Любопытно ожидания высоки, но способность объединять разные интересы остаётся преимуществом.",
+      "finance": "В этой обстановке индивидуальность вовсе не обязана становиться соревнованием. Любопытно социальный образ может подтолкнуть к более изысканной трате, чем требуется. В итоге красота сохраняет очарование, когда соответствует возможностям.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "libra",
+      "language": "nl",
+      "general": "Merkwaardig genoeg uw diplomatie ontdekt eindelijk haar ruggengraat. Uiteindelijk de dag confronteert u met ambitie: welk spoor wilt u werkelijk achterlaten? Op dit moment een verantwoordelijkheid, de blik van buitenaf of een openbaar besluit wekt uw gevoel voor evenwicht, maar elegantie kan de keuze niet langer uitstellen. In dit decor u bezit meer natuurlijk gezag dan u vermoedt. Merkwaardig genoeg het verschijnt zonder hardheid, door samenhang tussen woorden en positie. Uiteindelijk een duidelijke lijn verdient meer respect dan een volmaakt compromis.",
+      "love": "Uiteindelijk een trotse maar tedere uitwisseling kan de wens wekken om samen iets te bouwen. Op dit moment aantrekking vermengt zich met bewondering. In dit decor mensen die hun eigen pad volgen zonder anderen kleiner te maken raken u.",
+      "work": "Op dit moment dit moment vraagt om een standpunt dat iedereen helder kan lezen. In dit decor een zichtbaar besluit benadrukt uw politieke instinct. Merkwaardig genoeg de verwachtingen zijn hoog, maar verschillende belangen verbinden blijft uw kracht.",
+      "finance": "In dit decor onderscheid hoeft geen wedstrijd te worden. Merkwaardig genoeg uw sociale beeld kan een verfijndere uitgave aanmoedigen dan nodig. Uiteindelijk schoonheid behoudt haar charme wanneer zij bij uw middelen past.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "scorpio",
+      "language": "fr",
+      "general": "Au bout du compte, votre profondeur gagne une fenêtre, et l’air nouveau lui va bien; L’horizon vous appelle avec une intensité presque physique; Un livre, une formation, une conversation lointaine ou un projet de voyage ouvre une brèche dans vos certitudes; Vous ne cherchez pas une distraction, mais une vérité capable de déplacer votre regard; Quelques convictions résisteront, naturellement; Leur résistance révèle justement les territoires les plus fertiles; La journée ne vous demande pas de croire davantage ; elle vous invite à penser plus vaste.",
+      "love": "À présent, la curiosité ouvre alors un passage vers l’intimité; Le désir se nourrit d’inconnu, de distance ou d’une différence de perspective; Une relation s’anime lorsque chacun raconte son monde sans chercher à convertir l’autre.",
+      "work": "Dans ce décor, une expertise extérieure peut enrichir votre stratégie sans la diluer; Un dossier complexe bénéficie d’une vision plus large; Vous percevez les enjeux derrière les procédures et donnez du relief au débat.",
+      "finance": "Curieusement, le prestige seul perd vite son éclat face à une utilité véritable et concrète; Formation, déplacement ou ressource spécialisée attire votre attention; L’investissement a réellement du sens s’il élargit durablement vos possibilités.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "scorpio",
+      "language": "en",
+      "general": "In the end, your depth gains a window, and the fresh air suits it. At present, the horizon calls with almost physical intensity. In this setting, a book, course, distant conversation or travel plan opens a breach in your certainties. Curiously, you are not seeking distraction, but a truth capable of shifting your gaze. In the end, some convictions will resist, naturally. At present, their resistance identifies the most fertile territory. In this setting, the day does not ask you to believe more; it invites you to think more widely.",
+      "love": "At present, curiosity becomes intimacy. In this setting, desire feeds on the unknown, distance or a difference in outlook. Curiously, a relationship comes alive when each person describes their world without trying to convert the other.",
+      "work": "In this setting, outside expertise can enrich your strategy without diluting it. Curiously, a complex brief benefits from a wider view. In the end, you perceive the stakes behind the procedures and bring depth to the debate.",
+      "finance": "Curiously, prestige alone quickly pales beside genuine and practical usefulness. In the end, training, travel or a specialist resource draws your attention. At present, the investment makes sense if it expands your options over time.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "scorpio",
+      "language": "de",
+      "general": "Am Ende ihre Tiefe gewinnt ein Fenster, und die frische Luft steht ihr gut. Im Augenblick der Horizont ruft mit beinahe körperlicher Intensität. In dieser Szenerie ein Buch, eine Fortbildung, ein fernes Gespräch oder eine Reiseidee öffnet eine Bresche in Ihren Gewissheiten. Merkwürdigerweise sie suchen keine Ablenkung, sondern eine Wahrheit, die den Blick verschiebt. Am Ende einige Überzeugungen werden sich natürlich wehren. Im Augenblick gerade dieser Widerstand markiert fruchtbares Gelände. In dieser Szenerie der Tag verlangt nicht mehr Glauben; er lädt zu weiterem Denken ein.",
+      "love": "Im Augenblick neugier wird Intimität. In dieser Szenerie verlangen nährt sich vom Unbekannten, von Entfernung oder einer anderen Perspektive. Merkwürdigerweise eine Beziehung lebt auf, wenn beide ihre Welt schildern, ohne einander bekehren zu wollen.",
+      "work": "In dieser Szenerie externe Fachkenntnis kann Ihre Strategie bereichern, ohne sie zu verwässern. Merkwürdigerweise ein komplexes Dossier profitiert von einem weiteren Blick. Am Ende sie erkennen die Interessen hinter den Verfahren und geben der Debatte Tiefe.",
+      "finance": "Merkwürdigerweise prestige allein verblasst rasch neben einem wirklichen Nutzen. Am Ende fortbildung, Reise oder eine besondere Ressource zieht Ihre Aufmerksamkeit an. Im Augenblick die Investition lohnt sich, wenn sie Möglichkeiten langfristig erweitert.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "scorpio",
+      "language": "es",
+      "general": "Al final, tu profundidad gana una ventana, y el aire nuevo le sienta bien. En este momento, el horizonte te llama con una intensidad casi física. En este escenario, un libro, una formación, una conversación lejana o un proyecto de viaje abre una brecha en tus certezas. Curiosamente, no buscas distracción, sino una verdad capaz de desplazar tu mirada. Al final, algunas convicciones resistirán, naturalmente. En este momento, esa resistencia señala precisamente los territorios más fértiles. En este escenario, el día no te pide creer más; te invita a pensar con mayor amplitud.",
+      "love": "En este momento, la curiosidad se vuelve intimidad. En este escenario, el deseo se alimenta de lo desconocido, la distancia o una diferencia de perspectiva. Curiosamente, una relación cobra vida cuando cada cual cuenta su mundo sin intentar convertir al otro.",
+      "work": "En este escenario, una experiencia externa enriquece tu estrategia sin diluirla. Curiosamente, un expediente complejo se beneficia de una visión amplia. Al final, percibes lo que está en juego tras los procedimientos y das relieve al debate.",
+      "finance": "Curiosamente, el prestigio palidece pronto frente a una utilidad auténtica. Al final, una formación, un viaje o un recurso especializado atrae tu atención. En este momento, la inversión tiene sentido si amplía tus posibilidades a largo plazo.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "scorpio",
+      "language": "it",
+      "general": "Alla fine, la vostra profondità guadagna una finestra, e l’aria nuova le dona. In questo momento, l’orizzonte chiama con un’intensità quasi fisica. In questo scenario, un libro, una formazione, una conversazione lontana o un viaggio apre una breccia nelle certezze. Curiosamente, non cercate distrazione, ma una verità capace di spostare lo sguardo. Alla fine, alcune convinzioni resisteranno, naturalmente. In questo momento, proprio quella resistenza segnala il terreno più fertile. In questo scenario, la giornata non chiede di credere di più; invita a pensare più in grande.",
+      "love": "In questo momento, la curiosità diventa intimità. In questo scenario, il desiderio si nutre dell’ignoto, della distanza o di una differenza di prospettiva. Curiosamente, una relazione si anima quando ciascuno racconta il proprio mondo senza convertire l’altro.",
+      "work": "In questo scenario, una competenza esterna può arricchire la strategia senza diluirla. Curiosamente, un dossier complesso beneficia di una visione più ampia. Alla fine, percepite gli interessi dietro le procedure e date spessore al dibattito.",
+      "finance": "Curiosamente, il prestigio da solo impallidisce presto davanti a un’utilità autentica. Alla fine, formazione, viaggio o risorsa specialistica attirano l’attenzione. In questo momento, l’investimento ha senso se amplia le possibilità nel tempo.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "scorpio",
+      "language": "pt",
+      "general": "No fim, a vossa profundidade ganha uma janela, e o ar novo fica-lhe bem. Neste momento, o horizonte chama-vos com uma intensidade quase física. Neste cenário, um livro, uma formação, uma conversa distante ou um projeto de viagem abre uma brecha nas certezas. Curiosamente, não procuram distração, mas uma verdade capaz de deslocar o olhar. No fim, algumas convicções resistirão, naturalmente. Neste momento, essa resistência assinala precisamente o terreno mais fértil. Neste cenário, o dia não pede que acreditem mais; convida a pensar com maior amplitude.",
+      "love": "Neste momento, a curiosidade torna-se intimidade. Neste cenário, o desejo alimenta-se do desconhecido, da distância ou de uma diferença de perspetiva. Curiosamente, uma relação anima-se quando cada pessoa conta o seu mundo sem tentar converter a outra.",
+      "work": "Neste cenário, conhecimento externo enriquece a estratégia sem a diluir. Curiosamente, um dossiê complexo beneficia de uma visão mais ampla. No fim, percebem o que está em jogo por detrás dos procedimentos e dão relevo ao debate.",
+      "finance": "Curiosamente, o prestígio isolado perde brilho diante de utilidade autêntica. No fim, uma formação, viagem ou recurso especializado atrai a vossa atenção. Neste momento, o investimento faz sentido se ampliar as possibilidades no tempo.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "scorpio",
+      "language": "ru",
+      "general": "В итоге в вашей глубине появляется окно, и свежий воздух ей удивительно идёт. Сейчас горизонт зовёт почти физически ощутимой силой. В этой обстановке книга, обучение, далёкий разговор или план путешествия пробивает брешь в привычной уверенности. Любопытно вам нужна не отвлекающая новизна, а истина, способная изменить взгляд. В итоге некоторые убеждения естественно воспротивятся. Сейчас именно сопротивление отмечает плодородную территорию. В этой обстановке день не просит верить сильнее; он предлагает мыслить шире.",
+      "love": "Сейчас любопытство прокладывает к близости новый путь. В этой обстановке желание питается неизвестностью, расстоянием или разницей взглядов. Любопытно связь оживает, когда каждый рассказывает о своём мире без попытки обратить другого.",
+      "work": "В этой обстановке внешняя экспертиза может обогатить стратегию, не лишая её характера. Любопытно сложное дело выигрывает от широкого обзора. В итоге вы видите интересы за процедурами и придаёте спору глубину.",
+      "finance": "Любопытно один лишь престиж быстро меркнет рядом с подлинной практической пользой. В итоге обучение, поездка или специализированный ресурс привлекает внимание. Сейчас вложение оправдано, если надолго расширяет возможности.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "scorpio",
+      "language": "nl",
+      "general": "Uiteindelijk uw diepte krijgt een raam, en de frisse lucht staat haar goed. Op dit moment de horizon roept met bijna lichamelijke intensiteit. In dit decor een boek, opleiding, gesprek op afstand of reisplan opent een bres in uw zekerheden. Merkwaardig genoeg u zoekt geen afleiding, maar waarheid die uw blik kan verschuiven. Uiteindelijk sommige overtuigingen zullen zich vanzelf verzetten. Op dit moment juist dat verzet markeert vruchtbaar terrein. In dit decor de dag vraagt niet om meer geloof; hij nodigt uit tot ruimer denken.",
+      "love": "Op dit moment nieuwsgierigheid wordt intimiteit. In dit decor verlangen voedt zich met het onbekende, afstand of een ander perspectief. Merkwaardig genoeg een relatie leeft op wanneer ieder zijn wereld beschrijft zonder de ander te bekeren.",
+      "work": "In dit decor kennis van buiten kan uw strategie verrijken zonder haar te verdunnen. Merkwaardig genoeg een complex dossier profiteert van een ruimere blik. Uiteindelijk u ziet de belangen achter procedures en geeft het debat diepte.",
+      "finance": "Merkwaardig genoeg prestige alleen verbleekt snel naast een werkelijk praktisch nut. Uiteindelijk een opleiding, reis of gespecialiseerde hulpbron trekt uw aandacht. Op dit moment de investering heeft zin wanneer zij mogelijkheden duurzaam verruimt.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "sagittarius",
+      "language": "fr",
+      "general": "À présent, l’aventure commence parfois par une porte que l’on croyait fermée; La journée descend sous la surface, là où se mêlent confiance, ressources partagées et vérités que l’on ne livre pas à tout le monde; Votre tempérament préfère les grands espaces, pourtant cette exploration intérieure n’a rien d’étouffant; Elle éclaire un accord, une dette morale ou un attachement devenu ambigu; Une franchise bien placée libère plus qu’elle ne blesse; Vous retrouvez ensuite votre élan avec une puissance moins dispersée.",
+      "love": "Dans ce décor, un aveu mesuré peut transformer l’ambiance sans enfermer la relation dans une promesse; Une tension magnétique traverse les échanges; Le désir gagne en profondeur lorsque la confiance ne sert pas de décor.",
+      "work": "Curieusement, un accord précis donne paradoxalement plus de liberté au projet collectif et durable; Des intérêts partagés exigent une lecture particulièrement lucide des responsabilités; Votre vision rassemble, mais chacun doit connaître sa part.",
+      "finance": "Au bout du compte, elle évite qu’un enthousiasme généreux ne devienne un ressentiment silencieux; Une somme commune, un remboursement ou une dépense engagée à plusieurs revient au premier plan; La transparence protège les liens.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "sagittarius",
+      "language": "en",
+      "general": "At present, adventure sometimes begins at a door you thought was closed. In this setting, the day descends beneath the surface, where trust, shared resources and truths reserved for a chosen few become entwined. Curiously, your temperament prefers open country, yet this inner exploration feels anything but confined. In the end, it illuminates an agreement, a moral debt or an attachment that has grown ambiguous. At present, well-placed honesty liberates more than it wounds. In this setting, afterwards, your momentum returns with less scattered power.",
+      "love": "In this setting, a measured confession may transform the mood without trapping the relationship inside a promise. Curiously, magnetic tension runs through your exchanges. In the end, desire gains depth when trust is more than scenery.",
+      "work": "Curiously, a precise agreement paradoxically gives the collective project greater freedom. In the end, shared interests demand a lucid reading of responsibilities. At present, your vision brings people together, but everyone must know their part.",
+      "finance": "In the end, it prevents generous enthusiasm from slowly turning into silent resentment or an unspoken imbalance. At present, joint money, a reimbursement or shared expense returns to the foreground. In this setting, transparency protects the bond.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "sagittarius",
+      "language": "de",
+      "general": "Im Augenblick ein Abenteuer beginnt manchmal vor einer Tür, die Sie für verschlossen hielten. In dieser Szenerie der Tag führt unter die Oberfläche, wo Vertrauen, gemeinsame Mittel und nur wenigen anvertraute Wahrheiten ineinandergreifen. Merkwürdigerweise ihr Temperament liebt offene Räume, doch diese innere Erkundung wirkt keineswegs eng. Am Ende sie beleuchtet eine Vereinbarung, moralische Schuld oder eine mehrdeutige Bindung. Im Augenblick gut gesetzte Offenheit befreit mehr, als sie verletzt. In dieser Szenerie danach kehrt Ihr Schwung mit weniger zerstreuter Kraft zurück.",
+      "love": "In dieser Szenerie ein maßvolles Geständnis kann die Stimmung verwandeln, ohne die Beziehung in ein Versprechen einzuschließen. Merkwürdigerweise magnetische Spannung durchzieht Begegnungen. Am Ende verlangen gewinnt Tiefe, wenn Vertrauen mehr als Kulisse ist.",
+      "work": "Merkwürdigerweise eine genaue Vereinbarung schenkt dem gemeinsamen Vorhaben überraschend mehr Freiheit. Am Ende gemeinsame Interessen verlangen eine klare Sicht auf Verantwortlichkeiten. Im Augenblick ihre Vision verbindet, doch jeder muss seinen Anteil kennen.",
+      "finance": "Am Ende sie verhindert, dass großzügige Begeisterung langsam zu stillem Groll wird. Im Augenblick gemeinsames Geld, eine Rückzahlung oder geteilte Ausgabe rückt wieder in den Vordergrund. In dieser Szenerie transparenz schützt die Verbindung.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "sagittarius",
+      "language": "es",
+      "general": "En este momento, la aventura empieza a veces ante una puerta que creías cerrada. En este escenario, el día desciende bajo la superficie, allí donde se mezclan confianza, recursos compartidos y verdades reservadas a unos pocos. Curiosamente, tu temperamento prefiere los grandes espacios, pero esta exploración interior no resulta asfixiante. Al final, ilumina un acuerdo, una deuda moral o un vínculo vuelto ambiguo. En este momento, una franqueza bien situada libera más de lo que hiere. En este escenario, después recuperas impulso con una fuerza menos dispersa.",
+      "love": "En este escenario, una confesión medida puede transformar el ambiente sin encerrar la relación dentro de una promesa. Curiosamente, una tensión magnética atraviesa los intercambios. Al final, el deseo gana profundidad cuando la confianza no es decorado.",
+      "work": "Curiosamente, un acuerdo preciso da paradójicamente mayor libertad al proyecto colectivo. Al final, los intereses compartidos exigen una lectura lúcida de las responsabilidades. En este momento, tu visión reúne, pero cada persona debe conocer su parte.",
+      "finance": "Al final, evita que un entusiasmo generoso termine convertido lentamente en resentimiento silencioso. En este momento, dinero común, un reembolso o un gasto compartido vuelve al primer plano. En este escenario, la transparencia protege el vínculo.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "sagittarius",
+      "language": "it",
+      "general": "In questo momento, l’avventura talvolta comincia davanti a una porta che credevate chiusa. In questo scenario, la giornata scende sotto la superficie, dove si intrecciano fiducia, risorse condivise e verità riservate a pochi. Curiosamente, il vostro temperamento ama gli spazi aperti, eppure questa esplorazione interiore non soffoca. Alla fine, illumina un accordo, un debito morale o un legame diventato ambiguo. In questo momento, una franchezza ben collocata libera più di quanto ferisca. In questo scenario, poi lo slancio ritorna con una forza meno dispersa.",
+      "love": "In questo scenario, una confessione misurata può cambiare l’atmosfera senza imprigionare il rapporto in una promessa. Curiosamente, una tensione magnetica attraversa gli scambi. Alla fine, il desiderio acquista profondità quando la fiducia non è soltanto scenografia.",
+      "work": "Curiosamente, un accordo preciso concede paradossalmente più libertà al progetto. Alla fine, interessi condivisi esigono una lettura lucida delle responsabilità. In questo momento, la vostra visione riunisce, ma ciascuno deve conoscere la propria parte.",
+      "finance": "Alla fine, evita che un entusiasmo generoso si trasformi lentamente in risentimento silenzioso. In questo momento, denaro comune, un rimborso o una spesa condivisa torna in primo piano. In questo scenario, la trasparenza protegge il legame.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "sagittarius",
+      "language": "pt",
+      "general": "Neste momento, a aventura começa por vezes diante de uma porta que julgavam fechada. Neste cenário, o dia desce abaixo da superfície, onde se misturam confiança, recursos partilhados e verdades reservadas a poucos. Curiosamente, o vosso temperamento prefere espaços abertos, mas esta exploração interior não asfixia. No fim, ela ilumina um acordo, uma dívida moral ou um vínculo que se tornou ambíguo. Neste momento, uma franqueza bem colocada liberta mais do que magoa. Neste cenário, depois, o impulso regressa com força menos dispersa.",
+      "love": "Neste cenário, uma confissão medida pode transformar o ambiente sem prender a relação dentro de uma promessa. Curiosamente, uma tensão magnética atravessa as trocas. No fim, o desejo ganha profundidade quando a confiança não é apenas cenário.",
+      "work": "Curiosamente, um acordo preciso dá paradoxalmente maior liberdade ao projeto coletivo. No fim, interesses partilhados exigem leitura lúcida das responsabilidades. Neste momento, a vossa visão reúne, mas cada pessoa precisa de conhecer a sua parte.",
+      "finance": "No fim, evita que um entusiasmo generoso se transforme lentamente em ressentimento silencioso. Neste momento, dinheiro comum, um reembolso ou uma despesa partilhada regressa ao primeiro plano. Neste cenário, a transparência protege o vínculo.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "sagittarius",
+      "language": "ru",
+      "general": "Сейчас приключение иногда начинается у двери, которую вы считали закрытой. В этой обстановке день уходит под поверхность, где переплетаются доверие, общие ресурсы и истины для избранных. Любопытно ваш характер любит открытые пространства, однако внутреннее исследование вовсе не теснит. В итоге оно освещает договорённость, моральный долг или ставшую двусмысленной привязанность. Сейчас уместная прямота освобождает больше, чем ранит. В этой обстановке затем ваш импульс возвращается с менее рассеянной силой.",
+      "love": "В этой обстановке взвешенное признание может изменить атмосферу, не запирая отношения внутри обещания. Любопытно магнетическое напряжение проходит через встречи. В итоге желание становится глубже, когда доверие служит не декорацией.",
+      "work": "Любопытно точное соглашение парадоксальным образом дарит совместному проекту больше свободы. В итоге общие интересы требуют ясного распределения ответственности. Сейчас ваше видение объединяет, но каждому важно знать свою часть.",
+      "finance": "В итоге она не позволяет щедрому энтузиазму медленно превратиться в молчаливую обиду. Сейчас общие деньги, возврат или совместная трата снова выходят на первый план. В этой обстановке прозрачность защищает связь.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "sagittarius",
+      "language": "nl",
+      "general": "Op dit moment avontuur begint soms voor een deur die u gesloten waande. In dit decor de dag daalt onder het oppervlak, waar vertrouwen, gedeelde middelen en waarheden voor een kleine kring in elkaar grijpen. Merkwaardig genoeg uw aard verkiest open ruimte, maar deze innerlijke verkenning voelt niet benauwend. Uiteindelijk ze belicht een afspraak, een morele schuld of een dubbelzinnige gehechtheid. Op dit moment goed geplaatste openheid bevrijdt meer dan zij kwetst. In dit decor daarna keert uw vaart terug met minder verspreide kracht.",
+      "love": "In dit decor een afgewogen bekentenis kan de sfeer veranderen zonder de relatie in een belofte op te sluiten. Merkwaardig genoeg magnetische spanning loopt door ontmoetingen. Uiteindelijk verlangen krijgt diepte wanneer vertrouwen meer is dan decor.",
+      "work": "Merkwaardig genoeg een precieze afspraak geeft het gezamenlijke project verrassend meer vrijheid. Uiteindelijk gedeelde belangen vragen om een heldere kijk op verantwoordelijkheden. Op dit moment uw visie verbindt, maar iedereen moet zijn aandeel kennen.",
+      "finance": "Uiteindelijk ze voorkomt dat gul enthousiasme langzaam in stil verwijt verandert. Op dit moment gezamenlijk geld, een terugbetaling of gedeelde uitgave komt weer op de voorgrond. In dit decor transparantie beschermt de band.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "capricorn",
+      "language": "fr",
+      "general": "Dans ce décor, ce dialogue vaut davantage qu’une approbation polie et ouvre un passage durable; Le face-à-face devient le véritable paysage du jour; Partenaire, associé ou interlocuteur exigeant vous renvoie une image plus vivante de vos choix; Vous pourriez être tenté de tenir seul la structure, par efficacité autant que par habitude; Pourtant, une coopération sincère modifie la logique de l’ensemble; Elle ne retire rien à votre maîtrise ; elle lui donne une respiration; Une personne ose peut-être vous contredire avec justesse.",
+      "love": "Curieusement, une contradiction tendre peut même raviver une complicité assoupie; Une présence fiable vous touche plus qu’un grand numéro de séduction; Le lien cherche un équilibre entre engagement et liberté de ton.",
+      "work": "Au bout du compte, votre exigence reste intacte, tandis que la confiance accordée à une compétence complémentaire libère un espace stratégique réellement précieux et fécond; Un partenariat demande un partage bien plus subtil de l’autorité.",
+      "finance": "À présent, cette clarté rend les ambitions matérielles plus sereines; Un projet à deux invite à préciser les moyens sans refroidir l’élan; Les chiffres deviennent un langage commun, non un rapport de force.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "capricorn",
+      "language": "en",
+      "general": "In this setting, that dialogue is worth more than polite approval and opens a lasting passage. Curiously, the face-to-face encounter becomes today’s true landscape. In the end, a partner, associate or demanding counterpart reflects a livelier image of your choices. At present, you may be tempted to hold the structure alone, through efficiency as much as habit. In this setting, yet sincere cooperation changes the logic of the whole. Curiously, it takes nothing from your control; it gives it breathing room. In the end, someone may dare to contradict you accurately.",
+      "love": "Curiously, even a tender disagreement can revive a complicity that had gone quiet. In the end, a reliable presence moves you more than a grand seduction. At present, the bond seeks balance between commitment and freedom of tone.",
+      "work": "In the end, your standards remain intact, while trust placed in a complementary skill releases genuinely valuable space for strategy and ambition. At present, a partnership asks for a subtler sharing of authority.",
+      "finance": "At present, this clarity makes material ambitions feel more serene. In this setting, a joint plan invites you to clarify resources without cooling the momentum. Curiously, figures become a shared language rather than a power struggle.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "capricorn",
+      "language": "de",
+      "general": "In dieser Szenerie dieser Dialog ist mehr wert als höfliche Zustimmung und öffnet einen dauerhaften Weg. Merkwürdigerweise die direkte Begegnung wird zur eigentlichen Landschaft des Tages. Am Ende ein Partner, Kollege oder anspruchsvoller Gesprächspartner spiegelt Ihre Entscheidungen lebendiger wider. Im Augenblick aus Effizienz und Gewohnheit könnten Sie die Struktur allein tragen wollen. In dieser Szenerie aufrichtige Zusammenarbeit verändert jedoch die Logik des Ganzen. Merkwürdigerweise sie nimmt Ihnen keine Kontrolle, sondern gibt ihr Luft. Am Ende jemand könnte es wagen, Ihnen treffend zu widersprechen.",
+      "love": "Merkwürdigerweise selbst ein zärtlicher Widerspruch kann eingeschlafene Vertrautheit beleben. Am Ende eine verlässliche Präsenz berührt Sie stärker als große Verführungskunst. Im Augenblick die Verbindung sucht ein Gleichgewicht zwischen Bindung und freiem Ton.",
+      "work": "Am Ende ihre Ansprüche bleiben bestehen, während Vertrauen in eine ergänzende Fähigkeit wertvollen strategischen Raum für kommende Ambitionen freisetzt. Im Augenblick eine Partnerschaft verlangt nach feiner geteilter Autorität.",
+      "finance": "Im Augenblick diese Klarheit beruhigt materielle Ziele. In dieser Szenerie ein gemeinsamer Plan lädt dazu ein, Mittel zu klären, ohne den Schwung abzukühlen. Merkwürdigerweise zahlen werden zur gemeinsamen Sprache statt zum Machtkampf.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "capricorn",
+      "language": "es",
+      "general": "En este escenario, ese diálogo vale más que una aprobación cortés. Curiosamente, el cara a cara se convierte en el verdadero paisaje del día. Al final, una pareja, un socio o un interlocutor exigente te devuelve una imagen más viva de tus elecciones. En este momento, puedes sentir la tentación de sostener la estructura a solas, por eficacia y costumbre. En este escenario, sin embargo, una cooperación sincera cambia la lógica del conjunto. Curiosamente, no resta nada a tu control; le da respiración. Al final, alguien quizá se atreva a contradecirte con acierto.",
+      "love": "Curiosamente, incluso una contradicción tierna puede despertar una complicidad dormida. Al final, una presencia fiable te conmueve más que un gran número de seducción. En este momento, el vínculo busca equilibrio entre compromiso y libertad de tono.",
+      "work": "Al final, tu exigencia permanece intacta, mientras la confianza depositada en una competencia complementaria libera un espacio estratégico realmente valioso. En este momento, una colaboración pide compartir la autoridad con mayor sutileza.",
+      "finance": "En este momento, esta claridad serena las ambiciones materiales. En este escenario, un proyecto común invita a aclarar los medios sin enfriar el impulso. Curiosamente, las cifras se vuelven lenguaje compartido y no lucha de poder.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "capricorn",
+      "language": "it",
+      "general": "In questo scenario, quel dialogo vale più di un’approvazione cortese e apre un passaggio duraturo. Curiosamente, il faccia a faccia diventa il vero paesaggio della giornata. Alla fine, un partner, un socio o un interlocutore esigente vi restituisce un’immagine più viva delle scelte. In questo momento, potreste essere tentati di sostenere la struttura da soli, per efficienza e abitudine. In questo scenario, una cooperazione sincera cambia però la logica dell’insieme. Curiosamente, non toglie nulla al controllo; gli dà respiro. Alla fine, qualcuno può contraddirvi con precisione.",
+      "love": "Curiosamente, perfino una contraddizione tenera può risvegliare una complicità assopita. Alla fine, una presenza affidabile vi tocca più di una grande seduzione. In questo momento, il legame cerca equilibrio fra impegno e libertà di tono.",
+      "work": "Alla fine, la vostra esigenza resta intatta, mentre la fiducia in una competenza complementare libera uno spazio strategico davvero prezioso. In questo momento, una collaborazione richiede una condivisione più sottile dell’autorità.",
+      "finance": "In questo momento, questa chiarezza rende serene le ambizioni materiali. In questo scenario, un progetto comune invita a chiarire i mezzi senza raffreddare lo slancio. Curiosamente, i numeri diventano un linguaggio condiviso, non una lotta di potere.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "capricorn",
+      "language": "pt",
+      "general": "Neste cenário, esse diálogo vale mais do que uma aprovação cortês e abre uma passagem duradoura. Curiosamente, o frente a frente torna-se a verdadeira paisagem do dia. No fim, um parceiro, sócio ou interlocutor exigente devolve uma imagem mais viva das vossas escolhas. Neste momento, podem sentir vontade de sustentar a estrutura sozinhos, por eficiência e hábito. Neste cenário, uma cooperação sincera muda, porém, a lógica do conjunto. Curiosamente, não retira controlo; dá-lhe respiração. No fim, alguém talvez ouse contradizer-vos com acerto.",
+      "love": "Curiosamente, até uma contradição terna pode acordar uma cumplicidade adormecida. No fim, uma presença fiável toca-vos mais do que uma grande sedução. Neste momento, o vínculo procura equilíbrio entre compromisso e liberdade de tom.",
+      "work": "No fim, a vossa exigência permanece intacta, enquanto a confiança numa competência complementar liberta espaço estratégico realmente valioso para a ambição. Neste momento, uma parceria pede uma partilha mais subtil da autoridade.",
+      "finance": "Neste momento, esta clareza deixa mais serenas as ambições materiais. Neste cenário, um projeto conjunto convida a esclarecer os meios sem arrefecer o impulso. Curiosamente, os números tornam-se linguagem partilhada, não disputa de poder.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "capricorn",
+      "language": "ru",
+      "general": "В этой обстановке такой разговор ценнее вежливого одобрения и открывает устойчивый путь. Любопытно прямой диалог становится главным пейзажем дня. В итоге партнёр, коллега или требовательный собеседник показывает более живое отражение ваших решений. Сейчас эффективность и привычка могут подтолкнуть держать конструкцию в одиночку. В этой обстановке однако искреннее сотрудничество меняет логику целого. Любопытно оно не отнимает контроль, а даёт ему воздух. В итоге кто-то, возможно, решится точно вам возразить.",
+      "love": "Любопытно даже нежное несогласие способно разбудить уснувшее взаимопонимание. В итоге надёжное присутствие трогает сильнее эффектного соблазнения. Сейчас связь ищет равновесие между обязательствами и свободой тона.",
+      "work": "В итоге ваши стандарты сохраняются, а доверие к дополняющему навыку освобождает по-настоящему ценное стратегическое пространство для будущих замыслов. Сейчас партнёрство просит тоньше разделить полномочия.",
+      "finance": "Сейчас такая ясность делает материальные амбиции спокойнее. В этой обстановке общий план предлагает уточнить средства, не охлаждая порыва. Любопытно цифры становятся общим языком, а не борьбой за власть.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "capricorn",
+      "language": "nl",
+      "general": "In dit decor dat gesprek is meer waard dan beleefde instemming en opent een duurzaam pad. Merkwaardig genoeg de directe ontmoeting wordt het echte landschap van de dag. Uiteindelijk een partner, medewerker of veeleisende gesprekspartner weerspiegelt uw keuzes levendiger. Op dit moment uit efficiëntie en gewoonte wilt u de structuur misschien alleen dragen. In dit decor oprechte samenwerking verandert echter de logica van het geheel. Merkwaardig genoeg ze ontneemt u geen controle, maar geeft die ademruimte. Uiteindelijk iemand durft u mogelijk raak tegen te spreken.",
+      "love": "Merkwaardig genoeg zelfs een tedere tegenspraak kan ingeslapen vertrouwdheid opnieuw wekken. Uiteindelijk een betrouwbare aanwezigheid raakt u sterker dan groot verleiderschap. Op dit moment de band zoekt evenwicht tussen betrokkenheid en vrijheid van toon.",
+      "work": "Uiteindelijk uw normen blijven intact, terwijl vertrouwen in aanvullende bekwaamheid waardevolle strategische ruimte voor verdere ambitie vrijmaakt. Op dit moment een partnerschap vraagt om een subtielere verdeling van gezag.",
+      "finance": "Op dit moment deze helderheid maakt materiële ambities rustiger. In dit decor een gezamenlijk plan nodigt uit middelen te verduidelijken zonder de vaart te breken. Merkwaardig genoeg cijfers worden een gedeelde taal, geen machtsstrijd.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aquarius",
+      "language": "fr",
+      "general": "Curieusement, le futur n’arrive pas toujours avec fracas ; il se glisse parfois dans une habitude enfin bien pensée; Votre génie se penche sur le quotidien, et soudain la routine cesse d’être banale; Un outil, une méthode ou un rythme de travail révèle ses coutures; Vous voyez immédiatement ce qui pourrait être plus fluide, plus juste, plus intelligent; L’envie de tout réinventer existe, mais un déplacement minuscule produit déjà un effet remarquable; La journée apprécie les idées qui améliorent réellement la vie.",
+      "love": "Au bout du compte, le lien gagne en charme quand le quotidien accueille l’imprévu; L’affection s’exprime dans les détails utiles, avec une fantaisie qui évite toute monotonie; Une attention pratique peut devenir très séduisante.",
+      "work": "À présent, la solution convainc parce qu’elle reste accessible à toute l’équipe sans complication; Une amélioration simple change nettement l’atmosphère de travail; Votre regard indépendant repère une perte d’énergie que personne ne nommait.",
+      "finance": "Dans ce décor, l’innovation devient raisonnable quand elle simplifie durablement le quotidien; Une dépense pratique promet de gagner du temps ou du confort; Sa valeur dépend moins de la nouveauté que de l’usage réel.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aquarius",
+      "language": "en",
+      "general": "Curiously, the future does not always arrive with fanfare; sometimes it slips into a habit that has finally been thoughtfully designed. In the end, your ingenuity turns towards daily life, and suddenly routine is no longer ordinary. At present, a tool, method or working rhythm reveals its seams. In this setting, you immediately see what might become smoother, fairer and smarter. Curiously, the desire to reinvent everything exists, yet a tiny adjustment already produces a remarkable effect. In the end, the day favours ideas that genuinely improve life.",
+      "love": "In the end, the bond gains charm when everyday life leaves room for the unexpected. At present, affection appears in useful details, with enough whimsy to avoid monotony. In this setting, a practical gesture can prove deeply attractive.",
+      "work": "At present, the solution convinces because it remains accessible to the entire team. In this setting, one simple improvement changes the working atmosphere. Curiously, your independent eye spots a drain on energy that nobody had named.",
+      "finance": "In this setting, innovation becomes sensible when it simplifies everyday life for the long term. Curiously, a practical purchase promises to save time or add comfort. In the end, its value depends less on novelty than on actual use.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aquarius",
+      "language": "de",
+      "general": "Merkwürdigerweise zukunft kommt nicht immer mit Lärm; manchmal schleicht sie sich in eine endlich gut durchdachte Gewohnheit. Am Ende ihr Erfindergeist wendet sich dem Alltag zu, und plötzlich ist Routine nicht mehr banal. Im Augenblick werkzeug, Methode oder Arbeitsrhythmus zeigt seine Nähte. In dieser Szenerie sofort sehen Sie, was flüssiger, gerechter und klüger werden könnte. Merkwürdigerweise der Wunsch nach völliger Neuerfindung besteht, doch schon eine winzige Verschiebung wirkt erstaunlich. Am Ende der Tag schätzt Ideen, die das Leben tatsächlich verbessern.",
+      "love": "Am Ende die Verbindung gewinnt Charme, wenn Alltag das Unerwartete willkommen heißt. Im Augenblick zuneigung zeigt sich in nützlichen Details und genug Fantasie gegen Eintönigkeit. In dieser Szenerie eine praktische Aufmerksamkeit kann sehr anziehend wirken.",
+      "work": "Im Augenblick die Lösung überzeugt, weil sie für das gesamte Team erreichbar bleibt. In dieser Szenerie eine einfache Verbesserung verändert die Arbeitsatmosphäre. Merkwürdigerweise ihr unabhängiger Blick entdeckt einen Energieverlust, den niemand benannt hatte.",
+      "finance": "In dieser Szenerie innovation wird vernünftig, wenn sie den Alltag dauerhaft vereinfacht. Merkwürdigerweise ein praktischer Kauf verspricht Zeitgewinn oder mehr Komfort. Am Ende sein Wert hängt weniger von Neuheit als vom wirklichen Gebrauch ab.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aquarius",
+      "language": "es",
+      "general": "Curiosamente, el futuro no siempre llega con estruendo; a veces se cuela en un hábito finalmente bien diseñado. Al final, tu ingenio se inclina sobre la vida cotidiana y, de pronto, la rutina deja de parecer banal. En este momento, una herramienta, un método o un ritmo de trabajo muestra sus costuras. En este escenario, percibes enseguida qué podría ser más fluido, justo e inteligente. Curiosamente, existe el deseo de reinventarlo todo, aunque un ajuste diminuto ya produce un efecto notable. Al final, el día aprecia las ideas que mejoran realmente la vida.",
+      "love": "Al final, el vínculo gana encanto cuando la vida diaria acoge lo inesperado. En este momento, el afecto se expresa en detalles útiles, con suficiente fantasía para evitar la monotonía. En este escenario, una atención práctica puede resultar muy seductora.",
+      "work": "En este momento, la solución convence porque permanece accesible para todo el equipo. En este escenario, una mejora sencilla cambia el ambiente laboral. Curiosamente, tu mirada independiente detecta una pérdida de energía que nadie nombraba.",
+      "finance": "En este escenario, la innovación se vuelve sensata cuando simplifica duraderamente el día a día. Curiosamente, una compra práctica promete ahorrar tiempo o ganar comodidad. Al final, su valor depende menos de la novedad que del uso real.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aquarius",
+      "language": "it",
+      "general": "Curiosamente, il futuro talvolta scivola dentro un’abitudine finalmente ben progettata. Alla fine, il vostro ingegno si china sul quotidiano e improvvisamente la routine non appare più banale. In questo momento, uno strumento, un metodo o un ritmo di lavoro mostra le proprie cuciture. In questo scenario, vedete subito cosa potrebbe diventare più fluido, giusto e intelligente. Curiosamente, esiste il desiderio di reinventare tutto, ma un piccolo spostamento produce già un effetto notevole. Alla fine, la giornata apprezza le idee che migliorano davvero la vita.",
+      "love": "Alla fine, il legame acquista fascino quando il quotidiano accoglie l’imprevisto. In questo momento, l’affetto si esprime nei dettagli utili, con abbastanza fantasia da evitare la monotonia. In questo scenario, un gesto pratico può diventare molto seducente.",
+      "work": "In questo momento, la soluzione convince perché rimane accessibile a tutta la squadra. In questo scenario, un miglioramento semplice cambia l’atmosfera professionale. Curiosamente, il vostro sguardo indipendente nota una dispersione d’energia che nessuno nominava.",
+      "finance": "In questo scenario, l’innovazione diventa sensata quando semplifica durevolmente il quotidiano. Curiosamente, un acquisto pratico promette di risparmiare tempo o aumentare il comfort. Alla fine, il suo valore dipende meno dalla novità che dall’uso reale.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aquarius",
+      "language": "pt",
+      "general": "Curiosamente, o futuro nem sempre chega com estrondo; às vezes entra num hábito finalmente bem pensado. No fim, o vosso engenho inclina-se sobre o quotidiano e, de repente, a rotina deixa de parecer banal. Neste momento, uma ferramenta, um método ou um ritmo de trabalho mostra as suas costuras. Neste cenário, veem imediatamente o que poderia tornar-se mais fluido, justo e inteligente. Curiosamente, existe vontade de reinventar tudo, mas uma alteração minúscula já produz efeito notável. No fim, o dia aprecia ideias que melhoram realmente a vida.",
+      "love": "No fim, o vínculo ganha encanto quando o quotidiano acolhe o inesperado. Neste momento, o afeto exprime-se em pormenores úteis, com fantasia suficiente para evitar a monotonia. Neste cenário, uma atenção prática pode ser muito sedutora.",
+      "work": "Neste momento, a solução convence porque permanece acessível a toda a equipa. Neste cenário, uma melhoria simples muda o ambiente de trabalho. Curiosamente, o vosso olhar independente deteta uma perda de energia que ninguém nomeava.",
+      "finance": "Neste cenário, a inovação torna-se sensata quando simplifica duradouramente o quotidiano. Curiosamente, uma compra prática promete poupar tempo ou acrescentar conforto. No fim, o seu valor depende menos da novidade do que do uso real.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aquarius",
+      "language": "ru",
+      "general": "Любопытно будущее не всегда приходит с шумом; иногда оно входит в наконец продуманную привычку. В итоге ваша изобретательность обращается к повседневности, и рутина внезапно перестаёт быть банальной. Сейчас инструмент, метод или рабочий ритм показывает свои швы. В этой обстановке вы сразу видите, что можно сделать легче, справедливее и умнее. Любопытно желание всё переосмыслить велико, но даже крошечное изменение уже даёт заметный эффект. В итоге день ценит идеи, реально улучшающие жизнь.",
+      "love": "В итоге связь становится ярче, когда быт принимает неожиданность. Сейчас привязанность выражается полезными деталями и долей фантазии, спасающей от однообразия. В этой обстановке практичный знак внимания может оказаться очень привлекательным.",
+      "work": "Сейчас решение убеждает, потому что остаётся доступным для всей команды. В этой обстановке простое улучшение меняет рабочую атмосферу. Любопытно ваш независимый взгляд замечает потерю энергии, которую никто не называл.",
+      "finance": "В этой обстановке инновация разумна, когда надолго упрощает быт. Любопытно практичная покупка обещает сберечь время или добавить комфорта. В итоге её ценность зависит не столько от новизны, сколько от реального использования.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "aquarius",
+      "language": "nl",
+      "general": "Merkwaardig genoeg de toekomst arriveert niet altijd met lawaai; soms sluipt zij een eindelijk doordachte gewoonte binnen. Uiteindelijk uw vindingrijkheid richt zich op het dagelijks leven en plots is routine niet langer banaal. Op dit moment een hulpmiddel, methode of werkritme toont zijn naden. In dit decor u ziet meteen wat soepeler, eerlijker en slimmer kan. Merkwaardig genoeg de wens om alles opnieuw uit te vinden bestaat, maar een kleine verschuiving heeft al opmerkelijk effect. Uiteindelijk de dag waardeert ideeën die het leven werkelijk verbeteren.",
+      "love": "Uiteindelijk de band wint charme wanneer het gewone ruimte laat voor het onverwachte. Op dit moment genegenheid toont zich in nuttige details, met voldoende fantasie tegen eentonigheid. In dit decor een praktische attentie kan zeer aantrekkelijk zijn.",
+      "work": "Op dit moment de oplossing overtuigt omdat zij voor het hele team bereikbaar en begrijpelijk blijft. In dit decor een eenvoudige verbetering verandert de werksfeer. Merkwaardig genoeg uw onafhankelijke blik ziet energieverlies dat niemand benoemde.",
+      "finance": "In dit decor vernieuwing wordt verstandig wanneer zij het dagelijks leven duurzaam vereenvoudigt. Merkwaardig genoeg een praktische aankoop belooft tijdwinst of meer comfort. Uiteindelijk de waarde hangt minder van nieuwigheid af dan van werkelijk gebruik.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "pisces",
+      "language": "fr",
+      "general": "Au bout du compte, elle devient présence, couleur et parfois même audace; L’imagination cherche aujourd’hui une scène, même modeste; Une création, un jeu, une invitation ou une manière singulière de raconter vos émotions trouve enfin un écho; Vous n’avez pas besoin d’expliquer chaque symbole : le plaisir transmet déjà l’essentiel; Une hésitation demeure face au regard d’autrui, surtout si l’œuvre reste fragile; Montrez seulement ce qui peut respirer; La journée vous rappelle qu’une sensibilité assumée n’est pas une faiblesse.",
+      "love": "À présent, l’émotion reste libre, sans perdre la profondeur qui vous est chère; Le romantisme prend des accents joueurs; Un regard, une musique ou une phrase inattendue suffit à faire vibrer l’atmosphère.",
+      "work": "Dans ce décor, son charme réside précisément dans ce qui échappe aux formats habituels; Votre créativité attire l’attention lorsqu’elle répond à une envie réelle du public; Une proposition personnelle peut sortir du brouillon.",
+      "finance": "Curieusement, une limite claire préserve durablement l’enchantement sans le transformer en culpabilité inutile; Loisirs, art ou plaisir partagé appellent une dépense soigneusement choisie; Le budget supporte mieux la joie que la dispersion.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "pisces",
+      "language": "en",
+      "general": "In the end, it becomes presence, colour and sometimes even audacity. At present, imagination seeks a stage today, however modest. In this setting, a creation, game, invitation or singular way of telling your emotions finally finds an echo. Curiously, you need not explain every symbol; pleasure already carries the essential message. In the end, a hesitation remains around other people’s gaze, especially while the work feels fragile. At present, show only what can breathe. In this setting, the day reminds you that owned sensitivity is not weakness.",
+      "love": "At present, emotion stays free without losing the depth you cherish. In this setting, romance takes on a playful note. Curiously, a glance, a piece of music or an unexpected phrase can make the atmosphere vibrate.",
+      "work": "In this setting, its charm lies precisely in what escapes familiar formats. Curiously, your creativity attracts attention when it answers a genuine desire in its audience. In the end, a personal proposal can leave the draft stage.",
+      "finance": "Curiously, a clear limit preserves enchantment without turning it into guilt or regret. In the end, leisure, art or shared pleasure calls for considered spending. At present, the budget carries joy better than dispersion.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "pisces",
+      "language": "de",
+      "general": "Am Ende sie wird Präsenz, Farbe und sogar Mut. Im Augenblick die Fantasie sucht heute eine Bühne, sei sie noch so klein. In dieser Szenerie eine Schöpfung, ein Spiel, eine Einladung oder Ihre besondere Art, Gefühle zu erzählen, findet endlich Widerhall. Merkwürdigerweise nicht jedes Symbol braucht eine Erklärung; Freude vermittelt das Wesentliche bereits. Am Ende gegenüber fremden Blicken bleibt Zögern, vor allem solange das Werk empfindlich ist. Im Augenblick zeigen Sie nur, was atmen kann. In dieser Szenerie der Tag erinnert daran, dass gelebte Sensibilität keine Schwäche ist.",
+      "love": "Im Augenblick gefühle bleiben frei, ohne ihre geschätzte Tiefe zu verlieren. In dieser Szenerie romantik erhält eine verspielte Note. Merkwürdigerweise ein Blick, Musik oder ein unerwarteter Satz genügt, um die Atmosphäre zum Schwingen zu bringen.",
+      "work": "In dieser Szenerie sein Reiz liegt gerade außerhalb bekannter Formate. Merkwürdigerweise ihre Kreativität zieht Aufmerksamkeit an, wenn sie einem echten Wunsch des Publikums begegnet. Am Ende ein persönlicher Vorschlag kann den Entwurf verlassen.",
+      "finance": "Merkwürdigerweise eine klare Grenze bewahrt Zauber, ohne daraus Schuld zu machen. Am Ende freizeit, Kunst oder geteilte Freude lädt zu einer bewussten Ausgabe ein. Im Augenblick das Budget trägt Freude besser als Zerstreuung.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "pisces",
+      "language": "es",
+      "general": "Al final, se convierte en presencia, color e incluso audacia. En este momento, la imaginación busca hoy un escenario, aunque sea modesto. En este escenario, una creación, un juego, una invitación o una forma singular de contar tus emociones encuentra por fin eco. Curiosamente, no necesitas explicar cada símbolo: el placer transmite ya lo esencial. Al final, persiste una duda ante la mirada ajena, sobre todo si la obra sigue frágil. En este momento, muestra únicamente lo que puede respirar. En este escenario, el día recuerda que una sensibilidad asumida no es debilidad.",
+      "love": "En este momento, la emoción permanece libre sin perder la profundidad que tanto aprecias. En este escenario, el romanticismo adopta un tono juguetón. Curiosamente, una mirada, una música o una frase inesperada basta para hacer vibrar el ambiente.",
+      "work": "En este escenario, su encanto reside precisamente en aquello que escapa a los formatos habituales. Curiosamente, tu creatividad atrae atención cuando responde a un deseo verdadero del público. Al final, una propuesta personal puede abandonar el borrador.",
+      "finance": "Curiosamente, un límite claro conserva el encanto sin convertirlo en culpa. Al final, ocio, arte o placer compartido invitan a un gasto elegido. En este momento, el presupuesto soporta mejor la alegría que la dispersión.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "pisces",
+      "language": "it",
+      "general": "Alla fine, diventa presenza, colore e perfino audacia. In questo momento, l’immaginazione cerca oggi una scena, anche modesta. In questo scenario, una creazione, un gioco, un invito o un modo singolare di raccontare le emozioni trova finalmente un’eco. Curiosamente, non dovete spiegare ogni simbolo: il piacere trasmette già l’essenziale. Alla fine, resta un’esitazione davanti allo sguardo altrui, soprattutto se l’opera è fragile. In questo momento, mostrate soltanto ciò che può respirare. In questo scenario, la giornata ricorda che una sensibilità assunta non è debolezza.",
+      "love": "In questo momento, l’emozione rimane libera senza perdere la profondità che amate. In questo scenario, il romanticismo prende una nota giocosa. Curiosamente, uno sguardo, una musica o una frase inattesa basta a far vibrare l’atmosfera.",
+      "work": "In questo scenario, il suo fascino vive proprio in ciò che sfugge ai formati abituali. Curiosamente, la creatività attira attenzione quando risponde a un desiderio reale del pubblico. Alla fine, una proposta personale può lasciare la bozza.",
+      "finance": "Curiosamente, un limite chiaro conserva l’incanto senza trasformarlo in senso di colpa. Alla fine, svago, arte o piacere condiviso invitano a una spesa scelta. In questo momento, il budget sostiene meglio la gioia della dispersione.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "pisces",
+      "language": "pt",
+      "general": "No fim, torna-se presença, cor e até audácia. Neste momento, a imaginação procura hoje um palco, ainda que modesto. Neste cenário, uma criação, um jogo, um convite ou uma forma singular de contar emoções encontra finalmente eco. Curiosamente, não precisam de explicar cada símbolo: o prazer já transmite o essencial. No fim, permanece alguma hesitação perante o olhar alheio, sobretudo enquanto a obra estiver frágil. Neste momento, mostrem apenas o que consegue respirar. Neste cenário, o dia recorda que uma sensibilidade assumida não é fraqueza.",
+      "love": "Neste momento, a emoção permanece livre sem perder a profundidade que apreciam. Neste cenário, o romantismo ganha um tom brincalhão. Curiosamente, um olhar, uma música ou uma frase inesperada basta para fazer vibrar o ambiente.",
+      "work": "Neste cenário, o encanto reside precisamente no que escapa aos formatos habituais. Curiosamente, a vossa criatividade atrai atenção quando responde a um desejo real do público. No fim, uma proposta pessoal pode sair do rascunho.",
+      "finance": "Curiosamente, um limite claro preserva o encanto sem o transformar em culpa. No fim, lazer, arte ou prazer partilhado convida a uma despesa escolhida. Neste momento, o orçamento suporta melhor a alegria do que a dispersão.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "pisces",
+      "language": "ru",
+      "general": "В итоге она становится присутствием, цветом и даже смелостью. Сейчас воображение ищет сегодня сцену, пусть даже скромную. В этой обстановке творение, игра, приглашение или особый способ рассказать о чувствах наконец находит отклик. Любопытно не нужно объяснять каждый символ: удовольствие уже передаёт главное. В итоге перед чужим взглядом остаётся сомнение, особенно пока работа хрупка. Сейчас показывайте лишь то, что может дышать. В этой обстановке день напоминает: принятая чувствительность не является слабостью.",
+      "love": "Сейчас чувство остаётся свободным, не теряя глубины, которой вы дорожите. В этой обстановке романтика приобретает игривую ноту. Любопытно взгляда, музыки или неожиданной фразы достаточно, чтобы атмосфера зазвучала.",
+      "work": "В этой обстановке его очарование живёт именно за пределами привычных форматов. Любопытно ваше творчество привлекает внимание, когда отвечает настоящему желанию аудитории. В итоге личное предложение может выйти из черновика.",
+      "finance": "Любопытно ясная граница сохраняет волшебство, не превращая его в вину. В итоге досуг, искусство или общая радость зовут к осознанным расходам. Сейчас бюджет лучше выдерживает удовольствие, чем распыление.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-04",
+      "sign": "pisces",
+      "language": "nl",
+      "general": "Uiteindelijk zij wordt aanwezigheid, kleur en zelfs durf. Op dit moment de verbeelding zoekt vandaag een podium, hoe bescheiden ook. In dit decor een creatie, spel, uitnodiging of bijzondere manier om emoties te vertellen vindt eindelijk weerklank. Merkwaardig genoeg u hoeft niet elk symbool uit te leggen; plezier draagt de essentie al over. Uiteindelijk voor andermans blik blijft enige aarzeling, vooral zolang het werk kwetsbaar is. Op dit moment toon alleen wat kan ademen. In dit decor de dag herinnert u eraan dat aanvaarde gevoeligheid geen zwakte is.",
+      "love": "Op dit moment gevoel blijft vrij zonder de diepte te verliezen die u koestert. In dit decor romantiek krijgt een speelse toon. Merkwaardig genoeg een blik, muziek of onverwachte zin volstaat om de sfeer te laten trillen.",
+      "work": "In dit decor de charme ligt precies buiten vertrouwde vormen. Merkwaardig genoeg uw creativiteit trekt aandacht wanneer zij een echt verlangen van het publiek beantwoordt. Uiteindelijk een persoonlijk voorstel kan het concept verlaten.",
+      "finance": "Merkwaardig genoeg een duidelijke grens bewaart betovering zonder haar in schuld te veranderen. Uiteindelijk vrije tijd, kunst of gedeeld plezier vraagt om bewuste besteding. Op dit moment het budget draagt vreugde beter dan versnippering.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    }
+  ]
+}
