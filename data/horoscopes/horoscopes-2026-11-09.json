@@ -1,0 +1,1077 @@
+{
+  "date": "2026-11-09",
+  "generatedAt": "2026-11-01T01:27:53.883105+01:00",
+  "timezone": "Europe/Paris",
+  "astronomy": {
+    "validationStatus": "PARTIAL",
+    "source": "CosmyDay",
+    "sourceUrl": "https://api.cosmyday.com/",
+    "attribution": "Données astronomiques : CosmyDay — https://cosmyday.com (utilisation avec attribution requise).",
+    "requestedDateTime": "2026-11-09T12:00:00+01:00",
+    "requestedTimezone": "Europe/Paris",
+    "requestedUtc": "2026-11-09T11:00:00+00:00",
+    "calculationParameters": {
+      "year": 2026,
+      "month": 11,
+      "day": 9,
+      "hour": 12,
+      "minute": 0,
+      "lat": 48.8566,
+      "lon": 2.3522
+    },
+    "confirmedParameters": [
+      "Paramètres envoyés: date 2026-11-09, heure 12:00, latitude 48.8566, longitude 2.3522",
+      "Documentation fournisseur: heure locale aux coordonnées, fuseau résolu par le fournisseur",
+      "Réponse identifiée avec positions, signes, longitudes et vitesses"
+    ],
+    "unconfirmedParameters": [
+      "Horodatage effectif absent de la réponse",
+      "Zodiaque tropical non déclaré explicitement dans la réponse",
+      "Référentiel géocentrique non déclaré explicitement dans la réponse",
+      "Aucune comparaison indépendante des positions"
+    ],
+    "responseConfirmedDateTime": null,
+    "validationNotes": "La documentation confirme que l’heure transmise à /natal est locale aux coordonnées et que le fournisseur résout le fuseau. La réponse fournit des positions exploitables, sans confirmer explicitement l’instant calculé ni les drapeaux tropical et géocentrique. Les aspects majeurs sont dérivés arithmétiquement des longitudes reçues; ce contrôle ne valide pas indépendamment l’éphéméride. Rédaction symbolique prudente, sans présenter de configuration précise comme vérifiée.",
+    "editorialMode": "symbolic",
+    "referenceVersion": "LMN24 technical V4.1",
+    "editorialVersion": "LMN24 V5 — Horoscope Premium",
+    "validationChecks": {
+      "providerResponseRetrieved": true,
+      "requiredBodiesPresent": true,
+      "longitudeRangesChecked": true,
+      "signIndexConsistencyChecked": true,
+      "retrogradeSpeedConsistencyChecked": true,
+      "aspectArithmeticChecked": true,
+      "independentEphemerisVerification": false
+    },
+    "interpretationRules": {
+      "zodiac": "Western tropical convention used only as a symbolic editorial framework; provider response flag unconfirmed",
+      "coordinatePreference": "Geocentric preferred; not explicitly confirmed by provider response",
+      "solarMethod": "Conditional whole-sign solar sectors derived from received sign indices, used only as symbolic prompts",
+      "traditionalRulers": {
+        "aries": "Mars",
+        "taurus": "Venus",
+        "gemini": "Mercury",
+        "cancer": "Moon",
+        "leo": "Sun",
+        "virgo": "Mercury",
+        "libra": "Venus",
+        "scorpio": "Mars",
+        "sagittarius": "Jupiter",
+        "capricorn": "Saturn",
+        "aquarius": "Saturn",
+        "pisces": "Jupiter"
+      },
+      "majorAspects": {
+        "conjunction": {
+          "angle": 0,
+          "orb": 8
+        },
+        "sextile": {
+          "angle": 60,
+          "orb": 4
+        },
+        "square": {
+          "angle": 90,
+          "orb": 6
+        },
+        "trine": {
+          "angle": 120,
+          "orb": 6
+        },
+        "opposition": {
+          "angle": 180,
+          "orb": 8
+        }
+      }
+    },
+    "editorialTones": {
+      "aries": "audacieuse et précise",
+      "taurus": "veloutée et lucide",
+      "gemini": "vive et secrète",
+      "cancer": "protectrice et lumineuse",
+      "leo": "fière et méthodique",
+      "virgo": "fine et déterminée",
+      "libra": "romantique et ambitieuse",
+      "scorpio": "intense et joueuse",
+      "sagittarius": "exploratrice et exigeante",
+      "capricorn": "sobre et magnétique",
+      "aquarius": "inventive et chaleureuse",
+      "pisces": "poétique et concrète"
+    },
+    "languageVariants": {
+      "en": "en-GB",
+      "pt": "pt-PT"
+    },
+    "historyNotes": "Quatorze journées précédentes, du 26 octobre au 8 novembre 2026, consultées dans les huit langues pour les thèmes, structures, ouvertures et chutes.",
+    "ephemerisPath": "data/astrology/ephemeris/astrology-2026-11-09.json",
+    "editorialReview": {
+      "reference": "LMN24 V5 — Horoscope Premium",
+      "frenchPassCompleted": true,
+      "internationalPassCompleted": true,
+      "assessment": "Appréciation éditoriale subjective; contrôles techniques séparés."
+    }
+  },
+  "horoscopes": [
+    {
+      "date": "2026-11-09",
+      "sign": "aries",
+      "language": "fr",
+      "general": "ce qui rend votre élan intéressant, c’est cette part de vous qui accepte de ne pas tout maîtriser; Le trac a parfois le goût de l’envie; Montrer une création, proposer une sortie ou laisser entendre une attirance vous expose davantage qu’une action menée tambour battant; Vous sentez pourtant qu’un petit risque personnel donnerait du relief au quotidien; Une réaction moins enthousiaste qu’espéré peut piquer votre fierté ; elle ne raconte pas forcément toute l’histoire; Le feu cherche une scène à sa mesure, pas un public conquis d’avance.",
+      "love": "une réponse hésitante peut aussi contenir du trouble, pas nécessairement un manque d’intérêt; La séduction retrouve un air de défi, avec une fragilité derrière l’audace; Vous aimeriez provoquer un sourire qui ne soit destiné qu’à vous.",
+      "work": "l’enthousiasme peut convaincre, mais une remarque technique risque de toucher votre amour-propre plus que le sujet ne le justifie; Une proposition personnelle demande à sortir du rang; Vous avez envie de défendre un angle qui porte votre marque.",
+      "finance": "la satisfaction dépendra moins de l’effet produit que du plaisir réellement vécu ensuite; Le plaisir appelle une dépense qui raconte votre personnalité; Il y a du panache dans cette envie, et parfois le désir de susciter une réaction.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aries",
+      "language": "en",
+      "general": "Under this light, what makes this impulse interesting is the part of you willing to relinquish control. Within this movement, nerves sometimes taste like desire. On closer inspection, showing a creation, suggesting an outing or hinting at attraction exposes more of you than an action carried out at full speed. As the day unfolds, yet a small personal risk could give everyday life some welcome definition. Under this light, a less enthusiastic response than expected may sting your pride; it does not necessarily tell the whole story. Within this movement, your fire seeks a stage of its own, not an audience won over in advance.",
+      "love": "Within this movement, a hesitant response can contain its own uncertainty and attraction, not necessarily a lack of interest. On closer inspection, seduction feels like a challenge, with vulnerability behind the boldness. As the day unfolds, you would like to provoke a smile meant only for you.",
+      "work": "On closer inspection, enthusiasm can persuade, but a technical remark may touch your pride more sharply than the issue itself actually warrants. As the day unfolds, a personal proposal wants to stand apart. Under this light, you feel like defending an angle bearing your signature.",
+      "finance": "As the day unfolds, satisfaction will depend less on the impression made than on the enjoyment you actually experience afterwards. Under this light, pleasure calls for spending that expresses your personality. Within this movement, there is flair in the desire, and sometimes a wish to provoke a reaction.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aries",
+      "language": "de",
+      "general": "In diesem Licht interessant wird dieser Aufbruch durch den Teil von Ihnen, der bereit ist, nicht alles zu beherrschen. In dieser Bewegung lampenfieber schmeckt manchmal nach Lust. Bei näherem Hinsehen eine eigene Arbeit zu zeigen, einen Ausflug vorzuschlagen oder Anziehung anzudeuten macht verletzlicher als eine Aktion mit voller Kraft. Im Lauf des Tages dennoch könnte ein kleines persönliches Wagnis dem Alltag Kontur geben. In diesem Licht eine weniger begeisterte Reaktion als erhofft mag den Stolz treffen; sie erzählt nicht zwangsläufig die ganze Geschichte. In dieser Bewegung ihr Feuer sucht eine passende Bühne, kein im Voraus gewonnenes Publikum.",
+      "love": "In dieser Bewegung eine zögernde Antwort kann ebenfalls Verwirrung und Anziehung enthalten, nicht unbedingt mangelndes Interesse oder eine innere Absage. Bei näherem Hinsehen verführung bekommt etwas Herausforderndes, mit Verletzlichkeit hinter dem Mut. Im Lauf des Tages sie möchten ein Lächeln auslösen, das nur Ihnen gilt.",
+      "work": "Bei näherem Hinsehen begeisterung kann überzeugen, doch eine fachliche Anmerkung trifft möglicherweise Ihren Stolz stärker, als es die Sache rechtfertigt. Im Lauf des Tages ein persönlicher Vorschlag möchte aus der Reihe treten. In diesem Licht sie wollen einen Blickwinkel vertreten, der Ihre Handschrift trägt.",
+      "finance": "Im Lauf des Tages zufriedenheit hängt weniger vom erzielten Eindruck ab als von dem Genuss, den Sie danach tatsächlich erleben. In diesem Licht vergnügen lockt zu einer Ausgabe, die Ihre Persönlichkeit ausdrückt. In dieser Bewegung in diesem Wunsch steckt Schwung, manchmal auch die Hoffnung auf eine Reaktion.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aries",
+      "language": "es",
+      "general": "Bajo esta luz, lo interesante de su impulso es esa parte que acepta no controlarlo todo. En este movimiento, el nerviosismo tiene a veces sabor a deseo. Al mirar más de cerca, mostrar una creación, proponer una salida o insinuar una atracción expone más que actuar a toda velocidad. Mientras avanza el día, sin embargo, siente que un pequeño riesgo personal daría relieve a lo cotidiano. Bajo esta luz, una reacción menos entusiasta de lo esperado puede herir su orgullo; no cuenta necesariamente toda la historia. En este movimiento, el fuego busca un escenario a su medida, no un público conquistado de antemano.",
+      "love": "En este movimiento, una respuesta vacilante también puede contener turbación, no necesariamente falta de interés ni una negativa. Al mirar más de cerca, la seducción recupera un aire de desafío, con fragilidad detrás de la audacia. Mientras avanza el día, le gustaría provocar una sonrisa destinada solo a usted.",
+      "work": "Al mirar más de cerca, el entusiasmo puede convencer, pero una observación técnica corre el riesgo de tocar su amor propio más de lo que merece el asunto. Mientras avanza el día, una propuesta personal pide salir de la fila. Bajo esta luz, tiene ganas de defender un enfoque con su sello.",
+      "finance": "Mientras avanza el día, la satisfacción dependerá menos del efecto causado que del disfrute que realmente quede después. Bajo esta luz, el placer invita a un gasto que exprese su personalidad. En este movimiento, hay brío en ese deseo y, a veces, ganas de suscitar una reacción.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aries",
+      "language": "it",
+      "general": "Sotto questa luce, il vostro slancio interessa proprio per quella parte che accetta di non controllare tutto. Dentro questo movimento, l'emozione prima di esporsi sa talvolta di desiderio. A guardare meglio, mostrare una creazione, proporre un'uscita o accennare a un'attrazione vi mette in gioco più di un'azione a tutta velocità. Con il procedere del giorno, eppure un piccolo rischio personale darebbe rilievo al quotidiano. Sotto questa luce, una risposta meno entusiasta del previsto può pungere l'orgoglio; non racconta necessariamente tutta la storia. Dentro questo movimento, il fuoco cerca una scena a sua misura, non un pubblico già conquistato.",
+      "love": "Dentro questo movimento, una risposta esitante può contenere anche turbamento, non necessariamente mancanza d'interesse o una distanza già decisa in partenza. A guardare meglio, la seduzione ritrova un'aria di sfida, con fragilità dietro l'audacia. Con il procedere del giorno, vorreste provocare un sorriso destinato soltanto a voi.",
+      "work": "A guardare meglio, l'entusiasmo può convincere, ma un'osservazione tecnica rischia di toccare l'amor proprio più di quanto il tema giustifichi. Con il procedere del giorno, una proposta personale chiede di uscire dai ranghi. Sotto questa luce, avete voglia di difendere un taglio che porti il vostro segno.",
+      "finance": "Con il procedere del giorno, la soddisfazione dipenderà meno dall'effetto prodotto che dal godimento realmente vissuto dopo l'acquisto. Sotto questa luce, il piacere chiama una spesa che racconti la vostra personalità. Dentro questo movimento, c'è slancio in questo desiderio e, talvolta, voglia di suscitare una reazione.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aries",
+      "language": "pt",
+      "general": "Sob esta luz, o interesse do impulso está nessa parte que aceita não controlar tudo. Neste movimento, o nervosismo tem por vezes sabor a desejo. Olhando mais de perto, mostrar uma criação, propor uma saída ou deixar perceber uma atração expõe mais do que uma ação a toda a velocidade. À medida que o dia avança, sente, porém, que um pequeno risco pessoal daria relevo ao quotidiano. Sob esta luz, uma reação menos entusiasta do que esperava pode picar o orgulho; não conta necessariamente a história toda. Neste movimento, o fogo procura um palco à sua medida, não um público conquistado de antemão.",
+      "love": "Neste movimento, uma resposta hesitante também pode conter perturbação, não necessariamente falta de interesse ou distância assumida. Olhando mais de perto, a sedução recupera um ar de desafio, com fragilidade por detrás da audácia. À medida que o dia avança, gostaria de provocar um sorriso destinado apenas a si.",
+      "work": "Olhando mais de perto, o entusiasmo pode convencer, mas uma observação técnica arrisca tocar o amor-próprio mais do que o assunto realmente justifica. À medida que o dia avança, uma proposta pessoal pede para sair da fila. Sob esta luz, tem vontade de defender uma abordagem com a sua marca.",
+      "finance": "À medida que o dia avança, a satisfação dependerá menos do efeito produzido do que do prazer realmente vivido depois da compra. Sob esta luz, o prazer chama uma despesa que conte a sua personalidade. Neste movimento, há brio neste desejo e, por vezes, vontade de suscitar uma reação.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aries",
+      "language": "ru",
+      "general": "В этом свете порыв интересен именно той частью вас, которая согласна не владеть каждым поворотом происходящего и оставить место чужой реакции. В этом движении волнение иногда напоминает желание на вкус. Если присмотреться показать свою работу, предложить прогулку или намекнуть на симпатию — значит раскрыться сильнее, чем в стремительном действии. По мере развития дня и всё же небольшой личный риск способен придать будням объём. В этом свете менее восторженный отклик, чем хотелось, может уколоть гордость; он не обязательно рассказывает всю историю. В этом движении ваш огонь ищет подходящую сцену, а не заранее покорённую публику.",
+      "love": "В этом движении в нерешительном ответе тоже может быть волнение, а не обязательно отсутствие интереса или заранее принятое решение сохранить расстояние между вами. Если присмотреться в обаянии появляется вызов, а за смелостью — уязвимость. По мере развития дня хочется вызвать улыбку, предназначенную только вам.",
+      "work": "Если присмотреться воодушевление убеждает, но техническое замечание рискует задеть самолюбие сильнее, чем того заслуживает сам вопрос. По мере развития дня личное предложение хочет выделиться из ряда. В этом свете вам интересно отстаивать подход с собственным почерком.",
+      "finance": "По мере развития дня удовлетворение будет зависеть меньше от произведённого впечатления, чем от удовольствия, которое действительно останется после покупки. В этом свете удовольствие зовёт к трате, выражающей вашу личность. В этом движении в этом желании есть размах, иногда и надежда вызвать отклик.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aries",
+      "language": "nl",
+      "general": "In dit licht interessant wordt je impuls door dat deel van jezelf dat niet alles hoeft te beheersen. Binnen deze beweging zenuwen smaken soms naar verlangen. Bij nader inzien een eigen creatie tonen, een uitstapje voorstellen of aantrekkingskracht laten doorschemeren stelt je meer bloot dan een actie op volle snelheid. Naarmate de dag vordert toch kan een klein persoonlijk risico het dagelijks leven reliëf geven. In dit licht een minder enthousiaste reactie dan gehoopt prikt misschien in je trots; ze vertelt niet noodzakelijk het hele verhaal. Binnen deze beweging je vuur zoekt een passend podium, geen publiek dat al bij voorbaat gewonnen is.",
+      "love": "Binnen deze beweging een aarzelend antwoord kan ook verwarring en aantrekkingskracht bevatten, niet noodzakelijk een gebrek aan belangstelling of een afwijzing. Bij nader inzien verleiding krijgt iets uitdagends, met kwetsbaarheid achter de durf. Naarmate de dag vordert je wilt een glimlach uitlokken die alleen voor jou bedoeld is.",
+      "work": "Bij nader inzien enthousiasme kan overtuigen, maar een technische opmerking raakt misschien je trots harder dan het onderwerp zelf eigenlijk rechtvaardigt. Naarmate de dag vordert een persoonlijk voorstel wil uit de rij stappen. In dit licht je wilt een invalshoek verdedigen met je eigen handschrift.",
+      "finance": "Naarmate de dag vordert tevredenheid hangt minder af van het effect dan van het plezier dat je daarna werkelijk beleeft. In dit licht plezier lokt een uitgave die je persoonlijkheid uitdrukt. Binnen deze beweging er zit zwier in het verlangen, soms ook de wens een reactie op te roepen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "taurus",
+      "language": "fr",
+      "general": "le plus troublant sera peut-être de découvrir que vous ne saviez pas encore comment le nommer; Dire que tout va bien devient moins confortable lorsque ce n’est pas tout à fait vrai; Vous pouvez ressentir un léger décalage entre la douceur attendue et celle que l’on vous offre; Un déjeuner, une attention ou une promesse banale prend alors une importance inhabituelle; Ce n’est pas forcément une grande déception : plutôt un désir resté sans voix qui frappe à la porte; Sous votre calme, quelque chose demande à être entendu.",
+      "love": "un moment imparfait peut pourtant vous toucher là où une démonstration impeccable serait restée extérieure; La tendresse rencontre une attente très précise, parfois difficile à reconnaître soi-même; Vous aimeriez que l’autre trouve le geste juste sans connaître le scénario.",
+      "work": "la collaboration gagne en vérité lorsque l’attachement au projet n’efface pas ce que vous en attendez; Votre implication mérite une réponse à sa hauteur, et ce besoin devient sensible; Une marque de considération peut compter davantage qu’un discours encourageant.",
+      "finance": "un objet agréable reste un objet, pas la réponse à chaque attente affective; L’envie de vous faire plaisir peut compenser une attention qui vous manque; L’achat n’est pas forcément regrettable, mais il risque de porter une mission trop vaste.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "taurus",
+      "language": "en",
+      "general": "Within this movement, perhaps the most unsettling discovery is that you did not yet know what to call it yourself. On closer inspection, saying everything is fine becomes uncomfortable when it is not quite true. As the day unfolds, you may sense a slight gap between the warmth expected and the warmth offered. Under this light, a lunch, an attentive gesture or an ordinary promise then acquires unusual importance. Within this movement, this need not be a great disappointment: more a desire, previously voiceless, knocking at the door. On closer inspection, beneath your calm, something wants to be heard.",
+      "love": "On closer inspection, an imperfect moment can nevertheless reach you where an impeccable performance would remain outside. As the day unfolds, tenderness meets a very specific expectation, sometimes difficult even to recognise within yourself. Under this light, you would like someone to find the right gesture without knowing the script.",
+      "work": "As the day unfolds, collaboration gains honesty when attachment to a project does not erase what you expect from it. Under this light, your commitment deserves a response to match, and that need feels more sensitive. Within this movement, a mark of consideration may matter more than encouraging words.",
+      "finance": "Under this light, a lovely object remains an object, not an answer to every emotional expectation. Within this movement, the urge to treat yourself may compensate for attention you miss. On closer inspection, the purchase need not be regrettable, but it could be carrying too large a task.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "taurus",
+      "language": "de",
+      "general": "In dieser Bewegung vielleicht ist die überraschendste Entdeckung, dass Sie selbst noch gar nicht wussten, wie Sie es nennen sollten. Bei näherem Hinsehen zu sagen, alles sei gut, wird unbequem, wenn es nicht ganz stimmt. Im Lauf des Tages vielleicht spüren Sie einen kleinen Abstand zwischen erhoffter und angebotener Wärme. In diesem Licht ein Mittagessen, eine Aufmerksamkeit oder ein alltägliches Versprechen bekommt dann ungewohntes Gewicht. In dieser Bewegung das muss keine große Enttäuschung sein: eher ein bislang stummer Wunsch, der anklopft. Bei näherem Hinsehen unter Ihrer Ruhe möchte etwas gehört werden.",
+      "love": "Bei näherem Hinsehen ein unvollkommener Moment erreicht Sie dennoch womöglich tiefer als eine makellose Darbietung. Im Lauf des Tages zärtlichkeit trifft auf eine sehr genaue Erwartung, die sogar Ihnen selbst schwer erkennbar sein kann. In diesem Licht der andere soll die richtige Geste finden, ohne das Drehbuch zu kennen.",
+      "work": "Im Lauf des Tages zusammenarbeit wird wahrhaftiger, wenn die Bindung an ein Projekt nicht auslöscht, was Sie selbst davon erwarten. In diesem Licht ihr Einsatz verdient eine entsprechende Antwort, und dieses Bedürfnis wird empfindlicher. In dieser Bewegung ein Zeichen von Wertschätzung kann mehr zählen als ermutigende Worte.",
+      "finance": "In diesem Licht ein schöner Gegenstand bleibt ein Gegenstand, nicht die Antwort auf jede gefühlsmäßige Erwartung. In dieser Bewegung sich etwas zu gönnen kann fehlende Aufmerksamkeit ausgleichen sollen. Bei näherem Hinsehen der Kauf muss nicht bedauerlich sein, trägt aber womöglich eine zu große Aufgabe.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "taurus",
+      "language": "es",
+      "general": "En este movimiento, quizá lo más inquietante sea descubrir que usted tampoco sabía todavía cómo llamarlo. Al mirar más de cerca, decir que todo va bien resulta menos cómodo cuando no es del todo cierto. Mientras avanza el día, puede sentir una pequeña distancia entre la calidez esperada y la ofrecida. Bajo esta luz, un almuerzo, una atención o una promesa corriente adquiere entonces una importancia inusual. En este movimiento, no tiene por qué ser una gran decepción: más bien un deseo hasta ahora mudo que llama a la puerta. Al mirar más de cerca, bajo su calma, algo pide ser escuchado.",
+      "love": "Al mirar más de cerca, un momento imperfecto puede conmoverle donde una demostración impecable se quedaría fuera. Mientras avanza el día, la ternura encuentra una expectativa muy precisa, a veces difícil de reconocer incluso para usted. Bajo esta luz, querría que el otro acertase con el gesto sin conocer el guion.",
+      "work": "Mientras avanza el día, la colaboración gana verdad cuando el apego al proyecto no borra lo que espera recibir. Bajo esta luz, su implicación merece una respuesta a su altura, y esa necesidad se vuelve sensible. En este movimiento, una muestra de consideración puede contar más que un discurso alentador.",
+      "finance": "Bajo esta luz, un objeto agradable no responde a todas las expectativas afectivas. En este movimiento, las ganas de darse un gusto pueden compensar una atención que echa de menos. Al mirar más de cerca, la compra no tiene por qué ser lamentable, pero quizá cargue con una misión demasiado amplia.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "taurus",
+      "language": "it",
+      "general": "Dentro questo movimento, forse la scoperta più inquietante sarà accorgervi che neppure voi sapevate ancora come chiamarlo. A guardare meglio, dire che va tutto bene diventa meno comodo quando non è del tutto vero. Con il procedere del giorno, potete avvertire una lieve distanza fra la dolcezza attesa e quella offerta. Sotto questa luce, un pranzo, un'attenzione o una promessa normale assume allora un'importanza insolita. Dentro questo movimento, non è necessariamente una grande delusione: piuttosto un desiderio rimasto senza voce che bussa alla porta. A guardare meglio, sotto la calma, qualcosa chiede ascolto.",
+      "love": "A guardare meglio, un momento imperfetto può comunque toccarvi dove una dimostrazione impeccabile resterebbe fuori. Con il procedere del giorno, la tenerezza incontra un'attesa precisa, a volte difficile da riconoscere perfino dentro di sé. Sotto questa luce, vorreste che l'altro trovasse il gesto giusto senza conoscere il copione.",
+      "work": "Con il procedere del giorno, la collaborazione acquista verità quando l'attaccamento al progetto non cancella ciò che vi aspettate in cambio. Sotto questa luce, il vostro impegno merita una risposta all'altezza e questo bisogno diventa sensibile. Dentro questo movimento, un segno di considerazione può contare più di parole incoraggianti.",
+      "finance": "Sotto questa luce, un oggetto piacevole resta un oggetto, non la risposta a ogni attesa affettiva. Dentro questo movimento, la voglia di farvi un regalo può compensare un'attenzione mancante. A guardare meglio, l'acquisto non è necessariamente da rimpiangere, ma rischia di portare un compito troppo vasto.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "taurus",
+      "language": "pt",
+      "general": "Neste movimento, talvez o mais perturbador seja descobrir que ainda nem sabia como lhe chamar. Olhando mais de perto, dizer que está tudo bem torna-se menos confortável quando não é inteiramente verdade. À medida que o dia avança, pode sentir uma pequena distância entre a doçura esperada e a oferecida. Sob esta luz, um almoço, uma atenção ou uma promessa banal ganha então uma importância invulgar. Neste movimento, não tem de ser uma grande desilusão: antes um desejo até agora sem voz que bate à porta. Olhando mais de perto, sob a calma, algo pede para ser ouvido.",
+      "love": "Olhando mais de perto, um momento imperfeito pode, contudo, tocar onde uma demonstração impecável ficaria de fora. À medida que o dia avança, a ternura encontra uma expectativa muito precisa, por vezes difícil de reconhecer em si. Sob esta luz, gostaria que o outro acertasse no gesto sem conhecer o guião.",
+      "work": "À medida que o dia avança, a colaboração ganha verdade quando o apego ao projeto não apaga o que dele espera. Sob esta luz, o seu empenho merece uma resposta à altura, e essa necessidade torna-se sensível. Neste movimento, um sinal de consideração pode contar mais do que palavras encorajadoras.",
+      "finance": "Sob esta luz, um objeto agradável não é resposta para todas as expectativas afetivas. Neste movimento, a vontade de se mimar pode compensar uma atenção de que sente falta. Olhando mais de perto, a compra não tem de ser lamentável, mas arrisca carregar uma missão demasiado vasta.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "taurus",
+      "language": "ru",
+      "general": "В этом движении возможно, сильнее всего удивит открытие, что вы и сами ещё не знали, как это назвать. Если присмотреться говорить, что всё хорошо, становится неудобно, когда это не совсем так. По мере развития дня вы можете почувствовать небольшое расстояние между ожидаемым и предложенным теплом. В этом свете обед, знак внимания или обычное обещание приобретают непривычную важность. В этом движении не обязательно речь о большом разочаровании: скорее стучится желание, прежде лишённое голоса. Если присмотреться под вашим спокойствием что-то просит быть услышанным.",
+      "love": "Если присмотреться несовершенный момент всё же может затронуть глубже, чем безупречная демонстрация, оставшаяся где-то снаружи. По мере развития дня нежность встречается с очень точным ожиданием, которое порой трудно признать даже себе. В этом свете хочется, чтобы другой нашёл нужный жест, не зная сценария.",
+      "work": "По мере развития дня сотрудничество приобретает правдивость, когда привязанность к проекту не стирает того, что вы сами хотите получить от общего дела. В этом свете ваше участие заслуживает соразмерного ответа, и эта потребность становится чувствительнее. В этом движении знак уважения может значить больше ободряющей речи.",
+      "finance": "В этом свете приятная вещь остаётся вещью, а не ответом на каждое эмоциональное ожидание. В этом движении желание порадовать себя может возместить недостающее внимание. Если присмотреться покупка не обязательно окажется неудачной, но рискует нести слишком большую задачу.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "taurus",
+      "language": "nl",
+      "general": "Binnen deze beweging misschien ontdek je tot je verbazing dat je zelf nog niet wist hoe je het moest noemen. Bij nader inzien zeggen dat alles goed gaat wordt ongemakkelijk als het niet helemaal waar is. Naarmate de dag vordert misschien voel je een kleine afstand tussen de warmte die je verwacht en de warmte die wordt aangeboden. In dit licht een lunch, een attentie of een gewone belofte krijgt dan ongewoon gewicht. Binnen deze beweging het hoeft geen grote teleurstelling te zijn: eerder een verlangen dat nog geen stem had en nu aanklopt. Bij nader inzien onder je kalmte wil iets gehoord worden.",
+      "love": "Bij nader inzien een onvolmaakt moment kan je toch raken waar een vlekkeloze vertoning buiten blijft. Naarmate de dag vordert tederheid ontmoet een heel precieze verwachting die je soms zelf moeilijk herkent. In dit licht je wilt dat de ander het juiste gebaar vindt zonder het draaiboek te kennen.",
+      "work": "Naarmate de dag vordert samenwerking wordt oprechter wanneer gehechtheid aan een project niet uitwist wat je er zelf van verwacht. In dit licht je inzet verdient een passend antwoord en die behoefte wordt gevoeliger. Binnen deze beweging een teken van waardering kan meer tellen dan bemoedigende woorden.",
+      "finance": "In dit licht een mooi voorwerp blijft een voorwerp, niet het antwoord op iedere emotionele verwachting. Binnen deze beweging de behoefte jezelf te verwennen kan ontbrekende aandacht compenseren. Bij nader inzien de aankoop hoeft geen spijt op te leveren, maar draagt misschien een te grote opdracht.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "gemini",
+      "language": "fr",
+      "general": "vous n’avez pas besoin d’un retournement spectaculaire pour trouver la journée captivante : parfois, une version plus juste vaut mieux qu’une histoire plus brillante; Le dossier avait l’air classé ; une phrase lui redonne soudain une autre allure; Un ancien échange, une proposition oubliée ou un détail mal compris peut retrouver de l’intérêt sous un éclairage différent; Votre esprit aime cette seconde lecture, où les évidences cessent d’être aussi sages; La tentation sera d’aller plus vite que ce qui est réellement établi; Entre découverte et supposition, le fil reste fin.",
+      "love": "le charme tient à cette découverte, tant qu’elle ne devient pas une certitude inventée; Les mots possèdent une double vie, entre ce qui est dit et ce que vous espérez entendre; Une ancienne plaisanterie peut prendre une couleur plus tendre.",
+      "work": "la vivacité de votre lecture attire l’attention, sans transformer pour autant une piste intéressante en accord obtenu; Une idée écartée peut retrouver une pertinence professionnelle; Vous voyez un usage ou un angle qui avait échappé à la première discussion.",
+      "finance": "le bénéfice matériel, lui, n’a pas nécessairement changé de taille : l’attrait du récit ne constitue pas encore une économie; Une offre familière peut sembler nouvelle grâce à une présentation habile; Votre curiosité apprécie le changement de décor.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "gemini",
+      "language": "en",
+      "general": "On closer inspection, you do not need a spectacular reversal to find the day absorbing: sometimes a more accurate account is worth more than a more dazzling story. As the day unfolds, the matter seemed closed; a sentence suddenly gives it another shape. Under this light, an old exchange, a forgotten proposal or a misunderstood detail can regain interest in different light. Within this movement, your mind enjoys this second reading, where obvious conclusions become less obedient. On closer inspection, the temptation is to move faster than what has actually been established. As the day unfolds, the thread between discovery and assumption remains fine.",
+      "love": "As the day unfolds, the charm lies in that discovery, provided it does not turn into an invented certainty. Under this light, words have a double life, between what is said and what you hope to hear. Within this movement, an old joke may acquire a tender colour.",
+      "work": "Under this light, your lively reading attracts attention without turning an interesting possibility into an agreement that has actually been secured. Within this movement, a discarded idea may recover professional relevance. On closer inspection, you see a use or an angle missed in the first discussion.",
+      "finance": "Within this movement, the material benefit, however, has not necessarily grown: the appeal of the story is not yet a saving in your pocket. On closer inspection, a familiar offer can seem new through skilful presentation. As the day unfolds, your curiosity appreciates a change of scenery.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "gemini",
+      "language": "de",
+      "general": "Bei näherem Hinsehen ein spektakulärer Umschwung ist nicht nötig, um den Tag fesselnd zu finden: Manchmal zählt eine stimmigere Fassung mehr als eine glänzendere Geschichte. Im Lauf des Tages der Fall schien abgeschlossen; ein Satz gibt ihm plötzlich eine andere Gestalt. In diesem Licht ein früheres Gespräch, ein vergessener Vorschlag oder ein missverstandenes Detail wird in verändertem Licht interessant. In dieser Bewegung ihr Geist liebt diese zweite Lektüre, bei der Gewissheiten weniger brav bleiben. Bei näherem Hinsehen die Versuchung liegt darin, schneller zu sein als das tatsächlich Gesicherte. Im Lauf des Tages zwischen Entdeckung und Vermutung verläuft ein schmaler Faden.",
+      "love": "Im Lauf des Tages der Reiz liegt in dieser Entdeckung, solange sie nicht zu einer selbst erfundenen Gewissheit wird. In diesem Licht worte führen ein Doppelleben zwischen dem Gesagten und dem, was Sie hören möchten. In dieser Bewegung ein alter Scherz bekommt vielleicht eine zärtlichere Farbe.",
+      "work": "In diesem Licht ihre schnelle Auffassung weckt Aufmerksamkeit, ohne deshalb eine interessante Spur schon in eine feste Zusage zu verwandeln. In dieser Bewegung eine verworfene Idee kann beruflich wieder Bedeutung gewinnen. Bei näherem Hinsehen sie erkennen einen Nutzen oder Blickwinkel, der der ersten Diskussion entgangen ist.",
+      "finance": "In dieser Bewegung der materielle Nutzen ist dadurch nicht unbedingt größer geworden: Eine reizvolle Erzählung bedeutet noch keine Ersparnis, die tatsächlich in Ihrem Geldbeutel bleibt. Bei näherem Hinsehen ein vertrautes Angebot wirkt durch geschickte Präsentation plötzlich neu. Im Lauf des Tages ihre Neugier mag den Kulissenwechsel.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "gemini",
+      "language": "es",
+      "general": "Al mirar más de cerca, no hace falta un giro espectacular para encontrar cautivadora la jornada: a veces una versión más exacta vale más que una historia brillante. Mientras avanza el día, el asunto parecía cerrado; una frase le da de pronto otra forma. Bajo esta luz, un antiguo intercambio, una propuesta olvidada o un detalle mal entendido puede recuperar interés bajo otra luz. En este movimiento, su mente disfruta de esta segunda lectura, donde las evidencias dejan de ser tan dóciles. Al mirar más de cerca, la tentación será ir más deprisa que lo realmente establecido. Mientras avanza el día, entre descubrimiento y suposición, el hilo sigue siendo fino.",
+      "love": "Mientras avanza el día, el encanto está en descubrirlo, mientras no se convierta en una certeza inventada. Bajo esta luz, las palabras tienen una doble vida, entre lo que se dice y lo que espera oír. En este movimiento, una vieja broma puede adquirir un color más tierno.",
+      "work": "Bajo esta luz, la viveza de su lectura atrae la atención, sin convertir por ello una pista interesante en un acuerdo ya obtenido. En este movimiento, una idea descartada puede recobrar pertinencia profesional. Al mirar más de cerca, ve una utilidad o un enfoque que escapó a la primera conversación.",
+      "finance": "En este movimiento, el beneficio material no ha aumentado necesariamente: el atractivo del relato no constituye todavía un ahorro real en su bolsillo. Al mirar más de cerca, una oferta conocida puede parecer nueva gracias a una presentación hábil. Mientras avanza el día, su curiosidad aprecia el cambio de decorado.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "gemini",
+      "language": "it",
+      "general": "A guardare meglio, non serve un rovesciamento spettacolare per trovare avvincente la giornata: a volte una versione più esatta vale più di una storia brillante. Con il procedere del giorno, la questione sembrava archiviata; una frase le dà improvvisamente un altro aspetto. Sotto questa luce, un vecchio scambio, una proposta dimenticata o un dettaglio frainteso può ritrovare interesse sotto una luce diversa. Dentro questo movimento, la mente ama questa seconda lettura, in cui le evidenze diventano meno docili. A guardare meglio, la tentazione sarà correre più di ciò che è davvero accertato. Con il procedere del giorno, fra scoperta e supposizione il filo resta sottile.",
+      "love": "Con il procedere del giorno, il fascino sta nella scoperta, finché non diventa una certezza inventata. Sotto questa luce, le parole hanno una doppia vita, fra ciò che viene detto e ciò che sperate di sentire. Dentro questo movimento, una vecchia battuta può assumere un colore più tenero.",
+      "work": "Sotto questa luce, la vivacità della vostra lettura attira l'attenzione, senza trasformare per questo una pista interessante in un accordo ormai acquisito e definitivo. Dentro questo movimento, un'idea scartata può ritrovare pertinenza professionale. A guardare meglio, vedete un uso o un taglio sfuggito alla prima discussione.",
+      "finance": "Dentro questo movimento, il beneficio materiale, però, non è necessariamente cresciuto: il fascino del racconto non costituisce ancora un risparmio concreto. A guardare meglio, un'offerta familiare può sembrare nuova grazie a una presentazione abile. Con il procedere del giorno, la curiosità apprezza il cambio di scena.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "gemini",
+      "language": "pt",
+      "general": "Olhando mais de perto, não precisa de uma reviravolta espetacular para achar o dia cativante: por vezes, uma versão mais certa vale mais do que uma história brilhante. À medida que o dia avança, o assunto parecia encerrado; uma frase dá-lhe de repente outra forma. Sob esta luz, uma conversa antiga, uma proposta esquecida ou um pormenor mal compreendido pode recuperar interesse sob uma luz diferente. Neste movimento, a sua mente gosta desta segunda leitura, em que as evidências deixam de ser tão dóceis. Olhando mais de perto, a tentação será avançar mais depressa do que aquilo que está realmente estabelecido. À medida que o dia avança, entre descoberta e suposição, o fio continua fino.",
+      "love": "À medida que o dia avança, o encanto está nessa descoberta, enquanto não se transforma numa certeza inventada. Sob esta luz, as palavras têm uma vida dupla, entre o que é dito e o que espera ouvir. Neste movimento, uma velha brincadeira pode ganhar uma cor mais terna.",
+      "work": "Sob esta luz, a vivacidade da sua leitura atrai atenção, sem transformar por isso uma pista interessante num acordo que já esteja efetivamente garantido. Neste movimento, uma ideia afastada pode recuperar pertinência profissional. Olhando mais de perto, vê uma utilização ou abordagem que escapou à primeira conversa.",
+      "finance": "Neste movimento, o benefício material, porém, não cresceu necessariamente: o encanto da narrativa ainda não representa uma poupança real no seu bolso. Olhando mais de perto, uma oferta conhecida pode parecer nova graças a uma apresentação hábil. À medida que o dia avança, a curiosidade aprecia a mudança de cenário.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "gemini",
+      "language": "ru",
+      "general": "Если присмотреться чтобы день увлекал, не нужен эффектный переворот: иногда более точная версия стоит больше блестящей истории. По мере развития дня дело казалось закрытым; одна фраза вдруг придаёт ему другой вид. В этом свете старый разговор, забытое предложение или неверно понятая деталь вновь интересны в изменившемся свете. В этом движении вашему уму нравится второе прочтение, где очевидности становятся менее послушными. Если присмотреться соблазн — поспешить дальше того, что действительно установлено. По мере развития дня нить между открытием и предположением остаётся тонкой.",
+      "love": "По мере развития дня обаяние — в этом открытии, пока оно не превратилось в придуманную уверенность. В этом свете у слов двойная жизнь: между сказанным и тем, что хочется услышать. В этом движении старая шутка может обрести нежный оттенок.",
+      "work": "В этом свете живость прочтения привлекает внимание, не превращая, однако, интересную возможность в уже полученное согласие. В этом движении отвергнутая идея может снова стать профессионально уместной. Если присмотреться вы замечаете применение или ракурс, упущенный в первом обсуждении.",
+      "finance": "В этом движении материальная выгода при этом не обязательно выросла: привлекательная история ещё не означает реальную экономию, которая останется в вашем кошельке после красивых слов. Если присмотреться знакомое предложение может показаться новым благодаря умелой подаче. По мере развития дня любопытство любит смену декораций.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "gemini",
+      "language": "nl",
+      "general": "Bij nader inzien je hebt geen spectaculaire ommekeer nodig om de dag spannend te vinden: soms is een juistere versie meer waard dan een schitterender verhaal. Naarmate de dag vordert de zaak leek gesloten; een zin geeft haar plotseling een andere vorm. In dit licht een oud gesprek, een vergeten voorstel of een verkeerd begrepen detail kan in ander licht weer boeien. Binnen deze beweging je geest houdt van die tweede lezing, waarin vanzelfsprekendheden minder gehoorzaam worden. Bij nader inzien de verleiding is sneller te gaan dan wat werkelijk vaststaat. Naarmate de dag vordert tussen ontdekking en aanname blijft de draad dun.",
+      "love": "Naarmate de dag vordert de charme zit in die ontdekking, zolang ze niet verandert in een zekerheid die je zelf hebt bedacht. In dit licht woorden hebben een dubbelleven tussen wat gezegd wordt en wat je hoopt te horen. Binnen deze beweging een oude grap kan een tedere kleur krijgen.",
+      "work": "In dit licht je levendige lezing trekt aandacht zonder een interessante mogelijkheid daarmee al te veranderen in een akkoord dat daadwerkelijk is verkregen. Binnen deze beweging een afgewezen idee kan professioneel weer relevant worden. Bij nader inzien je ziet een toepassing of invalshoek die de eerste discussie ontging.",
+      "finance": "Binnen deze beweging het materiële voordeel is niet noodzakelijk groter geworden: een aantrekkelijk verhaal betekent nog geen besparing die na afloop werkelijk in je portemonnee blijft. Bij nader inzien een vertrouwd aanbod lijkt door een handige presentatie misschien nieuw. Naarmate de dag vordert je nieuwsgierigheid waardeert de decorwisseling.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "cancer",
+      "language": "fr",
+      "general": "il peut surgir d’un détail que vous n’auriez jamais pensé y peindre; Vous aviez imaginé une ambiance ; les autres apportent la leur; Un moment de plaisir, une activité créative ou une envie de rapprochement peut ainsi prendre une forme moins intime que prévu; Votre sensibilité capte ce décalage avant même qu’il soit exprimé; Une petite contrariété menace de voler la vedette à ce qui reste agréable; Pourtant, quelque chose de vivant circule dans cette rencontre des goûts; Le charme ne se trouve pas uniquement dans le tableau rêvé.",
+      "love": "une complicité peut retrouver sa chaleur dans un plaisir que personne n’avait prévu; Le romantisme a ses caprices, surtout quand vous espérez une attention exclusive; Le désir de compter est profond, sans devoir devenir une mise à l’épreuve.",
+      "work": "le défi est moins de séduire tout le monde que de donner une présence réelle à votre idée; Votre créativité cherche une place qui ne soit pas seulement utile aux autres; Une contribution personnelle peut étonner par sa sensibilité.",
+      "finance": "une expérience plus simple peut garder son charme sans devoir satisfaire toutes les envies réunies; Les envies de sortie ou de création se mêlent au plaisir de partager; Le coût peut vite augmenter lorsque chacun ajoute sa touche au programme.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "cancer",
+      "language": "en",
+      "general": "As the day unfolds, it can emerge from a detail you would never have thought to paint. Under this light, you had imagined an atmosphere; other people bring their own. Within this movement, a pleasurable occasion, a creative activity or a wish for closeness may take a less intimate form than expected. On closer inspection, your sensitivity catches the difference before anyone puts it into words. As the day unfolds, a small irritation threatens to steal the spotlight from what remains enjoyable. Under this light, yet something alive circulates in this meeting of tastes. Within this movement, charm does not reside only in the picture you dreamed of.",
+      "love": "Under this light, intimacy may recover its warmth through a pleasure nobody had thought to include in the plans. Within this movement, romance has its whims, especially when you hope for exclusive attention. On closer inspection, the desire to matter runs deep without needing to become a test.",
+      "work": "Within this movement, the challenge is less about charming everyone than about giving your idea a presence people can genuinely feel. On closer inspection, your creativity seeks a place that is not merely useful to others. As the day unfolds, a personal contribution can surprise through its sensitivity.",
+      "finance": "On closer inspection, a simpler experience can retain its charm without needing to satisfy every desire gathered around the same table. As the day unfolds, spending on outings or creativity mingles with the pleasure of sharing. Under this light, the cost can grow quickly as everyone adds a flourish.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "cancer",
+      "language": "de",
+      "general": "Im Lauf des Tages er kann aus einem Detail entstehen, das Sie selbst nie hineingemalt hätten. In diesem Licht sie hatten sich eine Atmosphäre ausgemalt; die anderen bringen ihre eigene mit. In dieser Bewegung ein Vergnügen, eine kreative Tätigkeit oder der Wunsch nach Nähe nimmt vielleicht eine weniger intime Form an als erwartet. Bei näherem Hinsehen ihre Empfindsamkeit erfasst diesen Unterschied, bevor jemand ihn ausspricht. Im Lauf des Tages ein kleiner Ärger droht dem weiterhin Schönen die Schau zu stehlen. In diesem Licht doch in diesem Zusammentreffen verschiedener Vorlieben bewegt sich etwas Lebendiges. In dieser Bewegung charme liegt nicht nur im erträumten Bild.",
+      "love": "In diesem Licht gemeinsamkeit findet vielleicht durch ein Vergnügen Wärme zurück, das niemand eingeplant hatte. In dieser Bewegung romantik hat ihre Launen, besonders wenn Sie auf ungeteilte Aufmerksamkeit hoffen. Bei näherem Hinsehen der Wunsch, wichtig zu sein, reicht tief, ohne zum Test werden zu müssen.",
+      "work": "In dieser Bewegung es geht weniger darum, alle zu bezaubern, als Ihrer Idee eine wirklich spürbare Gegenwart zu geben. Bei näherem Hinsehen ihre Kreativität sucht einen Platz, an dem sie nicht bloß anderen nützt. Im Lauf des Tages ein persönlicher Beitrag kann durch seine Empfindsamkeit überraschen.",
+      "finance": "Bei näherem Hinsehen auch ein einfacheres Erlebnis behält Charme, ohne sämtliche versammelten Wünsche zugleich erfüllen zu müssen. Im Lauf des Tages wünsche nach Ausgehen oder kreativem Tun verbinden sich mit der Freude am Teilen. In diesem Licht die Kosten wachsen schnell, wenn jeder etwas ergänzt.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "cancer",
+      "language": "es",
+      "general": "Mientras avanza el día, puede surgir de un detalle que nunca se le habría ocurrido pintar. Bajo esta luz, había imaginado un ambiente; los demás traen el suyo. En este movimiento, un momento de placer, una actividad creativa o un deseo de acercamiento puede adoptar una forma menos íntima de lo previsto. Al mirar más de cerca, su sensibilidad capta esa distancia antes de que se exprese. Mientras avanza el día, una pequeña contrariedad amenaza con robar protagonismo a lo agradable. Bajo esta luz, sin embargo, algo vivo circula en ese encuentro de gustos. En este movimiento, el encanto no está solo en el cuadro soñado.",
+      "love": "Bajo esta luz, la complicidad puede recuperar su calidez en un placer que nadie había incluido en los planes. En este movimiento, el romanticismo tiene caprichos, sobre todo cuando espera atención exclusiva. Al mirar más de cerca, el deseo de importar es profundo, sin tener que convertirse en una prueba.",
+      "work": "En este movimiento, el reto consiste menos en seducir a todo el mundo que en dar presencia real a su idea. Al mirar más de cerca, su creatividad busca un lugar donde no sea únicamente útil a los demás. Mientras avanza el día, una aportación personal puede sorprender por su sensibilidad.",
+      "finance": "Al mirar más de cerca, una experiencia más sencilla conserva encanto sin tener que satisfacer todos los deseos reunidos alrededor del programa. Mientras avanza el día, las ganas de salir o crear se mezclan con el placer de compartir. Bajo esta luz, el coste puede crecer cuando cada persona añade su toque.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "cancer",
+      "language": "it",
+      "general": "Con il procedere del giorno, può nascere da un dettaglio che non avreste mai pensato di dipingervi. Sotto questa luce, avevate immaginato un'atmosfera; gli altri portano la propria. Dentro questo movimento, un momento piacevole, un'attività creativa o un desiderio di vicinanza può assumere una forma meno intima del previsto. A guardare meglio, la vostra sensibilità coglie lo scarto prima che venga espresso. Con il procedere del giorno, un piccolo disappunto minaccia di rubare la scena a ciò che resta gradevole. Sotto questa luce, eppure qualcosa di vivo circola nell'incontro dei gusti. Dentro questo movimento, il fascino non sta soltanto nel quadro sognato.",
+      "love": "Sotto questa luce, la complicità può ritrovare calore in un piacere che nessuno aveva incluso nei programmi. Dentro questo movimento, il romanticismo ha i suoi capricci, soprattutto quando sperate in un'attenzione esclusiva. A guardare meglio, il desiderio di contare è profondo, senza dover diventare una prova.",
+      "work": "Dentro questo movimento, la sfida consiste meno nel sedurre tutti che nel dare una presenza reale all'idea che portate. A guardare meglio, la creatività cerca un posto dove non sia soltanto utile agli altri. Con il procedere del giorno, un contributo personale può sorprendere per la sua sensibilità.",
+      "finance": "A guardare meglio, un'esperienza più semplice conserva fascino senza dover soddisfare tutti i desideri riuniti nello stesso programma. Con il procedere del giorno, le voglie di uscire o creare si mescolano al piacere di condividere. Sotto questa luce, il costo può crescere rapidamente quando ciascuno aggiunge il proprio tocco.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "cancer",
+      "language": "pt",
+      "general": "À medida que o dia avança, pode surgir de um pormenor que nunca lhe teria ocorrido pintar. Sob esta luz, tinha imaginado um ambiente; os outros trazem o seu. Neste movimento, um momento de prazer, uma atividade criativa ou um desejo de aproximação pode assumir uma forma menos íntima do que previa. Olhando mais de perto, a sua sensibilidade capta essa diferença antes de ser expressa. À medida que o dia avança, uma pequena contrariedade ameaça roubar o protagonismo ao que continua agradável. Sob esta luz, no entanto, algo vivo circula neste encontro de gostos. Neste movimento, o encanto não está apenas no quadro sonhado.",
+      "love": "Sob esta luz, a cumplicidade pode recuperar calor num prazer que ninguém tinha incluído nos planos. Neste movimento, o romantismo tem os seus caprichos, sobretudo quando espera atenção exclusiva. Olhando mais de perto, o desejo de ser importante é profundo, sem precisar de se tornar uma prova.",
+      "work": "Neste movimento, o desafio está menos em seduzir toda a gente do que em dar presença real à ideia que traz. Olhando mais de perto, a criatividade procura um lugar onde não seja apenas útil aos outros. À medida que o dia avança, um contributo pessoal pode surpreender pela sensibilidade.",
+      "finance": "Olhando mais de perto, uma experiência mais simples conserva encanto sem ter de satisfazer todos os desejos reunidos no mesmo programa. À medida que o dia avança, as vontades de sair ou criar misturam-se com o prazer de partilhar. Sob esta luz, o custo cresce depressa quando cada pessoa acrescenta o seu toque.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "cancer",
+      "language": "ru",
+      "general": "По мере развития дня оно может возникнуть из детали, которую вам никогда не пришло бы в голову туда вписать. В этом свете вы представляли себе одну атмосферу, другие приносят свою. В этом движении приятный момент, творческое занятие или желание сблизиться может принять менее интимную форму, чем ожидалось. Если присмотреться ваша чувствительность ловит разницу раньше, чем её произнесут. По мере развития дня небольшая досада грозит затмить то, что остаётся приятным. В этом свете но в этой встрече вкусов есть живое движение. В этом движении обаяние находится не только в воображаемой картине.",
+      "love": "В этом свете близость может вернуть тепло через удовольствие, которого никто не предусмотрел. В этом движении у романтики свои капризы, особенно когда хочется исключительного внимания. Если присмотреться желание быть важным глубоко, но не обязано становиться испытанием.",
+      "work": "В этом движении задача скорее в том, чтобы придать идее ощутимое присутствие, чем очаровать абсолютно всех. Если присмотреться ваше творчество ищет место, где оно не просто полезно другим. По мере развития дня личный вклад способен удивить тонкостью.",
+      "finance": "Если присмотреться у более простого впечатления тоже есть обаяние: ему не обязательно удовлетворять все желания, собравшиеся за одним столом. По мере развития дня желания развлечься или создать что-то смешиваются с удовольствием делиться. В этом свете стоимость быстро растёт, когда каждый добавляет свой штрих.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "cancer",
+      "language": "nl",
+      "general": "Naarmate de dag vordert ze kan ontstaan uit een detail dat je er zelf nooit in had gedacht. In dit licht je had een sfeer bedacht; anderen brengen hun eigen sfeer mee. Binnen deze beweging een plezierig moment, een creatieve activiteit of een wens tot toenadering krijgt misschien een minder intieme vorm dan verwacht. Bij nader inzien je gevoeligheid vangt het verschil op voordat het wordt uitgesproken. Naarmate de dag vordert een kleine ergernis dreigt de aandacht weg te halen bij wat prettig blijft. In dit licht toch beweegt er iets levends in deze ontmoeting van smaken. Binnen deze beweging charme woont niet uitsluitend in het gedroomde schilderij.",
+      "love": "In dit licht verbondenheid kan warmte terugvinden in een plezier dat niemand in de plannen had opgenomen. Binnen deze beweging romantiek heeft haar grillen, vooral wanneer je op onverdeelde aandacht hoopt. Bij nader inzien het verlangen ertoe te doen gaat diep zonder een proef te hoeven worden.",
+      "work": "Binnen deze beweging de uitdaging is minder iedereen te bekoren dan je idee een werkelijk voelbare aanwezigheid te geven. Bij nader inzien je creativiteit zoekt een plaats waar ze niet alleen nuttig is voor anderen. Naarmate de dag vordert een persoonlijke bijdrage kan door haar gevoeligheid verrassen.",
+      "finance": "Bij nader inzien een eenvoudiger ervaring kan haar charme bewaren zonder alle verlangens rond dezelfde tafel te hoeven vervullen. Naarmate de dag vordert wensen rond uitgaan of creëren vermengen zich met het plezier van delen. In dit licht de kosten groeien snel als iedereen iets toevoegt.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "leo",
+      "language": "fr",
+      "general": "un geste librement accueilli possède une chaleur qu’aucune mise en scène ne peut imposer; Il y a des cadeaux qui ressemblent à une prise de pouvoir; Vous pouvez le sentir chez quelqu’un, ou reconnaître en vous le désir de tout arranger à votre façon; La générosité reste sincère ; elle supporte seulement mal qu’on lui préfère autre chose; Une relation proche peut mettre ce mélange en lumière, avec un agacement aussi vif que passager; Derrière la scène, c’est votre place dans le cœur de l’autre qui vous importe.",
+      "love": "un instant où personne ne joue au héros peut devenir particulièrement tendre et sensuel; Vous avez envie de combler l’autre, mais aussi d’être désiré sans avoir à en faire autant; Cette nuance donne de la profondeur aux sentiments.",
+      "work": "la reconnaissance ne passe pas uniquement par la direction des opérations; L’ambition aime votre ampleur de vue, moins votre envie éventuelle de décider pour chacun; Une collaboration peut bénéficier de votre élan si les autres y trouvent leur propre rôle.",
+      "finance": "le plaisir de donner garde son éclat lorsqu’il n’achète ni préférence ni obligation de gratitude; Offrir grand peut sembler le moyen le plus direct de dire votre attachement; La dépense risque pourtant de porter une attente de retour.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "leo",
+      "language": "en",
+      "general": "Under this light, a freely welcomed gesture carries a warmth that no amount of staging can impose or manufacture for you. Within this movement, some gifts resemble a bid for power. On closer inspection, you may sense this in someone else, or recognise your own desire to arrange everything your way. As the day unfolds, generosity remains sincere; it simply struggles when another choice is preferred. Under this light, a close relationship can bring this mixture to light, with irritation as sharp as it is fleeting. Within this movement, behind the scene, your place in someone's heart is what matters.",
+      "love": "Within this movement, a moment in which nobody plays the hero can become particularly tender and unexpectedly sensual. On closer inspection, you want to spoil someone, but also to be desired without having to do quite so much. As the day unfolds, that distinction gives feelings depth.",
+      "work": "On closer inspection, recognition does not come only from directing the entire operation. As the day unfolds, ambition appreciates your broad vision, less any wish to decide for everyone. Under this light, collaboration can benefit from your momentum when others find a role of their own within it.",
+      "finance": "As the day unfolds, giving retains its sparkle when it buys neither preference nor an obligation to display the proper gratitude. Under this light, giving lavishly may seem the most direct way to express attachment. Within this movement, yet the expense can carry an expectation of return.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "leo",
+      "language": "de",
+      "general": "In diesem Licht eine freiwillig angenommene Geste besitzt Wärme, die keine Inszenierung erzwingen kann. In dieser Bewegung manche Geschenke ähneln einer Machtübernahme. Bei näherem Hinsehen sie können das bei jemandem spüren oder den eigenen Wunsch erkennen, alles auf Ihre Art zu regeln. Im Lauf des Tages die Großzügigkeit bleibt ehrlich; sie verträgt nur schlecht, wenn jemand etwas anderes bevorzugt. In diesem Licht eine nahe Beziehung bringt diese Mischung womöglich ans Licht, mit einem ebenso heftigen wie kurzen Ärger. In dieser Bewegung hinter der Szene zählt Ihr Platz im Herzen des anderen.",
+      "love": "In dieser Bewegung ein Augenblick, in dem niemand den Helden spielt, kann besonders zärtlich und sinnlich werden. Bei näherem Hinsehen sie möchten den anderen verwöhnen, aber auch begehrt werden, ohne so viel leisten zu müssen. Im Lauf des Tages diese Nuance verleiht Gefühlen Tiefe.",
+      "work": "Bei näherem Hinsehen anerkennung entsteht nicht ausschließlich durch die Leitung des ganzen Geschehens. Im Lauf des Tages ihr Ehrgeiz profitiert vom weiten Blick, weniger vom möglichen Wunsch, für alle zu entscheiden. In diesem Licht zusammenarbeit kann Ihren Schwung nutzen, wenn die anderen ihre eigene Rolle darin finden.",
+      "finance": "Im Lauf des Tages die Freude am Geben behält ihren Glanz, wenn sie weder Bevorzugung noch eine Pflicht zur Dankbarkeit erkauft. In diesem Licht großzügig zu schenken scheint vielleicht der direkteste Ausdruck Ihrer Zuneigung. In dieser Bewegung doch eine Ausgabe kann eine Gegenleistung erwarten.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "leo",
+      "language": "es",
+      "general": "Bajo esta luz, un gesto acogido libremente posee una calidez que ninguna puesta en escena puede imponer. En este movimiento, hay regalos que se parecen a una toma de poder. Al mirar más de cerca, puede percibirlo en alguien o reconocer su propio deseo de arreglarlo todo a su manera. Mientras avanza el día, la generosidad sigue siendo sincera; simplemente lleva mal que se prefiera otra cosa. Bajo esta luz, una relación cercana puede iluminar esa mezcla, con una irritación tan viva como pasajera. En este movimiento, detrás de la escena, lo que importa es su lugar en el corazón del otro.",
+      "love": "En este movimiento, un instante sin nadie interpretando al héroe puede resultar especialmente tierno y también sensual. Al mirar más de cerca, tiene ganas de colmar al otro, pero también de ser deseado sin tener que hacer tanto. Mientras avanza el día, ese matiz da profundidad a los sentimientos.",
+      "work": "Al mirar más de cerca, el reconocimiento no pasa únicamente por dirigir las operaciones. Mientras avanza el día, la ambición aprecia su amplitud de miras, menos las posibles ganas de decidir por todos. Bajo esta luz, una colaboración puede beneficiarse de su impulso si los demás encuentran su propio papel.",
+      "finance": "Mientras avanza el día, el placer de dar conserva su brillo cuando no compra preferencia ni obligación de gratitud. Bajo esta luz, regalar a lo grande puede parecer la forma más directa de expresar apego. En este movimiento, el gasto corre, sin embargo, el riesgo de esperar una devolución.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "leo",
+      "language": "it",
+      "general": "Sotto questa luce, un gesto accolto liberamente possiede un calore che nessuna regia può imporre. Dentro questo movimento, ci sono regali che somigliano a una presa di potere. A guardare meglio, potete sentirlo in qualcuno o riconoscere il vostro desiderio di sistemare tutto a modo vostro. Con il procedere del giorno, la generosità resta sincera; sopporta soltanto male che le si preferisca altro. Sotto questa luce, una relazione vicina può mettere in luce questa miscela, con un fastidio tanto vivo quanto passeggero. Dentro questo movimento, dietro la scena conta il vostro posto nel cuore dell'altro.",
+      "love": "Dentro questo movimento, un istante in cui nessuno interpreta l'eroe può diventare particolarmente tenero, lasciando più spazio anche alla sensualità. A guardare meglio, avete voglia di colmare l'altro, ma anche di essere desiderati senza dover fare tanto. Con il procedere del giorno, questa sfumatura dà profondità ai sentimenti.",
+      "work": "A guardare meglio, il riconoscimento non passa soltanto dalla direzione di ogni operazione. Con il procedere del giorno, l'ambizione ama la vostra ampiezza di vedute, meno l'eventuale voglia di decidere per tutti. Sotto questa luce, una collaborazione beneficia del vostro slancio se gli altri trovano un ruolo proprio.",
+      "finance": "Con il procedere del giorno, il piacere di dare mantiene il suo splendore quando non compra preferenze né un obbligo di gratitudine. Sotto questa luce, offrire molto può sembrare il modo più diretto per esprimere attaccamento. Dentro questo movimento, la spesa rischia però di aspettarsi qualcosa in cambio.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "leo",
+      "language": "pt",
+      "general": "Sob esta luz, um gesto acolhido livremente tem um calor que nenhuma encenação consegue impor. Neste movimento, há presentes que se parecem com uma tomada de poder. Olhando mais de perto, pode senti-lo em alguém ou reconhecer a sua própria vontade de organizar tudo à sua maneira. À medida que o dia avança, a generosidade continua sincera; apenas tolera mal que se prefira outra coisa. Sob esta luz, uma relação próxima pode iluminar esta mistura, com uma irritação tão viva como passageira. Neste movimento, por detrás da cena, importa o seu lugar no coração do outro.",
+      "love": "Neste movimento, um instante em que ninguém representa o herói pode tornar-se particularmente terno e também sensual. Olhando mais de perto, tem vontade de encher o outro de atenções, mas também de ser desejado sem fazer tanto. À medida que o dia avança, esta nuance dá profundidade aos sentimentos.",
+      "work": "Olhando mais de perto, o reconhecimento não passa apenas por dirigir todas as operações. À medida que o dia avança, a ambição aprecia a sua amplitude de visão, menos a eventual vontade de decidir por todos. Sob esta luz, uma colaboração beneficia do seu impulso se os outros encontrarem o seu próprio papel.",
+      "finance": "À medida que o dia avança, o prazer de dar mantém o brilho quando não compra preferência nem uma obrigação de demonstrar gratidão. Sob esta luz, oferecer em grande pode parecer a forma mais direta de mostrar apego. Neste movimento, a despesa arrisca, porém, esperar uma contrapartida.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "leo",
+      "language": "ru",
+      "general": "В этом свете свободно принятый жест обладает теплом, которого не навяжет никакая режиссура. В этом движении некоторые подарки похожи на попытку взять власть. Если присмотреться вы можете почувствовать это в другом или узнать собственное желание всё устроить по-своему. По мере развития дня щедрость остаётся искренней, просто ей трудно принять чужое предпочтение. В этом свете близкая связь может высветить эту смесь, вызвав раздражение настолько же острое, насколько мимолётное. В этом движении за всей сценой вам важно место в сердце другого.",
+      "love": "В этом движении мгновение, в котором никто не играет героя, может стать особенно нежным и чувственным. Если присмотреться хочется осыпать другого вниманием, но и быть желанным без необходимости столько делать. По мере развития дня этот оттенок придаёт чувствам глубину.",
+      "work": "Если присмотреться признание приходит не только через руководство всем происходящим. По мере развития дня амбиции нравится широта вашего взгляда, меньше — возможное желание решать за всех. В этом свете сотрудничество выигрывает от порыва, если остальные находят в нём собственную роль.",
+      "finance": "По мере развития дня удовольствие отдавать сохраняет блеск, когда не покупает предпочтение или обязанность благодарить, а оставляет другому свободу принять подарок без скрытого долга. В этом свете дарить с размахом кажется прямым способом выразить привязанность. В этом движении однако за тратой может стоять ожидание ответа.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "leo",
+      "language": "nl",
+      "general": "In dit licht een vrij ontvangen gebaar bezit warmte die geen enkele enscenering kan afdwingen. Binnen deze beweging sommige cadeaus lijken op een greep naar de macht. Bij nader inzien je kunt het bij iemand voelen of je eigen behoefte herkennen alles op jouw manier te regelen. Naarmate de dag vordert de gulheid blijft oprecht; ze verdraagt alleen moeilijk dat iets anders wordt verkozen. In dit licht een hechte band kan die mengeling zichtbaar maken, met ergernis die even scherp als kortstondig is. Binnen deze beweging achter de scène telt je plaats in het hart van de ander.",
+      "love": "Binnen deze beweging een ogenblik waarin niemand de held speelt kan bijzonder teder en sensueel worden, zonder grote demonstratie van wat je te bieden hebt. Bij nader inzien je wilt de ander verwennen, maar ook begeerd worden zonder zoveel te hoeven doen. Naarmate de dag vordert die nuance geeft gevoelens diepte.",
+      "work": "Bij nader inzien erkenning komt niet alleen voort uit het leiden van alle handelingen. Naarmate de dag vordert ambitie houdt van je ruime blik, minder van de eventuele behoefte voor iedereen te beslissen. In dit licht samenwerking profiteert van je vaart als anderen er hun eigen rol in vinden.",
+      "finance": "Naarmate de dag vordert het plezier van geven behoudt zijn glans wanneer het geen voorkeur koopt en ook geen verplichting tot dankbaarheid schept. In dit licht royaal geven lijkt misschien de directste manier om gehechtheid uit te drukken. Binnen deze beweging de uitgave kan echter een tegenprestatie verwachten.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "virgo",
+      "language": "fr",
+      "general": "ce qui bouge n’est pas forcément votre boussole : c’est peut-être le paysage qui devient plus vaste; Une certitude bien rangée se met à faire du bruit; Un témoignage, une opinion ou une expérience contredit peut-être ce que vous teniez pour évident; Votre premier mouvement cherche l’erreur ; le second pourrait trouver le sujet beaucoup plus intéressant; Il y a de la passion dans cette envie de comprendre, même si vous préférez lui donner un air raisonnable; Une discussion gagne en profondeur lorsqu’elle ne réclame pas immédiatement de verdict.",
+      "love": "un désaccord n’enlève pas toute douceur au lien ; il peut aussi lui donner une voix singulière; L’attirance peut naître d’un point de vue qui vous résiste; Vous aimez découvrir une personne au-delà de ce que vous aviez compris d’elle.",
+      "work": "l’idée de ne pas tout savoir peut être inconfortable et néanmoins ouvrir un terrain intellectuellement stimulant; Votre sens de l’analyse rencontre une question plus large que les données disponibles; Une perspective professionnelle demande autant de jugement que de précision.",
+      "finance": "le désir devient plus lisible quand la démonstration commerciale a fini de parler; Un argument très convaincant ne suffit pas à rendre une dépense nécessaire; Vous pouvez être séduit par la logique d’une offre autant que par son usage.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "virgo",
+      "language": "en",
+      "general": "Within this movement, perhaps it is not your compass that is moving, but the landscape that is becoming wider. On closer inspection, a neatly filed certainty starts making noise. As the day unfolds, a testimony, an opinion or an experience may contradict something you considered obvious. Under this light, your first response looks for the error; the second could find the subject rather more interesting. Within this movement, there is passion in this desire to understand, even if you prefer to give it a sensible appearance. On closer inspection, discussion gains depth when it does not immediately demand a verdict.",
+      "love": "On closer inspection, disagreement need not remove all gentleness from a bond; it may also give that connection a distinctive voice of its own. As the day unfolds, attraction can arise from a perspective that resists you. Under this light, you enjoy discovering someone beyond what you thought you understood.",
+      "work": "As the day unfolds, not knowing everything can feel uncomfortable while opening ground that remains genuinely stimulating to the mind. Under this light, your analytical sense encounters a question larger than the available information. Within this movement, a professional prospect calls for judgement as much as precision.",
+      "finance": "Under this light, desire becomes easier to read once the commercial demonstration has finally finished doing all the talking. Within this movement, a convincing argument does not make spending necessary. On closer inspection, the logic of an offer may seduce you as much as its practical use.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "virgo",
+      "language": "de",
+      "general": "In dieser Bewegung vielleicht bewegt sich gar nicht Ihr Kompass, sondern die Landschaft wird weiter. Bei näherem Hinsehen eine ordentlich abgelegte Gewissheit beginnt Lärm zu machen. Im Lauf des Tages ein Bericht, eine Meinung oder eine Erfahrung widerspricht vielleicht dem, was Sie für selbstverständlich hielten. In diesem Licht der erste Impuls sucht den Fehler; der zweite könnte das Thema deutlich interessanter finden. In dieser Bewegung in Ihrem Verstehenwollen steckt Leidenschaft, auch wenn Sie ihr lieber einen vernünftigen Anstrich geben. Bei näherem Hinsehen ein Gespräch gewinnt Tiefe, wenn es nicht sofort ein Urteil verlangt.",
+      "love": "Bei näherem Hinsehen widerspruch nimmt einer Verbindung nicht jede Zärtlichkeit; er kann ihr eine eigene Stimme geben. Im Lauf des Tages anziehung kann aus einem Blickwinkel entstehen, der Ihnen Widerstand leistet. In diesem Licht sie entdecken einen Menschen gern jenseits dessen, was Sie schon verstanden glaubten.",
+      "work": "Im Lauf des Tages nicht alles zu wissen ist unbequem und kann dennoch ein geistig anregendes Gelände öffnen. In diesem Licht ihr analytischer Sinn trifft auf eine Frage, die über die verfügbaren Angaben hinausgeht. In dieser Bewegung eine berufliche Perspektive verlangt Urteilskraft ebenso wie Genauigkeit.",
+      "finance": "In diesem Licht der eigene Wunsch wird lesbarer, sobald die Verkaufsdemonstration aufgehört hat, das gesamte Gespräch für sich zu beanspruchen. In dieser Bewegung ein überzeugendes Argument macht eine Ausgabe noch nicht notwendig. Bei näherem Hinsehen die Logik eines Angebots kann ebenso verführen wie sein Nutzen.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "virgo",
+      "language": "es",
+      "general": "En este movimiento, tal vez no se esté moviendo su brújula: puede que sea el paisaje el que se vuelve más amplio. Al mirar más de cerca, una certeza bien archivada empieza a hacer ruido. Mientras avanza el día, un testimonio, una opinión o una experiencia contradice quizá lo que consideraba evidente. Bajo esta luz, su primer impulso busca el error; el segundo podría encontrar el asunto mucho más interesante. En este movimiento, hay pasión en esas ganas de comprender, aunque prefiera darles apariencia razonable. Al mirar más de cerca, una conversación gana profundidad cuando no exige veredicto inmediato.",
+      "love": "Al mirar más de cerca, un desacuerdo no elimina toda la dulzura del vínculo; también puede darle una voz singular. Mientras avanza el día, la atracción puede nacer de un punto de vista que le ofrece resistencia. Bajo esta luz, le gusta descubrir a alguien más allá de lo que había comprendido.",
+      "work": "Mientras avanza el día, no saberlo todo puede incomodar y, aun así, abrir un terreno intelectualmente estimulante que merezca ser explorado. Bajo esta luz, su capacidad de análisis encuentra una pregunta mayor que los datos disponibles. En este movimiento, una perspectiva profesional requiere tanto criterio como precisión.",
+      "finance": "Bajo esta luz, el deseo se vuelve más legible cuando la demostración comercial ha terminado de ocupar toda la conversación. En este movimiento, un argumento convincente no convierte un gasto en necesario. Al mirar más de cerca, puede seducirle la lógica de una oferta tanto como su utilidad.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "virgo",
+      "language": "it",
+      "general": "Dentro questo movimento, non è necessariamente la bussola a muoversi: forse è il paesaggio che diventa più vasto, aprendosi oltre i suoi margini consueti. A guardare meglio, una certezza ben riposta comincia a fare rumore. Con il procedere del giorno, una testimonianza, un'opinione o un'esperienza contraddice forse ciò che ritenevate evidente. Sotto questa luce, il primo impulso cerca l'errore; il secondo potrebbe trovare il tema molto più interessante. Dentro questo movimento, c'è passione in questa voglia di capire, anche se preferite darle un'aria ragionevole. A guardare meglio, una discussione acquista profondità quando non pretende subito un verdetto.",
+      "love": "A guardare meglio, un disaccordo non toglie tutta la dolcezza al legame; può anche dargli una voce singolare. Con il procedere del giorno, l'attrazione può nascere da un punto di vista che vi resiste. Sotto questa luce, vi piace scoprire qualcuno oltre ciò che credevate di aver capito.",
+      "work": "Con il procedere del giorno, non sapere tutto può mettere a disagio e tuttavia aprire un terreno intellettualmente stimolante che meriti davvero di essere esplorato. Sotto questa luce, il senso dell'analisi incontra una domanda più ampia dei dati disponibili. Dentro questo movimento, una prospettiva professionale richiede giudizio quanto precisione.",
+      "finance": "Sotto questa luce, il desiderio diventa più leggibile quando la dimostrazione commerciale ha smesso di occupare da sola tutta la conversazione. Dentro questo movimento, un argomento convincente non rende necessaria una spesa. A guardare meglio, la logica di un'offerta può sedurvi quanto il suo uso.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "virgo",
+      "language": "pt",
+      "general": "Neste movimento, talvez não seja a bússola que se move: pode ser a paisagem a tornar-se mais vasta, para lá dos contornos habituais. Olhando mais de perto, uma certeza bem arrumada começa a fazer barulho. À medida que o dia avança, um testemunho, uma opinião ou uma experiência contradiz talvez o que considerava evidente. Sob esta luz, o primeiro impulso procura o erro; o segundo poderá achar o assunto muito mais interessante. Neste movimento, há paixão nesta vontade de compreender, mesmo que prefira dar-lhe um ar razoável. Olhando mais de perto, uma conversa ganha profundidade quando não exige logo um veredicto.",
+      "love": "Olhando mais de perto, um desacordo não retira toda a doçura ao vínculo; também lhe pode dar uma voz singular. À medida que o dia avança, a atração pode nascer de um ponto de vista que lhe resiste. Sob esta luz, gosta de descobrir alguém para além do que julgava ter compreendido.",
+      "work": "À medida que o dia avança, não saber tudo pode ser desconfortável e, ainda assim, abrir um terreno intelectualmente estimulante que mereça exploração. Sob esta luz, o seu sentido de análise encontra uma pergunta maior do que os dados disponíveis. Neste movimento, uma perspetiva profissional pede tanto discernimento como precisão.",
+      "finance": "Sob esta luz, o desejo fica mais legível quando a demonstração comercial acaba de ocupar, sozinha, todo o espaço da conversa. Neste movimento, um argumento convincente não torna uma despesa necessária. Olhando mais de perto, a lógica de uma oferta pode seduzir tanto como a sua utilidade.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "virgo",
+      "language": "ru",
+      "general": "В этом движении возможно, движется не ваш компас — просто пейзаж становится шире. Если присмотреться аккуратно убранная уверенность начинает шуметь. По мере развития дня чьё-то свидетельство, мнение или опыт, возможно, противоречат очевидному для вас. В этом свете первый порыв ищет ошибку; второй может найти тему гораздо интереснее. В этом движении в желании понять есть страсть, хотя вы предпочитаете придавать ей разумный вид. Если присмотреться разговор обретает глубину, когда не требует немедленного вердикта.",
+      "love": "Если присмотреться несогласие не лишает связь всей нежности; оно способно придать ей особенный голос. По мере развития дня притяжение может возникнуть из взгляда, который вам сопротивляется. В этом свете интересно узнавать человека за пределами уже понятого.",
+      "work": "По мере развития дня не знать всего бывает неудобно, но это может открыть интеллектуально увлекательную почву. В этом свете аналитическое чутьё встречается с вопросом шире доступных данных. В этом движении профессиональная перспектива требует суждения не меньше, чем точности.",
+      "finance": "В этом свете желание легче прочитать, когда коммерческая демонстрация наконец заканчивает говорить. В этом движении убедительный довод не делает расход необходимым. Если присмотреться логика предложения способна соблазнить не меньше его применения.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "virgo",
+      "language": "nl",
+      "general": "Binnen deze beweging misschien beweegt niet je kompas, maar wordt het landschap ruimer dan de vertrouwde kaart liet zien. Bij nader inzien een keurig opgeborgen zekerheid begint lawaai te maken. Naarmate de dag vordert een getuigenis, een mening of een ervaring spreekt misschien tegen wat je vanzelfsprekend vond. In dit licht je eerste reactie zoekt de fout; de tweede zou het onderwerp veel boeiender kunnen vinden. Binnen deze beweging er zit hartstocht in dit willen begrijpen, al geef je er liever een redelijk uiterlijk aan. Bij nader inzien een gesprek krijgt diepte als het niet meteen een oordeel eist.",
+      "love": "Bij nader inzien een meningsverschil neemt niet alle zachtheid uit een band; het kan die ook een heel eigen stem geven. Naarmate de dag vordert aantrekking kan ontstaan door een gezichtspunt dat je weerstand biedt. In dit licht je ontdekt iemand graag voorbij wat je al dacht te begrijpen.",
+      "work": "Naarmate de dag vordert niet alles weten kan ongemakkelijk zijn en toch een terrein openen dat de geest werkelijk prikkelt. In dit licht je analytische blik ontmoet een vraag die groter is dan de beschikbare gegevens. Binnen deze beweging een professioneel vooruitzicht vraagt evenveel oordeelsvermogen als precisie.",
+      "finance": "In dit licht het verlangen wordt leesbaarder zodra de verkoopdemonstratie klaar is met het voeren van het hele gesprek. Binnen deze beweging een overtuigend argument maakt een uitgave niet noodzakelijk. Bij nader inzien de logica van een aanbod kan je evenzeer verleiden als het gebruik ervan.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "libra",
+      "language": "fr",
+      "general": "le présent peut garder la meilleure note; Une mélodie oubliée peut vous rendre une version de vous-même que vous n’attendiez plus; Un goût ancien, une adresse ou un plaisir délaissé revient avec une saveur différente; Ce retour n’a rien d’une invitation à tout recommencer; Il fait plutôt apparaître ce qui vous plaît encore, une fois les habitudes et les regards déplacés; Une légère mélancolie accompagne la douceur, sans lui retirer son éclat; Vous avez le droit d’aimer ce qui revient sans vouloir retrouver toute l’époque qui allait avec.",
+      "love": "cela ne promet aucun retour ni aucune reprise : le plaisir de sentir que votre cœur n’a pas tout oublié; Les sentiments ont parfois une mémoire musicale; Une attention familière peut réveiller une tendresse qui demandait seulement un autre éclairage.",
+      "work": "votre singularité professionnelle tient aussi aux influences que vous choisissez de faire vivre autrement; Une ancienne manière de créer ou de présenter vos idées peut retrouver sa fraîcheur; Ce qui semblait dépassé possède peut-être une élégance encore pertinente.",
+      "finance": "le plaisir restera plus juste s’il ne vous fait pas payer la nostalgie au prix fort; Le charme d’un objet ancien ou d’une adresse retrouvée peut rendre la dépense émotive; Vous achetez autant une sensation qu’un usage.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "libra",
+      "language": "en",
+      "general": "On closer inspection, the present can keep the finest note. As the day unfolds, a forgotten melody can return a version of yourself you no longer expected. Under this light, an old taste, a place or a neglected pleasure comes back with a different flavour. Within this movement, this is not an invitation to begin everything again. On closer inspection, instead, it reveals what you still enjoy once habits and other people's gaze have shifted. As the day unfolds, a little melancholy accompanies the sweetness without dimming it. Under this light, you may love what returns without wanting the whole era that came with it.",
+      "love": "As the day unfolds, this promises neither a return nor a rekindling: just the pleasure of sensing that your heart has not forgotten everything. Under this light, feelings sometimes have a musical memory. Within this movement, a familiar gesture can awaken tenderness that simply needed different light.",
+      "work": "Under this light, your professional individuality also lives in the influences you choose to bring back with a different expression. Within this movement, an old way of creating or presenting ideas may recover its freshness. On closer inspection, what seemed outdated perhaps retains a relevant elegance.",
+      "finance": "Within this movement, pleasure stays truer when the price does not charge a premium for all that nostalgia. On closer inspection, an old object or a rediscovered address can give spending an emotional charge. As the day unfolds, you are buying a sensation as much as a use.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "libra",
+      "language": "de",
+      "general": "Bei näherem Hinsehen die Gegenwart darf den schönsten Ton behalten. Im Lauf des Tages eine vergessene Melodie bringt vielleicht eine Version Ihrer selbst zurück, mit der Sie nicht mehr gerechnet hatten. In diesem Licht ein alter Geschmack, eine Adresse oder ein vernachlässigtes Vergnügen kehrt mit anderer Würze wieder. In dieser Bewegung das ist keine Einladung, alles neu zu beginnen. Bei näherem Hinsehen es zeigt eher, was Ihnen noch gefällt, nachdem Gewohnheiten und Blicke sich verschoben haben. Im Lauf des Tages leichte Melancholie begleitet die Süße, ohne ihren Glanz zu mindern. In diesem Licht sie dürfen das Wiederkehrende lieben, ohne seine ganze Epoche zurückzuwollen.",
+      "love": "Im Lauf des Tages das verspricht weder Rückkehr noch Wiederaufnahme: lediglich die Freude darüber, dass Ihr Herz nicht alles vergessen hat und noch antworten kann. In diesem Licht gefühle haben manchmal ein musikalisches Gedächtnis. In dieser Bewegung eine vertraute Aufmerksamkeit weckt Zärtlichkeit, die nur anderes Licht brauchte.",
+      "work": "In diesem Licht ihre berufliche Eigenart lebt auch von den Einflüssen, die Sie auf neue Weise weiterleben lassen. In dieser Bewegung eine frühere Art, Ideen zu gestalten oder vorzustellen, gewinnt womöglich Frische zurück. Bei näherem Hinsehen das vermeintlich Überholte besitzt noch eine passende Eleganz.",
+      "finance": "In dieser Bewegung das Vergnügen bleibt stimmiger, wenn der Preis nicht die gesamte Nostalgie mit einem teuren Aufschlag berechnet. Bei näherem Hinsehen ein alter Gegenstand oder eine wiederentdeckte Adresse macht eine Ausgabe gefühlsbetont. Im Lauf des Tages sie kaufen eine Empfindung ebenso wie einen Nutzen.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "libra",
+      "language": "es",
+      "general": "Al mirar más de cerca, el presente puede quedarse con la mejor nota. Mientras avanza el día, una melodía olvidada puede devolverle una versión de sí que ya no esperaba. Bajo esta luz, un gusto antiguo, una dirección o un placer abandonado regresa con otro sabor. En este movimiento, no es una invitación a empezarlo todo de nuevo. Al mirar más de cerca, más bien revela lo que todavía le agrada una vez desplazadas costumbres y miradas. Mientras avanza el día, una melancolía leve acompaña la dulzura sin quitarle brillo. Bajo esta luz, puede amar lo que vuelve sin querer recuperar toda la época que lo acompañaba.",
+      "love": "Mientras avanza el día, no promete retornos ni reanudaciones: simplemente el placer de sentir que su corazón no lo ha olvidado todo. Bajo esta luz, los sentimientos tienen a veces memoria musical. En este movimiento, una atención familiar puede despertar una ternura que solo necesitaba otra luz.",
+      "work": "Bajo esta luz, su singularidad profesional también vive en las influencias que elige mantener, dándoles una expresión distinta y propia. En este movimiento, una antigua manera de crear o presentar ideas puede recuperar frescura. Al mirar más de cerca, lo que parecía superado conserva quizá una elegancia pertinente.",
+      "finance": "En este movimiento, el placer seguirá siendo más justo si el precio no le cobra un suplemento por toda esa nostalgia. Al mirar más de cerca, el encanto de un objeto antiguo o un lugar reencontrado puede emocionar una compra. Mientras avanza el día, adquiere una sensación tanto como una utilidad.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "libra",
+      "language": "it",
+      "general": "A guardare meglio, il presente può tenersi la nota migliore. Con il procedere del giorno, una melodia dimenticata può restituirvi una versione di voi che non aspettavate più. Sotto questa luce, un vecchio gusto, un indirizzo o un piacere trascurato ritorna con un sapore diverso. Dentro questo movimento, non è un invito a ricominciare tutto. A guardare meglio, fa piuttosto emergere ciò che vi piace ancora, una volta spostati abitudini e sguardi. Con il procedere del giorno, una lieve malinconia accompagna la dolcezza senza toglierle luce. Sotto questa luce, potete amare ciò che ritorna senza volere indietro tutta l'epoca che lo accompagnava.",
+      "love": "Con il procedere del giorno, non promette ritorni né riprese: semplicemente il piacere di sentire che il vostro cuore non ha dimenticato proprio tutto. Sotto questa luce, i sentimenti hanno talvolta una memoria musicale. Dentro questo movimento, un'attenzione familiare può risvegliare una tenerezza che chiedeva soltanto un'altra luce.",
+      "work": "Sotto questa luce, la vostra singolarità professionale vive anche nelle influenze che scegliete di riportare in vita con un'espressione diversa. Dentro questo movimento, un vecchio modo di creare o presentare idee può ritrovare freschezza. A guardare meglio, ciò che sembrava superato possiede forse un'eleganza ancora pertinente.",
+      "finance": "Dentro questo movimento, il piacere resterà più giusto se il prezzo non vi farà pagare cara tutta quella nostalgia. A guardare meglio, il fascino di un oggetto antico o di un luogo ritrovato può rendere emotiva la spesa. Con il procedere del giorno, comprate una sensazione quanto un uso.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "libra",
+      "language": "pt",
+      "general": "Olhando mais de perto, o presente pode guardar a melhor nota. À medida que o dia avança, uma melodia esquecida pode devolver-lhe uma versão de si que já não esperava. Sob esta luz, um gosto antigo, uma morada ou um prazer abandonado regressa com outro sabor. Neste movimento, não é um convite para recomeçar tudo. Olhando mais de perto, antes revela o que ainda lhe agrada depois de hábitos e olhares se deslocarem. À medida que o dia avança, uma melancolia ligeira acompanha a doçura sem lhe retirar brilho. Sob esta luz, pode gostar do que volta sem querer recuperar toda a época que o acompanhava.",
+      "love": "À medida que o dia avança, não promete regressos nem recomeços: apenas o prazer de sentir que o coração não se esqueceu de tudo. Sob esta luz, os sentimentos têm por vezes memória musical. Neste movimento, uma atenção familiar pode despertar uma ternura que só precisava de outra luz.",
+      "work": "Sob esta luz, a sua singularidade profissional também vive nas influências que escolhe manter, dando-lhes uma expressão diferente e pessoal. Neste movimento, uma antiga forma de criar ou apresentar ideias pode recuperar frescura. Olhando mais de perto, o que parecia ultrapassado conserva talvez uma elegância pertinente.",
+      "finance": "Neste movimento, o prazer será mais justo se o preço não cobrar um suplemento por toda essa nostalgia. Olhando mais de perto, o encanto de um objeto antigo ou de um lugar reencontrado pode tornar a despesa emotiva. À medida que o dia avança, compra uma sensação tanto como uma utilização.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "libra",
+      "language": "ru",
+      "general": "Если присмотреться настоящее вправе оставить себе лучшую ноту и прозвучать ею по-своему. По мере развития дня забытая мелодия может вернуть версию вас, которой вы уже не ждали. В этом свете давний вкус, адрес или оставленное удовольствие возвращается с другим оттенком. В этом движении это не приглашение всё начинать сначала. Если присмотреться скорее обнаруживается то, что по-прежнему нравится, когда привычки и чужие взгляды сместились. По мере развития дня лёгкая меланхолия сопровождает сладость, не уменьшая её света. В этом свете можно любить возвращающееся, не желая вернуть всю эпоху вместе с ним.",
+      "love": "По мере развития дня это не обещает возвращений или возобновлений — лишь удовольствие почувствовать, что сердце не всё забыло и ещё способно откликнуться на знакомое. В этом свете у чувств бывает музыкальная память. В этом движении знакомый знак внимания пробуждает нежность, которой просто требовалось другое освещение.",
+      "work": "В этом свете профессиональная индивидуальность живёт и во влияниях, которым вы выбираете дать новую форму. В этом движении прежний способ создавать или представлять идеи может вернуть свежесть. Если присмотреться у якобы устаревшего, возможно, осталась уместная элегантность.",
+      "finance": "В этом движении удовольствие останется точнее, если цена не заставит заплатить с надбавкой за всю ностальгию. Если присмотреться обаяние старой вещи или вновь найденного места делает трату эмоциональной. По мере развития дня вы покупаете ощущение не меньше, чем применение.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "libra",
+      "language": "nl",
+      "general": "Bij nader inzien het heden mag de mooiste noot bewaren. Naarmate de dag vordert een vergeten melodie kan een versie van jezelf terugbrengen die je niet meer verwachtte. In dit licht een oude smaak, een adres of een verwaarloosd plezier keert met een andere kleur terug. Binnen deze beweging dat nodigt niet uit om alles opnieuw te beginnen. Bij nader inzien het laat eerder zien wat je nog graag hebt wanneer gewoonten en blikken verschoven zijn. Naarmate de dag vordert een vleug melancholie vergezelt de zachtheid zonder haar glans te verminderen. In dit licht je mag houden van wat terugkomt zonder het hele tijdperk erbij terug te willen.",
+      "love": "Naarmate de dag vordert dat belooft geen terugkeer of herbegin: slechts het plezier te voelen dat je hart niet alles vergeten is. In dit licht gevoelens hebben soms een muzikaal geheugen. Binnen deze beweging een vertrouwde attentie kan tederheid wekken die alleen ander licht nodig had.",
+      "work": "In dit licht je professionele eigenheid leeft ook in invloeden die je op een andere manier laat voortbestaan. Binnen deze beweging een oude manier om ideeën te maken of te presenteren kan haar frisheid terugkrijgen. Bij nader inzien wat achterhaald leek bezit misschien nog passende elegantie.",
+      "finance": "Binnen deze beweging het plezier blijft zuiverder wanneer de prijs niet ook nog een flinke toeslag voor alle nostalgie rekent. Bij nader inzien een oud voorwerp of een teruggevonden adres kan een uitgave emotioneel kleuren. Naarmate de dag vordert je koopt een gevoel evenzeer als een gebruik.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "scorpio",
+      "language": "fr",
+      "general": "tout n’a pas besoin de devenir un secret pour être troublant, ni une épreuve pour compter; Votre humour peut surprendre ceux qui s’attendaient à vous trouver grave; Une envie de taquiner, un plaisir assumé ou un rire au mauvais moment vient desserrer une atmosphère trop chargée; Vous n’avez pas perdu votre profondeur ; elle refuse simplement de porter toujours le même costume; Une susceptibilité reste possible si l’on ne comprend pas le second degré; Le charme du jour tient à cette intensité qui accepte de sourire.",
+      "love": "le jeu reste délicieux tant qu’il laisse à chacun le plaisir d’y entrer et d’en sortir librement; L’attirance gagne une pointe de malice; Vous pouvez aimer déstabiliser doucement l’autre, puis être touché par sa façon de répondre.",
+      "work": "une idée défendue avec légèreté peut conserver toute sa puissance et gagner une écoute différente; Un peu d’ironie peut dégonfler une rivalité trop sérieuse; Votre détermination reste entière, mais elle n’a pas besoin de transformer chaque échange en affrontement.",
+      "finance": "le plaisir devient seulement moins léger si son prix oblige ensuite à lui inventer une nécessité; Une envie insolite vous amuse plus qu’elle ne vous semble raisonnable; Il n’est pas interdit d’aimer ce qui ne sert à rien.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "scorpio",
+      "language": "en",
+      "general": "As the day unfolds, not everything needs to become a secret to be intriguing, or an ordeal before it is allowed to count. Under this light, your humour may surprise people expecting to find you serious. Within this movement, an urge to tease, an openly enjoyed pleasure or laughter at the wrong moment loosens an overcharged atmosphere. On closer inspection, you have not lost your depth; it simply refuses to wear the same costume every time. As the day unfolds, sensitivity remains possible if the irony is missed. Under this light, the day's charm lies in intensity willing to smile.",
+      "love": "Under this light, the game remains delicious while each person retains the pleasure of choosing freely when to enter it and when to step away. Within this movement, attraction gains a mischievous edge. On closer inspection, you may enjoy gently unsettling someone, then feel touched by their reply.",
+      "work": "Within this movement, an idea defended lightly can retain all its power while finding a different, perhaps more receptive kind of audience. On closer inspection, a little irony can deflate an overly serious rivalry. As the day unfolds, your determination remains intact without making every exchange a confrontation.",
+      "finance": "On closer inspection, pleasure merely grows less light if the price subsequently obliges you to invent a necessity to justify the purchase. As the day unfolds, an unusual desire amuses you more than it seems reasonable. Under this light, there is no ban on liking something useless.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "scorpio",
+      "language": "de",
+      "general": "Im Lauf des Tages nicht alles muss geheim sein, um zu faszinieren, oder zur Prüfung werden, um Bedeutung zu haben. In diesem Licht ihr Humor überrascht womöglich Menschen, die Sie ernst erwartet hatten. In dieser Bewegung lust am Necken, ein offen genossenes Vergnügen oder ein Lachen im falschen Moment lockert eine überladene Atmosphäre. Bei näherem Hinsehen ihre Tiefe ist nicht verschwunden; sie weigert sich nur, immer dasselbe Kostüm zu tragen. Im Lauf des Tages empfindlichkeit bleibt möglich, falls jemand die Ironie verkennt. In diesem Licht der Reiz des Tages liegt in einer Intensität, die lächeln kann.",
+      "love": "In diesem Licht das Spiel bleibt köstlich, solange jeder frei entscheiden darf, wann er hinein- und wieder herausgeht. In dieser Bewegung die Anziehung bekommt einen schelmischen Unterton. Bei näherem Hinsehen vielleicht bringen Sie den anderen gern sanft aus der Fassung und sind dann von seiner Antwort berührt.",
+      "work": "In dieser Bewegung eine leicht vertretene Idee behält ihre Kraft und findet womöglich eine andere Art von Aufmerksamkeit. Bei näherem Hinsehen etwas Ironie kann einer allzu ernsten Rivalität die Luft nehmen. Im Lauf des Tages ihre Entschlossenheit bleibt ganz, ohne jeden Austausch zum Kampf zu machen.",
+      "finance": "Bei näherem Hinsehen das Vergnügen wird erst schwerer, wenn sein Preis Sie danach zwingt, dem Kauf eine angebliche Notwendigkeit anzudichten. Im Lauf des Tages ein ungewöhnlicher Wunsch amüsiert Sie mehr, als er Ihnen vernünftig erscheint. In diesem Licht man darf auch etwas Nutzloses mögen.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "scorpio",
+      "language": "es",
+      "general": "Mientras avanza el día, no todo necesita convertirse en secreto para resultar inquietante, ni en prueba para tener importancia. Bajo esta luz, su humor puede sorprender a quienes esperaban encontrarle solemne. En este movimiento, las ganas de bromear, un placer asumido o una carcajada a destiempo aflojan un ambiente demasiado cargado. Al mirar más de cerca, no ha perdido profundidad; simplemente se niega a vestir siempre el mismo traje. Mientras avanza el día, cabe cierta susceptibilidad si no se entiende la ironía. Bajo esta luz, el encanto de la jornada está en esa intensidad que acepta sonreír.",
+      "love": "Bajo esta luz, el juego sigue siendo delicioso mientras cada persona conserve la libertad de entrar y salir por su propio gusto. En este movimiento, la atracción gana una pizca de picardía. Al mirar más de cerca, puede disfrutar descolocando suavemente al otro y después conmoverse con su respuesta.",
+      "work": "En este movimiento, una idea defendida con ligereza conserva su fuerza y puede encontrar una escucha diferente y más abierta. Al mirar más de cerca, un poco de ironía puede desinflar una rivalidad demasiado seria. Mientras avanza el día, su determinación permanece intacta sin necesitar que cada intercambio sea un enfrentamiento.",
+      "finance": "Al mirar más de cerca, el placer solo pierde ligereza si su precio obliga después a inventarle una necesidad para justificar aquella compra. Mientras avanza el día, un deseo insólito le divierte más de lo que parece razonable. Bajo esta luz, no está prohibido disfrutar de algo inútil.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "scorpio",
+      "language": "it",
+      "general": "Con il procedere del giorno, non tutto deve diventare un segreto per turbare, né una prova per avere importanza. Sotto questa luce, il vostro umorismo può sorprendere chi si aspettava di trovarvi seri. Dentro questo movimento, la voglia di stuzzicare, un piacere dichiarato o una risata al momento sbagliato allenta un'atmosfera troppo carica. A guardare meglio, non avete perso profondità; rifiuta semplicemente di indossare sempre lo stesso costume. Con il procedere del giorno, resta possibile una suscettibilità se qualcuno non coglie l'ironia. Sotto questa luce, il fascino del giorno sta in questa intensità che accetta di sorridere.",
+      "love": "Sotto questa luce, il gioco resta delizioso finché ciascuno conserva la libertà di entrarvi e di uscirne per proprio piacere. Dentro questo movimento, l'attrazione acquista una punta di malizia. A guardare meglio, potete divertirvi a spiazzare dolcemente l'altro e poi sentirvi toccati dalla sua risposta.",
+      "work": "Dentro questo movimento, un'idea difesa con leggerezza conserva tutta la sua forza e può ottenere un ascolto diverso e più aperto. A guardare meglio, un po' d'ironia può sgonfiare una rivalità troppo seria. Con il procedere del giorno, la determinazione resta intera, senza trasformare ogni scambio in uno scontro.",
+      "finance": "A guardare meglio, il piacere diventa soltanto meno leggero se il prezzo obbliga poi a inventargli una necessità per giustificarlo. Con il procedere del giorno, un desiderio insolito vi diverte più di quanto vi sembri ragionevole. Sotto questa luce, non è vietato amare ciò che non serve.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "scorpio",
+      "language": "pt",
+      "general": "À medida que o dia avança, nem tudo precisa de se tornar segredo para ser perturbador, nem prova para ter importância e deixar uma marca. Sob esta luz, o seu humor pode surpreender quem esperava encontrá-lo grave. Neste movimento, a vontade de brincar, um prazer assumido ou uma gargalhada fora de tempo solta um ambiente demasiado carregado. Olhando mais de perto, não perdeu profundidade; ela recusa apenas vestir sempre o mesmo fato. À medida que o dia avança, continua a haver alguma suscetibilidade se não perceberem a ironia. Sob esta luz, o encanto do dia está nessa intensidade que aceita sorrir.",
+      "love": "Sob esta luz, o jogo continua delicioso enquanto cada um conserva a liberdade de entrar e sair pelo seu próprio prazer. Neste movimento, a atração ganha uma ponta de malícia. Olhando mais de perto, pode gostar de desconcertar suavemente o outro e depois sentir-se tocado pela resposta.",
+      "work": "Neste movimento, uma ideia defendida com leveza conserva toda a força e pode encontrar uma escuta diferente e mais aberta. Olhando mais de perto, um pouco de ironia pode esvaziar uma rivalidade demasiado séria. À medida que o dia avança, a determinação mantém-se inteira sem precisar de transformar cada troca em confronto.",
+      "finance": "Olhando mais de perto, o prazer só perde leveza se o preço obrigar depois a inventar uma necessidade que justifique a compra. À medida que o dia avança, um desejo insólito diverte mais do que parece razoável. Sob esta luz, não é proibido gostar do que não serve para nada.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "scorpio",
+      "language": "ru",
+      "general": "По мере развития дня не всё должно становиться тайной, чтобы волновать, или испытанием, чтобы иметь значение. В этом свете ваш юмор способен удивить тех, кто ожидал застать вас серьёзным. В этом движении желание подразнить, открытое удовольствие или смех невпопад ослабляют слишком заряженную атмосферу. Если присмотреться глубина не исчезла — она просто отказывается постоянно носить один костюм. По мере развития дня если иронию не поймут, возможна обидчивость. В этом свете обаяние дня в этой интенсивности, согласной улыбаться.",
+      "love": "В этом свете игра восхитительна, пока каждый сохраняет удовольствие свободно входить в неё и выходить. В этом движении у притяжения появляется лукавство. Если присмотреться вам может нравиться мягко сбивать другого с толку, а затем трогать его ответ.",
+      "work": "В этом движении идея, защищённая легко, сохраняет силу и может встретить другой, более открытый отклик. Если присмотреться немного иронии способно сдуть чересчур серьёзное соперничество. По мере развития дня решимость остаётся целой, не превращая каждый обмен репликами в столкновение.",
+      "finance": "Если присмотреться удовольствие становится тяжелее, только если цена потом вынуждает придумать покупке необходимость. По мере развития дня необычное желание скорее забавляет, чем кажется разумным. В этом свете любить бесполезное не запрещено.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "scorpio",
+      "language": "nl",
+      "general": "Naarmate de dag vordert niet alles hoeft geheim te worden om te intrigeren, of een beproeving om betekenis te hebben en een indruk achter te laten. In dit licht je humor verrast misschien mensen die je ernstig verwachtten. Binnen deze beweging zin om te plagen, openlijk genoten plezier of lachen op het verkeerde moment maakt een overladen sfeer losser. Bij nader inzien je diepte is niet verdwenen; ze weigert alleen steeds hetzelfde kostuum te dragen. Naarmate de dag vordert gevoeligheid blijft mogelijk als de ironie wordt gemist. In dit licht de charme van de dag zit in intensiteit die wil glimlachen.",
+      "love": "In dit licht het spel blijft heerlijk zolang ieder vrij mag kiezen erin te stappen en er weer uit te gaan. Binnen deze beweging aantrekking krijgt een ondeugend randje. Bij nader inzien je kunt ervan genieten de ander zachtjes uit evenwicht te brengen en vervolgens geraakt worden door het antwoord.",
+      "work": "Binnen deze beweging een licht verdedigd idee behoudt kracht en vindt mogelijk een ander soort gehoor. Bij nader inzien een beetje ironie kan de lucht uit een al te ernstige rivaliteit laten lopen. Naarmate de dag vordert je vastberadenheid blijft intact zonder van elk gesprek een confrontatie te maken.",
+      "finance": "Bij nader inzien het plezier wordt pas zwaarder wanneer de prijs je daarna verplicht een noodzaak te verzinnen om de aankoop te verdedigen. Naarmate de dag vordert een ongewoon verlangen amuseert je meer dan het redelijk lijkt. In dit licht er is geen verbod op houden van iets nutteloos.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "sagittarius",
+      "language": "fr",
+      "general": "il commence peut-être à vous ressembler davantage; La promesse était immense ; le détail qui résiste l’est beaucoup moins; Un projet séduisant peut rencontrer une limite concrète, presque agaçante par sa modestie; Vous avez envie de passer par-dessus, tant la perspective reste attirante; Pourtant, cette petite résistance peut révéler ce qui vous plaît vraiment dans l’aventure, une fois le grand discours retombé; La tonalité est plus lucide qu’enthousiaste, sans devenir désabusée; Un rêve qui perd un peu de décor ne perd pas forcément son âme.",
+      "love": "la complicité n’exige pas de rêver exactement au même voyage pour avoir encore envie de partir ensemble; Une envie commune rencontre des attentes moins semblables qu’il n’y paraissait; Cela peut décevoir un instant, puis rendre le lien plus intéressant.",
+      "work": "une ambition reste stimulante lorsqu’elle possède autre chose que l’ampleur de sa présentation pour soutenir votre engagement; Les grandes perspectives se confrontent à une réalité professionnelle plus exigeante; Vous pouvez ressentir de l’impatience devant ce qui ralentit l’élan.",
+      "finance": "la dépense prend un autre sens lorsque vous distinguez le plaisir essentiel du supplément de prestige; Le coût réel d’un projet peut nuancer son attrait sans le rendre inaccessible; Certaines options séduisent surtout parce qu’elles agrandissent le récit.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "sagittarius",
+      "language": "en",
+      "general": "Under this light, perhaps it is beginning to look more like you. Within this movement, the promise was immense; the stubborn detail is much smaller. On closer inspection, an appealing project may encounter a concrete limit, almost irritating in its modesty. As the day unfolds, you want to leap over it because the prospect remains so attractive. Under this light, yet that small resistance may reveal what you really enjoy about the adventure once the grand speech subsides. Within this movement, the mood is more clear-eyed than enthusiastic, without becoming disillusioned. On closer inspection, a dream losing some scenery does not necessarily lose its soul.",
+      "love": "Within this movement, intimacy does not require dreaming of exactly the same journey to preserve the desire to set off together. On closer inspection, a shared wish encounters expectations less alike than they appeared. As the day unfolds, this may disappoint briefly, then make the bond more interesting.",
+      "work": "On closer inspection, an ambition remains stimulating when it has more than the scale of its presentation to sustain your commitment over the longer run. As the day unfolds, grand prospects meet a more demanding professional reality. Under this light, impatience may arise around whatever slows momentum.",
+      "finance": "As the day unfolds, spending changes meaning when you distinguish essential pleasure from an extra helping of prestige. Under this light, the real cost of a project may temper its appeal without putting it out of reach. Within this movement, some options attract mainly because they enlarge the story.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "sagittarius",
+      "language": "de",
+      "general": "In diesem Licht vielleicht ähnelt er Ihnen nun mehr. In dieser Bewegung das Versprechen war riesig; das widerspenstige Detail ist erheblich kleiner. Bei näherem Hinsehen ein reizvolles Projekt trifft womöglich auf eine konkrete Grenze, beinahe ärgerlich in ihrer Bescheidenheit. Im Lauf des Tages sie möchten darüber hinwegsetzen, weil die Aussicht so anziehend bleibt. In diesem Licht doch dieser kleine Widerstand zeigt vielleicht, was Ihnen am Abenteuer wirklich gefällt, wenn die große Rede verklungen ist. In dieser Bewegung der Ton wird nüchterner, ohne ernüchtert zu sein. Bei näherem Hinsehen ein Traum, der etwas Kulisse verliert, muss nicht seine Seele verlieren.",
+      "love": "In dieser Bewegung gemeinsamkeit verlangt nicht genau denselben Reisetraum, um weiterhin Lust auf einen gemeinsamen Aufbruch zu haben. Bei näherem Hinsehen ein gemeinsamer Wunsch trifft auf Erwartungen, die weniger ähnlich sind als gedacht. Im Lauf des Tages das enttäuscht kurz und macht die Verbindung anschließend vielleicht interessanter.",
+      "work": "Bei näherem Hinsehen ein Ziel bleibt reizvoll, wenn es mehr als die Größe seiner Präsentation besitzt, um Ihren Einsatz auch über diesen ersten Augenblick hinaus zu tragen. Im Lauf des Tages große Perspektiven begegnen einer anspruchsvolleren beruflichen Wirklichkeit. In diesem Licht was den Schwung bremst, kann Ungeduld auslösen.",
+      "finance": "Im Lauf des Tages eine Ausgabe verändert ihren Sinn, sobald wesentlicher Genuss und zusätzliche Prestigeportion unterscheidbar werden. In diesem Licht die wirklichen Kosten eines Projekts mindern vielleicht seinen Reiz, ohne es unerreichbar zu machen. In dieser Bewegung manche Option lockt vor allem, weil sie die Geschichte vergrößert.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "sagittarius",
+      "language": "es",
+      "general": "Bajo esta luz, quizá empieza a parecerse más a usted. En este movimiento, la promesa era inmensa; el detalle que se resiste lo es mucho menos. Al mirar más de cerca, un proyecto seductor puede encontrar un límite concreto, casi irritante por su modestia. Mientras avanza el día, tiene ganas de saltarlo, tan atractiva sigue siendo la perspectiva. Bajo esta luz, sin embargo, esa pequeña resistencia puede revelar qué le gusta de verdad de la aventura una vez apagado el gran discurso. En este movimiento, la tonalidad es más lúcida que entusiasta, sin volverse desencantada. Al mirar más de cerca, un sueño que pierde decorado no pierde necesariamente el alma.",
+      "love": "En este movimiento, la complicidad no exige soñar exactamente el mismo viaje para conservar las ganas de partir juntos. Al mirar más de cerca, un deseo común encuentra expectativas menos parecidas de lo que aparentaban. Mientras avanza el día, puede decepcionar un instante y después volver el vínculo más interesante.",
+      "work": "Al mirar más de cerca, una ambición sigue siendo estimulante cuando tiene algo más que la amplitud de su presentación para sostener su compromiso. Mientras avanza el día, las grandes perspectivas se enfrentan a una realidad profesional más exigente. Bajo esta luz, puede impacientarse con lo que frena el impulso.",
+      "finance": "Mientras avanza el día, el gasto cambia de sentido cuando distingue el placer esencial del suplemento de prestigio que lo adorna. Bajo esta luz, el coste real de un proyecto puede matizar su atractivo sin volverlo inaccesible. En este movimiento, algunas opciones seducen sobre todo porque agrandan el relato.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "sagittarius",
+      "language": "it",
+      "general": "Sotto questa luce, forse comincia a somigliarvi di più. Dentro questo movimento, la promessa era immensa; il dettaglio che resiste lo è molto meno. A guardare meglio, un progetto seducente può incontrare un limite concreto, quasi irritante nella sua modestia. Con il procedere del giorno, avete voglia di saltarlo, tanto la prospettiva resta attraente. Sotto questa luce, eppure quella piccola resistenza può rivelare ciò che amate davvero dell'avventura una volta spento il grande discorso. Dentro questo movimento, la tonalità è più lucida che entusiasta, senza diventare disillusa. A guardare meglio, un sogno che perde un po' di scenografia non perde necessariamente l'anima.",
+      "love": "Dentro questo movimento, la complicità non esige di sognare esattamente lo stesso viaggio per avere ancora voglia di partire insieme. A guardare meglio, un desiderio comune incontra attese meno simili di quanto sembrassero. Con il procedere del giorno, può deludere per un istante, poi rendere il legame più interessante.",
+      "work": "A guardare meglio, un'ambizione resta stimolante quando possiede altro oltre l'ampiezza della presentazione per sostenere il vostro impegno nel tempo. Con il procedere del giorno, le grandi prospettive incontrano una realtà professionale più esigente. Sotto questa luce, potete provare impazienza davanti a ciò che frena lo slancio.",
+      "finance": "Con il procedere del giorno, la spesa acquista un altro senso quando distinguete il piacere essenziale dal supplemento di prestigio che lo accompagna. Sotto questa luce, il costo reale di un progetto può sfumarne il fascino senza renderlo inaccessibile. Dentro questo movimento, certe opzioni seducono soprattutto perché ingrandiscono il racconto.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "sagittarius",
+      "language": "pt",
+      "general": "Sob esta luz, talvez comece a parecer-se mais consigo. Neste movimento, a promessa era imensa; o pormenor que resiste é muito mais pequeno. Olhando mais de perto, um projeto sedutor pode encontrar um limite concreto, quase irritante pela sua modéstia. À medida que o dia avança, apetece passar por cima, tão atraente continua a perspetiva. Sob esta luz, no entanto, essa pequena resistência pode revelar o que realmente lhe agrada na aventura quando o grande discurso acaba. Neste movimento, a tonalidade é mais lúcida do que entusiasta, sem se tornar desencantada. Olhando mais de perto, um sonho que perde cenário não perde necessariamente a alma.",
+      "love": "Neste movimento, a cumplicidade não exige sonhar exatamente a mesma viagem para continuar a haver vontade de partir em conjunto. Olhando mais de perto, um desejo comum encontra expectativas menos semelhantes do que pareciam. À medida que o dia avança, pode desiludir por um instante e depois tornar o vínculo mais interessante.",
+      "work": "Olhando mais de perto, uma ambição mantém o estímulo quando possui mais do que a dimensão da apresentação para sustentar o seu empenho. À medida que o dia avança, as grandes perspetivas confrontam-se com uma realidade profissional mais exigente. Sob esta luz, pode sentir impaciência perante o que trava o impulso.",
+      "finance": "À medida que o dia avança, a despesa muda de sentido quando distingue o prazer essencial do suplemento de prestígio que o acompanha. Sob esta luz, o custo real de um projeto pode matizar o seu encanto sem o tornar inacessível. Neste movimento, algumas opções seduzem sobretudo porque engrandecem a narrativa.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "sagittarius",
+      "language": "ru",
+      "general": "В этом свете возможно, она начинает больше походить на вас. В этом движении обещание было огромным; упрямая деталь гораздо меньше. Если присмотреться привлекательный проект может встретить конкретное ограничение, почти раздражающее своей скромностью. По мере развития дня хочется перескочить его, настолько заманчивой остаётся перспектива. В этом свете однако небольшое сопротивление способно показать, что вам действительно нравится в приключении, когда большая речь затихает. В этом движении настроение скорее трезвое, чем восторженное, но не разочарованное. Если присмотреться мечта, потерявшая часть декораций, не обязательно теряет душу.",
+      "love": "В этом движении близость не требует мечтать об одном и том же путешествии, чтобы по-прежнему хотелось отправиться куда-нибудь вместе. Если присмотреться общее желание встречает ожидания менее похожие, чем казалось. По мере развития дня это может ненадолго разочаровать, а потом сделать связь интереснее.",
+      "work": "Если присмотреться амбиция остаётся увлекательной, когда кроме масштаба презентации у неё есть чем поддержать ваше участие. По мере развития дня большие перспективы сталкиваются с более требовательной профессиональной реальностью. В этом свете всё, что тормозит порыв, может вызвать нетерпение.",
+      "finance": "По мере развития дня расход получает другой смысл, когда вы различаете главное удовольствие и дополнительную порцию престижа. В этом свете реальная стоимость проекта может умерить привлекательность, не делая его недоступным. В этом движении некоторые варианты соблазняют прежде всего тем, что увеличивают историю.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "sagittarius",
+      "language": "nl",
+      "general": "In dit licht misschien gaat hij meer op jou lijken. Binnen deze beweging de belofte was immens; het weerspannige detail is veel kleiner. Bij nader inzien een aantrekkelijk project kan een concrete grens ontmoeten, bijna irritant in haar bescheidenheid. Naarmate de dag vordert je wilt eroverheen springen omdat het vooruitzicht zo verleidelijk blijft. In dit licht toch kan die kleine weerstand tonen wat je werkelijk mooi vindt aan het avontuur wanneer de grote rede is verstomd. Binnen deze beweging de toon is helderder dan uitbundig, zonder ontgoocheld te raken. Bij nader inzien een droom die wat decor verliest hoeft zijn ziel niet kwijt te zijn.",
+      "love": "Binnen deze beweging verbondenheid vraagt niet om precies dezelfde reisdroom om toch samen te willen vertrekken. Bij nader inzien een gedeelde wens ontmoet verwachtingen die minder op elkaar lijken dan gedacht. Naarmate de dag vordert dat stelt even teleur en maakt de band daarna misschien interessanter.",
+      "work": "Bij nader inzien een ambitie blijft boeien wanneer ze meer dan de omvang van haar presentatie bezit om je inzet ook na de eerste indruk te dragen. Naarmate de dag vordert grote vooruitzichten ontmoeten een veeleisender professionele werkelijkheid. In dit licht je kunt ongeduldig worden van wat de vaart vertraagt.",
+      "finance": "Naarmate de dag vordert uitgeven krijgt een andere betekenis wanneer wezenlijk plezier te onderscheiden is van extra prestige. In dit licht de echte kosten van een project kunnen de aantrekkingskracht nuanceren zonder het onbereikbaar te maken. Binnen deze beweging sommige opties verleiden vooral omdat ze het verhaal groter maken.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "capricorn",
+      "language": "fr",
+      "general": "cette fois, le moment possède aussi une beauté qui n’appartient qu’à lui; Le plaisir a la mémoire longue; Une envie laissée de côté, une affection ancienne ou un élan créatif peut revenir avec assez de douceur pour vous désarmer; Vous aviez peut-être cru le sujet clos, simplement parce que la vie avait repris son allure sérieuse; Rien n’oblige à faire de ce retour une grande décision; Une émotion peut exister sans réclamer un programme; Le point sensible serait de lui demander de réparer ce qui a manqué autrefois.",
+      "love": "le sentiment gagne parfois à rester une présence; La tendresse vous rejoint par un détail familier, avec un trouble que vous n’aviez pas prévu; Vous pouvez apprécier ce qui se réveille sans lui donner tout de suite un avenir.",
+      "work": "le sujet peut nourrir une création actuelle, sans imposer de renverser toute votre trajectoire dès maintenant; Une ancienne aspiration professionnelle retrouve peut-être une place dans votre imagination; Elle vous touche par ce qu’elle disait de vous avant les compromis.",
+      "finance": "sa valeur peut tenir au moment choisi, sans dépendre d’une somme capable de compenser toutes les années d’attente; Un plaisir longtemps reporté paraît soudain plus légitime; L’envie mérite mieux qu’un réflexe de privation ou une dépense de rattrapage.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "capricorn",
+      "language": "en",
+      "general": "Within this movement, this time, the moment also possesses a beauty belonging only to itself, not to its history. On closer inspection, pleasure has a long memory. As the day unfolds, a desire set aside, an old affection or a creative impulse can return gently enough to disarm you. Under this light, perhaps you thought the subject closed simply because life had resumed its serious pace. Within this movement, this return need not become a major decision. On closer inspection, an emotion can exist without demanding a programme. As the day unfolds, the sensitive point would be expecting it to repair what was once missing.",
+      "love": "On closer inspection, a feeling sometimes benefits from remaining a presence rather than becoming something that must be decided. As the day unfolds, tenderness reaches you through a familiar detail, bringing an unexpected flutter. Under this light, you can appreciate what awakens without immediately assigning it a future.",
+      "work": "As the day unfolds, the subject can nourish a current creation without requiring your entire career to be overturned immediately. Under this light, an old professional aspiration may regain a place in your imagination. Within this movement, it touches you through what it said about you before compromises.",
+      "finance": "Under this light, its value may lie in the chosen moment, without requiring a sum capable of making up for every year of waiting. Within this movement, a pleasure long postponed suddenly feels more legitimate. On closer inspection, the wish deserves better than reflex deprivation or compensatory spending.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "capricorn",
+      "language": "de",
+      "general": "In dieser Bewegung dieser Moment besitzt auch eine Schönheit, die allein ihm gehört. Bei näherem Hinsehen vergnügen hat ein langes Gedächtnis. Im Lauf des Tages ein zurückgestellter Wunsch, eine frühere Zuneigung oder ein schöpferischer Impuls kehrt vielleicht sanft genug zurück, um Sie zu entwaffnen. In diesem Licht möglicherweise hielten Sie das Thema nur deshalb für abgeschlossen, weil das Leben wieder seinen ernsten Gang ging. In dieser Bewegung daraus muss keine große Entscheidung werden. Bei näherem Hinsehen ein Gefühl darf existieren, ohne ein Programm zu verlangen. Im Lauf des Tages empfindlich wird es, wenn es frühere Leerstellen reparieren soll.",
+      "love": "Bei näherem Hinsehen manchmal gewinnt ein Gefühl dadurch, dass es einfach Gegenwart bleiben darf statt Entscheidung zu werden. Im Lauf des Tages zärtlichkeit erreicht Sie über ein vertrautes Detail und bringt ungeahnte Unruhe mit. In diesem Licht sie dürfen genießen, was erwacht, ohne ihm gleich eine Zukunft zuzuweisen.",
+      "work": "Im Lauf des Tages das Thema kann eine heutige Arbeit nähren, ohne sofort Ihre gesamte Laufbahn umwerfen zu müssen. In diesem Licht ein früherer Berufswunsch findet vielleicht wieder Platz in Ihrer Vorstellung. In dieser Bewegung er berührt durch das, was er vor den Kompromissen über Sie erzählte.",
+      "finance": "In diesem Licht sein Wert liegt vielleicht im gewählten Zeitpunkt, nicht in einer Summe, die sämtliche Jahre des Wartens ausgleichen müsste. In dieser Bewegung ein lange verschobenes Vergnügen erscheint plötzlich berechtigter. Bei näherem Hinsehen der Wunsch verdient mehr als reflexhaften Verzicht oder nachholenden Konsum.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "capricorn",
+      "language": "es",
+      "general": "En este movimiento, esta vez, el momento posee también una belleza que solo le pertenece a él. Al mirar más de cerca, el placer tiene buena memoria. Mientras avanza el día, un deseo aparcado, un afecto antiguo o un impulso creativo puede regresar con dulzura suficiente para desarmarle. Bajo esta luz, quizá creía cerrado el asunto porque la vida había retomado su paso serio. En este movimiento, nada obliga a convertir ese regreso en una gran decisión. Al mirar más de cerca, una emoción puede existir sin reclamar un programa. Mientras avanza el día, lo delicado sería pedirle que repare lo que faltó antaño.",
+      "love": "Al mirar más de cerca, a veces el sentimiento gana al quedarse en presencia, sin convertirse todavía en una decisión. Mientras avanza el día, la ternura le alcanza a través de un detalle familiar, con una turbación inesperada. Bajo esta luz, puede apreciar lo que despierta sin asignarle enseguida un futuro.",
+      "work": "Mientras avanza el día, el tema puede alimentar una creación actual sin obligar a cambiar toda su trayectoria inmediatamente. Bajo esta luz, una antigua aspiración profesional recupera quizá espacio en su imaginación. En este movimiento, le conmueve por lo que decía de usted antes de las renuncias.",
+      "finance": "Bajo esta luz, su valor puede estar en el momento elegido, sin necesitar una suma que repare todos los años de espera. En este movimiento, un placer aplazado durante mucho tiempo parece de pronto más legítimo. Al mirar más de cerca, el deseo merece algo mejor que privación automática o gasto compensatorio.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "capricorn",
+      "language": "it",
+      "general": "Dentro questo movimento, stavolta il momento possiede anche una bellezza che appartiene soltanto a lui. A guardare meglio, il piacere ha una memoria lunga. Con il procedere del giorno, un desiderio accantonato, un affetto antico o uno slancio creativo può tornare con abbastanza dolcezza da disarmarvi. Sotto questa luce, forse credevate chiuso il tema soltanto perché la vita aveva ripreso il suo passo serio. Dentro questo movimento, nulla obbliga a trasformare il ritorno in una grande decisione. A guardare meglio, un'emozione può esistere senza chiedere un programma. Con il procedere del giorno, il punto delicato sarebbe pretendere che ripari ciò che un tempo è mancato.",
+      "love": "A guardare meglio, il sentimento talvolta guadagna restando una presenza, senza dover diventare già una decisione. Con il procedere del giorno, la tenerezza vi raggiunge attraverso un dettaglio familiare, portando un turbamento inatteso. Sotto questa luce, potete apprezzare ciò che si risveglia senza assegnargli subito un futuro.",
+      "work": "Con il procedere del giorno, il tema può nutrire una creazione attuale senza imporre di rovesciare immediatamente tutta la vostra traiettoria di lavoro. Sotto questa luce, un'antica aspirazione professionale ritrova forse posto nell'immaginazione. Dentro questo movimento, vi tocca per ciò che diceva di voi prima dei compromessi.",
+      "finance": "Sotto questa luce, il suo valore può stare nel momento scelto, senza una somma che ripaghi ogni anno d'attesa. Dentro questo movimento, un piacere rimandato a lungo appare improvvisamente più legittimo. A guardare meglio, il desiderio merita più di una privazione automatica o di una spesa compensatoria.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "capricorn",
+      "language": "pt",
+      "general": "Neste movimento, desta vez, o momento possui também uma beleza que só a ele pertence. Olhando mais de perto, o prazer tem memória longa. À medida que o dia avança, um desejo posto de lado, um afeto antigo ou um impulso criativo pode regressar com doçura suficiente para o desarmar. Sob esta luz, talvez julgasse o assunto encerrado só porque a vida retomara o seu passo sério. Neste movimento, nada obriga a transformar o regresso numa grande decisão. Olhando mais de perto, uma emoção pode existir sem reclamar um programa. À medida que o dia avança, o ponto sensível seria pedir-lhe que reparasse o que faltou outrora.",
+      "love": "Olhando mais de perto, o sentimento ganha por vezes em continuar a ser presença, sem ter de se tornar já uma decisão. À medida que o dia avança, a ternura chega por um pormenor familiar, trazendo uma perturbação inesperada. Sob esta luz, pode apreciar o que desperta sem lhe atribuir logo um futuro.",
+      "work": "À medida que o dia avança, o tema pode alimentar uma criação atual sem obrigar a inverter imediatamente toda a sua trajetória de trabalho e escolhas. Sob esta luz, uma antiga aspiração profissional recupera talvez lugar na imaginação. Neste movimento, toca-lhe pelo que dizia de si antes dos compromissos.",
+      "finance": "Sob esta luz, o seu valor pode estar no momento escolhido, sem exigir uma soma que repare todos os anos de espera. Neste movimento, um prazer adiado durante muito tempo parece subitamente mais legítimo. Olhando mais de perto, o desejo merece mais do que privação automática ou uma despesa compensatória.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "capricorn",
+      "language": "ru",
+      "general": "В этом движении на этот раз у мгновения есть и красота, принадлежащая только ему, а не всему прошлому, которое оно невольно напоминает. Если присмотреться у удовольствия долгая память. По мере развития дня отложенное желание, прежняя привязанность или творческий порыв могут вернуться достаточно мягко, чтобы обезоружить. В этом свете возможно, вы считали тему закрытой лишь потому, что жизнь снова пошла серьёзным шагом. В этом движении возвращение не обязано становиться большим решением. Если присмотреться эмоция вправе существовать, не требуя программы. По мере развития дня тонкое место — ожидать от неё исправления давней нехватки.",
+      "love": "Если присмотреться иногда чувство выигрывает, оставаясь присутствием. По мере развития дня нежность достигает вас через знакомую деталь с неожиданным волнением. В этом свете можно ценить пробуждающееся, не назначая ему немедленно будущее.",
+      "work": "По мере развития дня тема может питать нынешнее творчество, не требуя немедленно перевернуть всю рабочую траекторию. В этом свете прежнее профессиональное стремление, возможно, снова найдёт место в воображении. В этом движении оно трогает тем, что говорило о вас до компромиссов.",
+      "finance": "В этом свете его ценность может заключаться в выбранном моменте, без суммы, способной возместить все годы ожидания. В этом движении давно откладываемое удовольствие вдруг кажется более законным. Если присмотреться желание заслуживает большего, чем автоматическое лишение или компенсирующая трата.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "capricorn",
+      "language": "nl",
+      "general": "Binnen deze beweging dit moment bezit ook een schoonheid die alleen van zichzelf is, niet van zijn voorgeschiedenis. Bij nader inzien plezier heeft een lang geheugen. Naarmate de dag vordert een opzijgezet verlangen, een oude genegenheid of een creatieve impuls kan zacht genoeg terugkomen om je te ontwapenen. In dit licht misschien dacht je dat het onderwerp afgesloten was omdat het leven zijn ernstige tempo had hervat. Binnen deze beweging daar hoeft geen grote beslissing uit voort te komen. Bij nader inzien een emotie mag bestaan zonder een programma te eisen. Naarmate de dag vordert gevoelig wordt het als ze moet herstellen wat ooit ontbrak.",
+      "love": "Bij nader inzien soms wint een gevoel door aanwezigheid te blijven in plaats van onmiddellijk een beslissing te worden. Naarmate de dag vordert tederheid bereikt je via een vertrouwd detail, met onverwachte verwarring. In dit licht je mag waarderen wat wakker wordt zonder er meteen een toekomst aan toe te kennen.",
+      "work": "Naarmate de dag vordert het onderwerp kan een huidige creatie voeden zonder dat je hele loopbaan onmiddellijk omgekeerd moet worden. In dit licht een vroegere professionele wens vindt misschien weer ruimte in je verbeelding. Binnen deze beweging ze raakt door wat ze over je vertelde vóór de compromissen.",
+      "finance": "In dit licht de waarde kan in het gekozen moment liggen, zonder een bedrag dat alle jaren van wachten zou moeten goedmaken. Binnen deze beweging een lang uitgesteld plezier voelt plotseling gerechtvaardigder. Bij nader inzien het verlangen verdient beter dan automatische ontzegging of een inhaaluitgave.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aquarius",
+      "language": "fr",
+      "general": "la liberté a plus d’allure lorsqu’elle apporte aussi une autre façon de faire; Il suffit d’une règle absurde pour réveiller votre esprit de contradiction; Une habitude collective, une formule toute faite ou une façon de décider peut vous donner envie d’ouvrir les fenêtres; Vous avez de l’invention, et parfois un ton plus mordant que vous ne le pensez; Une résistance extérieure peut nourrir le plaisir de provoquer au lieu de faire avancer l’idée; L’intérêt du jour se trouve pourtant dans ce que vous imaginez après le refus.",
+      "love": "un éclat de rire partagé offre parfois une proximité que le débat n’obtient pas; La complicité aime votre originalité, moins les petites provocations qui cachent une attente; Vous pouvez avoir envie d’être rejoint sans formuler le besoin trop simplement.",
+      "work": "l’innovation devient plus intéressante lorsqu’elle raconte une possibilité, pas seulement un rejet; Une proposition décalée peut mettre en mouvement une situation trop figée; Vous aimez déplacer les évidences, avec un risque de braquer ceux dont vous cherchez l’appui.",
+      "finance": "une idée séduisante garde le droit de ne pas être la meilleure formule pour votre budget; Un modèle de consommation différent peut attirer votre curiosité : usage partagé, seconde main ou achat inhabituel; L’originalité ne garantit pas l’avantage matériel.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aquarius",
+      "language": "en",
+      "general": "On closer inspection, freedom has more style when it also brings another way of doing things. As the day unfolds, one absurd rule is enough to awaken your contrary streak. Under this light, a collective habit, a stock phrase or a way of making decisions may leave you wanting to open the windows. Within this movement, you are inventive, and occasionally sharper in tone than you realise. On closer inspection, outside resistance can feed the pleasure of provocation instead of advancing the idea. As the day unfolds, yet the day's interest lies in what you imagine after the refusal.",
+      "love": "As the day unfolds, shared laughter sometimes offers a closeness that a debate cannot obtain, however brilliantly argued. Under this light, intimacy enjoys your originality, less the small provocations concealing an expectation. Within this movement, you may want someone to reach you without stating the need too plainly.",
+      "work": "Under this light, innovation becomes more interesting when it describes a possibility, not merely a rejection. Within this movement, an unconventional proposal may move a situation that has become too fixed. On closer inspection, you enjoy shifting assumptions, with a risk of alienating those whose support you want.",
+      "finance": "Within this movement, an appealing idea retains the right not to be the best arrangement for your budget. On closer inspection, a different model of consumption can intrigue you: shared use, second-hand goods or an unusual purchase. As the day unfolds, originality does not guarantee material advantage.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aquarius",
+      "language": "de",
+      "general": "Bei näherem Hinsehen freiheit hat mehr Stil, wenn sie auch eine andere Möglichkeit des Handelns mitbringt. Im Lauf des Tages eine absurde Regel genügt, um Ihren Widerspruchsgeist zu wecken. In diesem Licht eine gemeinsame Gewohnheit, eine Floskel oder eine Entscheidungsweise macht vielleicht Lust, die Fenster aufzureißen. In dieser Bewegung sie haben Einfälle und manchmal einen schärferen Ton, als Ihnen bewusst ist. Bei näherem Hinsehen äußerer Widerstand kann die Freude am Provozieren nähren, statt die Idee voranzubringen. Im Lauf des Tages interessant wird der Tag jedoch durch das, was Sie sich nach dem Nein vorstellen.",
+      "love": "Im Lauf des Tages ein gemeinsames Lachen ermöglicht manchmal eine Nähe, die keine noch so brillante Debatte herstellen kann. In diesem Licht gemeinsamkeit mag Ihre Originalität, weniger die kleinen Provokationen mit versteckter Erwartung. In dieser Bewegung vielleicht möchten Sie erreicht werden, ohne das Bedürfnis allzu schlicht auszusprechen.",
+      "work": "In diesem Licht innovation wird interessanter, wenn sie eine Möglichkeit erzählt und nicht bloß eine Ablehnung. In dieser Bewegung ein ungewöhnlicher Vorschlag bringt womöglich Bewegung in eine erstarrte Situation. Bei näherem Hinsehen sie verschieben gern Gewissheiten und riskieren dabei, Unterstützer vor den Kopf zu stoßen.",
+      "finance": "In dieser Bewegung eine reizvolle Idee muss deshalb noch lange nicht die beste Lösung für Ihr Budget sein. Bei näherem Hinsehen ein anderes Konsummodell macht Sie neugierig: gemeinsame Nutzung, Gebrauchtes oder ein ungewöhnlicher Kauf. Im Lauf des Tages originalität garantiert keinen materiellen Vorteil.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aquarius",
+      "language": "es",
+      "general": "Al mirar más de cerca, la libertad tiene más estilo cuando también aporta otra manera de hacer. Mientras avanza el día, basta una regla absurda para despertar su espíritu de contradicción. Bajo esta luz, una costumbre colectiva, una frase hecha o una forma de decidir puede darle ganas de abrir ventanas. En este movimiento, tiene inventiva y, a veces, un tono más mordaz de lo que cree. Al mirar más de cerca, la resistencia ajena puede alimentar el gusto de provocar en vez de hacer avanzar la idea. Mientras avanza el día, el interés de la jornada está, sin embargo, en lo que imagina después del rechazo.",
+      "love": "Mientras avanza el día, una risa compartida ofrece a veces una cercanía que el debate no consigue. Bajo esta luz, la complicidad disfruta de su originalidad, menos de las pequeñas provocaciones que esconden una expectativa. En este movimiento, quizá quiera sentirse acompañado sin formular la necesidad con demasiada sencillez.",
+      "work": "Bajo esta luz, la innovación interesa más cuando cuenta una posibilidad y no se limita a expresar rechazo. En este movimiento, una propuesta poco convencional puede mover una situación demasiado rígida. Al mirar más de cerca, le gusta desplazar evidencias, con riesgo de irritar a quienes busca como apoyo.",
+      "finance": "En este movimiento, una idea seductora conserva el derecho a no ser la mejor fórmula para su presupuesto. Al mirar más de cerca, un modelo de consumo diferente puede despertar curiosidad: uso compartido, segunda mano o una compra inhabitual. Mientras avanza el día, la originalidad no garantiza ventaja material.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aquarius",
+      "language": "it",
+      "general": "A guardare meglio, la libertà ha più stile quando porta anche un altro modo di fare. Con il procedere del giorno, basta una regola assurda a risvegliare lo spirito di contraddizione. Sotto questa luce, un'abitudine collettiva, una frase fatta o un modo di decidere può darvi voglia di aprire le finestre. Dentro questo movimento, avete inventiva e talvolta un tono più mordace di quanto crediate. A guardare meglio, la resistenza esterna può nutrire il piacere di provocare invece di far avanzare l'idea. Con il procedere del giorno, l'interesse del giorno sta però in ciò che immaginate dopo il rifiuto.",
+      "love": "Con il procedere del giorno, una risata condivisa offre talvolta una vicinanza che il dibattito non riesce a ottenere. Sotto questa luce, la complicità ama la vostra originalità, meno le piccole provocazioni che nascondono un'attesa. Dentro questo movimento, potete desiderare di essere raggiunti senza esprimere il bisogno troppo semplicemente.",
+      "work": "Sotto questa luce, l'innovazione diventa più interessante quando racconta una possibilità, non soltanto un rifiuto. Dentro questo movimento, una proposta fuori schema può smuovere una situazione troppo rigida. A guardare meglio, vi piace spostare le evidenze, col rischio di irritare chi vorreste al vostro fianco.",
+      "finance": "Dentro questo movimento, un'idea seducente conserva il diritto di non essere la formula migliore per il vostro bilancio. A guardare meglio, un modello di consumo diverso può incuriosirvi: uso condiviso, seconda mano o un acquisto insolito. Con il procedere del giorno, l'originalità non garantisce un vantaggio materiale.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aquarius",
+      "language": "pt",
+      "general": "Olhando mais de perto, a liberdade tem mais estilo quando também traz outra maneira de fazer. À medida que o dia avança, basta uma regra absurda para acordar o seu espírito de contradição. Sob esta luz, um hábito coletivo, uma frase feita ou uma forma de decidir pode dar-lhe vontade de abrir janelas. Neste movimento, tem inventividade e, por vezes, um tom mais mordaz do que julga. Olhando mais de perto, a resistência exterior pode alimentar o prazer de provocar em vez de fazer avançar a ideia. À medida que o dia avança, o interesse do dia está, porém, no que imagina depois da recusa.",
+      "love": "À medida que o dia avança, uma gargalhada partilhada oferece por vezes uma proximidade que o debate não consegue obter. Sob esta luz, a cumplicidade gosta da sua originalidade, menos das pequenas provocações que escondem uma expectativa. Neste movimento, pode querer sentir-se acompanhado sem formular a necessidade com demasiada simplicidade.",
+      "work": "Sob esta luz, a inovação interessa mais quando conta uma possibilidade e não se limita a expressar uma rejeição. Neste movimento, uma proposta fora do habitual pode mover uma situação demasiado rígida. Olhando mais de perto, gosta de deslocar evidências, com risco de hostilizar quem procura como apoio.",
+      "finance": "Neste movimento, uma ideia sedutora mantém o direito de não ser a melhor fórmula para o seu orçamento. Olhando mais de perto, um modelo de consumo diferente pode despertar curiosidade: utilização partilhada, segunda mão ou uma compra invulgar. À medida que o dia avança, a originalidade não garante vantagem material.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aquarius",
+      "language": "ru",
+      "general": "Если присмотреться у свободы больше стиля, когда она приносит ещё и другой способ действовать. По мере развития дня одного нелепого правила достаточно, чтобы разбудить дух противоречия. В этом свете общая привычка, готовая фраза или способ принимать решения могут вызвать желание открыть окна. В этом движении у вас есть изобретательность, а тон порой острее, чем вам кажется. Если присмотреться внешнее сопротивление способно питать удовольствие провоцировать вместо продвижения идеи. По мере развития дня но интерес дня находится в том, что вы воображаете после отказа.",
+      "love": "По мере развития дня общий смех иногда даёт близость, которой не добивается спор. В этом свете близости нравится ваша оригинальность, меньше — мелкие провокации со скрытым ожиданием. В этом движении возможно, хочется быть понятым, не называя потребность слишком просто.",
+      "work": "В этом свете новаторство интереснее, когда рассказывает о возможности, а не только выражает отказ. В этом движении нестандартное предложение может сдвинуть застывшую ситуацию. Если присмотреться вам нравится перемещать очевидности, с риском оттолкнуть тех, чья поддержка нужна.",
+      "finance": "В этом движении привлекательная идея вправе не оказаться лучшим вариантом для вашего бюджета. Если присмотреться другая модель потребления будит любопытство: совместное использование, подержанные вещи или необычная покупка. По мере развития дня оригинальность не гарантирует материальной выгоды.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "aquarius",
+      "language": "nl",
+      "general": "Bij nader inzien vrijheid heeft meer stijl wanneer ze ook een andere werkwijze meebrengt. Naarmate de dag vordert eén absurde regel is genoeg om je tegendraadse kant wakker te maken. In dit licht een gezamenlijke gewoonte, een standaardzin of een manier van beslissen kan zin geven de ramen open te gooien. Binnen deze beweging je bent vindingrijk en soms scherper van toon dan je beseft. Bij nader inzien weerstand van buiten voedt mogelijk het plezier van provoceren in plaats van het idee vooruit te helpen. Naarmate de dag vordert toch schuilt het interessante van de dag in wat je na het nee bedenkt.",
+      "love": "Naarmate de dag vordert samen lachen biedt soms een nabijheid die geen debat kan verkrijgen. In dit licht verbondenheid houdt van je originaliteit, minder van kleine provocaties met een verborgen verwachting. Binnen deze beweging misschien wil je bereikt worden zonder de behoefte al te eenvoudig uit te spreken.",
+      "work": "In dit licht vernieuwing wordt interessanter wanneer ze een mogelijkheid vertelt, niet alleen een afwijzing van het bestaande. Binnen deze beweging een afwijkend voorstel kan beweging brengen in een vastgelopen situatie. Bij nader inzien je verschuift graag vanzelfsprekendheden en kunt daarbij mensen afschrikken wier steun je zoekt.",
+      "finance": "Binnen deze beweging een verleidelijk idee hoeft nog niet de beste formule voor je budget te zijn. Bij nader inzien een ander consumptiemodel maakt je nieuwsgierig: gedeeld gebruik, tweedehands of een ongewone aankoop. Naarmate de dag vordert originaliteit garandeert geen materieel voordeel.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "pisces",
+      "language": "fr",
+      "general": "vous n’avez pas besoin de durcir le personnage pour donner du poids à ce qui vous plaît vraiment; Du velours dans la voix, mais une idée qui tient debout; Vous pouvez surprendre en exprimant une préférence avec davantage de netteté, surtout si elle touche une création ou un plaisir personnel; Votre sensibilité n’a pas disparu ; elle trouve une forme moins facile à déplacer; Une réaction étonnée peut vous donner envie de revenir à des contours plus flous; Pourtant, le moment possède une force tranquille.",
+      "love": "la tendresse devient plus vivante lorsque votre voix n’est pas seulement celle qui accompagne l’autre; Une franchise douce peut rendre le désir plus présent; Vous êtes sensible à quelqu’un qui entend votre préférence sans la tourner en caprice.",
+      "work": "une limite de moyens n’enlève pas forcément son intérêt à l’idée que vous portez; Une proposition créative gagne en relief lorsque vous en assumez le parti pris; Votre imagination peut séduire sans promettre de répondre à toutes les attentes.",
+      "finance": "la question matérielle reste entière, mais elle n’a pas à effacer tout le goût du projet; Le désir d’un bel objet ou d’un plaisir choisi devient plus clair; Vous pouvez apprécier cette envie sans la déguiser en nécessité.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "pisces",
+      "language": "en",
+      "general": "As the day unfolds, you do not need to harden your character to give weight to what you genuinely enjoy, or to let that enjoyment be visible. Under this light, velvet in the voice, but an idea that stands firmly. Within this movement, you may surprise people by expressing a preference more clearly, especially around a creation or a personal pleasure. On closer inspection, your sensitivity has not vanished; it is finding a shape less easily displaced. As the day unfolds, an astonished reaction may tempt you back towards vaguer outlines. Under this light, yet the moment possesses a quiet strength.",
+      "love": "Under this light, tenderness becomes more alive when yours is not merely the voice that accompanies and supports the other person's. Within this movement, gentle frankness can make desire more present. On closer inspection, you respond to someone who hears your preference without treating it as a whim.",
+      "work": "Within this movement, limited resources do not necessarily remove the interest from the idea you are choosing to put forward. On closer inspection, a creative proposal gains definition when you stand by its particular direction. As the day unfolds, imagination can appeal without promising to satisfy every expectation.",
+      "finance": "On closer inspection, the material question remains, but it does not have to erase every trace of enjoyment from the project. As the day unfolds, the desire for a beautiful object or a chosen pleasure becomes clearer. Under this light, you can appreciate it without disguising it as necessity.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "pisces",
+      "language": "de",
+      "general": "Im Lauf des Tages sie müssen Ihre Figur nicht härter machen, um dem, was Ihnen wirklich gefällt, Gewicht zu verleihen und es sichtbar werden zu lassen. In diesem Licht samt in der Stimme, aber ein Gedanke, der steht. In dieser Bewegung vielleicht überraschen Sie mit einer deutlicheren Vorliebe, besonders bei einer eigenen Arbeit oder einem persönlichen Vergnügen. Bei näherem Hinsehen ihre Empfindsamkeit ist nicht verschwunden; sie findet eine weniger leicht verschiebbare Form. Im Lauf des Tages eine erstaunte Reaktion könnte Sie zurück zu weicheren Umrissen locken. In diesem Licht doch der Augenblick hat eine stille Kraft.",
+      "love": "In diesem Licht zärtlichkeit wird lebendiger, wenn Ihre Stimme nicht nur die ist, die den anderen begleitet und seine Wünsche mitträgt. In dieser Bewegung sanfte Offenheit kann Begehren greifbarer machen. Bei näherem Hinsehen sie reagieren auf jemanden, der Ihre Vorliebe hört, ohne sie als Laune abzutun.",
+      "work": "In dieser Bewegung begrenzte Mittel nehmen der Idee, die Sie vertreten, nicht zwangsläufig ihren Reiz oder ihren eigenen Wert. Bei näherem Hinsehen ein kreativer Vorschlag gewinnt Kontur, wenn Sie zu seiner Richtung stehen. Im Lauf des Tages ihre Fantasie kann begeistern, ohne sämtliche Erwartungen erfüllen zu wollen.",
+      "finance": "Bei näherem Hinsehen die materielle Frage bleibt bestehen, muss aber nicht jede Freude am Vorhaben auslöschen. Im Lauf des Tages der Wunsch nach einem schönen Gegenstand oder einem gewählten Vergnügen wird klarer. In diesem Licht sie dürfen ihn mögen, ohne ihn als Notwendigkeit zu verkleiden.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "pisces",
+      "language": "es",
+      "general": "Mientras avanza el día, no necesita endurecer el personaje para dar peso a lo que realmente le gusta y permitir que se vea. Bajo esta luz, terciopelo en la voz, pero una idea que se sostiene. En este movimiento, puede sorprender al expresar una preferencia con más claridad, sobre todo si toca una creación o un placer personal. Al mirar más de cerca, su sensibilidad no ha desaparecido; encuentra una forma menos fácil de desplazar. Mientras avanza el día, una reacción asombrada puede tentar a volver a contornos vagos. Bajo esta luz, sin embargo, el momento tiene una fuerza tranquila.",
+      "love": "Bajo esta luz, la ternura se vuelve más viva cuando su voz no es únicamente la que acompaña y sostiene al otro. En este movimiento, una franqueza suave puede hacer más presente el deseo. Al mirar más de cerca, le atrae alguien que escucha su preferencia sin convertirla en capricho.",
+      "work": "En este movimiento, un límite de medios no quita necesariamente interés ni valor a la idea que ha decidido llevar adelante. Al mirar más de cerca, una propuesta creativa gana relieve cuando asume su enfoque. Mientras avanza el día, su imaginación puede seducir sin prometer satisfacer todas las expectativas.",
+      "finance": "Al mirar más de cerca, la cuestión material sigue ahí, pero no tiene por qué borrar todo el gusto que le produce el proyecto. Mientras avanza el día, el deseo de un objeto bello o un placer elegido se aclara. Bajo esta luz, puede apreciar esa ilusión sin disfrazarla de necesidad.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "pisces",
+      "language": "it",
+      "general": "Con il procedere del giorno, non serve indurire il personaggio per dare peso a ciò che vi piace davvero e lasciarlo apparire senza scuse. Sotto questa luce, velluto nella voce, ma un'idea che sta in piedi. Dentro questo movimento, potete sorprendere esprimendo una preferenza con maggiore nettezza, soprattutto se tocca una creazione o un piacere personale. A guardare meglio, la sensibilità non è scomparsa; trova una forma meno facile da spostare. Con il procedere del giorno, una reazione stupita può invogliarvi a tornare a contorni più sfumati. Sotto questa luce, eppure il momento possiede una forza tranquilla.",
+      "love": "Sotto questa luce, la tenerezza diventa più viva quando la vostra voce non è soltanto quella che accompagna e sostiene l'altro. Dentro questo movimento, una franchezza dolce può rendere il desiderio più presente. A guardare meglio, vi attrae chi ascolta la vostra preferenza senza trasformarla in capriccio.",
+      "work": "Dentro questo movimento, un limite di mezzi non toglie necessariamente interesse o valore all'idea che avete deciso di portare avanti. A guardare meglio, una proposta creativa acquista rilievo quando ne assumete il taglio. Con il procedere del giorno, l'immaginazione può sedurre senza promettere di rispondere a ogni attesa.",
+      "finance": "A guardare meglio, la questione materiale resta intera, ma non deve cancellare tutto il gusto che vi dà questo progetto. Con il procedere del giorno, il desiderio di un bell'oggetto o di un piacere scelto diventa più chiaro. Sotto questa luce, potete apprezzarlo senza travestirlo da necessità.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "pisces",
+      "language": "pt",
+      "general": "À medida que o dia avança, não precisa de endurecer a personagem para dar peso ao que realmente lhe agrada e permitir que se veja. Sob esta luz, veludo na voz, mas uma ideia que se aguenta de pé. Neste movimento, pode surpreender ao expressar uma preferência com mais nitidez, sobretudo se toca numa criação ou num prazer pessoal. Olhando mais de perto, a sensibilidade não desapareceu; encontra uma forma menos fácil de deslocar. À medida que o dia avança, uma reação admirada pode dar vontade de regressar a contornos vagos. Sob esta luz, no entanto, o momento possui uma força tranquila.",
+      "love": "Sob esta luz, a ternura torna-se mais viva quando a sua voz não é apenas a que acompanha e ampara o outro. Neste movimento, uma franqueza doce pode tornar o desejo mais presente. Olhando mais de perto, atrai-o alguém que escuta a sua preferência sem a tratar como capricho.",
+      "work": "Neste movimento, um limite de meios não retira necessariamente interesse ou valor à ideia que decidiu levar por diante. Olhando mais de perto, uma proposta criativa ganha relevo quando assume a sua abordagem. À medida que o dia avança, a imaginação pode seduzir sem prometer satisfazer todas as expectativas.",
+      "finance": "Olhando mais de perto, a questão material permanece, mas não tem de apagar todo o gosto que lhe dá o projeto. À medida que o dia avança, o desejo de um objeto bonito ou de um prazer escolhido torna-se mais claro. Sob esta luz, pode apreciá-lo sem o disfarçar de necessidade.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "pisces",
+      "language": "ru",
+      "general": "По мере развития дня не нужно делать характер жёстче, чтобы придать вес тому, что вам действительно нравится, и позволить своему вкусу прозвучать без извинений. В этом свете бархат в голосе, но мысль, стоящая на ногах. В этом движении вы можете удивить более ясным предпочтением, особенно если оно касается творчества или личного удовольствия. Если присмотреться чувствительность не исчезла — она находит форму, которую труднее сдвинуть. По мере развития дня удивлённая реакция способна поманить обратно к размытым очертаниям. В этом свете и всё же в мгновении есть тихая сила.",
+      "love": "В этом свете нежность становится живее, когда ваш голос не только сопровождает другого, но и выражает то, что принадлежит лично вам. В этом движении мягкая прямота делает желание ощутимее. Если присмотреться вас привлекает тот, кто слышит предпочтение, не превращая его в каприз.",
+      "work": "В этом движении ограниченность средств не обязательно лишает интереса идею, которую вы решили отстаивать и предлагать в её собственном виде. Если присмотреться творческое предложение приобретает объём, когда вы принимаете его направление. По мере развития дня воображение может увлекать, не обещая удовлетворить все ожидания.",
+      "finance": "Если присмотреться материальный вопрос остаётся, но не обязан стирать весь вкус замысла. По мере развития дня желание красивой вещи или выбранного удовольствия становится яснее. В этом свете можно ценить его, не маскируя под необходимость.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-09",
+      "sign": "pisces",
+      "language": "nl",
+      "general": "Naarmate de dag vordert je hoeft je karakter niet harder te maken om gewicht te geven aan wat je werkelijk graag hebt en dat ook zichtbaar te laten zijn. In dit licht fluweel in de stem, maar een idee dat overeind blijft. Binnen deze beweging je kunt verrassen door duidelijker een voorkeur uit te spreken, vooral rond een creatie of persoonlijk plezier. Bij nader inzien je gevoeligheid is niet verdwenen; ze vindt een vorm die minder gemakkelijk verschuift. Naarmate de dag vordert een verbaasde reactie kan je teruglokken naar vagere contouren. In dit licht toch bezit het moment stille kracht.",
+      "love": "In dit licht tederheid wordt levendiger wanneer jouw stem niet alleen de stem is die de ander begeleidt en ondersteunt. Binnen deze beweging zachte openhartigheid kan verlangen aanweziger maken. Bij nader inzien je reageert op iemand die je voorkeur hoort zonder er een gril van te maken.",
+      "work": "Binnen deze beweging beperkte middelen ontnemen het idee dat je naar voren brengt niet noodzakelijk zijn waarde of aantrekkingskracht. Bij nader inzien een creatief voorstel krijgt reliëf wanneer je voor de gekozen richting staat. Naarmate de dag vordert je verbeelding kan bekoren zonder te beloven iedere verwachting te vervullen.",
+      "finance": "Bij nader inzien de materiële vraag blijft bestaan, maar hoeft niet ieder spoor van plezier uit het plan te wissen. Naarmate de dag vordert het verlangen naar een mooi voorwerp of een gekozen plezier wordt duidelijker. In dit licht je mag het waarderen zonder het als noodzaak te vermommen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    }
+  ]
+}
