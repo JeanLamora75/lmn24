@@ -1,0 +1,1077 @@
+{
+  "date": "2026-11-11",
+  "generatedAt": "2026-11-03T01:36:12.131161+01:00",
+  "timezone": "Europe/Paris",
+  "astronomy": {
+    "validationStatus": "PARTIAL",
+    "source": "CosmyDay",
+    "sourceUrl": "https://api.cosmyday.com/",
+    "attribution": "Données astronomiques : CosmyDay — https://cosmyday.com (utilisation avec attribution requise).",
+    "requestedDateTime": "2026-11-11T12:00:00+01:00",
+    "requestedTimezone": "Europe/Paris",
+    "requestedUtc": "2026-11-11T11:00:00+00:00",
+    "calculationParameters": {
+      "year": 2026,
+      "month": 11,
+      "day": 11,
+      "hour": 12,
+      "minute": 0,
+      "lat": 48.8566,
+      "lon": 2.3522
+    },
+    "confirmedParameters": [
+      "Paramètres envoyés: date 2026-11-11, heure 12:00, latitude 48.8566, longitude 2.3522",
+      "Documentation fournisseur: heure locale aux coordonnées, fuseau résolu par le fournisseur",
+      "Réponse identifiée avec positions, signes, longitudes et vitesses"
+    ],
+    "unconfirmedParameters": [
+      "Horodatage effectif absent de la réponse",
+      "Zodiaque tropical non déclaré explicitement dans la réponse",
+      "Référentiel géocentrique non déclaré explicitement dans la réponse",
+      "Aucune comparaison indépendante des positions"
+    ],
+    "responseConfirmedDateTime": null,
+    "validationNotes": "La documentation confirme que l’heure transmise à /natal est locale aux coordonnées et que le fournisseur résout le fuseau. La réponse fournit des positions exploitables, sans confirmer explicitement l’instant calculé ni les drapeaux tropical et géocentrique. Les aspects majeurs sont dérivés arithmétiquement des longitudes reçues; ce contrôle ne valide pas indépendamment l’éphéméride. Rédaction symbolique prudente, sans présenter de configuration précise comme vérifiée.",
+    "editorialMode": "symbolic",
+    "referenceVersion": "LMN24 technical V4.1",
+    "editorialVersion": "LMN24 V5 — Horoscope Premium",
+    "validationChecks": {
+      "providerResponseRetrieved": true,
+      "requiredBodiesPresent": true,
+      "longitudeRangesChecked": true,
+      "signIndexConsistencyChecked": true,
+      "retrogradeSpeedConsistencyChecked": true,
+      "aspectArithmeticChecked": true,
+      "independentEphemerisVerification": false
+    },
+    "interpretationRules": {
+      "zodiac": "Western tropical convention used only as a symbolic editorial framework; provider response flag unconfirmed",
+      "coordinatePreference": "Geocentric preferred; not explicitly confirmed by provider response",
+      "solarMethod": "Conditional whole-sign solar sectors derived from received sign indices, used only as symbolic prompts",
+      "traditionalRulers": {
+        "aries": "Mars",
+        "taurus": "Venus",
+        "gemini": "Mercury",
+        "cancer": "Moon",
+        "leo": "Sun",
+        "virgo": "Mercury",
+        "libra": "Venus",
+        "scorpio": "Mars",
+        "sagittarius": "Jupiter",
+        "capricorn": "Saturn",
+        "aquarius": "Saturn",
+        "pisces": "Jupiter"
+      },
+      "majorAspects": {
+        "conjunction": {
+          "angle": 0,
+          "orb": 8
+        },
+        "sextile": {
+          "angle": 60,
+          "orb": 4
+        },
+        "square": {
+          "angle": 90,
+          "orb": 6
+        },
+        "trine": {
+          "angle": 120,
+          "orb": 6
+        },
+        "opposition": {
+          "angle": 180,
+          "orb": 8
+        }
+      }
+    },
+    "editorialTones": {
+      "aries": "audacieuse et précise",
+      "taurus": "veloutée et lucide",
+      "gemini": "vive et secrète",
+      "cancer": "protectrice et lumineuse",
+      "leo": "fière et méthodique",
+      "virgo": "fine et déterminée",
+      "libra": "romantique et ambitieuse",
+      "scorpio": "intense et joueuse",
+      "sagittarius": "exploratrice et exigeante",
+      "capricorn": "sobre et magnétique",
+      "aquarius": "inventive et chaleureuse",
+      "pisces": "poétique et concrète"
+    },
+    "languageVariants": {
+      "en": "en-GB",
+      "pt": "pt-PT"
+    },
+    "historyNotes": "Quatorze journées précédentes, du 28 octobre au 10 novembre 2026, consultées dans les huit langues pour les thèmes, structures, ouvertures et chutes.",
+    "ephemerisPath": "data/astrology/ephemeris/astrology-2026-11-11.json",
+    "editorialReview": {
+      "reference": "LMN24 V5 — Horoscope Premium",
+      "frenchPassCompleted": true,
+      "internationalPassCompleted": true,
+      "assessment": "Appréciation éditoriale subjective; contrôles techniques séparés."
+    }
+  },
+  "horoscopes": [
+    {
+      "date": "2026-11-11",
+      "sign": "aries",
+      "language": "fr",
+      "general": "À mi-voix, derrière l’envie d’agir vite, une émotion familiale ou intime réclame sa juste place, sans pour autant ralentir tout le reste; Vous pourriez surprendre votre entourage en choisissant la retenue là où l’on attendait une charge héroïque; Ce calme n’efface pas votre courage ; il lui donne une direction plus fine; À mesure que la journée avance, une décision mûrie en silence prend davantage d’éclat qu’un départ en fanfare; Le feu intérieur cherche un lieu tranquille où se concentrer.",
+      "love": "Sans détour, vous pourriez apprécier une proximité simple, loin des démonstrations; Le trouble naît précisément de ce mélange entre force visible et fragilité assumée; Une tendresse protectrice adoucit les échanges sans éteindre le désir.",
+      "work": "En filigrane, votre répartie frappe juste si elle sert l’idée plutôt que le duel; Une initiative discrète prépare un mouvement plus ample; Une tension verbale peut électriser une réunion ou réveiller un dossier endormi.",
+      "finance": "Puis, les dépenses liées au foyer, à la famille ou au confort prennent un relief particulier; Un choix chaleureux peut être pertinent, tant qu’il ne transforme pas une émotion passagère en engagement matériel durable.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aries",
+      "language": "en",
+      "general": "Under the surface, beneath the urge to act quickly, a family or private feeling claims its rightful place without slowing everything else down. With a sharper glance, you may surprise those around you by choosing restraint where a heroic charge was expected. In the next breath, this calm does not erase your courage; it gives it finer direction. As dusk approaches, as the day unfolds, a decision matured in silence gathers more brilliance than a fanfare departure. Under the surface, inner fire seeks a quiet place in which to focus.",
+      "love": "With a sharper glance, simple closeness, away from display, may feel especially appealing. In the next breath, the flutter comes precisely from this blend of visible strength and acknowledged vulnerability. As dusk approaches, protective tenderness softens exchanges without extinguishing desire.",
+      "work": "In the next breath, your wit lands well when it serves the idea rather than the duel. As dusk approaches, a discreet initiative prepares a broader move. Under the surface, verbal tension may electrify a meeting or revive a dormant file.",
+      "finance": "As dusk approaches, spending on home, family or comfort takes on particular importance. Under the surface, a warm choice may be worthwhile, provided it does not turn a passing emotion into a lasting material commitment.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aries",
+      "language": "de",
+      "general": "Unter der Oberfläche unter dem Drang, schnell zu handeln, fordert ein familiäres oder persönliches Gefühl seinen Platz, ohne alles andere aufzuhalten. Mit einem schärferen Blick sie könnten Ihr Umfeld überraschen, indem Sie Zurückhaltung wählen, wo man einen heldenhaften Vorstoß erwartete. Im nächsten Atemzug diese Ruhe löscht Ihren Mut nicht; sie gibt ihm eine feinere Richtung. Wenn die Dämmerung naht im Lauf des Tages gewinnt eine still gereifte Entscheidung mehr Glanz als jeder Start mit Fanfaren. Unter der Oberfläche das innere Feuer sucht einen ruhigen Ort, an dem es sich bündeln kann.",
+      "love": "Mit einem schärferen Blick schlichte Nähe fern von jeder Inszenierung kann besonders reizvoll sein. Im nächsten Atemzug das Kribbeln entsteht gerade aus sichtbarer Stärke und angenommener Verletzlichkeit. Wenn die Dämmerung naht schützende Zärtlichkeit mildert Gespräche, ohne das Begehren zu dämpfen.",
+      "work": "Im nächsten Atemzug ihr Scharfsinn trifft, wenn er der Idee und nicht dem Duell dient. Wenn die Dämmerung naht eine stille Initiative bereitet eine größere Bewegung vor. Unter der Oberfläche verbale Spannung kann eine Sitzung elektrisieren oder einen ruhenden Vorgang beleben.",
+      "finance": "Wenn die Dämmerung naht ausgaben für Zuhause, Familie oder Behaglichkeit gewinnen besonderes Gewicht. Unter der Oberfläche eine warme Entscheidung kann sinnvoll sein, solange sie ein vorübergehendes Gefühl nicht in eine dauerhafte materielle Bindung verwandelt.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aries",
+      "language": "es",
+      "general": "Bajo la superficie, bajo las ganas de actuar deprisa, una emoción familiar o íntima reclama su sitio sin frenar lo demás. Con una mirada más nítida, podrías sorprender a tu entorno al elegir contención donde se esperaba una carga heroica. En el siguiente latido, esa calma no borra tu valor; le da una dirección más fina. Cuando cae la tarde, a medida que avanza el día, una decisión madurada en silencio adquiere más brillo que cualquier salida con fanfarria. Bajo la superficie, el fuego interior busca un lugar tranquilo donde concentrarse.",
+      "love": "Con una mirada más nítida, puede apetecerte una cercanía sencilla, lejos de exhibiciones. En el siguiente latido, el estremecimiento nace precisamente de mezclar fuerza visible y vulnerabilidad asumida. Cuando cae la tarde, una ternura protectora suaviza los intercambios sin apagar el deseo.",
+      "work": "En el siguiente latido, tu agudeza acierta cuando sirve a la idea y no al duelo. Cuando cae la tarde, una iniciativa discreta prepara un movimiento más amplio. Bajo la superficie, una tensión verbal puede electrizar una reunión o despertar un expediente dormido.",
+      "finance": "Cuando cae la tarde, los gastos ligados al hogar, la familia o el confort cobran especial importancia. Bajo la superficie, una elección cálida puede ser pertinente, siempre que no convierta una emoción pasajera en compromiso material duradero.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aries",
+      "language": "it",
+      "general": "Sotto la superficie, dietro la voglia di agire subito, un’emozione familiare o intima reclama il proprio spazio senza rallentare tutto il resto. Con uno sguardo più nitido, potreste sorprendere chi vi circonda scegliendo la misura dove ci si aspettava una carica eroica. Nel respiro successivo, questa calma non cancella il coraggio; gli dà una direzione più sottile. Mentre arriva il crepuscolo, con il passare delle ore, una decisione maturata in silenzio acquista più splendore di una partenza in fanfara. Sotto la superficie, il fuoco interiore cerca un luogo tranquillo in cui concentrarsi.",
+      "love": "Con uno sguardo più nitido, potreste apprezzare una vicinanza semplice, lontana dalle dimostrazioni. Nel respiro successivo, il turbamento nasce proprio dall’incontro tra forza visibile e vulnerabilità accolta. Mentre arriva il crepuscolo, una tenerezza protettiva addolcisce gli scambi senza spegnere il desiderio.",
+      "work": "Nel respiro successivo, la vostra prontezza colpisce nel segno quando serve l’idea, non il duello. Mentre arriva il crepuscolo, un’iniziativa discreta prepara un movimento più ampio. Sotto la superficie, una tensione verbale può elettrizzare una riunione o risvegliare un dossier fermo.",
+      "finance": "Mentre arriva il crepuscolo, le spese legate alla casa, alla famiglia o al comfort acquistano particolare rilievo. Sotto la superficie, una scelta calorosa può essere sensata, purché non trasformi un’emozione passeggera in un impegno materiale duraturo.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aries",
+      "language": "pt",
+      "general": "Sob a superfície, sob a vontade de agir depressa, uma emoção familiar ou íntima reclama o seu espaço sem travar o resto. Com um olhar mais nítido, poderá surpreender quem o rodeia ao escolher contenção onde se esperava uma investida heroica. No fôlego seguinte, esta calma não apaga a coragem; dá-lhe uma direção mais subtil. Quando o crepúsculo chega, à medida que o dia avança, uma decisão amadurecida em silêncio ganha mais brilho do que uma partida com fanfarra. Sob a superfície, o fogo interior procura um lugar tranquilo onde se concentrar.",
+      "love": "Com um olhar mais nítido, uma proximidade simples, longe de exibições, pode saber particularmente bem. No fôlego seguinte, o arrepio nasce precisamente da união entre força visível e vulnerabilidade aceite. Quando o crepúsculo chega, uma ternura protetora suaviza as conversas sem apagar o desejo.",
+      "work": "No fôlego seguinte, a sua rapidez acerta quando serve a ideia e não o duelo. Quando o crepúsculo chega, uma iniciativa discreta prepara um movimento maior. Sob a superfície, uma tensão verbal pode eletrizar uma reunião ou despertar um processo adormecido.",
+      "finance": "Quando o crepúsculo chega, as despesas ligadas à casa, família ou conforto ganham importância especial. Sob a superfície, uma escolha acolhedora pode fazer sentido, desde que não transforme uma emoção passageira num compromisso material duradouro.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aries",
+      "language": "ru",
+      "general": "Под поверхностью за желанием действовать быстро семейное или личное чувство требует законного пространства, не замедляя остальное. Если взглянуть острее вы способны удивить окружающих, выбрав сдержанность там, где ожидался героический рывок. В следующем ритме такое спокойствие не стирает храбрость, а задаёт ей более тонкое направление. С приближением сумерек по мере развития дня решение, созревшее в тишине, обретает больше блеска, чем любой выход под фанфары. Под поверхностью внутренний огонь ищет тихое место, где можно сосредоточиться.",
+      "love": "Если взглянуть острее простая близость вдали от демонстраций может оказаться особенно приятной. В следующем ритме волнение рождается именно из сочетания заметной силы и принятой уязвимости. С приближением сумерек защитная нежность смягчает разговоры, не гася желания.",
+      "work": "В следующем ритме ваша острота попадает в цель, когда служит идее, а не поединку. С приближением сумерек тихая инициатива готовит более широкий шаг. Под поверхностью словесное напряжение может наэлектризовать совещание или разбудить забытое дело.",
+      "finance": "С приближением сумерек расходы на дом, семью или уют приобретают особое значение. Под поверхностью тёплый выбор может быть уместен, если не превращает мимолётное чувство в долговременное материальное обязательство.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aries",
+      "language": "nl",
+      "general": "Onder de oppervlakte onder de drang om snel te handelen vraagt een familiegevoel of privé-emotie haar plaats, zonder al het andere af te remmen. Met een scherpere blik u kunt uw omgeving verrassen door beheersing te kiezen waar men een heldhaftige aanval verwachtte. In de volgende adem die kalmte wist uw moed niet uit; ze geeft hem een fijnere richting. Wanneer de schemering nadert naarmate de dag vordert, krijgt een stil gerijpte beslissing meer glans dan een vertrek met fanfare. Onder de oppervlakte het innerlijke vuur zoekt een rustige plek om zich te bundelen.",
+      "love": "Met een scherpere blik eenvoudige nabijheid, ver van vertoon, kan bijzonder aantrekkelijk zijn. In de volgende adem de spanning ontstaat juist uit zichtbare kracht en aanvaarde kwetsbaarheid. Wanneer de schemering nadert beschermende tederheid verzacht gesprekken zonder het verlangen te doven.",
+      "work": "In de volgende adem uw gevatheid treft doel wanneer ze het idee dient en niet het duel. Wanneer de schemering nadert een discreet initiatief bereidt een grotere beweging voor. Onder de oppervlakte verbale spanning kan een vergadering elektriseren of een slapend dossier wekken.",
+      "finance": "Wanneer de schemering nadert uitgaven voor huis, familie of comfort krijgen bijzonder gewicht. Onder de oppervlakte een warme keuze kan zinvol zijn, zolang een voorbijgaande emotie niet verandert in een langdurige materiële verbintenis.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "taurus",
+      "language": "fr",
+      "general": "Sans détour, vous aimez les accords solides, mais la journée vous montre qu’un lien vivant possède aussi ses marées; Un dialogue franc peut déplacer un ancien équilibre sans le briser; Votre sens pratique rassure, tandis qu’une émotion inattendue donne au tableau une profondeur nouvelle; Rien n’exige une conclusion immédiate : certaines vérités se savourent mieux lorsqu’elles ont le temps de s’installer; Une relation ou une alliance occupe le premier plan, avec ce qu’elle comporte de chaleur et de complexité.",
+      "love": "En filigrane, une attention concrète apaise, puis un mot plus profond change la couleur de l’échange; L’attirance se nourrit aujourd’hui de fiabilité autant que de frisson; Le lien cherche davantage qu’une belle apparence.",
+      "work": "Puis, votre constance sert de point d’appui, mais l’autre partie apporte une audace utile; Le résultat pourrait dépasser les habitudes de chacun; Une coopération révèle sa vraie valeur face à une difficulté imprévue.",
+      "finance": "À mi-voix, la générosité reste séduisante, surtout lorsqu’elle respecte l’autonomie de chacun; Un projet partagé gagne à conserver des bases matérielles très lisibles; Une décision commune mérite une vision nette des moyens disponibles.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "taurus",
+      "language": "en",
+      "general": "With a sharper glance, you appreciate solid agreements, but the day shows that a living bond has tides of its own. In the next breath, candid conversation may shift an old balance without breaking it. As dusk approaches, your practical sense reassures while an unexpected feeling gives the picture fresh depth. Under the surface, nothing requires an immediate conclusion: some truths are more satisfying when allowed time to settle. With a sharper glance, a relationship or alliance moves centre stage, bringing both warmth and complexity.",
+      "love": "In the next breath, a practical kindness soothes, then a deeper word changes the colour of the exchange. As dusk approaches, attraction draws on reliability as much as excitement today. Under the surface, the bond seeks more than a beautiful surface.",
+      "work": "As dusk approaches, your constancy provides an anchor while the other party offers useful daring. Under the surface, the result may move beyond both people's habits. With a sharper glance, a partnership reveals its true value when an unforeseen difficulty appears.",
+      "finance": "Under the surface, generosity remains appealing, especially when it respects each person's independence. With a sharper glance, a shared plan benefits from keeping its material foundations entirely legible. In the next breath, a joint decision deserves a clear view of available means.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "taurus",
+      "language": "de",
+      "general": "Mit einem schärferen Blick sie mögen verlässliche Vereinbarungen, doch der Tag zeigt, dass eine lebendige Bindung eigene Gezeiten kennt. Im nächsten Atemzug ein offenes Gespräch kann ein altes Gleichgewicht verschieben, ohne es zu zerbrechen. Wenn die Dämmerung naht ihr praktischer Sinn beruhigt, während ein unerwartetes Gefühl dem Bild neue Tiefe gibt. Unter der Oberfläche nichts verlangt einen sofortigen Abschluss: Manche Wahrheiten entfalten sich schöner, wenn sie Zeit zum Ankommen bekommen. Mit einem schärferen Blick eine Beziehung oder Allianz rückt mit all ihrer Wärme und Komplexität ins Zentrum.",
+      "love": "Im nächsten Atemzug eine konkrete Aufmerksamkeit beruhigt, dann verändert ein tieferes Wort die Farbe des Austauschs. Wenn die Dämmerung naht anziehung nährt sich heute aus Verlässlichkeit und Spannung. Unter der Oberfläche die Verbindung sucht mehr als eine schöne Oberfläche.",
+      "work": "Wenn die Dämmerung naht ihre Beständigkeit gibt Halt, während die andere Seite nützlichen Mut beisteuert. Unter der Oberfläche das Ergebnis könnte beider Gewohnheiten übertreffen. Mit einem schärferen Blick eine Zusammenarbeit zeigt ihren wahren Wert angesichts einer unerwarteten Schwierigkeit.",
+      "finance": "Unter der Oberfläche großzügigkeit bleibt reizvoll, besonders wenn sie die Eigenständigkeit aller wahrt. Mit einem schärferen Blick ein geteiltes Vorhaben braucht gut lesbare materielle Grundlagen. Im nächsten Atemzug eine gemeinsame Entscheidung verdient einen klaren Blick auf verfügbare Mittel.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "taurus",
+      "language": "es",
+      "general": "Con una mirada más nítida, te gustan los acuerdos sólidos, pero el día muestra que un vínculo vivo también tiene mareas. En el siguiente latido, un diálogo franco puede mover un equilibrio antiguo sin romperlo. Cuando cae la tarde, tu sentido práctico tranquiliza, mientras una emoción inesperada da al cuadro nueva profundidad. Bajo la superficie, nada exige una conclusión inmediata: algunas verdades se saborean mejor cuando disponen de tiempo para asentarse. Con una mirada más nítida, una relación o alianza ocupa el primer plano, con toda su calidez y complejidad.",
+      "love": "En el siguiente latido, una atención concreta serena y después una palabra profunda cambia el color del intercambio. Cuando cae la tarde, la atracción se alimenta hoy tanto de fiabilidad como de emoción. Bajo la superficie, el vínculo busca algo más que una bella apariencia.",
+      "work": "Cuando cae la tarde, tu constancia sirve de apoyo y la otra parte aporta una audacia útil. Bajo la superficie, el resultado podría superar las costumbres de ambos. Con una mirada más nítida, una cooperación revela su verdadero valor ante una dificultad imprevista.",
+      "finance": "Bajo la superficie, la generosidad sigue siendo atractiva, sobre todo si respeta la autonomía de cada cual. Con una mirada más nítida, un proyecto compartido necesita bases materiales legibles. En el siguiente latido, una decisión común merece una visión clara de los medios disponibles.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "taurus",
+      "language": "it",
+      "general": "Con uno sguardo più nitido, amate gli accordi solidi, ma la giornata mostra che un legame vivo possiede anche le proprie maree. Nel respiro successivo, un dialogo franco può spostare un vecchio equilibrio senza spezzarlo. Mentre arriva il crepuscolo, il vostro senso pratico rassicura, mentre un’emozione inattesa dà nuova profondità al quadro. Sotto la superficie, nulla impone una conclusione immediata: alcune verità si gustano meglio quando hanno tempo di posarsi. Con uno sguardo più nitido, una relazione o un’alleanza occupa il primo piano, con tutto il suo calore e la sua complessità.",
+      "love": "Nel respiro successivo, un’attenzione concreta calma, poi una parola profonda cambia il colore dello scambio. Mentre arriva il crepuscolo, l’attrazione oggi si nutre di affidabilità quanto di emozione. Sotto la superficie, il legame cerca più di una bella apparenza.",
+      "work": "Mentre arriva il crepuscolo, la vostra costanza offre un appoggio, mentre l’altra parte porta un’audacia utile. Sotto la superficie, il risultato potrebbe superare le abitudini di entrambi. Con uno sguardo più nitido, una collaborazione rivela il suo vero valore davanti a una difficoltà inattesa.",
+      "finance": "Sotto la superficie, la generosità resta seducente, soprattutto quando rispetta l’autonomia di ciascuno. Con uno sguardo più nitido, un progetto condiviso richiede basi materiali ben leggibili. Nel respiro successivo, una decisione comune merita una visione chiara dei mezzi disponibili.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "taurus",
+      "language": "pt",
+      "general": "Com um olhar mais nítido, gosta de acordos sólidos, mas o dia mostra que um vínculo vivo também tem marés. No fôlego seguinte, um diálogo franco pode alterar um equilíbrio antigo sem o quebrar. Quando o crepúsculo chega, o seu sentido prático tranquiliza, enquanto uma emoção inesperada dá nova profundidade ao quadro. Sob a superfície, nada exige uma conclusão imediata: algumas verdades sabem melhor quando dispõem de tempo para se instalar. Com um olhar mais nítido, uma relação ou aliança ocupa o primeiro plano, com todo o seu calor e complexidade.",
+      "love": "No fôlego seguinte, uma atenção concreta acalma, depois uma palavra profunda muda a cor do diálogo. Quando o crepúsculo chega, a atração alimenta-se hoje tanto de fiabilidade como de emoção. Sob a superfície, o vínculo procura mais do que uma bela aparência.",
+      "work": "Quando o crepúsculo chega, a sua constância oferece apoio e a outra parte traz uma ousadia útil. Sob a superfície, o resultado poderá ultrapassar os hábitos de ambos. Com um olhar mais nítido, uma cooperação revela o verdadeiro valor perante uma dificuldade imprevista.",
+      "finance": "Sob a superfície, a generosidade continua sedutora, sobretudo quando respeita a autonomia de cada pessoa. Com um olhar mais nítido, um projeto partilhado precisa de bases materiais bem legíveis. No fôlego seguinte, uma decisão comum merece uma visão clara dos meios disponíveis.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "taurus",
+      "language": "ru",
+      "general": "Если взглянуть острее вам нравятся надёжные договорённости, однако день показывает, что у живой связи есть собственные приливы. В следующем ритме откровенная беседа способна сдвинуть старое равновесие, не разрушив его. С приближением сумерек ваш практичный подход успокаивает, а неожиданное чувство добавляет картине глубины. Под поверхностью немедленный вывод не требуется: некоторые истины лучше ощущаются, когда получают время для укоренения. Если взглянуть острее отношения или союз выходят на первый план вместе со своей теплотой и сложностью.",
+      "love": "В следующем ритме конкретное внимание успокаивает, а затем глубокое слово меняет оттенок беседы. С приближением сумерек притяжение сегодня питается надёжностью не меньше, чем волнением. Под поверхностью связи нужно больше, чем красивая поверхность.",
+      "work": "С приближением сумерек ваша устойчивость служит опорой, а другая сторона приносит полезную смелость. Под поверхностью результат способен выйти за рамки привычек обоих. Если взглянуть острее сотрудничество раскрывает настоящую ценность перед неожиданной трудностью.",
+      "finance": "Под поверхностью щедрость остаётся привлекательной, особенно если уважает самостоятельность каждого. Если взглянуть острее общему плану полезны совершенно понятные материальные основания. В следующем ритме совместное решение требует ясного взгляда на доступные средства.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "taurus",
+      "language": "nl",
+      "general": "Met een scherpere blik u houdt van degelijke afspraken, maar de dag toont dat een levende band ook eigen getijden kent. In de volgende adem een open gesprek kan een oud evenwicht verschuiven zonder het te breken. Wanneer de schemering nadert uw praktische zin stelt gerust, terwijl een onverwacht gevoel het beeld nieuwe diepte geeft. Onder de oppervlakte niets eist een onmiddellijke conclusie: sommige waarheden smaken beter wanneer ze tijd krijgen om te landen. Met een scherpere blik een relatie of bondgenootschap komt met al zijn warmte en complexiteit op de voorgrond.",
+      "love": "In de volgende adem concrete aandacht kalmeert, waarna een dieper woord de kleur van het gesprek verandert. Wanneer de schemering nadert aantrekkingskracht voedt zich vandaag met betrouwbaarheid én spanning. Onder de oppervlakte de band zoekt meer dan een mooi uiterlijk.",
+      "work": "Wanneer de schemering nadert uw standvastigheid biedt houvast, terwijl de andere partij bruikbare durf inbrengt. Onder de oppervlakte het resultaat kan beider gewoonten overstijgen. Met een scherpere blik een samenwerking toont haar ware waarde bij een onverwachte moeilijkheid.",
+      "finance": "Onder de oppervlakte gulheid blijft aantrekkelijk, vooral wanneer ieders zelfstandigheid wordt gerespecteerd. Met een scherpere blik een gedeeld plan heeft duidelijk leesbare materiële fundamenten nodig. In de volgende adem een gezamenlijke beslissing verdient helder zicht op beschikbare middelen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "gemini",
+      "language": "fr",
+      "general": "En filigrane, une conversation autour de la valeur, du temps ou des ressources peut réveiller une conviction que vous croyiez provisoire; Votre esprit adore multiplier les angles ; il découvre cette fois le plaisir d’en approfondir un seul; Un détail concret ramène une idée brillante sur terre sans lui retirer ses ailes; La journée avance ainsi entre curiosité et engagement, jusqu’à ce qu’une priorité jusque-là floue acquière un contour étonnamment séduisant; Les mots ont du poids aujourd’hui, même ceux lancés avec légèreté.",
+      "love": "Puis, le jeu verbal garde son charme, mais une émotion sincère lui donne une profondeur nouvelle; Le lien devient moins théorique; Une phrase apparemment anodine touche un point sensible et rapproche davantage que prévu.",
+      "work": "À mi-voix, une formulation trop vive pourrait toutefois masquer la qualité du raisonnement; La précision rend votre inventivité irrésistible; Votre talent pour relier des informations éparses impressionne, surtout lorsqu’un délai resserre le débat.",
+      "finance": "Sans détour, le rapport à l’argent devient plus personnel : que vaut vraiment ce qui vous attire ; Une envie intelligente mérite sa place, à condition que sa nouveauté ne soit pas son unique argument.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "gemini",
+      "language": "en",
+      "general": "In the next breath, a conversation about value, time or resources may revive a conviction you thought temporary. As dusk approaches, your mind loves multiplying angles; this time it discovers the pleasure of exploring one in depth. Under the surface, a concrete detail brings a brilliant idea down to earth without clipping its wings. With a sharper glance, the day moves between curiosity and commitment until a previously hazy priority acquires an unexpectedly attractive outline. In the next breath, words carry weight today, even those tossed out lightly.",
+      "love": "As dusk approaches, verbal play keeps its charm, while sincere feeling gives it new depth. Under the surface, the connection becomes less theoretical. With a sharper glance, a seemingly innocent phrase touches a sensitive point and draws you closer than expected.",
+      "work": "Under the surface, overly sharp wording could hide the quality of your reasoning. With a sharper glance, precision makes your inventiveness irresistible. In the next breath, your gift for linking scattered information impresses, especially when a deadline narrows the debate.",
+      "finance": "With a sharper glance, money feels more personal: what is the real value of what attracts you? In the next breath, an intelligent desire deserves room, provided novelty is not its only argument.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "gemini",
+      "language": "de",
+      "general": "Im nächsten Atemzug ein Gespräch über Wert, Zeit oder Ressourcen kann eine Überzeugung wecken, die Sie für vorläufig hielten. Wenn die Dämmerung naht ihr Geist liebt viele Blickwinkel; diesmal entdeckt er die Freude daran, einen einzigen zu vertiefen. Unter der Oberfläche ein konkretes Detail holt eine brillante Idee auf den Boden, ohne ihr die Flügel zu nehmen. Mit einem schärferen Blick zwischen Neugier und Bindung erhält eine bislang vage Priorität überraschend verführerische Konturen. Im nächsten Atemzug worte haben heute Gewicht, selbst beiläufig hingeworfene.",
+      "love": "Wenn die Dämmerung naht das Wortspiel behält seinen Reiz, doch ein aufrichtiges Gefühl schenkt ihm neue Tiefe. Unter der Oberfläche die Verbindung wird weniger theoretisch. Mit einem schärferen Blick ein scheinbar harmloser Satz berührt einen empfindlichen Punkt und bringt Sie näher als erwartet.",
+      "work": "Unter der Oberfläche eine zu scharfe Formulierung könnte die Qualität der Überlegung verdecken. Mit einem schärferen Blick präzision macht Ihren Erfindungsgeist unwiderstehlich. Im nächsten Atemzug ihr Talent, verstreute Informationen zu verbinden, beeindruckt besonders unter Zeitdruck.",
+      "finance": "Mit einem schärferen Blick geld wird persönlicher: Welchen echten Wert besitzt das, was Sie anzieht? Im nächsten Atemzug ein kluger Wunsch verdient Raum, sofern Neuheit nicht sein einziges Argument bleibt.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "gemini",
+      "language": "es",
+      "general": "En el siguiente latido, una conversación sobre valor, tiempo o recursos puede despertar una convicción que creías provisional. Cuando cae la tarde, tu mente adora multiplicar ángulos; esta vez descubre el placer de profundizar en uno. Bajo la superficie, un detalle concreto devuelve una idea brillante a tierra sin cortarle las alas. Con una mirada más nítida, la jornada avanza entre curiosidad y compromiso, hasta que una prioridad antes difusa adquiere un contorno inesperadamente seductor. En el siguiente latido, las palabras pesan hoy, incluso las pronunciadas con ligereza.",
+      "love": "Cuando cae la tarde, el juego verbal conserva su encanto, pero una emoción sincera le aporta nueva profundidad. Bajo la superficie, el vínculo se vuelve menos teórico. Con una mirada más nítida, una frase aparentemente inocente toca un punto sensible y acerca más de lo previsto.",
+      "work": "Bajo la superficie, una formulación demasiado viva podría ocultar la calidad del razonamiento. Con una mirada más nítida, la precisión vuelve irresistible tu inventiva. En el siguiente latido, tu talento para unir información dispersa impresiona, sobre todo cuando un plazo estrecha el debate.",
+      "finance": "Con una mirada más nítida, la relación con el dinero se hace más personal: ¿cuánto vale realmente aquello que te atrae? En el siguiente latido, un deseo inteligente merece sitio si la novedad no constituye su único argumento.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "gemini",
+      "language": "it",
+      "general": "Nel respiro successivo, una conversazione su valore, tempo o risorse può risvegliare una convinzione che credevate provvisoria. Mentre arriva il crepuscolo, la mente ama moltiplicare gli angoli; questa volta scopre il piacere di approfondirne uno. Sotto la superficie, un dettaglio concreto riporta a terra un’idea brillante senza tagliarle le ali. Con uno sguardo più nitido, la giornata avanza tra curiosità e impegno, finché una priorità prima sfocata assume un contorno sorprendentemente attraente. Nel respiro successivo, le parole hanno peso oggi, anche quelle lanciate con leggerezza.",
+      "love": "Mentre arriva il crepuscolo, il gioco verbale conserva fascino, ma un’emozione sincera gli dona nuova profondità. Sotto la superficie, il legame diventa meno teorico. Con uno sguardo più nitido, una frase apparentemente innocente tocca un punto sensibile e avvicina più del previsto.",
+      "work": "Sotto la superficie, una formula troppo tagliente potrebbe nascondere la qualità del ragionamento. Con uno sguardo più nitido, la precisione rende irresistibile la vostra inventiva. Nel respiro successivo, il talento nel collegare informazioni sparse impressiona, soprattutto quando una scadenza restringe il confronto.",
+      "finance": "Con uno sguardo più nitido, il rapporto col denaro diventa personale: quanto vale davvero ciò che vi attrae? Nel respiro successivo, un desiderio intelligente merita spazio, purché la novità non sia il suo unico argomento.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "gemini",
+      "language": "pt",
+      "general": "No fôlego seguinte, uma conversa sobre valor, tempo ou recursos pode despertar uma convicção que julgava provisória. Quando o crepúsculo chega, a sua mente adora multiplicar ângulos; desta vez descobre o prazer de aprofundar apenas um. Sob a superfície, um detalhe concreto traz uma ideia brilhante à terra sem lhe cortar as asas. Com um olhar mais nítido, o dia avança entre curiosidade e compromisso, até uma prioridade antes vaga adquirir um contorno surpreendentemente atraente. No fôlego seguinte, as palavras têm peso hoje, mesmo as ditas com leveza.",
+      "love": "Quando o crepúsculo chega, o jogo verbal conserva o encanto, mas uma emoção sincera dá-lhe nova profundidade. Sob a superfície, a ligação torna-se menos teórica. Com um olhar mais nítido, uma frase aparentemente inocente toca num ponto sensível e aproxima mais do que o previsto.",
+      "work": "Sob a superfície, uma formulação demasiado viva poderia esconder a qualidade do raciocínio. Com um olhar mais nítido, a precisão torna irresistível a sua inventividade. No fôlego seguinte, o talento para ligar informação dispersa impressiona, sobretudo quando um prazo aperta o debate.",
+      "finance": "Com um olhar mais nítido, o dinheiro torna-se mais pessoal: quanto vale realmente aquilo que o atrai? No fôlego seguinte, um desejo inteligente merece espaço, desde que a novidade não seja o seu único argumento.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "gemini",
+      "language": "ru",
+      "general": "В следующем ритме разговор о ценности, времени или ресурсах может пробудить убеждение, которое вы считали временным. С приближением сумерек ваш ум любит множество ракурсов; теперь он открывает удовольствие от углубления в один. Под поверхностью конкретная деталь возвращает блестящую идею на землю, не обрезая крыльев. Если взглянуть острее между любопытством и вовлечённостью прежде расплывчатый приоритет получает неожиданно привлекательные очертания. В следующем ритме слова сегодня обладают весом, даже произнесённые мимоходом.",
+      "love": "С приближением сумерек игра слов сохраняет очарование, но искреннее чувство придаёт ей глубину. Под поверхностью связь становится менее теоретической. Если взглянуть острее невинная на вид фраза касается чувствительной точки и сближает сильнее, чем ожидалось.",
+      "work": "Под поверхностью слишком резкая формулировка может скрыть качество рассуждения. Если взглянуть острее точность делает вашу изобретательность неотразимой. В следующем ритме ваш талант соединять разрозненные сведения впечатляет, особенно когда срок сужает пространство спора.",
+      "finance": "Если взглянуть острее деньги воспринимаются личнее: какова настоящая ценность того, что вас привлекает? В следующем ритме разумное желание заслуживает места, если новизна не служит его единственным доводом.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "gemini",
+      "language": "nl",
+      "general": "In de volgende adem een gesprek over waarde, tijd of middelen kan een overtuiging wekken die u voorlopig achtte. Wanneer de schemering nadert uw geest houdt van vele invalshoeken; nu ontdekt hij het genoegen één ervan te verdiepen. Onder de oppervlakte een concreet detail brengt een briljant idee naar de aarde zonder de vleugels te knippen. Met een scherpere blik tussen nieuwsgierigheid en betrokkenheid krijgt een vage prioriteit een onverwacht verleidelijke vorm. In de volgende adem woorden dragen vandaag gewicht, zelfs wanneer ze luchtig worden uitgesproken.",
+      "love": "Wanneer de schemering nadert het woordspel behoudt charme, maar oprecht gevoel geeft het nieuwe diepte. Onder de oppervlakte de verbinding wordt minder theoretisch. Met een scherpere blik een schijnbaar onschuldige zin raakt een gevoelige plek en brengt u dichterbij dan verwacht.",
+      "work": "Onder de oppervlakte te scherpe woorden kunnen de kwaliteit van uw redenering verbergen. Met een scherpere blik precisie maakt uw vindingrijkheid onweerstaanbaar. In de volgende adem uw talent om verspreide informatie te verbinden maakt indruk, vooral wanneer een deadline het debat vernauwt.",
+      "finance": "Met een scherpere blik geld wordt persoonlijker: wat is de werkelijke waarde van wat u aantrekt? In de volgende adem een slimme wens verdient ruimte, zolang nieuwigheid niet het enige argument is.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "cancer",
+      "language": "fr",
+      "general": "Puis, une envie personnelle, longtemps mise de côté pour préserver l’équilibre ambiant, revient au centre avec une étonnante évidence; L’entourage peut avoir besoin d’un instant pour s’habituer à cette version plus affirmée de vous-même; Ce n’est pas une rupture, plutôt une nouvelle ponctuation; La journée vous invite à habiter pleinement votre sensibilité : non comme un refuge, mais comme une lumière capable de guider le mouvement; Vous occupez l’espace avec une présence plus nette, sans perdre votre douceur.",
+      "love": "À mi-voix, votre chaleur attire sans effort, surtout lorsque vous ne cherchez pas à deviner la suite; Le présent possède déjà une belle densité; L’émotion affleure avec franchise et rend les rapprochements plus intenses.",
+      "work": "Sans détour, vous pouvez unir des intérêts divergents sans effacer votre propre position; Cette autorité douce pourrait être remarquée au bon moment; Une intuition relationnelle vous aide à lire l’atmosphère d’une équipe.",
+      "finance": "En filigrane, une envie qui vous ressemble vraiment paraît plus convaincante qu’une dépense dictée par l’ambiance; Le budget gagne en cohérence lorsqu’il reflète vos priorités actuelles, non les habitudes de votre entourage.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "cancer",
+      "language": "en",
+      "general": "As dusk approaches, a personal wish, long set aside to preserve the surrounding balance, returns to the centre with striking obviousness. Under the surface, others may need a moment to become accustomed to this more assertive version of you. With a sharper glance, it is not a rupture, merely new punctuation. In the next breath, the day invites you to inhabit your sensitivity fully: not as a refuge, but as a light capable of guiding movement. As dusk approaches, you take up space with a clearer presence without losing your softness.",
+      "love": "Under the surface, your warmth attracts without effort, especially when you are not trying to predict what follows. With a sharper glance, the present already holds beautiful density. In the next breath, feeling rises with candour and makes closeness more intense.",
+      "work": "With a sharper glance, you can unite differing interests without erasing your own position. In the next breath, this gentle authority may be noticed at just the right moment. As dusk approaches, relational instinct helps you read the atmosphere of a team.",
+      "finance": "In the next breath, a desire that genuinely resembles you proves more persuasive than spending dictated by the mood. As dusk approaches, the budget gains coherence when it reflects current priorities rather than other people's habits.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "cancer",
+      "language": "de",
+      "general": "Wenn die Dämmerung naht ein persönlicher Wunsch, lange zugunsten der Harmonie zurückgestellt, kehrt mit verblüffender Selbstverständlichkeit ins Zentrum zurück. Unter der Oberfläche andere brauchen vielleicht einen Augenblick, um sich an diese bestimmtere Version zu gewöhnen. Mit einem schärferen Blick das ist kein Bruch, sondern eine neue Zeichensetzung. Im nächsten Atemzug der Tag lädt Sie ein, Ihre Sensibilität ganz zu bewohnen: nicht als Schutzraum, sondern als Licht, das Bewegung führen kann. Wenn die Dämmerung naht sie nehmen Raum mit deutlicherer Präsenz ein, ohne Ihre Sanftheit zu verlieren.",
+      "love": "Unter der Oberfläche ihre Wärme zieht mühelos an, besonders wenn Sie nicht versuchen, den nächsten Schritt vorauszusehen. Mit einem schärferen Blick die Gegenwart besitzt bereits schöne Dichte. Im nächsten Atemzug gefühl zeigt sich offen und macht Annäherung intensiver.",
+      "work": "Mit einem schärferen Blick sie können unterschiedliche Interessen verbinden, ohne Ihre Position zu löschen. Im nächsten Atemzug diese sanfte Autorität könnte genau rechtzeitig auffallen. Wenn die Dämmerung naht beziehungsinstinkt hilft Ihnen, die Stimmung eines Teams zu lesen.",
+      "finance": "Im nächsten Atemzug ein Wunsch, der wirklich zu Ihnen passt, überzeugt mehr als eine Ausgabe aus der Stimmung heraus. Wenn die Dämmerung naht das Budget gewinnt Stimmigkeit, wenn es aktuelle Prioritäten statt fremder Gewohnheiten spiegelt.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "cancer",
+      "language": "es",
+      "general": "Cuando cae la tarde, un deseo personal, apartado durante tiempo para preservar el equilibrio, vuelve al centro con sorprendente evidencia. Bajo la superficie, los demás quizá necesiten un instante para acostumbrarse a esta versión más afirmada de ti. Con una mirada más nítida, no es una ruptura, sino una puntuación nueva. En el siguiente latido, el día invita a habitar plenamente tu sensibilidad: no como refugio, sino como luz capaz de guiar el movimiento. Cuando cae la tarde, ocupas el espacio con una presencia más clara sin perder dulzura.",
+      "love": "Bajo la superficie, tu calidez atrae sin esfuerzo, especialmente cuando no intentas adivinar lo siguiente. Con una mirada más nítida, el presente ya posee una hermosa densidad. En el siguiente latido, la emoción aflora con franqueza y vuelve más intensos los acercamientos.",
+      "work": "Con una mirada más nítida, puedes unir intereses distintos sin borrar tu propia postura. En el siguiente latido, esta autoridad suave podría ser reconocida en el momento adecuado. Cuando cae la tarde, una intuición relacional ayuda a leer el ambiente del equipo.",
+      "finance": "En el siguiente latido, un deseo que realmente se parece a ti convence más que un gasto dictado por el ambiente. Cuando cae la tarde, el presupuesto gana coherencia cuando refleja prioridades actuales, no las costumbres del entorno.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "cancer",
+      "language": "it",
+      "general": "Mentre arriva il crepuscolo, un desiderio personale, accantonato a lungo per proteggere l’equilibrio, torna al centro con sorprendente evidenza. Sotto la superficie, gli altri potrebbero aver bisogno di un momento per abituarsi a questa versione più affermata di voi. Con uno sguardo più nitido, non è una rottura, solo una nuova punteggiatura. Nel respiro successivo, la giornata invita ad abitare pienamente la sensibilità: non come rifugio, ma come luce capace di guidare il movimento. Mentre arriva il crepuscolo, occupate lo spazio con una presenza più netta senza perdere dolcezza.",
+      "love": "Sotto la superficie, il vostro calore attrae senza sforzo, soprattutto quando non cercate di prevedere il seguito. Con uno sguardo più nitido, il presente possiede già una bella densità. Nel respiro successivo, l’emozione affiora con franchezza e rende gli avvicinamenti più intensi.",
+      "work": "Con uno sguardo più nitido, potete unire interessi diversi senza cancellare la vostra posizione. Nel respiro successivo, questa autorità gentile potrebbe essere notata al momento giusto. Mentre arriva il crepuscolo, un’intuizione relazionale aiuta a leggere l’atmosfera della squadra.",
+      "finance": "Nel respiro successivo, un desiderio che vi somiglia davvero convince più di una spesa dettata dall’ambiente. Mentre arriva il crepuscolo, il budget guadagna coerenza quando riflette le priorità attuali, non le abitudini di chi vi circonda.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "cancer",
+      "language": "pt",
+      "general": "Quando o crepúsculo chega, um desejo pessoal, afastado durante muito tempo para preservar o equilíbrio, regressa ao centro com surpreendente evidência. Sob a superfície, os outros talvez precisem de um instante para se habituarem a esta versão mais afirmada de si. Com um olhar mais nítido, não é uma rutura, apenas nova pontuação. No fôlego seguinte, o dia convida-o a habitar plenamente a sensibilidade: não como refúgio, mas como luz capaz de orientar o movimento. Quando o crepúsculo chega, ocupa o espaço com uma presença mais nítida sem perder doçura.",
+      "love": "Sob a superfície, o seu calor atrai sem esforço, sobretudo quando não tenta adivinhar o que vem depois. Com um olhar mais nítido, o presente já possui uma bela densidade. No fôlego seguinte, a emoção surge com franqueza e torna as aproximações mais intensas.",
+      "work": "Com um olhar mais nítido, pode unir interesses divergentes sem apagar a sua posição. No fôlego seguinte, esta autoridade suave poderá ser notada exatamente no momento certo. Quando o crepúsculo chega, uma intuição relacional ajuda a ler o ambiente da equipa.",
+      "finance": "No fôlego seguinte, um desejo que realmente se parece consigo convence mais do que uma despesa ditada pelo ambiente. Quando o crepúsculo chega, o orçamento ganha coerência quando reflete prioridades atuais, não hábitos alheios.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "cancer",
+      "language": "ru",
+      "general": "С приближением сумерек личное желание, долго отложенное ради общего равновесия, возвращается в центр с удивительной естественностью. Под поверхностью окружающим может понадобиться мгновение, чтобы привыкнуть к вашей более уверенной версии. Если взглянуть острее это не разрыв, лишь новая пунктуация. В следующем ритме день приглашает полностью поселиться в собственной чувствительности: не как в убежище, а как в свете, способном направлять движение. С приближением сумерек вы занимаете пространство заметнее, не теряя мягкости.",
+      "love": "Под поверхностью ваше тепло притягивает без усилий, особенно когда вы не пытаетесь предсказать продолжение. Если взглянуть острее настоящее уже обладает прекрасной плотностью. В следующем ритме чувство проявляется открыто и делает сближение насыщеннее.",
+      "work": "Если взглянуть острее вы можете соединить разные интересы, не стирая собственной позиции. В следующем ритме эта мягкая власть способна быть замечена именно вовремя. С приближением сумерек чутьё на отношения помогает прочесть атмосферу команды.",
+      "finance": "В следующем ритме желание, действительно похожее на вас, убедительнее траты под влиянием настроения. С приближением сумерек бюджет становится стройнее, когда отражает нынешние приоритеты, а не привычки окружающих.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "cancer",
+      "language": "nl",
+      "general": "Wanneer de schemering nadert een persoonlijke wens, lang opzijgezet om het evenwicht te bewaren, keert met verbluffende vanzelfsprekendheid terug naar het midden. Onder de oppervlakte anderen hebben misschien even nodig om aan deze assertievere versie te wennen. Met een scherpere blik het is geen breuk, enkel nieuwe interpunctie. In de volgende adem de dag nodigt uit uw gevoeligheid volledig te bewonen: niet als schuilplaats, maar als licht dat beweging kan leiden. Wanneer de schemering nadert u neemt duidelijker ruimte in zonder uw zachtheid te verliezen.",
+      "love": "Onder de oppervlakte uw warmte trekt moeiteloos aan, vooral wanneer u niet probeert te voorspellen wat volgt. Met een scherpere blik het heden bezit al een mooie dichtheid. In de volgende adem gevoel komt openlijk naar boven en maakt toenadering intenser.",
+      "work": "Met een scherpere blik u kunt verschillende belangen verbinden zonder uw eigen positie uit te wissen. In de volgende adem deze zachte autoriteit kan precies op tijd worden opgemerkt. Wanneer de schemering nadert relationeel instinct helpt u de teamsfeer te lezen.",
+      "finance": "In de volgende adem een verlangen dat echt bij u past, overtuigt meer dan een uitgave die door de sfeer wordt bepaald. Wanneer de schemering nadert het budget wint samenhang wanneer het huidige prioriteiten weerspiegelt, niet andermans gewoonten.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "leo",
+      "language": "fr",
+      "general": "À mi-voix, vous n’avez rien perdu de votre éclat ; il change simplement de scène; Un souvenir, un rêve ou une intuition discrète peut inspirer une décision future, à condition de ne pas être aussitôt exposé aux commentaires; La solitude choisie possède aujourd’hui une qualité luxueuse; Elle remet de l’ordre dans vos désirs et prépare, loin des applaudissements, un retour d’une élégance redoutable; Le rideau se ferme un instant sur le tumulte extérieur, laissant place à un théâtre plus secret.",
+      "love": "Sans détour, le désir préfère la pénombre aux grandes déclarations; Un geste confidentiel, un regard prolongé ou une complicité à l’abri du bruit peut toucher plus fort qu’une mise en scène parfaitement réglée.",
+      "work": "En filigrane, tout n’a pas encore besoin d’être présenté; Votre créativité travaille en coulisses et affine ce qui, bientôt, paraîtra d’une grande évidence; Un projet bénéficie d’un temps de retrait ou de préparation invisible.",
+      "finance": "Puis, une dépense discrète liée au repos, à l’inspiration ou à l’intimité peut avoir du sens; L’essentiel est qu’elle nourrisse réellement votre énergie profonde, sans devenir le prix d’une fuite passagère.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "leo",
+      "language": "en",
+      "general": "Under the surface, none of your radiance is lost; it simply changes stage. With a sharper glance, a memory, dream or quiet intuition may inspire a future decision, provided it is not immediately exposed to commentary. In the next breath, chosen solitude has a luxurious quality today. As dusk approaches, it arranges your desires and prepares, far from the applause, a return of formidable elegance. Under the surface, the curtain briefly closes on the outer commotion, making room for a more secret theatre.",
+      "love": "With a sharper glance, desire prefers half-light to grand declarations. In the next breath, a private gesture, a lingering look or closeness sheltered from noise may touch more deeply than a perfectly arranged performance.",
+      "work": "In the next breath, not everything needs presenting yet. As dusk approaches, your creativity works backstage, refining what will soon appear strikingly obvious. Under the surface, a project benefits from withdrawal or invisible preparation.",
+      "finance": "As dusk approaches, a discreet expense connected with rest, inspiration or intimacy may make sense. Under the surface, what matters is that it genuinely restores deeper energy rather than becoming the price of temporary escape.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "leo",
+      "language": "de",
+      "general": "Unter der Oberfläche von Ihrer Ausstrahlung geht nichts verloren; sie wechselt nur den Schauplatz. Mit einem schärferen Blick eine Erinnerung, ein Traum oder eine leise Ahnung kann eine künftige Entscheidung inspirieren, wenn sie nicht sofort Kommentaren ausgesetzt wird. Im nächsten Atemzug gewählte Einsamkeit besitzt heute luxuriöse Qualität. Wenn die Dämmerung naht sie ordnet Ihre Wünsche und bereitet fern vom Beifall eine Rückkehr von beeindruckender Eleganz vor. Unter der Oberfläche der Vorhang schließt sich kurz über dem äußeren Trubel und gibt eine geheimere Bühne frei.",
+      "love": "Mit einem schärferen Blick das Begehren bevorzugt Halbdunkel gegenüber großen Erklärungen. Im nächsten Atemzug eine vertrauliche Geste, ein langer Blick oder vor Lärm geschützte Nähe kann tiefer berühren als eine vollkommen inszenierte Szene.",
+      "work": "Im nächsten Atemzug noch muss nicht alles präsentiert werden. Wenn die Dämmerung naht ihre Kreativität arbeitet hinter den Kulissen und verfeinert, was bald wie selbstverständlich wirken wird. Unter der Oberfläche ein Projekt profitiert von Rückzug oder unsichtbarer Vorbereitung.",
+      "finance": "Wenn die Dämmerung naht eine diskrete Ausgabe für Ruhe, Inspiration oder Intimität kann sinnvoll sein. Unter der Oberfläche entscheidend ist, dass sie tiefe Energie wirklich nährt und nicht zum Preis einer kurzen Flucht wird.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "leo",
+      "language": "es",
+      "general": "Bajo la superficie, no has perdido brillo; simplemente cambia de escenario. Con una mirada más nítida, un recuerdo, sueño o intuición discreta puede inspirar una decisión futura si no se expone enseguida a comentarios. En el siguiente latido, la soledad elegida tiene hoy una calidad lujosa. Cuando cae la tarde, ordena tus deseos y prepara, lejos de aplausos, un regreso de temible elegancia. Bajo la superficie, el telón se cierra un momento sobre el bullicio exterior y deja sitio a un teatro más secreto.",
+      "love": "Con una mirada más nítida, el deseo prefiere la penumbra a las grandes declaraciones. En el siguiente latido, un gesto confidencial, una mirada prolongada o una complicidad protegida del ruido puede tocar más que una puesta en escena impecable.",
+      "work": "En el siguiente latido, todavía no hace falta presentarlo todo. Cuando cae la tarde, tu creatividad trabaja entre bastidores y afina lo que pronto parecerá de una gran evidencia. Bajo la superficie, un proyecto se beneficia de una retirada o preparación invisible.",
+      "finance": "Cuando cae la tarde, un gasto discreto ligado al descanso, la inspiración o la intimidad puede tener sentido. Bajo la superficie, lo esencial es que alimente de verdad tu energía profunda sin convertirse en precio de una huida pasajera.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "leo",
+      "language": "it",
+      "general": "Sotto la superficie, non avete perso splendore; cambia soltanto scena. Con uno sguardo più nitido, un ricordo, un sogno o un’intuizione discreta può ispirare una decisione futura, se non viene subito esposto ai commenti. Nel respiro successivo, la solitudine scelta ha oggi una qualità lussuosa. Mentre arriva il crepuscolo, rimette ordine nei desideri e prepara, lontano dagli applausi, un ritorno di formidabile eleganza. Sotto la superficie, il sipario si chiude per un attimo sul tumulto esterno, lasciando spazio a un teatro più segreto.",
+      "love": "Con uno sguardo più nitido, il desiderio preferisce la penombra alle grandi dichiarazioni. Nel respiro successivo, un gesto confidenziale, uno sguardo prolungato o una complicità riparata dal rumore può toccare più di una scena perfettamente costruita.",
+      "work": "Nel respiro successivo, non tutto deve essere già presentato. Mentre arriva il crepuscolo, la creatività lavora dietro le quinte, affinando ciò che presto sembrerà di grande evidenza. Sotto la superficie, un progetto beneficia di un ritiro o di una preparazione invisibile.",
+      "finance": "Mentre arriva il crepuscolo, una spesa discreta legata al riposo, all’ispirazione o all’intimità può avere senso. Sotto la superficie, conta che nutra davvero l’energia profonda, senza diventare il prezzo di una fuga passeggera.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "leo",
+      "language": "pt",
+      "general": "Sob a superfície, nada perdeu do seu brilho; apenas muda de palco. Com um olhar mais nítido, uma memória, sonho ou intuição discreta pode inspirar uma decisão futura, desde que não seja logo exposta aos comentários. No fôlego seguinte, a solidão escolhida possui hoje uma qualidade luxuosa. Quando o crepúsculo chega, reorganiza os desejos e prepara, longe dos aplausos, um regresso de formidável elegância. Sob a superfície, o pano fecha-se por instantes sobre o tumulto exterior, abrindo espaço a um teatro mais secreto.",
+      "love": "Com um olhar mais nítido, o desejo prefere a meia-luz às grandes declarações. No fôlego seguinte, um gesto confidencial, um olhar prolongado ou uma cumplicidade protegida do ruído pode tocar mais do que uma encenação perfeitamente montada.",
+      "work": "No fôlego seguinte, nem tudo precisa de ser já apresentado. Quando o crepúsculo chega, a sua criatividade trabalha nos bastidores, aperfeiçoando aquilo que em breve parecerá de grande evidência. Sob a superfície, um projeto beneficia de retiro ou preparação invisível.",
+      "finance": "Quando o crepúsculo chega, uma despesa discreta ligada ao descanso, inspiração ou intimidade pode fazer sentido. Sob a superfície, o essencial é que alimente realmente a energia profunda, sem se tornar no preço de uma fuga passageira.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "leo",
+      "language": "ru",
+      "general": "Под поверхностью ваше сияние никуда не исчезло; оно лишь меняет сцену. Если взглянуть острее воспоминание, сон или тихая догадка могут вдохновить будущее решение, если не выставлять их сразу на обсуждение. В следующем ритме выбранное уединение сегодня обладает роскошным качеством. С приближением сумерек оно приводит желания в порядок и готовит вдали от аплодисментов возвращение с неотразимой элегантностью. Под поверхностью занавес ненадолго закрывает внешний шум, освобождая место более тайному театру.",
+      "love": "Если взглянуть острее желание предпочитает полумрак громким признаниям. В следующем ритме доверительный жест, долгий взгляд или близость, защищённая от шума, способны тронуть сильнее, чем безупречно поставленная сцена.",
+      "work": "В следующем ритме пока не нужно показывать всё. С приближением сумерек творчество работает за кулисами и совершенствует то, что вскоре покажется совершенно очевидным. Под поверхностью проект выигрывает от временного отступления или невидимой подготовки.",
+      "finance": "С приближением сумерек незаметная трата на отдых, вдохновение или личное пространство может быть разумной. Под поверхностью важно, чтобы она действительно питала глубокую энергию, а не становилась ценой короткого бегства.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "leo",
+      "language": "nl",
+      "general": "Onder de oppervlakte uw glans is niet verdwenen; hij wisselt slechts van podium. Met een scherpere blik een herinnering, droom of stille ingeving kan een toekomstige beslissing inspireren, mits ze niet meteen aan commentaar wordt blootgesteld. In de volgende adem gekozen afzondering heeft vandaag een luxueuze kwaliteit. Wanneer de schemering nadert ze ordent verlangens en bereidt, ver van applaus, een terugkeer met geduchte elegantie voor. Onder de oppervlakte het gordijn sluit even voor het rumoer buiten en maakt plaats voor een geheimzinniger toneel.",
+      "love": "Met een scherpere blik verlangen verkiest halfduister boven grote verklaringen. In de volgende adem een vertrouwelijk gebaar, lange blik of nabijheid beschut tegen lawaai kan dieper raken dan een volmaakt geregisseerde voorstelling.",
+      "work": "In de volgende adem nog niet alles hoeft te worden gepresenteerd. Wanneer de schemering nadert uw creativiteit werkt achter de schermen en verfijnt wat binnenkort vanzelfsprekend zal lijken. Onder de oppervlakte een project profiteert van terugtrekking of onzichtbare voorbereiding.",
+      "finance": "Wanneer de schemering nadert een discrete uitgave voor rust, inspiratie of intimiteit kan zin hebben. Onder de oppervlakte belangrijk is dat ze diepe energie werkelijk voedt en niet de prijs van een korte vlucht wordt.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "virgo",
+      "language": "fr",
+      "general": "Sans détour, votre regard précis repère vite ce qui peut relier ces forces sans les aplatir; Une amitié, un réseau ou une cause commune pourrait retrouver du relief grâce à une conversation sincère; Vous n’avez pas à devenir l’architecte de chaque détail; En laissant circuler une part d’imprévu, vous découvrez peut-être que le groupe possède sa propre intelligence — moins ordonnée, certes, mais étonnamment féconde; Le collectif s’anime autour de vous, traversé d’enthousiasmes, de susceptibilités et d’idées contradictoires.",
+      "love": "En filigrane, une complicité amicale peut se teinter d’une chaleur différente, sans exiger de définition immédiate; Vous goûtez les gestes fiables, mais aussi cette petite surprise qui empêche la relation de devenir prévisible.",
+      "work": "Puis, une discussion vive fait émerger une solution plus simple que le plan initial; Votre rôle consiste moins à tout corriger qu’à rendre l’essentiel visible; Un travail collectif profite de votre sens du réel.",
+      "finance": "À mi-voix, une invitation, une cotisation ou un projet collectif sollicite votre budget; La dépense paraît plus juste lorsqu’elle correspond à un engagement réel, plutôt qu’au seul désir de ne pas décevoir.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "virgo",
+      "language": "en",
+      "general": "With a sharper glance, your precise eye quickly spots what may connect those forces without flattening them. In the next breath, a friendship, network or common cause could recover its spark through sincere conversation. As dusk approaches, you need not become architect of every detail. Under the surface, by letting some unpredictability circulate, you may discover that the group has its own intelligence — less orderly, certainly, but surprisingly fruitful. With a sharper glance, the group stirs around you, crossed by enthusiasm, sensitivities and conflicting ideas.",
+      "love": "In the next breath, a friendly rapport may acquire a different warmth without demanding an immediate definition. As dusk approaches, you enjoy reliable gestures, but also the small surprise that prevents a relationship from becoming predictable.",
+      "work": "As dusk approaches, a lively discussion produces a simpler solution than the original plan. Under the surface, your role is less about correcting everything than making the essential visible. With a sharper glance, collective work benefits from your realism.",
+      "finance": "Under the surface, an invitation, membership or community plan calls on the budget. With a sharper glance, the expense feels fairer when it reflects genuine commitment rather than merely the wish not to disappoint.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "virgo",
+      "language": "de",
+      "general": "Mit einem schärferen Blick ihr präziser Blick erkennt rasch, was diese Kräfte verbinden kann, ohne sie einzuebnen. Im nächsten Atemzug eine Freundschaft, ein Netzwerk oder eine gemeinsame Sache könnte durch ein aufrichtiges Gespräch wieder Kontur gewinnen. Wenn die Dämmerung naht sie müssen nicht jedes Detail entwerfen. Unter der Oberfläche wenn etwas Unvorhersehbares zirkulieren darf, zeigt die Gruppe vielleicht eigene Intelligenz — weniger geordnet, gewiss, aber erstaunlich fruchtbar. Mit einem schärferen Blick die Gruppe um Sie herum gerät in Bewegung, durchzogen von Begeisterung, Empfindlichkeiten und widersprüchlichen Ideen.",
+      "love": "Im nächsten Atemzug freundschaftliche Nähe kann eine andere Wärme annehmen, ohne sofort eine Definition zu verlangen. Wenn die Dämmerung naht sie genießen verlässliche Gesten, aber auch jene kleine Überraschung, die Beziehungen vor Berechenbarkeit bewahrt.",
+      "work": "Wenn die Dämmerung naht eine lebhafte Diskussion bringt eine einfachere Lösung als der ursprüngliche Plan hervor. Unter der Oberfläche ihre Rolle ist weniger, alles zu korrigieren, als das Wesentliche sichtbar zu machen. Mit einem schärferen Blick gemeinsame Arbeit profitiert von Ihrem Realitätssinn.",
+      "finance": "Unter der Oberfläche eine Einladung, Mitgliedschaft oder gemeinschaftliche Idee beansprucht das Budget. Mit einem schärferen Blick die Ausgabe wirkt stimmiger, wenn sie echtem Engagement entspricht und nicht bloß dem Wunsch, niemanden zu enttäuschen.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "virgo",
+      "language": "es",
+      "general": "Con una mirada más nítida, tu mirada precisa detecta pronto lo que puede unir esas fuerzas sin aplanarlas. En el siguiente latido, una amistad, una red o una causa común podría recobrar relieve gracias a una conversación sincera. Cuando cae la tarde, no necesitas ser arquitecto de cada detalle. Bajo la superficie, al dejar circular cierta imprevisibilidad, quizá descubras que el grupo posee inteligencia propia: menos ordenada, sí, pero sorprendentemente fértil. Con una mirada más nítida, el colectivo se anima a tu alrededor, atravesado por entusiasmos, susceptibilidades e ideas opuestas.",
+      "love": "En el siguiente latido, una complicidad amistosa puede teñirse de una calidez diferente sin exigir definición inmediata. Cuando cae la tarde, saboreas los gestos fiables, pero también esa pequeña sorpresa que impide que el vínculo se vuelva previsible.",
+      "work": "Cuando cae la tarde, una discusión viva hace surgir una solución más sencilla que el plan original. Bajo la superficie, tu papel consiste menos en corregirlo todo que en mostrar lo esencial. Con una mirada más nítida, el trabajo colectivo se beneficia de tu sentido de la realidad.",
+      "finance": "Bajo la superficie, una invitación, cuota o proyecto colectivo solicita el presupuesto. Con una mirada más nítida, el gasto parece más justo cuando corresponde a un compromiso real y no solo al deseo de evitar una decepción.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "virgo",
+      "language": "it",
+      "general": "Con uno sguardo più nitido, il vostro sguardo preciso individua presto ciò che può collegare queste forze senza appiattirle. Nel respiro successivo, un’amicizia, una rete o una causa comune potrebbe ritrovare rilievo grazie a una conversazione sincera. Mentre arriva il crepuscolo, non dovete progettare ogni dettaglio. Sotto la superficie, lasciando circolare un po’ d’imprevisto, forse scoprirete che il gruppo possiede un’intelligenza propria: meno ordinata, certo, ma sorprendentemente feconda. Con uno sguardo più nitido, il gruppo si anima intorno a voi, attraversato da entusiasmi, suscettibilità e idee contraddittorie.",
+      "love": "Nel respiro successivo, una complicità amichevole può assumere un calore diverso senza chiedere una definizione immediata. Mentre arriva il crepuscolo, apprezzate i gesti affidabili, ma anche la piccola sorpresa che impedisce al legame di diventare prevedibile.",
+      "work": "Mentre arriva il crepuscolo, una discussione vivace fa emergere una soluzione più semplice del piano iniziale. Sotto la superficie, il vostro ruolo è meno correggere tutto che rendere visibile l’essenziale. Con uno sguardo più nitido, il lavoro collettivo beneficia del vostro realismo.",
+      "finance": "Sotto la superficie, un invito, una quota o un progetto collettivo sollecita il budget. Con uno sguardo più nitido, la spesa appare più giusta quando corrisponde a un impegno reale, non soltanto al desiderio di non deludere.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "virgo",
+      "language": "pt",
+      "general": "Com um olhar mais nítido, o seu olhar preciso percebe depressa o que pode ligar estas forças sem as nivelar. No fôlego seguinte, uma amizade, rede ou causa comum poderá recuperar relevo graças a uma conversa sincera. Quando o crepúsculo chega, não tem de desenhar cada detalhe. Sob a superfície, ao deixar circular algum imprevisto, talvez descubra que o grupo possui inteligência própria — menos ordenada, certamente, mas surpreendentemente fértil. Com um olhar mais nítido, o coletivo anima-se à sua volta, atravessado por entusiasmos, sensibilidades e ideias contraditórias.",
+      "love": "No fôlego seguinte, uma cumplicidade amigável pode ganhar um calor diferente sem exigir definição imediata. Quando o crepúsculo chega, aprecia gestos fiáveis, mas também aquela pequena surpresa que impede a relação de se tornar previsível.",
+      "work": "Quando o crepúsculo chega, uma discussão viva faz surgir uma solução mais simples do que o plano inicial. Sob a superfície, o seu papel é menos corrigir tudo do que tornar o essencial visível. Com um olhar mais nítido, o trabalho coletivo beneficia do seu sentido da realidade.",
+      "finance": "Sob a superfície, um convite, quota ou projeto coletivo solicita o orçamento. Com um olhar mais nítido, a despesa parece mais justa quando corresponde a um compromisso real, não apenas ao desejo de não desiludir.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "virgo",
+      "language": "ru",
+      "general": "Если взглянуть острее ваш точный взгляд быстро замечает, что способно соединить силы, не делая их одинаковыми. В следующем ритме дружба, сеть или общее дело могут вновь обрести объём благодаря искренней беседе. С приближением сумерек не обязательно проектировать каждую деталь. Под поверхностью позволив непредсказуемости немного двигаться, вы обнаружите собственный разум группы — менее упорядоченный, конечно, но удивительно плодотворный. Если взглянуть острее коллектив вокруг оживает, переполненный энтузиазмом, чувствительностью и противоречивыми идеями.",
+      "love": "В следующем ритме дружеская близость может окраситься иным теплом, не требуя немедленного определения. С приближением сумерек вы цените надёжные жесты, но также маленький сюрприз, который не даёт отношениям стать предсказуемыми.",
+      "work": "С приближением сумерек живая дискуссия рождает более простое решение, чем первоначальный план. Под поверхностью ваша роль не столько всё исправить, сколько сделать главное заметным. Если взглянуть острее общая работа выигрывает от вашего реализма.",
+      "finance": "Под поверхностью приглашение, членский взнос или общественный проект обращаются к бюджету. Если взглянуть острее трата выглядит справедливее, когда соответствует реальной вовлечённости, а не одному желанию никого не разочаровать.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "virgo",
+      "language": "nl",
+      "general": "Met een scherpere blik uw precieze blik ziet snel wat die krachten kan verbinden zonder ze vlak te maken. In de volgende adem een vriendschap, netwerk of gezamenlijke zaak kan door een oprecht gesprek weer reliëf krijgen. Wanneer de schemering nadert u hoeft niet elk detail te ontwerpen. Onder de oppervlakte wanneer wat onvoorspelbaarheid mag circuleren, ontdekt u misschien de eigen intelligentie van de groep — minder geordend, zeker, maar verrassend vruchtbaar. Met een scherpere blik de groep om u heen komt in beweging, vol enthousiasme, gevoeligheden en botsende ideeën.",
+      "love": "In de volgende adem vriendschappelijke verbondenheid kan een andere warmte krijgen zonder direct een definitie te eisen. Wanneer de schemering nadert u waardeert betrouwbare gebaren, maar ook de kleine verrassing die voorkomt dat een relatie voorspelbaar wordt.",
+      "work": "Wanneer de schemering nadert een levendig gesprek brengt een eenvoudiger oplossing dan het oorspronkelijke plan. Onder de oppervlakte uw rol is minder alles corrigeren dan het wezenlijke zichtbaar maken. Met een scherpere blik gezamenlijk werk profiteert van uw realiteitszin.",
+      "finance": "Onder de oppervlakte een uitnodiging, lidmaatschap of groepsplan doet een beroep op het budget. Met een scherpere blik de uitgave voelt eerlijker wanneer ze bij echt engagement hoort en niet alleen bij de wens niemand teleur te stellen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "libra",
+      "language": "fr",
+      "general": "En filigrane, on observe votre manière de décider, de représenter un projet ou de tenir une position délicate; Votre élégance naturelle facilite l’exercice, tandis qu’une émotion plus privée rappelle ce que vous refusez de sacrifier au succès; L’enjeu n’est pas de choisir entre ambition et équilibre, mais de leur inventer un langage commun; Votre autorité gagne alors une texture humaine qui la rend bien plus mémorable; Une lumière professionnelle se pose sur vous, flatteuse mais impossible à ignorer.",
+      "love": "Puis, le charme circule, mais vous restez sensible aux intentions profondes; Une douceur sans calcul emporte davantage votre adhésion; Une admiration sincère peut troubler la frontière entre image publique et sentiment personnel.",
+      "work": "À mi-voix, une responsabilité visible vous offre l’occasion d’imprimer votre style; Les échanges sont animés et parfois tranchants ; votre sens de la mesure transforme la tension en décision plutôt qu’en simple compromis.",
+      "finance": "Sans détour, un achat lié à l’image, au travail ou à la représentation vous tente; Il peut soutenir votre présence, à condition que sa valeur ne repose pas uniquement sur le regard des autres.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "libra",
+      "language": "en",
+      "general": "In the next breath, people notice how you decide, represent a project or hold a delicate position. As dusk approaches, your natural elegance helps, while a more private feeling recalls what you refuse to sacrifice for success. Under the surface, the issue is not choosing between ambition and balance, but inventing a common language for them. With a sharper glance, your authority then gains a human texture that makes it far more memorable. In the next breath, a professional light falls on you, flattering yet impossible to ignore.",
+      "love": "As dusk approaches, charm circulates, but you remain sensitive to deeper intentions. Under the surface, uncalculated sweetness wins more of your trust. With a sharper glance, sincere admiration may blur the line between public image and personal feeling.",
+      "work": "Under the surface, a visible responsibility offers the chance to leave your style on events. With a sharper glance, exchanges are animated and occasionally sharp; your sense of measure turns tension into a decision rather than a mere compromise.",
+      "finance": "With a sharper glance, a purchase connected with image, work or presentation tempts you. In the next breath, it may support your presence, provided its value does not rest solely upon the gaze of others.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "libra",
+      "language": "de",
+      "general": "Im nächsten Atemzug man beobachtet, wie Sie entscheiden, ein Projekt vertreten oder eine heikle Position halten. Wenn die Dämmerung naht ihre natürliche Eleganz hilft, während ein privateres Gefühl daran erinnert, was Sie dem Erfolg nicht opfern wollen. Unter der Oberfläche es geht nicht um eine Wahl zwischen Ehrgeiz und Gleichgewicht, sondern um eine gemeinsame Sprache. Mit einem schärferen Blick ihre Autorität erhält eine menschliche Textur und wird dadurch viel einprägsamer. Im nächsten Atemzug ein berufliches Licht fällt auf Sie, schmeichelhaft und doch unmöglich zu ignorieren.",
+      "love": "Wenn die Dämmerung naht charme fließt, doch Sie bleiben für tiefere Absichten empfänglich. Unter der Oberfläche unberechnete Sanftheit gewinnt eher Ihr Vertrauen. Mit einem schärferen Blick aufrichtige Bewunderung kann die Grenze zwischen öffentlichem Bild und persönlichem Gefühl verwischen.",
+      "work": "Unter der Oberfläche eine sichtbare Verantwortung bietet Gelegenheit, Ihren Stil zu prägen. Mit einem schärferen Blick gespräche sind lebhaft und bisweilen scharf; Ihr Maßgefühl verwandelt Spannung in eine Entscheidung statt in bloßen Kompromiss.",
+      "finance": "Mit einem schärferen Blick ein Kauf für Auftreten, Arbeit oder Repräsentation lockt. Im nächsten Atemzug er kann Ihre Präsenz unterstützen, sofern sein Wert nicht allein auf dem Blick anderer beruht.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "libra",
+      "language": "es",
+      "general": "En el siguiente latido, se observa cómo decides, representas un proyecto o sostienes una posición delicada. Cuando cae la tarde, tu elegancia natural facilita el ejercicio, mientras una emoción privada recuerda lo que no quieres sacrificar al éxito. Bajo la superficie, no se trata de elegir entre ambición y equilibrio, sino de inventarles un lenguaje común. Con una mirada más nítida, tu autoridad adquiere entonces una textura humana que la vuelve mucho más memorable. En el siguiente latido, una luz profesional se posa sobre ti, halagadora pero imposible de ignorar.",
+      "love": "Cuando cae la tarde, el encanto circula, pero sigues sensible a las intenciones profundas. Bajo la superficie, una dulzura sin cálculo gana más fácilmente tu confianza. Con una mirada más nítida, una admiración sincera puede alterar la frontera entre imagen pública y sentimiento personal.",
+      "work": "Bajo la superficie, una responsabilidad visible ofrece la ocasión de imprimir tu estilo. Con una mirada más nítida, los intercambios son animados y a veces cortantes; tu sentido de la medida transforma la tensión en decisión, no en simple compromiso.",
+      "finance": "Con una mirada más nítida, tienta una compra ligada a la imagen, al trabajo o a la representación. En el siguiente latido, puede sostener tu presencia, siempre que su valor no dependa únicamente de la mirada ajena.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "libra",
+      "language": "it",
+      "general": "Nel respiro successivo, si osserva come decidete, rappresentate un progetto o sostenete una posizione delicata. Mentre arriva il crepuscolo, la vostra eleganza naturale aiuta, mentre un’emozione privata ricorda ciò che non volete sacrificare al successo. Sotto la superficie, la questione non è scegliere tra ambizione ed equilibrio, ma inventare un linguaggio comune. Con uno sguardo più nitido, la vostra autorità acquista allora una trama umana che la rende molto più memorabile. Nel respiro successivo, una luce professionale si posa su di voi, lusinghiera ma impossibile da ignorare.",
+      "love": "Mentre arriva il crepuscolo, il fascino circola, ma restate sensibili alle intenzioni profonde. Sotto la superficie, una dolcezza senza calcolo conquista più facilmente la fiducia. Con uno sguardo più nitido, un’ammirazione sincera può confondere il confine tra immagine pubblica e sentimento personale.",
+      "work": "Sotto la superficie, una responsabilità visibile offre l’occasione di imprimere il vostro stile. Con uno sguardo più nitido, gli scambi sono animati e talvolta taglienti; il senso della misura trasforma la tensione in decisione, non in semplice compromesso.",
+      "finance": "Con uno sguardo più nitido, un acquisto legato all’immagine, al lavoro o alla rappresentanza vi tenta. Nel respiro successivo, può sostenere la vostra presenza, purché il suo valore non dipenda unicamente dallo sguardo altrui.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "libra",
+      "language": "pt",
+      "general": "No fôlego seguinte, observa-se a forma como decide, representa um projeto ou sustenta uma posição delicada. Quando o crepúsculo chega, a sua elegância natural ajuda, enquanto uma emoção privada recorda aquilo que não quer sacrificar ao sucesso. Sob a superfície, não se trata de escolher entre ambição e equilíbrio, mas de lhes inventar uma linguagem comum. Com um olhar mais nítido, a sua autoridade ganha então uma textura humana que a torna muito mais memorável. No fôlego seguinte, uma luz profissional pousa sobre si, lisonjeira mas impossível de ignorar.",
+      "love": "Quando o crepúsculo chega, o charme circula, mas continua sensível às intenções profundas. Sob a superfície, uma doçura sem cálculo conquista mais facilmente a sua confiança. Com um olhar mais nítido, uma admiração sincera pode baralhar a fronteira entre imagem pública e sentimento pessoal.",
+      "work": "Sob a superfície, uma responsabilidade visível oferece oportunidade para imprimir o seu estilo. Com um olhar mais nítido, as conversas são animadas e por vezes cortantes; o sentido da medida transforma tensão em decisão, não em mero compromisso.",
+      "finance": "Com um olhar mais nítido, uma compra ligada à imagem, trabalho ou representação tenta-o. No fôlego seguinte, pode apoiar a sua presença, desde que o valor não dependa apenas do olhar das outras pessoas.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "libra",
+      "language": "ru",
+      "general": "В следующем ритме люди замечают, как вы принимаете решения, представляете проект или удерживаете деликатную позицию. С приближением сумерек природная элегантность помогает, а личное чувство напоминает, чем вы не готовы жертвовать ради успеха. Под поверхностью речь не о выборе между амбицией и равновесием, а об общем языке для них. Если взглянуть острее ваш авторитет получает человеческую фактуру и становится намного более запоминающимся. В следующем ритме профессиональный свет падает на вас — лестный, но невозможный для игнорирования.",
+      "love": "С приближением сумерек очарование свободно движется, но вы чувствительны к глубоким намерениям. Под поверхностью бескорыстная мягкость легче завоёвывает доверие. Если взглянуть острее искреннее восхищение может размыть границу между публичным образом и личным чувством.",
+      "work": "Под поверхностью заметная ответственность даёт возможность оставить свой стиль. Если взглянуть острее разговоры оживлённы и порой резки; ваше чувство меры превращает напряжение в решение, а не в обычный компромисс.",
+      "finance": "Если взглянуть острее покупка для имиджа, работы или представительства манит. В следующем ритме она может поддержать ваше присутствие, если её ценность не держится исключительно на чужих взглядах.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "libra",
+      "language": "nl",
+      "general": "In de volgende adem men let op hoe u beslist, een project vertegenwoordigt of een gevoelige positie bewaakt. Wanneer de schemering nadert uw natuurlijke elegantie helpt, terwijl een persoonlijker gevoel herinnert aan wat u niet voor succes wilt opofferen. Onder de oppervlakte het gaat niet om kiezen tussen ambitie en evenwicht, maar om een gemeenschappelijke taal. Met een scherpere blik uw gezag krijgt daardoor menselijke textuur en wordt veel gedenkwaardiger. In de volgende adem professioneel licht valt op u, vleiend maar onmogelijk te negeren.",
+      "love": "Wanneer de schemering nadert charme stroomt, maar u blijft gevoelig voor diepere bedoelingen. Onder de oppervlakte onberekende zachtheid wint gemakkelijker uw vertrouwen. Met een scherpere blik oprechte bewondering kan de grens tussen publiek beeld en persoonlijk gevoel vertroebelen.",
+      "work": "Onder de oppervlakte een zichtbare verantwoordelijkheid biedt gelegenheid uw stijl af te drukken. Met een scherpere blik gesprekken zijn levendig en soms scherp; uw gevoel voor maat verandert spanning in een besluit in plaats van louter compromis.",
+      "finance": "Met een scherpere blik een aankoop voor imago, werk of representatie lokt. In de volgende adem hij kan uw aanwezigheid ondersteunen, zolang de waarde niet uitsluitend op de blik van anderen rust.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "scorpio",
+      "language": "fr",
+      "general": "Puis, le désir d’aller plus loin — dans une idée, un apprentissage ou une rencontre — se double d’une sensibilité très fine aux ambiances; Une certitude ancienne pourrait changer de forme au contact d’un récit différent; Rien ne vous oblige à abandonner vos convictions ; elles gagnent simplement une fenêtre supplémentaire; La journée a le goût des horizons profonds : ceux qui dépaysent l’esprit sans le distraire de l’essentiel; Vous avancez avec une clarté intérieure qui intrigue autant qu’elle rassure.",
+      "love": "À mi-voix, une conversation sur les désirs, les voyages ou les rêves crée une proximité inattendue; L’attirance aime aujourd’hui les esprits capables de vous surprendre; Le mystère se mêle à une tendresse plus spontanée.",
+      "work": "Sans détour, une recherche, une formation ou un dossier complexe vous entraîne au-delà des réponses convenues; Votre perspicacité ouvre une voie originale, même si une discussion intense oblige à défendre chaque nuance.",
+      "finance": "En filigrane, son intérêt dépasse largement l’effet immédiat s’il élargit réellement vos possibilités; La passion gagne toutefois à garder un cadre chiffré précis; Un projet de déplacement ou d’apprentissage réveille l’envie d’investir.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "scorpio",
+      "language": "en",
+      "general": "As dusk approaches, the desire to go further — into an idea, a lesson or an encounter — combines with keen sensitivity to atmosphere. Under the surface, an old certainty may change shape on meeting a different story. With a sharper glance, nothing asks you to abandon your convictions; they simply gain another window. In the next breath, the day tastes of profound horizons: those that transport the mind without distracting it from what matters. As dusk approaches, you move with an inner clarity that intrigues and reassures.",
+      "love": "Under the surface, a conversation about desires, journeys or dreams creates unexpected closeness. With a sharper glance, attraction favours minds capable of surprising you today. In the next breath, mystery mingles with more spontaneous tenderness.",
+      "work": "With a sharper glance, research, training or a complex file leads you beyond conventional answers. In the next breath, your insight opens an original route, even if an intense discussion requires every nuance to be defended.",
+      "finance": "In the next breath, its value exceeds the immediate effect when it genuinely broadens your possibilities. As dusk approaches, passion still benefits from a precise numerical frame. Under the surface, a travel or learning plan awakens the wish to invest.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "scorpio",
+      "language": "de",
+      "general": "Wenn die Dämmerung naht der Wunsch, in einer Idee, einem Lernweg oder einer Begegnung weiterzugehen, verbindet sich mit feinem Gespür für Atmosphäre. Unter der Oberfläche eine alte Gewissheit kann durch eine andere Erzählung ihre Form verändern. Mit einem schärferen Blick nichts zwingt Sie, Überzeugungen aufzugeben; sie erhalten nur ein weiteres Fenster. Im nächsten Atemzug der Tag schmeckt nach tiefen Horizonten, die den Geist versetzen, ohne ihn vom Wesentlichen abzulenken. Wenn die Dämmerung naht sie bewegen sich mit innerer Klarheit, die fasziniert und beruhigt.",
+      "love": "Unter der Oberfläche ein Gespräch über Wünsche, Reisen oder Träume schafft unerwartete Nähe. Mit einem schärferen Blick anziehung gilt heute besonders Menschen, die Ihren Geist überraschen können. Im nächsten Atemzug geheimnis verbindet sich mit spontanerer Zärtlichkeit.",
+      "work": "Mit einem schärferen Blick forschung, Weiterbildung oder ein komplexer Vorgang führt über konventionelle Antworten hinaus. Im nächsten Atemzug ihr Scharfsinn öffnet einen eigenen Weg, auch wenn ein intensives Gespräch jede Nuance verteidigen lässt.",
+      "finance": "Im nächsten Atemzug sein Wert reicht über die unmittelbare Wirkung hinaus, wenn er Möglichkeiten tatsächlich erweitert. Wenn die Dämmerung naht leidenschaft profitiert dennoch von einem präzisen Zahlenrahmen. Unter der Oberfläche ein Reise- oder Lernplan weckt Investitionslust.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "scorpio",
+      "language": "es",
+      "general": "Cuando cae la tarde, las ganas de ir más lejos —en una idea, un aprendizaje o un encuentro— se unen a gran sensibilidad hacia los ambientes. Bajo la superficie, una antigua certeza puede cambiar de forma al conocer un relato distinto. Con una mirada más nítida, nada obliga a abandonar tus convicciones; sencillamente ganan otra ventana. En el siguiente latido, el día sabe a horizontes profundos: aquellos que desplazan la mente sin distraerla de lo esencial. Cuando cae la tarde, avanzas con una claridad interior que intriga y tranquiliza.",
+      "love": "Bajo la superficie, una conversación sobre deseos, viajes o sueños crea una cercanía inesperada. Con una mirada más nítida, la atracción favorece hoy a las mentes capaces de sorprenderte. En el siguiente latido, el misterio se mezcla con una ternura más espontánea.",
+      "work": "Con una mirada más nítida, una investigación, formación o expediente complejo te lleva más allá de las respuestas habituales. En el siguiente latido, tu perspicacia abre una vía original, aunque una conversación intensa obligue a defender cada matiz.",
+      "finance": "En el siguiente latido, su interés supera ampliamente el efecto inmediato si amplía de verdad tus posibilidades. Cuando cae la tarde, la pasión agradece un marco numérico preciso. Bajo la superficie, un proyecto de viaje o aprendizaje despierta ganas de invertir.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "scorpio",
+      "language": "it",
+      "general": "Mentre arriva il crepuscolo, il desiderio di andare oltre — in un’idea, un apprendimento o un incontro — si unisce a una sensibilità finissima alle atmosfere. Sotto la superficie, una vecchia certezza può cambiare forma incontrando un racconto diverso. Con uno sguardo più nitido, nulla vi obbliga ad abbandonare le convinzioni; guadagnano semplicemente un’altra finestra. Nel respiro successivo, la giornata ha il sapore degli orizzonti profondi: quelli che spostano la mente senza distrarla dall’essenziale. Mentre arriva il crepuscolo, avanzate con una chiarezza interiore che intriga e rassicura.",
+      "love": "Sotto la superficie, una conversazione su desideri, viaggi o sogni crea una vicinanza inattesa. Con uno sguardo più nitido, l’attrazione oggi ama le menti capaci di sorprendervi. Nel respiro successivo, il mistero si mescola a una tenerezza più spontanea.",
+      "work": "Con uno sguardo più nitido, una ricerca, una formazione o un dossier complesso vi porta oltre le risposte convenzionali. Nel respiro successivo, la vostra perspicacia apre una via originale, anche se un confronto intenso obbliga a difendere ogni sfumatura.",
+      "finance": "Nel respiro successivo, il valore supera l’effetto immediato se amplia davvero le possibilità. Mentre arriva il crepuscolo, la passione beneficia comunque di una cornice numerica precisa. Sotto la superficie, un progetto di viaggio o apprendimento risveglia la voglia d’investire.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "scorpio",
+      "language": "pt",
+      "general": "Quando o crepúsculo chega, a vontade de ir mais longe — numa ideia, aprendizagem ou encontro — une-se a uma sensibilidade muito fina aos ambientes. Sob a superfície, uma certeza antiga pode mudar de forma ao contactar com uma narrativa diferente. Com um olhar mais nítido, nada o obriga a abandonar convicções; elas ganham simplesmente outra janela. No fôlego seguinte, o dia sabe a horizontes profundos, aqueles que deslocam a mente sem a distrair do essencial. Quando o crepúsculo chega, avança com uma clareza interior que intriga e tranquiliza.",
+      "love": "Sob a superfície, uma conversa sobre desejos, viagens ou sonhos cria proximidade inesperada. Com um olhar mais nítido, a atração favorece hoje as mentes capazes de o surpreender. No fôlego seguinte, o mistério mistura-se com uma ternura mais espontânea.",
+      "work": "Com um olhar mais nítido, uma pesquisa, formação ou processo complexo leva-o além das respostas convencionais. No fôlego seguinte, a sua perspicácia abre um caminho original, mesmo que uma conversa intensa obrigue a defender cada nuance.",
+      "finance": "No fôlego seguinte, o valor ultrapassa o efeito imediato quando amplia realmente as possibilidades. Quando o crepúsculo chega, a paixão beneficia ainda assim de um quadro numérico preciso. Sob a superfície, um projeto de viagem ou aprendizagem desperta vontade de investir.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "scorpio",
+      "language": "ru",
+      "general": "С приближением сумерек желание пойти дальше — в идее, обучении или встрече — соединяется с тонким восприятием атмосферы. Под поверхностью старая уверенность может изменить форму при соприкосновении с другой историей. Если взглянуть острее ничто не требует отказаться от убеждений; у них просто появляется дополнительное окно. В следующем ритме день имеет вкус глубоких горизонтов, перемещающих мысль, но не отвлекающих её от главного. С приближением сумерек вы движетесь с внутренней ясностью, которая интригует и успокаивает.",
+      "love": "Под поверхностью разговор о желаниях, путешествиях или мечтах создаёт неожиданную близость. Если взглянуть острее сегодня притягивают умы, способные вас удивить. В следующем ритме тайна соединяется с более непосредственной нежностью.",
+      "work": "Если взглянуть острее исследование, обучение или сложное дело ведёт дальше привычных ответов. В следующем ритме ваша проницательность открывает собственный путь, даже если напряжённый разговор заставляет защищать каждый оттенок.",
+      "finance": "В следующем ритме его польза превышает мгновенный эффект, если действительно расширяет возможности. С приближением сумерек страсть всё же выигрывает от точных числовых рамок. Под поверхностью план поездки или обучения пробуждает желание вложиться.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "scorpio",
+      "language": "nl",
+      "general": "Wanneer de schemering nadert de wens verder te gaan — in een idee, leerweg of ontmoeting — verenigt zich met scherp gevoel voor sfeer. Onder de oppervlakte een oude zekerheid kan door een ander verhaal van vorm veranderen. Met een scherpere blik niets vraagt uw overtuigingen op te geven; ze krijgen eenvoudig een extra venster. In de volgende adem de dag smaakt naar diepe horizonten die de geest verplaatsen zonder hem van het wezenlijke af te leiden. Wanneer de schemering nadert u beweegt met innerlijke helderheid die intrigeert en geruststelt.",
+      "love": "Onder de oppervlakte een gesprek over verlangens, reizen of dromen schept onverwachte nabijheid. Met een scherpere blik aantrekkingskracht kiest vandaag geesten die u kunnen verrassen. In de volgende adem mysterie vermengt zich met spontanere tederheid.",
+      "work": "Met een scherpere blik onderzoek, opleiding of een ingewikkeld dossier voert voorbij vertrouwde antwoorden. In de volgende adem uw inzicht opent een eigen weg, al dwingt een intens gesprek ertoe elke nuance te verdedigen.",
+      "finance": "In de volgende adem de waarde gaat verder dan direct effect wanneer het uw mogelijkheden werkelijk verruimt. Wanneer de schemering nadert passie is toch gebaat bij een nauwkeurig cijferkader. Onder de oppervlakte een reis- of leerplan wekt investeringslust.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "sagittarius",
+      "language": "fr",
+      "general": "À mi-voix, une question de confiance, de partage ou de transformation personnelle prend plus de place que prévu; Votre franchise demeure précieuse, à condition qu’elle n’éclaire pas brutalement ce qui demande encore de l’ombre; Un échange profond peut libérer une énergie longtemps immobilisée; L’aventure du jour n’a peut-être aucun décor exotique ; elle ressemble plutôt à une porte intérieure que vous décidez enfin d’ouvrir; Le grand air vous appelle, mais la journée préfère explorer les territoires cachés.",
+      "love": "Sans détour, une confiance offerte par petites touches peut créer un rapprochement puissant; Votre liberté n’est pas menacée par la profondeur ; elle y trouve un autre horizon; L’intimité gagne en intensité lorsqu’elle ne cherche pas à tout expliquer.",
+      "work": "En filigrane, votre vision perçoit vite l’enjeu global, tandis qu’un interlocuteur insiste sur les détails; De cette friction peut naître un accord plus solide; Une négociation ou un dossier partagé demande du courage et du tact.",
+      "finance": "Puis, ressources communes, remboursement ou projet à plusieurs réclament une attention calme; La générosité reste possible, mais elle se porte mieux lorsque responsabilités et limites sont clairement réparties entre tous les concernés.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "sagittarius",
+      "language": "en",
+      "general": "Under the surface, a question of trust, sharing or personal transformation occupies more space than expected. With a sharper glance, your candour remains valuable, provided it does not shine too harshly on what still needs shade. In the next breath, a deep exchange can release energy held still for too long. As dusk approaches, today's adventure may have no exotic scenery at all; it resembles an inner door that you finally decide to open. Under the surface, open air calls you, but the day prefers exploring hidden territory.",
+      "love": "With a sharper glance, trust offered in small touches may create a powerful rapprochement. In the next breath, your freedom is not threatened by depth; it finds another horizon there. As dusk approaches, intimacy gains intensity when it does not seek to explain everything.",
+      "work": "In the next breath, your vision quickly sees the overall stake while another person insists on detail. As dusk approaches, a stronger agreement may emerge from this friction. Under the surface, a negotiation or shared file demands courage and tact.",
+      "finance": "As dusk approaches, shared resources, a repayment or group project require calm attention. Under the surface, generosity remains possible, but sits better when responsibilities and limits are clearly assigned to everyone involved.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "sagittarius",
+      "language": "de",
+      "general": "Unter der Oberfläche eine Frage von Vertrauen, Teilen oder persönlicher Wandlung nimmt mehr Raum ein als erwartet. Mit einem schärferen Blick ihre Offenheit bleibt wertvoll, solange sie nicht brutal beleuchtet, was noch Schatten braucht. Im nächsten Atemzug ein tiefes Gespräch kann lange gebundene Energie lösen. Wenn die Dämmerung naht das Abenteuer des Tages besitzt vielleicht keine exotische Kulisse; es gleicht eher einer inneren Tür, die Sie endlich zu öffnen beschließen. Unter der Oberfläche die Weite ruft, doch der Tag erkundet lieber verborgenes Gelände.",
+      "love": "Mit einem schärferen Blick in kleinen Schritten geschenktes Vertrauen kann starke Nähe schaffen. Im nächsten Atemzug ihre Freiheit wird von Tiefe nicht bedroht; sie findet dort einen weiteren Horizont. Wenn die Dämmerung naht intimität gewinnt Kraft, wenn sie nicht alles erklären will.",
+      "work": "Im nächsten Atemzug ihre Sicht erkennt rasch das Ganze, während jemand auf Einzelheiten besteht. Wenn die Dämmerung naht aus dieser Reibung kann eine tragfähigere Einigung entstehen. Unter der Oberfläche eine Verhandlung oder gemeinsame Angelegenheit verlangt Mut und Takt.",
+      "finance": "Wenn die Dämmerung naht gemeinsame Mittel, Erstattung oder Gruppenprojekt brauchen ruhige Aufmerksamkeit. Unter der Oberfläche großzügigkeit bleibt möglich, trägt sich jedoch besser, wenn Verantwortung und Grenzen klar miteinander verteilt sind.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "sagittarius",
+      "language": "es",
+      "general": "Bajo la superficie, una cuestión de confianza, reparto o transformación personal ocupa más espacio de lo previsto. Con una mirada más nítida, tu franqueza sigue siendo valiosa si no ilumina brutalmente aquello que aún necesita sombra. En el siguiente latido, un intercambio profundo puede liberar energía inmovilizada desde hace tiempo. Cuando cae la tarde, la aventura del día quizá no tenga paisaje exótico; se parece más a una puerta interior que por fin decides abrir. Bajo la superficie, el aire libre te llama, pero el día prefiere explorar territorios escondidos.",
+      "love": "Con una mirada más nítida, una confianza ofrecida poco a poco puede crear un acercamiento poderoso. En el siguiente latido, tu libertad no está amenazada por la profundidad; encuentra allí otro horizonte. Cuando cae la tarde, la intimidad gana intensidad cuando no pretende explicarlo todo.",
+      "work": "En el siguiente latido, tu visión capta enseguida lo global, mientras un interlocutor insiste en los detalles. Cuando cae la tarde, de esa fricción puede nacer un acuerdo más sólido. Bajo la superficie, una negociación o expediente compartido exige valor y tacto.",
+      "finance": "Cuando cae la tarde, recursos comunes, reembolso o proyecto colectivo requieren una atención serena. Bajo la superficie, la generosidad sigue siendo posible, pero funciona mejor cuando las responsabilidades y los límites se distribuyen con claridad.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "sagittarius",
+      "language": "it",
+      "general": "Sotto la superficie, una questione di fiducia, condivisione o trasformazione personale occupa più spazio del previsto. Con uno sguardo più nitido, la vostra franchezza resta preziosa, purché non illumini brutalmente ciò che ha ancora bisogno d’ombra. Nel respiro successivo, uno scambio profondo può liberare un’energia a lungo immobile. Mentre arriva il crepuscolo, l’avventura odierna forse non ha scenari esotici; somiglia piuttosto a una porta interiore che decidete finalmente di aprire. Sotto la superficie, l’aria aperta chiama, ma la giornata preferisce esplorare territori nascosti.",
+      "love": "Con uno sguardo più nitido, una fiducia offerta per piccoli tocchi può creare un avvicinamento potente. Nel respiro successivo, la libertà non è minacciata dalla profondità; vi trova un altro orizzonte. Mentre arriva il crepuscolo, l’intimità acquista intensità quando non pretende di spiegare tutto.",
+      "work": "Nel respiro successivo, la vostra visione coglie subito l’insieme, mentre un interlocutore insiste sui dettagli. Mentre arriva il crepuscolo, da questa frizione può nascere un accordo più solido. Sotto la superficie, una negoziazione o un dossier condiviso richiede coraggio e tatto.",
+      "finance": "Mentre arriva il crepuscolo, risorse comuni, rimborso o progetto di gruppo chiedono attenzione calma. Sotto la superficie, la generosità resta possibile, ma funziona meglio quando responsabilità e limiti sono distribuiti con chiarezza.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "sagittarius",
+      "language": "pt",
+      "general": "Sob a superfície, uma questão de confiança, partilha ou transformação pessoal ocupa mais espaço do que o previsto. Com um olhar mais nítido, a sua franqueza continua preciosa, desde que não ilumine brutalmente o que ainda precisa de sombra. No fôlego seguinte, uma conversa profunda pode libertar energia imobilizada há muito. Quando o crepúsculo chega, a aventura de hoje talvez não tenha cenário exótico; parece antes uma porta interior que finalmente decide abrir. Sob a superfície, o ar livre chama, mas o dia prefere explorar territórios escondidos.",
+      "love": "Com um olhar mais nítido, uma confiança oferecida em pequenos gestos pode criar uma aproximação poderosa. No fôlego seguinte, a liberdade não é ameaçada pela profundidade; encontra nela outro horizonte. Quando o crepúsculo chega, a intimidade ganha intensidade quando não procura explicar tudo.",
+      "work": "No fôlego seguinte, a sua visão capta rapidamente o conjunto, enquanto outra pessoa insiste nos detalhes. Quando o crepúsculo chega, desta fricção poderá nascer um acordo mais sólido. Sob a superfície, uma negociação ou processo partilhado exige coragem e tato.",
+      "finance": "Quando o crepúsculo chega, recursos comuns, reembolso ou projeto coletivo exigem atenção serena. Sob a superfície, a generosidade continua possível, mas funciona melhor quando responsabilidades e limites são claramente distribuídos entre todos.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "sagittarius",
+      "language": "ru",
+      "general": "Под поверхностью вопрос доверия, общего ресурса или личного преображения занимает больше места, чем ожидалось. Если взглянуть острее ваша прямота остаётся ценной, если не освещает слишком жёстко то, чему пока нужна тень. В следующем ритме глубокая беседа может освободить давно остановленную энергию. С приближением сумерек сегодняшнее приключение, возможно, лишено экзотического пейзажа; оно похоже на внутреннюю дверь, которую вы наконец решаете открыть. Под поверхностью простор зовёт, но день предпочитает изучать скрытые территории.",
+      "love": "Если взглянуть острее доверие, подаренное малыми жестами, способно создать мощное сближение. В следующем ритме глубина не угрожает вашей свободе; она открывает другой горизонт. С приближением сумерек близость становится сильнее, когда не стремится всё объяснить.",
+      "work": "В следующем ритме ваш взгляд быстро видит общую ставку, пока собеседник настаивает на деталях. С приближением сумерек из этого трения может возникнуть прочное согласие. Под поверхностью переговоры или совместное дело требуют храбрости и такта.",
+      "finance": "С приближением сумерек общие средства, возврат долга или групповой проект требуют спокойного внимания. Под поверхностью щедрость остаётся возможной, но лучше держится при ясном распределении ответственности и границ.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "sagittarius",
+      "language": "nl",
+      "general": "Onder de oppervlakte een kwestie van vertrouwen, delen of persoonlijke verandering neemt meer ruimte in dan verwacht. Met een scherpere blik uw openhartigheid blijft waardevol zolang ze niet hard belicht wat nog schaduw nodig heeft. In de volgende adem een diep gesprek kan lang vastgezette energie vrijmaken. Wanneer de schemering nadert het avontuur van vandaag heeft misschien geen exotisch decor; het lijkt op een innerlijke deur die u eindelijk besluit te openen. Onder de oppervlakte de buitenlucht roept, maar de dag verkent liever verborgen terrein.",
+      "love": "Met een scherpere blik vertrouwen dat in kleine gebaren wordt gegeven, kan sterke toenadering scheppen. In de volgende adem uw vrijheid wordt niet door diepte bedreigd; ze vindt daar een andere horizon. Wanneer de schemering nadert intimiteit wint kracht wanneer ze niet alles wil verklaren.",
+      "work": "In de volgende adem uw visie ziet snel het geheel, terwijl iemand anders op details staat. Wanneer de schemering nadert uit deze wrijving kan een sterker akkoord ontstaan. Onder de oppervlakte een onderhandeling of gedeeld dossier vereist moed en tact.",
+      "finance": "Wanneer de schemering nadert gemeenschappelijke middelen, terugbetaling of groepsproject vereisen rustige aandacht. Onder de oppervlakte gulheid blijft mogelijk, maar werkt beter wanneer verantwoordelijkheden en grenzen helder onder iedereen worden verdeeld.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "capricorn",
+      "language": "fr",
+      "general": "Sans détour, une alliance, un désaccord ou une conversation intime révèle ce que vos plans laissaient dans l’ombre; Vous pourriez être tenté de reprendre immédiatement les commandes ; pourtant, l’écoute donne aujourd’hui une information plus précieuse que le contrôle; Votre solidité ne perd rien à accueillir une émotion imprévue; Au contraire, elle devient moins minérale, plus vivante; Un partenariat pourrait alors retrouver un rythme que la seule efficacité ne savait plus créer; Le visage des autres devient un miroir particulièrement instructif.",
+      "love": "En filigrane, la tendresse se montre plus directe et peut fissurer avec bonheur quelques défenses; Vous appréciez la fidélité, mais un élan spontané rappelle que le lien n’est pas seulement une promesse : c’est aussi une présence.",
+      "work": "Puis, votre sens des responsabilités inspire confiance, à condition de ne pas absorber silencieusement tout le poids; Un dialogue franc rétablit la dynamique; Une collaboration exigeante oblige à revoir la répartition des rôles.",
+      "finance": "À mi-voix, un engagement financier partagé gagne à être compris dans ses détails, sans froideur ni suspicion; La sécurité matérielle se renforce lorsque chacun peut nommer clairement son apport et sa marge.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "capricorn",
+      "language": "en",
+      "general": "With a sharper glance, an alliance, disagreement or intimate conversation reveals what your plans left in shadow. In the next breath, you may be tempted to retake command at once; however, listening offers information more valuable than control today. As dusk approaches, your solidity loses nothing by welcoming an unexpected feeling. Under the surface, on the contrary, it becomes less mineral and more alive. With a sharper glance, a partnership may then recover a rhythm that efficiency alone no longer knew how to create. In the next breath, other people's faces become particularly instructive mirrors.",
+      "love": "In the next breath, tenderness becomes more direct and may happily crack several defences. As dusk approaches, you value loyalty, yet a spontaneous impulse recalls that connection is not only a promise: it is also a presence.",
+      "work": "As dusk approaches, your sense of responsibility inspires trust, provided you do not silently absorb the entire burden. Under the surface, candid conversation restores the dynamic. With a sharper glance, a demanding collaboration forces a review of roles.",
+      "finance": "Under the surface, a shared financial commitment benefits from being understood in detail, without coldness or suspicion. With a sharper glance, material security grows stronger when everyone can clearly name their contribution and margin.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "capricorn",
+      "language": "de",
+      "general": "Mit einem schärferen Blick eine Allianz, ein Streit oder ein intimes Gespräch zeigt, was Ihre Pläne im Schatten ließen. Im nächsten Atemzug vielleicht wollen Sie sofort die Führung zurückholen; heute liefert Zuhören jedoch wertvollere Informationen als Kontrolle. Wenn die Dämmerung naht ihre Festigkeit verliert nichts, wenn sie ein unerwartetes Gefühl aufnimmt. Unter der Oberfläche im Gegenteil, sie wird weniger mineralisch und lebendiger. Mit einem schärferen Blick eine Partnerschaft findet so einen Rhythmus wieder, den Effizienz allein nicht mehr erzeugen konnte. Im nächsten Atemzug die Gesichter anderer werden zu besonders lehrreichen Spiegeln.",
+      "love": "Im nächsten Atemzug zärtlichkeit zeigt sich unmittelbarer und kann einige Schutzmauern glücklich aufbrechen. Wenn die Dämmerung naht sie schätzen Treue, doch ein spontaner Impuls erinnert: Verbindung ist nicht nur Versprechen, sondern auch Gegenwart.",
+      "work": "Wenn die Dämmerung naht ihr Verantwortungsgefühl weckt Vertrauen, sofern Sie nicht still die gesamte Last aufnehmen. Unter der Oberfläche ein offenes Gespräch bringt den Schwung zurück. Mit einem schärferen Blick eine anspruchsvolle Zusammenarbeit zwingt zur neuen Rollenverteilung.",
+      "finance": "Unter der Oberfläche eine gemeinsame finanzielle Verpflichtung sollte im Detail verstanden werden, ohne Kälte oder Misstrauen. Mit einem schärferen Blick materielle Sicherheit wächst, wenn alle ihren Beitrag und Spielraum klar benennen können.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "capricorn",
+      "language": "es",
+      "general": "Con una mirada más nítida, una alianza, desacuerdo o conversación íntima revela lo que tus planes dejaban en sombra. En el siguiente latido, podrías querer retomar enseguida el mando; sin embargo, escuchar aporta hoy información más valiosa que controlar. Cuando cae la tarde, tu solidez no pierde nada al recibir una emoción inesperada. Bajo la superficie, al contrario, se hace menos mineral y más viva. Con una mirada más nítida, una asociación recupera entonces un ritmo que la eficacia sola ya no sabía crear. En el siguiente latido, el rostro de los demás se convierte en un espejo especialmente instructivo.",
+      "love": "En el siguiente latido, la ternura se muestra más directa y puede agrietar felizmente algunas defensas. Cuando cae la tarde, aprecias la fidelidad, pero un impulso espontáneo recuerda que el vínculo no es solo promesa: también es presencia.",
+      "work": "Cuando cae la tarde, tu responsabilidad inspira confianza si no absorbes silenciosamente todo el peso. Bajo la superficie, un diálogo franco restablece la dinámica. Con una mirada más nítida, una colaboración exigente obliga a revisar el reparto de papeles.",
+      "finance": "Bajo la superficie, un compromiso financiero compartido gana si se entiende en detalle, sin frialdad ni sospecha. Con una mirada más nítida, la seguridad material se fortalece cuando cada cual puede nombrar con claridad su aportación y margen.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "capricorn",
+      "language": "it",
+      "general": "Con uno sguardo più nitido, un’alleanza, un disaccordo o una conversazione intima rivela ciò che i vostri piani lasciavano nell’ombra. Nel respiro successivo, potreste voler riprendere subito il comando; l’ascolto, però, offre oggi informazioni più preziose del controllo. Mentre arriva il crepuscolo, la vostra solidità non perde nulla accogliendo un’emozione inattesa. Sotto la superficie, al contrario, diventa meno minerale e più viva. Con uno sguardo più nitido, una collaborazione ritrova così un ritmo che la sola efficienza non sapeva più creare. Nel respiro successivo, il volto degli altri diventa uno specchio particolarmente istruttivo.",
+      "love": "Nel respiro successivo, la tenerezza si mostra più diretta e può incrinare felicemente alcune difese. Mentre arriva il crepuscolo, apprezzate la fedeltà, ma uno slancio spontaneo ricorda che il legame non è solo promessa: è anche presenza.",
+      "work": "Mentre arriva il crepuscolo, il vostro senso di responsabilità ispira fiducia, purché non assorbiate in silenzio tutto il peso. Sotto la superficie, un dialogo franco ristabilisce la dinamica. Con uno sguardo più nitido, una collaborazione esigente obbliga a rivedere la distribuzione dei ruoli.",
+      "finance": "Sotto la superficie, un impegno finanziario condiviso merita di essere compreso nei dettagli, senza freddezza né sospetto. Con uno sguardo più nitido, la sicurezza materiale cresce quando ognuno può nominare chiaramente il proprio contributo e margine.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "capricorn",
+      "language": "pt",
+      "general": "Com um olhar mais nítido, uma aliança, desacordo ou conversa íntima revela o que os seus planos deixaram na sombra. No fôlego seguinte, poderá querer recuperar imediatamente o comando; contudo, ouvir oferece hoje informação mais valiosa do que controlar. Quando o crepúsculo chega, a sua solidez nada perde ao acolher uma emoção inesperada. Sob a superfície, pelo contrário, torna-se menos mineral e mais viva. Com um olhar mais nítido, uma parceria pode então recuperar um ritmo que a eficiência sozinha já não conseguia criar. No fôlego seguinte, o rosto dos outros torna-se um espelho especialmente instrutivo.",
+      "love": "No fôlego seguinte, a ternura mostra-se mais direta e pode abrir felizmente algumas defesas. Quando o crepúsculo chega, aprecia fidelidade, mas um impulso espontâneo recorda que o vínculo não é apenas promessa: é também presença.",
+      "work": "Quando o crepúsculo chega, o seu sentido de responsabilidade inspira confiança, desde que não absorva silenciosamente todo o peso. Sob a superfície, um diálogo franco restabelece a dinâmica. Com um olhar mais nítido, uma colaboração exigente obriga a rever a distribuição de papéis.",
+      "finance": "Sob a superfície, um compromisso financeiro partilhado merece ser compreendido em detalhe, sem frieza nem suspeita. Com um olhar mais nítido, a segurança material fortalece-se quando cada pessoa consegue nomear claramente a sua contribuição e margem.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "capricorn",
+      "language": "ru",
+      "general": "Если взглянуть острее союз, разногласие или личный разговор показывают то, что ваши планы оставляли в тени. В следующем ритме возможно, захочется немедленно вернуть управление; однако слушание сегодня даёт более ценную информацию, чем контроль. С приближением сумерек ваша твёрдость ничего не теряет, принимая неожиданное чувство. Под поверхностью напротив, она становится менее минеральной и более живой. Если взглянуть острее партнёрство способно вернуть ритм, который одна эффективность уже не создавала. В следующем ритме лица других становятся особенно поучительными зеркалами.",
+      "love": "В следующем ритме нежность проявляется прямее и может счастливо открыть несколько защитных стен. С приближением сумерек вы цените верность, но спонтанный порыв напоминает: связь — не только обещание, но и присутствие.",
+      "work": "С приближением сумерек ваша ответственность вызывает доверие, если вы не поглощаете молча всю тяжесть. Под поверхностью открытая беседа возвращает динамику. Если взглянуть острее требовательное сотрудничество заставляет пересмотреть роли.",
+      "finance": "Под поверхностью общее финансовое обязательство стоит понять подробно, без холодности и подозрения. Если взглянуть острее материальная устойчивость крепнет, когда каждый ясно называет собственный вклад и пространство для манёвра.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "capricorn",
+      "language": "nl",
+      "general": "Met een scherpere blik een alliantie, meningsverschil of intiem gesprek onthult wat uw plannen in de schaduw lieten. In de volgende adem misschien wilt u meteen de leiding hernemen; luisteren biedt vandaag echter waardevollere informatie dan controle. Wanneer de schemering nadert uw stevigheid verliest niets door een onverwacht gevoel toe te laten. Onder de oppervlakte integendeel, ze wordt minder mineraal en levendiger. Met een scherpere blik een partnerschap vindt zo een ritme terug dat efficiëntie alleen niet meer kon creëren. In de volgende adem de gezichten van anderen worden bijzonder leerzame spiegels.",
+      "love": "In de volgende adem tederheid toont zich directer en kan enkele verdedigingswerken gelukkig openbreken. Wanneer de schemering nadert u waardeert trouw, maar een spontane impuls herinnert dat verbondenheid niet alleen belofte is: ze is ook aanwezigheid.",
+      "work": "Wanneer de schemering nadert uw verantwoordelijkheidszin wekt vertrouwen, zolang u niet stil de hele last opneemt. Onder de oppervlakte een open gesprek herstelt de dynamiek. Met een scherpere blik een veeleisende samenwerking dwingt tot herziening van rollen.",
+      "finance": "Onder de oppervlakte een gedeelde financiële verbintenis moet in detail worden begrepen, zonder kilte of argwaan. Met een scherpere blik materiële zekerheid groeit wanneer iedereen zijn bijdrage en speelruimte helder kan benoemen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aquarius",
+      "language": "fr",
+      "general": "En filigrane, vous qui aimez les grandes idées découvrez le pouvoir d’une amélioration minuscule mais parfaitement placée; Une conversation vive autour d’une méthode pourrait provoquer quelques étincelles ; elle révèle surtout que le système a besoin d’air; La journée favorise une innovation douce, capable de rendre la vie plus fluide sans tout bouleverser; Voilà peut-être la révolution la plus intelligente; Le quotidien change de texture : les détails deviennent plus sensibles, les habitudes plus parlantes, les gestes ordinaires presque symboliques.",
+      "love": "Puis, le lien se nourrit de petites attentions imprévues plutôt que de théories brillantes; Une tendresse pratique, un humour discret ou une présence au bon moment crée une proximité étonnamment forte.",
+      "work": "À mi-voix, votre idée originale séduit si elle répond à une difficulté concrète; Les objections ne ferment pas la porte ; elles indiquent où placer les charnières; Une méthode de travail mérite d’être assouplie.",
+      "finance": "Sans détour, une dépense utile peut améliorer nettement le quotidien, notamment si elle libère du temps ou simplifie une contrainte; La technologie n’a toutefois d’intérêt que si elle sert vraiment votre rythme.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aquarius",
+      "language": "en",
+      "general": "In the next breath, fond of big ideas, you now discover the power of a tiny but perfectly placed improvement. As dusk approaches, a lively conversation about method may cause sparks; above all, it shows that the system needs air. Under the surface, the day favours gentle innovation capable of making life flow without overturning everything. With a sharper glance, that may be the cleverest revolution of all. In the next breath, daily life changes texture: details become more sensitive, habits more revealing, ordinary gestures almost symbolic.",
+      "love": "As dusk approaches, the bond feeds on small unexpected kindnesses rather than dazzling theories. Under the surface, practical tenderness, quiet humour or presence at the right moment creates surprisingly powerful closeness.",
+      "work": "Under the surface, your original idea appeals when it answers a practical difficulty. With a sharper glance, objections do not close the door; they show where to place the hinges. In the next breath, a working method deserves greater flexibility.",
+      "finance": "With a sharper glance, a useful expense may noticeably improve daily life, particularly if it frees time or simplifies a constraint. In the next breath, technology only matters, however, when it genuinely serves your rhythm.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aquarius",
+      "language": "de",
+      "general": "Im nächsten Atemzug als Freund großer Ideen entdecken Sie die Kraft einer winzigen, perfekt platzierten Verbesserung. Wenn die Dämmerung naht ein lebhaftes Gespräch über eine Methode kann Funken schlagen; vor allem zeigt es, dass das System Luft braucht. Unter der Oberfläche der Tag begünstigt sanfte Innovation, die das Leben flüssiger macht, ohne alles umzustoßen. Mit einem schärferen Blick vielleicht ist das die klügste Revolution. Im nächsten Atemzug der Alltag verändert seine Textur: Details werden empfindlicher, Gewohnheiten beredter, gewöhnliche Gesten beinahe symbolisch.",
+      "love": "Wenn die Dämmerung naht die Verbindung nährt sich eher aus kleinen unerwarteten Aufmerksamkeiten als aus brillanten Theorien. Unter der Oberfläche praktische Zärtlichkeit, stiller Humor oder Präsenz im richtigen Moment schafft überraschend starke Nähe.",
+      "work": "Unter der Oberfläche ihre originelle Idee überzeugt, wenn sie eine konkrete Schwierigkeit löst. Mit einem schärferen Blick einwände schließen die Tür nicht; sie zeigen, wo die Scharniere hingehören. Im nächsten Atemzug eine Arbeitsweise verdient mehr Beweglichkeit.",
+      "finance": "Mit einem schärferen Blick eine nützliche Ausgabe kann den Alltag deutlich verbessern, besonders wenn sie Zeit befreit oder eine Einschränkung vereinfacht. Im nächsten Atemzug technik zählt jedoch nur, wenn sie Ihrem Rhythmus wirklich dient.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aquarius",
+      "language": "es",
+      "general": "En el siguiente latido, a ti, que amas las grandes ideas, te sorprende el poder de una mejora minúscula pero perfectamente situada. Cuando cae la tarde, una conversación viva sobre un método puede generar chispas; revela sobre todo que el sistema necesita aire. Bajo la superficie, el día favorece una innovación suave, capaz de hacer la vida más fluida sin trastocarlo todo. Con una mirada más nítida, tal vez esa sea la revolución más inteligente. En el siguiente latido, lo cotidiano cambia de textura: los detalles se vuelven sensibles, los hábitos más elocuentes y los gestos corrientes casi simbólicos.",
+      "love": "Cuando cae la tarde, el vínculo se alimenta de pequeñas atenciones inesperadas más que de teorías brillantes. Bajo la superficie, una ternura práctica, un humor discreto o una presencia oportuna crea una cercanía sorprendentemente fuerte.",
+      "work": "Bajo la superficie, tu idea original seduce si responde a una dificultad concreta. Con una mirada más nítida, las objeciones no cierran la puerta; indican dónde conviene colocar las bisagras. En el siguiente latido, un método de trabajo merece más flexibilidad.",
+      "finance": "Con una mirada más nítida, un gasto útil puede mejorar claramente lo cotidiano, sobre todo si libera tiempo o simplifica una dificultad. En el siguiente latido, la tecnología solo interesa, sin embargo, cuando sirve de verdad a tu ritmo.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aquarius",
+      "language": "it",
+      "general": "Nel respiro successivo, voi che amate le grandi idee scoprite il potere di un miglioramento minuscolo ma perfettamente collocato. Mentre arriva il crepuscolo, una discussione vivace sul metodo può produrre scintille; soprattutto, rivela che il sistema ha bisogno d’aria. Sotto la superficie, la giornata favorisce un’innovazione gentile, capace di rendere la vita più fluida senza sconvolgere tutto. Con uno sguardo più nitido, forse è questa la rivoluzione più intelligente. Nel respiro successivo, il quotidiano cambia consistenza: i dettagli diventano sensibili, le abitudini più eloquenti, i gesti ordinari quasi simbolici.",
+      "love": "Mentre arriva il crepuscolo, il legame si nutre di piccole attenzioni inattese più che di teorie brillanti. Sotto la superficie, una tenerezza pratica, un umorismo discreto o una presenza al momento giusto crea una vicinanza sorprendentemente forte.",
+      "work": "Sotto la superficie, la vostra idea originale seduce se risponde a una difficoltà concreta. Con uno sguardo più nitido, le obiezioni non chiudono la porta; indicano dove mettere i cardini. Nel respiro successivo, un metodo di lavoro merita maggiore flessibilità.",
+      "finance": "Con uno sguardo più nitido, una spesa utile può migliorare nettamente il quotidiano, soprattutto se libera tempo o semplifica un vincolo. Nel respiro successivo, la tecnologia interessa soltanto quando serve davvero il vostro ritmo.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aquarius",
+      "language": "pt",
+      "general": "No fôlego seguinte, amante de grandes ideias, descobre o poder de uma melhoria minúscula mas perfeitamente colocada. Quando o crepúsculo chega, uma conversa viva sobre um método pode provocar faíscas; revela sobretudo que o sistema precisa de ar. Sob a superfície, o dia favorece inovação suave, capaz de tornar a vida mais fluida sem mudar tudo. Com um olhar mais nítido, talvez seja essa a revolução mais inteligente. No fôlego seguinte, o quotidiano muda de textura: os detalhes tornam-se mais sensíveis, os hábitos mais eloquentes e os gestos comuns quase simbólicos.",
+      "love": "Quando o crepúsculo chega, o vínculo alimenta-se de pequenas atenções inesperadas, mais do que de teorias brilhantes. Sob a superfície, uma ternura prática, humor discreto ou presença no momento certo cria uma proximidade surpreendentemente forte.",
+      "work": "Sob a superfície, a sua ideia original seduz quando responde a uma dificuldade concreta. Com um olhar mais nítido, as objeções não fecham a porta; mostram onde colocar as dobradiças. No fôlego seguinte, um método de trabalho merece maior flexibilidade.",
+      "finance": "Com um olhar mais nítido, uma despesa útil pode melhorar claramente o quotidiano, sobretudo se libertar tempo ou simplificar uma limitação. No fôlego seguinte, a tecnologia só interessa, porém, quando serve verdadeiramente o seu ritmo.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aquarius",
+      "language": "ru",
+      "general": "В следующем ритме любитель больших идей открывает силу крошечного, но точно размещённого улучшения. С приближением сумерек живая беседа о методе может вызвать искры; главное, она показывает, что системе нужен воздух. Под поверхностью день поддерживает мягкую инновацию, делающую жизнь плавнее без полного переворота. Если взглянуть острее возможно, это и есть самая умная революция. В следующем ритме повседневность меняет фактуру: детали становятся чувствительнее, привычки красноречивее, обычные жесты почти символичными.",
+      "love": "С приближением сумерек связь питается маленькими неожиданными знаками внимания больше, чем блестящими теориями. Под поверхностью практичная нежность, тихий юмор или своевременное присутствие создают удивительно сильную близость.",
+      "work": "Под поверхностью ваша оригинальная идея привлекает, если отвечает на конкретную трудность. Если взглянуть острее возражения не закрывают дверь; они показывают место для петель. В следующем ритме рабочему методу нужна большая гибкость.",
+      "finance": "Если взглянуть острее полезная покупка может заметно улучшить будни, особенно если освобождает время или упрощает ограничение. В следующем ритме однако технология ценна лишь тогда, когда действительно служит вашему ритму.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "aquarius",
+      "language": "nl",
+      "general": "In de volgende adem als liefhebber van grote ideeën ontdekt u de kracht van een piepkleine, perfect geplaatste verbetering. Wanneer de schemering nadert een levendig gesprek over werkwijze kan vonken geven; vooral blijkt dat het systeem lucht nodig heeft. Onder de oppervlakte de dag bevordert zachte innovatie die het leven soepeler maakt zonder alles omver te halen. Met een scherpere blik misschien is dat de slimste revolutie. In de volgende adem het dagelijks leven verandert van textuur: details worden gevoeliger, gewoonten welsprekender en gewone gebaren bijna symbolisch.",
+      "love": "Wanneer de schemering nadert de band voedt zich meer met kleine onverwachte attenties dan met briljante theorieën. Onder de oppervlakte praktische tederheid, stille humor of aanwezigheid op het juiste moment schept verrassend sterke nabijheid.",
+      "work": "Onder de oppervlakte uw originele idee spreekt aan wanneer het een concreet probleem beantwoordt. Met een scherpere blik bezwaren sluiten de deur niet; ze tonen waar de scharnieren horen. In de volgende adem een werkmethode verdient meer soepelheid.",
+      "finance": "Met een scherpere blik een nuttige uitgave kan het dagelijks leven merkbaar verbeteren, vooral wanneer ze tijd vrijmaakt of een beperking vereenvoudigt. In de volgende adem technologie telt echter alleen als ze uw ritme werkelijk dient.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "pisces",
+      "language": "fr",
+      "general": "Puis, vous captez une émotion flottante et lui donnez spontanément une forme : un mot, une image, une attention, peut-être même un projet; Le plaisir redevient un langage sérieux, loin de toute frivolité; Une hésitation subsiste entre montrer et préserver ce qui naît; Laissez-lui juste assez d’air; Ce qui vous amuse sincèrement possède aujourd’hui une force de rayonnement que la perfection n’atteindrait pas; Une veine créative traverse la journée, colorée de tendresse et d’une pointe d’audace.",
+      "love": "À mi-voix, une émotion sincère peut se glisser derrière une plaisanterie; Le lien devient lumineux lorsqu’il accepte d’être léger sans devenir superficiel; Le romantisme s’épanouit dans le jeu, la douceur et l’imagination partagée.",
+      "work": "Sans détour, votre créativité apporte une réponse inattendue à une demande concrète; Une discussion passionnée pourrait bousculer le cadre, mais votre sensibilité capte précisément ce qui donnera au projet une vraie personnalité.",
+      "finance": "En filigrane, loisir, art ou plaisir personnel réclame une part du budget; La dépense trouve son équilibre lorsqu’elle nourrit durablement votre imaginaire, plutôt que de chercher à prolonger artificiellement une humeur passagère.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "pisces",
+      "language": "en",
+      "general": "As dusk approaches, you catch a floating emotion and spontaneously give it form: a word, an image, a kindness, perhaps even a project. Under the surface, pleasure becomes a serious language again, far from frivolity. With a sharper glance, some hesitation remains between showing and protecting what is emerging. In the next breath, give it just enough air. As dusk approaches, what genuinely delights you carries a radiance today that perfection could never achieve. Under the surface, a creative current runs through the day, coloured by tenderness and a touch of daring.",
+      "love": "Under the surface, sincere feeling may hide behind a joke. With a sharper glance, the bond becomes luminous when it accepts lightness without becoming superficial. In the next breath, romance blossoms through play, gentleness and shared imagination.",
+      "work": "With a sharper glance, your creativity provides an unexpected answer to a practical request. In the next breath, a passionate discussion may jolt the framework, but your sensitivity detects exactly what will give the project a true personality.",
+      "finance": "In the next breath, leisure, art or personal pleasure claims a share of the budget. As dusk approaches, spending finds balance when it nourishes your imagination over time rather than artificially prolonging a passing mood.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "pisces",
+      "language": "de",
+      "general": "Wenn die Dämmerung naht sie fangen ein schwebendes Gefühl ein und geben ihm spontan Form: ein Wort, ein Bild, eine Aufmerksamkeit, vielleicht sogar ein Projekt. Unter der Oberfläche freude wird wieder zur ernsthaften Sprache, fern jeder Oberflächlichkeit. Mit einem schärferen Blick zwischen Zeigen und Schützen des Entstehenden bleibt Zögern. Im nächsten Atemzug geben Sie ihm genau genug Luft. Wenn die Dämmerung naht was Sie ehrlich erfreut, besitzt heute eine Strahlkraft, die Perfektion niemals erreichen könnte. Unter der Oberfläche eine kreative Ader durchzieht den Tag, gefärbt von Zärtlichkeit und einer Spur Kühnheit.",
+      "love": "Unter der Oberfläche aufrichtiges Gefühl kann sich hinter einem Scherz verbergen. Mit einem schärferen Blick die Verbindung leuchtet, wenn sie leicht sein darf, ohne oberflächlich zu werden. Im nächsten Atemzug romantik blüht in Spiel, Sanftheit und geteilter Fantasie.",
+      "work": "Mit einem schärferen Blick ihre Kreativität liefert eine unerwartete Antwort auf eine konkrete Anfrage. Im nächsten Atemzug ein leidenschaftliches Gespräch kann den Rahmen erschüttern, doch Ihre Sensibilität erkennt genau, was dem Projekt echte Persönlichkeit verleiht.",
+      "finance": "Im nächsten Atemzug freizeit, Kunst oder persönliches Vergnügen beansprucht einen Teil des Budgets. Wenn die Dämmerung naht die Ausgabe findet Balance, wenn sie Ihre Fantasie nachhaltig nährt, statt eine vorübergehende Stimmung künstlich zu verlängern.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "pisces",
+      "language": "es",
+      "general": "Cuando cae la tarde, captas una emoción flotante y le das forma espontáneamente: una palabra, una imagen, una atención, quizá incluso un proyecto. Bajo la superficie, el placer vuelve a ser un lenguaje serio, lejos de toda frivolidad. Con una mirada más nítida, persiste una duda entre mostrar y proteger lo que nace. En el siguiente latido, dale justo el aire necesario. Cuando cae la tarde, aquello que te divierte sinceramente posee hoy una fuerza radiante que la perfección nunca alcanzaría. Bajo la superficie, una vena creativa atraviesa el día, coloreada de ternura y un punto de audacia.",
+      "love": "Bajo la superficie, una emoción sincera puede deslizarse tras una broma. Con una mirada más nítida, el vínculo se ilumina cuando acepta ser ligero sin volverse superficial. En el siguiente latido, el romanticismo florece en el juego, la dulzura y la imaginación compartida.",
+      "work": "Con una mirada más nítida, tu creatividad ofrece una respuesta inesperada a una petición concreta. En el siguiente latido, una conversación apasionada puede sacudir el marco, pero tu sensibilidad detecta exactamente lo que dará personalidad verdadera al proyecto.",
+      "finance": "En el siguiente latido, ocio, arte o placer personal reclama parte del presupuesto. Cuando cae la tarde, el gasto encuentra equilibrio cuando alimenta tu imaginación a largo plazo, en lugar de prolongar artificialmente un humor pasajero.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "pisces",
+      "language": "it",
+      "general": "Mentre arriva il crepuscolo, cogliete un’emozione sospesa e le date spontaneamente forma: una parola, un’immagine, un’attenzione, forse un progetto. Sotto la superficie, il piacere torna a essere un linguaggio serio, lontano dalla frivolezza. Con uno sguardo più nitido, rimane un’esitazione tra mostrare e proteggere ciò che nasce. Nel respiro successivo, dategli l’aria necessaria. Mentre arriva il crepuscolo, ciò che vi diverte davvero possiede oggi una forza luminosa che la perfezione non raggiungerebbe. Sotto la superficie, una vena creativa attraversa la giornata, colorata di tenerezza e di un tocco d’audacia.",
+      "love": "Sotto la superficie, un’emozione sincera può scivolare dietro una battuta. Con uno sguardo più nitido, il legame diventa luminoso quando accetta la leggerezza senza diventare superficiale. Nel respiro successivo, il romanticismo fiorisce nel gioco, nella dolcezza e nell’immaginazione condivisa.",
+      "work": "Con uno sguardo più nitido, la vostra creatività offre una risposta inattesa a una richiesta concreta. Nel respiro successivo, un confronto appassionato può scuotere il quadro, ma la sensibilità coglie esattamente ciò che darà vera personalità al progetto.",
+      "finance": "Nel respiro successivo, svago, arte o piacere personale reclama una parte del budget. Mentre arriva il crepuscolo, la spesa trova equilibrio quando nutre a lungo l’immaginazione, invece di prolungare artificialmente un umore passeggero.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "pisces",
+      "language": "pt",
+      "general": "Quando o crepúsculo chega, capta uma emoção suspensa e dá-lhe espontaneamente forma: palavra, imagem, atenção, talvez até projeto. Sob a superfície, o prazer volta a ser linguagem séria, longe da frivolidade. Com um olhar mais nítido, permanece uma hesitação entre mostrar e proteger aquilo que nasce. No fôlego seguinte, dê-lhe apenas o ar necessário. Quando o crepúsculo chega, o que genuinamente o diverte possui hoje uma força luminosa que a perfeição nunca alcançaria. Sob a superfície, uma veia criativa atravessa o dia, colorida de ternura e de um toque de ousadia.",
+      "love": "Sob a superfície, uma emoção sincera pode esconder-se atrás de uma brincadeira. Com um olhar mais nítido, o vínculo ilumina-se quando aceita a leveza sem se tornar superficial. No fôlego seguinte, o romantismo floresce no jogo, na doçura e na imaginação partilhada.",
+      "work": "Com um olhar mais nítido, a sua criatividade oferece uma resposta inesperada a um pedido concreto. No fôlego seguinte, uma conversa apaixonada pode abalar o quadro, mas a sensibilidade deteta exatamente o que dará verdadeira personalidade ao projeto.",
+      "finance": "No fôlego seguinte, lazer, arte ou prazer pessoal reclama uma parte do orçamento. Quando o crepúsculo chega, a despesa encontra equilíbrio quando alimenta a imaginação duradouramente, em vez de prolongar artificialmente um humor passageiro.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "pisces",
+      "language": "ru",
+      "general": "С приближением сумерек вы ловите парящее чувство и спонтанно придаёте ему форму: слово, образ, знак внимания, возможно, даже проект. Под поверхностью удовольствие снова становится серьёзным языком, далёким от легкомыслия. Если взглянуть острее остаётся сомнение между показом и защитой рождающегося. В следующем ритме дайте ему достаточно воздуха. С приближением сумерек то, что искренне радует вас, обладает сегодня сиянием, недоступным совершенству. Под поверхностью творческая жилка проходит через день, окрашенная нежностью и каплей смелости.",
+      "love": "Под поверхностью искреннее чувство может спрятаться за шуткой. Если взглянуть острее связь сияет, когда позволяет себе лёгкость, не становясь поверхностной. В следующем ритме романтика расцветает в игре, мягкости и общем воображении.",
+      "work": "Если взглянуть острее ваше творчество даёт неожиданный ответ на конкретную просьбу. В следующем ритме страстная дискуссия может встряхнуть рамки, но чувствительность точно улавливает то, что подарит проекту настоящую индивидуальность.",
+      "finance": "В следующем ритме отдых, искусство или личное удовольствие требуют части бюджета. С приближением сумерек трата находит баланс, когда надолго питает воображение, а не искусственно продлевает преходящее настроение.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-11",
+      "sign": "pisces",
+      "language": "nl",
+      "general": "Wanneer de schemering nadert u vangt een zwevende emotie en geeft haar spontaan vorm: een woord, beeld, attentie, misschien zelfs een project. Onder de oppervlakte plezier wordt opnieuw een serieuze taal, ver van oppervlakkigheid. Met een scherpere blik er blijft twijfel tussen tonen en beschermen wat ontstaat. In de volgende adem geef het precies genoeg lucht. Wanneer de schemering nadert wat u eerlijk plezier schenkt, heeft vandaag een uitstraling die perfectie nooit zou bereiken. Onder de oppervlakte een creatieve ader loopt door de dag, gekleurd door tederheid en een vleug durf.",
+      "love": "Onder de oppervlakte oprecht gevoel kan achter een grap verscholen zitten. Met een scherpere blik de band straalt wanneer ze licht mag zijn zonder oppervlakkig te worden. In de volgende adem romantiek bloeit in spel, zachtheid en gedeelde verbeelding.",
+      "work": "Met een scherpere blik uw creativiteit geeft een onverwacht antwoord op een concrete vraag. In de volgende adem een gepassioneerd gesprek kan het kader schudden, maar uw gevoeligheid voelt precies wat het project echte persoonlijkheid geeft.",
+      "finance": "In de volgende adem vrije tijd, kunst of persoonlijk plezier vraagt een deel van het budget. Wanneer de schemering nadert de uitgave vindt evenwicht wanneer ze uw verbeelding duurzaam voedt in plaats van een voorbijgaande stemming kunstmatig te verlengen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    }
+  ]
+}
