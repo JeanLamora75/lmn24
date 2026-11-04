@@ -1,0 +1,1077 @@
+{
+  "date": "2026-11-12",
+  "generatedAt": "2026-11-04T01:34:16.674471+01:00",
+  "timezone": "Europe/Paris",
+  "astronomy": {
+    "validationStatus": "PARTIAL",
+    "source": "CosmyDay",
+    "sourceUrl": "https://api.cosmyday.com/",
+    "attribution": "Données astronomiques : CosmyDay — https://cosmyday.com (utilisation avec attribution requise).",
+    "requestedDateTime": "2026-11-12T12:00:00+01:00",
+    "requestedTimezone": "Europe/Paris",
+    "requestedUtc": "2026-11-12T11:00:00+00:00",
+    "calculationParameters": {
+      "year": 2026,
+      "month": 11,
+      "day": 12,
+      "hour": 12,
+      "minute": 0,
+      "lat": 48.8566,
+      "lon": 2.3522
+    },
+    "confirmedParameters": [
+      "Paramètres envoyés: date 2026-11-12, heure 12:00, latitude 48.8566, longitude 2.3522",
+      "Documentation fournisseur: heure locale aux coordonnées, fuseau résolu par le fournisseur",
+      "Réponse identifiée avec positions, signes, longitudes et vitesses"
+    ],
+    "unconfirmedParameters": [
+      "Horodatage effectif absent de la réponse",
+      "Zodiaque tropical non déclaré explicitement dans la réponse",
+      "Référentiel géocentrique non déclaré explicitement dans la réponse",
+      "Aucune comparaison indépendante des positions"
+    ],
+    "responseConfirmedDateTime": null,
+    "validationNotes": "La documentation confirme que l’heure transmise à /natal est locale aux coordonnées et que le fournisseur résout le fuseau. La réponse fournit des positions exploitables, sans confirmer explicitement l’instant calculé ni les drapeaux tropical et géocentrique. Les aspects majeurs sont dérivés arithmétiquement des longitudes reçues; ce contrôle ne valide pas indépendamment l’éphéméride. Rédaction symbolique prudente, sans présenter de configuration précise comme vérifiée.",
+    "editorialMode": "symbolic",
+    "referenceVersion": "LMN24 technical V4.1",
+    "editorialVersion": "LMN24 V5 — Horoscope Premium",
+    "validationChecks": {
+      "providerResponseRetrieved": true,
+      "requiredBodiesPresent": true,
+      "longitudeRangesChecked": true,
+      "signIndexConsistencyChecked": true,
+      "retrogradeSpeedConsistencyChecked": true,
+      "aspectArithmeticChecked": true,
+      "independentEphemerisVerification": false
+    },
+    "interpretationRules": {
+      "zodiac": "Western tropical convention used only as a symbolic editorial framework; provider response flag unconfirmed",
+      "coordinatePreference": "Geocentric preferred; not explicitly confirmed by provider response",
+      "solarMethod": "Conditional whole-sign solar sectors derived from received sign indices, used only as symbolic prompts",
+      "traditionalRulers": {
+        "aries": "Mars",
+        "taurus": "Venus",
+        "gemini": "Mercury",
+        "cancer": "Moon",
+        "leo": "Sun",
+        "virgo": "Mercury",
+        "libra": "Venus",
+        "scorpio": "Mars",
+        "sagittarius": "Jupiter",
+        "capricorn": "Saturn",
+        "aquarius": "Saturn",
+        "pisces": "Jupiter"
+      },
+      "majorAspects": {
+        "conjunction": {
+          "angle": 0,
+          "orb": 8
+        },
+        "sextile": {
+          "angle": 60,
+          "orb": 4
+        },
+        "square": {
+          "angle": 90,
+          "orb": 6
+        },
+        "trine": {
+          "angle": 120,
+          "orb": 6
+        },
+        "opposition": {
+          "angle": 180,
+          "orb": 8
+        }
+      }
+    },
+    "editorialTones": {
+      "aries": "audacieuse et précise",
+      "taurus": "veloutée et lucide",
+      "gemini": "vive et secrète",
+      "cancer": "protectrice et lumineuse",
+      "leo": "fière et méthodique",
+      "virgo": "fine et déterminée",
+      "libra": "romantique et ambitieuse",
+      "scorpio": "intense et joueuse",
+      "sagittarius": "exploratrice et exigeante",
+      "capricorn": "sobre et magnétique",
+      "aquarius": "inventive et chaleureuse",
+      "pisces": "poétique et concrète"
+    },
+    "languageVariants": {
+      "en": "en-GB",
+      "pt": "pt-PT"
+    },
+    "historyNotes": "Quatorze journées précédentes, du 29 octobre au 11 novembre 2026, consultées dans les huit langues pour les thèmes, structures, ouvertures et chutes.",
+    "ephemerisPath": "data/astrology/ephemeris/astrology-2026-11-12.json",
+    "editorialReview": {
+      "reference": "LMN24 V5 — Horoscope Premium",
+      "frenchPassCompleted": true,
+      "internationalPassCompleted": true,
+      "assessment": "Appréciation éditoriale subjective; contrôles techniques séparés."
+    }
+  },
+  "horoscopes": [
+    {
+      "date": "2026-11-12",
+      "sign": "aries",
+      "language": "fr",
+      "general": "Dans ce clair-obscur, la journée possède une intensité feutrée : elle préfère les gestes décisifs aux déclarations tonitruantes; Ce qui commence près du cœur pourrait bientôt transformer bien davantage que votre seul décor; Un souvenir, une conversation familiale ou un détail domestique fait remonter une énergie que vous pensiez rangée; Loin de vous ralentir, ce retour aux sources aiguise votre désir d’initiative; Vous pourriez donner une forme concrète à une idée née dans l’intimité, sans chercher aussitôt l’approbation générale.",
+      "love": "Au premier regard, une confidence offerte sans mise en scène crée un rapprochement rare; Le désir apprécie cette intimité vivante, où chacun peut rester pleinement lui-même; La chaleur affective se mêle à une franchise presque désarmante.",
+      "work": "Sous une lumière neuve, présentée sans provocation inutile, elle peut débloquer une discussion tendue; Votre courage professionnel s’exprime mieux dans l’impact que dans le volume; Une idée préparée à l’écart gagne soudain en pertinence.",
+      "finance": "Plus tard, son intérêt dépend moins de son apparence que du confort durable qu’elle apporte; L’émotion peut inspirer le choix, sans en fixer seule le prix; Une amélioration du cadre de vie attire votre attention.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aries",
+      "language": "en",
+      "general": "In this half-light, the day has muted intensity: it favours decisive gestures over thunderous declarations. At first glance, what begins close to the heart could soon transform much more than your surroundings. Under a fresher light, a memory, family conversation or domestic detail brings back energy you thought had been put away. Later on, far from slowing you down, this return to your roots sharpens your desire to initiate. In this half-light, you may give concrete form to an idea born in private without immediately seeking general approval.",
+      "love": "At first glance, a confidence offered without staging creates rare closeness. Under a fresher light, desire appreciates this living intimacy, where both people can remain entirely themselves. Later on, emotional warmth mingles with almost disarming candour.",
+      "work": "Under a fresher light, presented without needless provocation, it may unlock a tense discussion. Later on, your professional courage is better expressed through impact than volume. In this half-light, an idea prepared away from view suddenly gains relevance.",
+      "finance": "Later on, its merit depends less on appearance than on lasting comfort. In this half-light, emotion may inspire the choice without setting the price on its own. At first glance, an improvement to your living space attracts attention.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aries",
+      "language": "de",
+      "general": "In diesem Halbdunkel der Tag besitzt gedämpfte Intensität und bevorzugt entschlossene Gesten vor lauten Erklärungen. Auf den ersten Blick was nahe am Herzen beginnt, könnte bald weit mehr als nur Ihre Umgebung verwandeln. Unter einem neuen Licht eine Erinnerung, ein Familiengespräch oder ein Detail zu Hause bringt Energie zurück, die Sie verstaut glaubten. Später statt zu bremsen, schärft diese Rückkehr zu den Wurzeln Ihre Initiative. In diesem Halbdunkel eine im Privaten geborene Idee kann konkrete Form annehmen, ohne sofort allgemeine Zustimmung zu suchen.",
+      "love": "Auf den ersten Blick ein Vertrauen ohne Inszenierung schafft seltene Nähe. Unter einem neuen Licht das Begehren liebt diese lebendige Intimität, in der beide ganz sie selbst bleiben können. Später emotionale Wärme verbindet sich mit beinahe entwaffnender Offenheit.",
+      "work": "Unter einem neuen Licht ohne unnötige Provokation präsentiert, kann sie ein angespanntes Gespräch lösen. Später beruflicher Mut zeigt sich besser durch Wirkung als durch Lautstärke. In diesem Halbdunkel eine abseits vorbereitete Idee gewinnt plötzlich Bedeutung.",
+      "finance": "Später ihr Wert liegt weniger im Aussehen als im dauerhaften Komfort. In diesem Halbdunkel gefühl darf die Wahl inspirieren, ohne allein den Preis festzulegen. Auf den ersten Blick eine Verbesserung des Wohnumfelds zieht Ihre Aufmerksamkeit an.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aries",
+      "language": "es",
+      "general": "En este claroscuro, la jornada posee una intensidad velada: prefiere gestos decisivos a declaraciones estruendosas. A primera vista, lo que empieza cerca del corazón pronto podría transformar mucho más que tu entorno. Bajo una luz nueva, un recuerdo, una conversación familiar o un detalle doméstico devuelve una energía que creías guardada. Más tarde, lejos de frenarte, este regreso a las raíces agudiza tus ganas de iniciativa. En este claroscuro, podrías dar forma concreta a una idea nacida en la intimidad sin buscar enseguida aprobación general.",
+      "love": "A primera vista, una confidencia sin escenificación crea una cercanía rara. Bajo una luz nueva, el deseo aprecia esta intimidad viva, donde cada persona puede seguir siendo plenamente ella misma. Más tarde, la calidez afectiva se mezcla con una franqueza casi desarmante.",
+      "work": "Bajo una luz nueva, presentada sin provocación inútil, puede desbloquear una conversación tensa. Más tarde, tu valor profesional se expresa mejor en el impacto que en el volumen. En este claroscuro, una idea preparada lejos de las miradas cobra de pronto pertinencia.",
+      "finance": "Más tarde, su interés depende menos de la apariencia que del confort duradero que aporta. En este claroscuro, la emoción puede inspirar la elección, sin fijar ella sola el precio. A primera vista, una mejora del hogar atrae tu atención.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aries",
+      "language": "it",
+      "general": "In questo chiaroscuro, la giornata possiede un’intensità soffusa: preferisce gesti decisi a dichiarazioni fragorose. A prima vista, ciò che comincia vicino al cuore potrebbe presto trasformare molto più del vostro semplice ambiente. Sotto una luce nuova, un ricordo, una conversazione familiare o un dettaglio domestico riporta un’energia che credevate riposta. Più tardi, lontano dal rallentarvi, questo ritorno alle radici affila il desiderio d’iniziativa. In questo chiaroscuro, potreste dare forma concreta a un’idea nata nell’intimità senza cercare subito l’approvazione generale.",
+      "love": "A prima vista, una confidenza offerta senza messinscena crea una vicinanza rara. Sotto una luce nuova, il desiderio ama questa intimità viva, dove ciascuno resta pienamente se stesso. Più tardi, il calore affettivo si mescola a una franchezza quasi disarmante.",
+      "work": "Sotto una luce nuova, presentata senza provocazioni inutili, può sbloccare una discussione tesa. Più tardi, il vostro coraggio professionale si esprime meglio nell’impatto che nel volume. In questo chiaroscuro, un’idea preparata lontano dagli sguardi acquista improvvisa pertinenza.",
+      "finance": "Più tardi, il valore dipende meno dall’aspetto che dal comfort duraturo. In questo chiaroscuro, l’emozione può ispirare la scelta senza determinarne da sola il prezzo. A prima vista, un miglioramento della casa attira l’attenzione.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aries",
+      "language": "pt",
+      "general": "Neste claro-escuro, o dia possui intensidade discreta: prefere gestos decisivos a declarações estrondosas. À primeira vista, aquilo que começa perto do coração poderá em breve transformar muito mais do que o seu ambiente. Sob uma luz nova, uma memória, conversa familiar ou detalhe doméstico devolve uma energia que julgava arrumada. Mais tarde, longe de o travar, este regresso às raízes aguça o desejo de iniciativa. Neste claro-escuro, poderá dar forma concreta a uma ideia nascida na intimidade sem procurar logo aprovação geral.",
+      "love": "À primeira vista, uma confidência oferecida sem encenação cria rara proximidade. Sob uma luz nova, o desejo aprecia esta intimidade viva, onde cada pessoa permanece plenamente ela própria. Mais tarde, o calor afetivo mistura-se com uma franqueza quase desarmante.",
+      "work": "Sob uma luz nova, apresentada sem provocação desnecessária, pode desbloquear uma conversa tensa. Mais tarde, a coragem profissional expressa-se melhor no impacto do que no volume. Neste claro-escuro, uma ideia preparada longe dos olhares ganha subitamente pertinência.",
+      "finance": "Mais tarde, o interesse depende menos da aparência do que do conforto duradouro. Neste claro-escuro, a emoção pode inspirar a escolha, sem determinar sozinha o preço. À primeira vista, uma melhoria da casa chama a atenção.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aries",
+      "language": "ru",
+      "general": "В этом полусвете день обладает приглушённой интенсивностью и предпочитает решительные жесты громким заявлениям. На первый взгляд то, что начинается рядом с сердцем, вскоре способно преобразить гораздо больше, чем одно окружение. В новом свете воспоминание, семейная беседа или домашняя деталь возвращает энергию, которую вы считали убранной. Позже возвращение к истокам не тормозит, а усиливает желание действовать. В этом полусвете идея, родившаяся в личном пространстве, может получить конкретную форму без немедленного поиска общего одобрения.",
+      "love": "На первый взгляд доверие без постановки создаёт редкую близость. В новом свете желанию нравится эта живая интимность, где каждый может полностью оставаться собой. Позже душевное тепло соединяется с почти обезоруживающей прямотой.",
+      "work": "В новом свете поданная без лишней провокации, она может разблокировать напряжённую беседу. Позже профессиональная смелость лучше выражается воздействием, чем громкостью. В этом полусвете идея, подготовленная вдали от взглядов, внезапно становится актуальной.",
+      "finance": "Позже ценность зависит не столько от внешности, сколько от долговременного удобства. В этом полусвете чувство может вдохновить выбор, но не должно единолично назначать цену. На первый взгляд улучшение домашней обстановки привлекает внимание.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aries",
+      "language": "nl",
+      "general": "In dit halflicht de dag bezit gedempte intensiteit en verkiest beslissende gebaren boven luidruchtige verklaringen. Op het eerste gezicht wat dicht bij het hart begint, kan binnenkort veel meer dan alleen uw omgeving veranderen. Onder een nieuw licht een herinnering, familiegesprek of huiselijk detail brengt energie terug die u opgeborgen waande. Later deze terugkeer naar de bron vertraagt u niet, maar scherpt uw initiatief. In dit halflicht u kunt een privé geboren idee concrete vorm geven zonder meteen algemene goedkeuring te zoeken.",
+      "love": "Op het eerste gezicht vertrouwen zonder voorstelling schept zeldzame nabijheid. Onder een nieuw licht verlangen geniet van deze levende intimiteit waarin ieder volledig zichzelf kan blijven. Later emotionele warmte vermengt zich met bijna ontwapenende openheid.",
+      "work": "Onder een nieuw licht zonder onnodige provocatie gebracht, kan het een gespannen gesprek losmaken. Later uw professionele moed spreekt sterker door impact dan door volume. In dit halflicht een buiten beeld voorbereid idee wordt plots relevant.",
+      "finance": "Later de waarde ligt minder in uiterlijk dan in duurzaam comfort. In dit halflicht emotie mag de keuze inspireren zonder alleen de prijs te bepalen. Op het eerste gezicht een verbetering van de woonomgeving trekt aandacht.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "taurus",
+      "language": "fr",
+      "general": "Au premier regard, la curiosité s’invite dans vos habitudes sans les bousculer brutalement; À la fin, le chemin familier semble différent simplement parce que vous l’avez regardé autrement; Le rythme s’accélère autour d’un échange, d’un déplacement ou d’une nouvelle qui change subtilement votre perspective; Vous n’avez aucune envie de courir après chaque information, et c’est précisément ce qui vous rend lucide; Un mot choisi avec soin peut apaiser une tension ancienne ou redonner du relief à une relation quotidienne.",
+      "love": "Sous une lumière neuve, vous appréciez ce mélange de simplicité et de loyauté; Le lien se resserre autour d’un détail concret, plus éloquent qu’une promesse spectaculaire; Une conversation légère touche progressivement quelque chose de profond.",
+      "work": "Plus tard, une information bien vérifiée vous donne un avantage discret; Les échanges sont rapides, parfois nerveux, mais votre sens du réel remet le débat sur de bons rails sans étouffer l’idée nouvelle.",
+      "finance": "Dans ce clair-obscur, petits déplacements, cadeaux ou achats du quotidien peuvent s’additionner sans bruit; Le plaisir reste bien présent lorsque chaque dépense garde une raison vraiment claire, au lieu de disparaître dans l’automatisme.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "taurus",
+      "language": "en",
+      "general": "At first glance, curiosity enters your habits without violently disturbing them. Under a fresher light, in the end, a familiar road looks different simply because you have viewed it another way. Later on, the pace quickens around an exchange, journey or news that subtly changes your perspective. In this half-light, you have no desire to chase every piece of information, and that is precisely what makes you lucid. At first glance, a carefully chosen word may ease an old tension or restore colour to an everyday relationship.",
+      "love": "Under a fresher light, you appreciate this blend of simplicity and loyalty. Later on, the bond tightens around a practical detail, more eloquent than any spectacular promise. In this half-light, a light conversation gradually touches something deep.",
+      "work": "Later on, well-checked information gives you a quiet advantage. In this half-light, exchanges are swift, occasionally nervous, but your realism returns the debate to firm ground without suffocating the new idea.",
+      "finance": "In this half-light, small journeys, gifts or everyday purchases can accumulate quietly. At first glance, pleasure remains present when each expense has a clear reason instead of disappearing into automatic habits.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "taurus",
+      "language": "de",
+      "general": "Auf den ersten Blick neugier zieht in Ihre Gewohnheiten ein, ohne sie gewaltsam zu erschüttern. Unter einem neuen Licht am Ende wirkt ein vertrauter Weg anders, weil Sie ihn aus einer neuen Richtung betrachtet haben. Später das Tempo steigt durch einen Austausch, einen Weg oder eine Nachricht, die Ihre Perspektive subtil verändert. In diesem Halbdunkel sie wollen nicht jeder Information hinterherlaufen, und gerade das macht Sie klar. Auf den ersten Blick ein sorgfältig gewähltes Wort kann alte Spannung lindern oder einer Alltagsbeziehung neue Farbe geben.",
+      "love": "Unter einem neuen Licht diese Mischung aus Einfachheit und Treue gefällt Ihnen. Später die Verbindung wächst um ein konkretes Detail, das mehr sagt als jedes spektakuläre Versprechen. In diesem Halbdunkel ein leichtes Gespräch berührt allmählich etwas Tiefes.",
+      "work": "Später gut geprüfte Information gibt Ihnen einen stillen Vorteil. In diesem Halbdunkel gespräche sind schnell und manchmal nervös, doch Ihr Realitätssinn bringt die Debatte auf Kurs, ohne die neue Idee zu ersticken.",
+      "finance": "In diesem Halbdunkel kleine Wege, Geschenke oder Alltagskäufe summieren sich unbemerkt. Auf den ersten Blick freude bleibt, wenn jede Ausgabe einen klaren Grund behält, statt in automatischen Gewohnheiten zu verschwinden.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "taurus",
+      "language": "es",
+      "general": "A primera vista, la curiosidad entra en tus hábitos sin sacudirlos violentamente. Bajo una luz nueva, al final, el camino conocido parece distinto porque lo has mirado de otra manera. Más tarde, el ritmo se acelera en torno a un intercambio, un desplazamiento o una noticia que cambia sutilmente tu perspectiva. En este claroscuro, no quieres perseguir cada información, y eso es precisamente lo que te vuelve lúcido. A primera vista, una palabra escogida con cuidado puede aliviar una tensión antigua o devolver color a una relación cotidiana.",
+      "love": "Bajo una luz nueva, aprecias esta mezcla de sencillez y lealtad. Más tarde, el vínculo se estrecha alrededor de un detalle concreto, más elocuente que una promesa espectacular. En este claroscuro, una conversación ligera toca gradualmente algo profundo.",
+      "work": "Más tarde, una información bien verificada te da ventaja discreta. En este claroscuro, los intercambios son rápidos, a veces nerviosos, pero tu sentido de la realidad devuelve el debate a buen rumbo sin asfixiar la idea nueva.",
+      "finance": "En este claroscuro, pequeños trayectos, regalos o compras cotidianas pueden sumarse sin ruido. A primera vista, el placer permanece cuando cada gasto conserva una razón clara, en lugar de desaparecer en el automatismo.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "taurus",
+      "language": "it",
+      "general": "A prima vista, la curiosità entra nelle abitudini senza sconvolgerle. Sotto una luce nuova, alla fine, una strada familiare appare diversa semplicemente perché l’avete guardata da un altro lato. Più tardi, il ritmo accelera intorno a uno scambio, uno spostamento o una notizia che cambia sottilmente la prospettiva. In questo chiaroscuro, non volete inseguire ogni informazione, ed è proprio questo a rendervi lucidi. A prima vista, una parola scelta con cura può placare una vecchia tensione o ridare colore a una relazione quotidiana.",
+      "love": "Sotto una luce nuova, apprezzate questa unione di semplicità e lealtà. Più tardi, il legame si stringe intorno a un dettaglio concreto, più eloquente di una promessa spettacolare. In questo chiaroscuro, una conversazione leggera tocca gradualmente qualcosa di profondo.",
+      "work": "Più tardi, un’informazione ben verificata vi dà un vantaggio discreto. In questo chiaroscuro, gli scambi sono rapidi, talvolta nervosi, ma il vostro realismo rimette il dibattito sui binari senza soffocare l’idea nuova.",
+      "finance": "In questo chiaroscuro, piccoli spostamenti, regali o acquisti quotidiani possono sommarsi in silenzio. A prima vista, il piacere resta quando ogni spesa mantiene una ragione chiara invece di sparire nell’automatismo.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "taurus",
+      "language": "pt",
+      "general": "À primeira vista, a curiosidade entra nos hábitos sem os abalar brutalmente. Sob uma luz nova, no fim, um caminho familiar parece diferente apenas porque o observou de outro modo. Mais tarde, o ritmo acelera em torno de uma conversa, deslocação ou notícia que altera subtilmente a perspetiva. Neste claro-escuro, não quer correr atrás de cada informação, e é precisamente isso que o torna lúcido. À primeira vista, uma palavra escolhida com cuidado pode aliviar tensão antiga ou devolver cor a uma relação quotidiana.",
+      "love": "Sob uma luz nova, aprecia esta mistura de simplicidade e lealdade. Mais tarde, o vínculo aperta-se em torno de um detalhe concreto, mais eloquente do que qualquer promessa espetacular. Neste claro-escuro, uma conversa leve toca gradualmente algo profundo.",
+      "work": "Mais tarde, informação bem confirmada dá-lhe uma vantagem discreta. Neste claro-escuro, as trocas são rápidas, por vezes nervosas, mas o seu realismo devolve o debate ao rumo certo sem sufocar a ideia nova.",
+      "finance": "Neste claro-escuro, pequenas deslocações, presentes ou compras quotidianas podem somar-se sem ruído. À primeira vista, o prazer permanece quando cada despesa conserva uma razão clara, em vez de desaparecer no automatismo.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "taurus",
+      "language": "ru",
+      "general": "На первый взгляд любопытство входит в привычки, не разрушая их. В новом свете в итоге знакомая дорога кажется иной лишь потому, что вы посмотрели на неё с другой стороны. Позже темп ускоряется вокруг разговора, поездки или новости, незаметно меняющей вашу перспективу. В этом полусвете вам не хочется гоняться за каждым сообщением, и именно это дарит ясность. На первый взгляд тщательно выбранное слово способно смягчить старое напряжение или вернуть краски повседневной связи.",
+      "love": "В новом свете вам нравится сочетание простоты и верности. Позже связь крепнет вокруг конкретной детали, более красноречивой, чем любое эффектное обещание. В этом полусвете лёгкий разговор постепенно касается чего-то глубокого.",
+      "work": "Позже хорошо проверенная информация даёт тихое преимущество. В этом полусвете разговоры быстры и временами нервны, но ваш реализм возвращает спор на верный путь, не душа новую идею.",
+      "finance": "В этом полусвете небольшие поездки, подарки или повседневные покупки незаметно складываются. На первый взгляд удовольствие сохраняется, когда у каждой траты есть ясная причина и она не исчезает в автоматической привычке.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "taurus",
+      "language": "nl",
+      "general": "Op het eerste gezicht nieuwsgierigheid trekt uw gewoonten binnen zonder ze hard te verstoren. Onder een nieuw licht uiteindelijk lijkt een vertrouwde weg anders, simpelweg omdat u hem vanuit een nieuwe hoek hebt bekeken. Later het tempo stijgt rond een gesprek, verplaatsing of bericht dat uw blik subtiel verandert. In dit halflicht u wilt niet achter elk nieuwtje aan, en juist daardoor blijft u helder. Op het eerste gezicht een zorgvuldig gekozen woord kan oude spanning verzachten of een dagelijkse relatie opnieuw kleur geven.",
+      "love": "Onder een nieuw licht deze combinatie van eenvoud en trouw bevalt u. Later de band groeit rond een concreet detail dat meer zegt dan een spectaculaire belofte. In dit halflicht een luchtig gesprek raakt geleidelijk iets dieps.",
+      "work": "Later goed gecontroleerde informatie geeft u stil voordeel. In dit halflicht gesprekken gaan snel en soms nerveus, maar uw realiteitszin brengt het debat op koers zonder het nieuwe idee te verstikken.",
+      "finance": "In dit halflicht kleine ritten, geschenken of dagelijkse aankopen kunnen ongemerkt optellen. Op het eerste gezicht plezier blijft wanneer elke uitgave een duidelijke reden heeft en niet in automatisme verdwijnt.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "gemini",
+      "language": "fr",
+      "general": "Sous une lumière neuve, une conversation intense peut clarifier ce qui mérite un engagement plus solide; Le jour vous offre un luxe rare : sentir qu’une décision pratique possède aussi une beauté, presque comme si la liberté avait enfin trouvé son prix juste; Une question de valeur devient soudain très stimulante; Il ne s’agit pas seulement d’argent, mais de temps, d’attention et de talent : où souhaitez-vous vraiment les placer ; Votre esprit, habituellement prompt à changer de piste, trouve une satisfaction inattendue dans la continuité.",
+      "love": "Plus tard, une complicité peut gagner en densité sans perdre son humour; L’attirance devient plus tangible, moins suspendue aux suppositions; Les mots séduisent, mais c’est la constance d’un geste qui vous touche le plus.",
+      "work": "Dans ce clair-obscur, un débat vif demande de choisir un axe plutôt que d’en ouvrir cinq; Cette concentration pourrait donner à votre travail une signature nouvelle; Votre polyvalence rencontre une occasion de prouver sa valeur concrète.",
+      "finance": "Au premier regard, le budget devient un miroir de vos priorités, pas une simple liste de montants; Une dépense utile mérite sa place si elle libère du temps, soutient un talent ou simplifie réellement vos choix.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "gemini",
+      "language": "en",
+      "general": "Under a fresher light, an intense conversation can clarify what deserves firmer commitment. Later on, the day offers a rare luxury: sensing that a practical decision also possesses beauty, almost as though freedom had finally found its fair price. In this half-light, a question of value suddenly becomes highly stimulating. At first glance, this is not merely about money, but time, attention and talent: where do you truly want to place them? Under a fresher light, your mind, usually quick to switch tracks, finds unexpected satisfaction in continuity.",
+      "love": "Later on, a rapport may gain depth without losing humour. In this half-light, attraction becomes more tangible and less suspended in assumptions. At first glance, words seduce, yet the steadiness of a gesture touches you most.",
+      "work": "In this half-light, a lively debate asks you to choose one direction rather than open five. At first glance, such focus could give your work a new signature. Under a fresher light, your versatility meets a chance to prove its practical value.",
+      "finance": "At first glance, the budget becomes a mirror of priorities, not merely a list of figures. Under a fresher light, a useful expense deserves its place if it frees time, supports talent or genuinely simplifies your choices.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "gemini",
+      "language": "de",
+      "general": "Unter einem neuen Licht ein intensives Gespräch klärt, was festere Bindung verdient. Später der Tag schenkt seltenen Luxus: Eine praktische Entscheidung kann auch Schönheit besitzen, beinahe als hätte Freiheit endlich ihren fairen Preis gefunden. In diesem Halbdunkel eine Wertfrage wird plötzlich höchst anregend. Auf den ersten Blick es geht nicht nur um Geld, sondern um Zeit, Aufmerksamkeit und Talent: Wo wollen Sie sie wirklich einsetzen? Unter einem neuen Licht ihr Geist wechselt gern die Spur, findet diesmal jedoch unerwartete Befriedigung in Kontinuität.",
+      "love": "Später vertrautheit kann Tiefe gewinnen, ohne Humor zu verlieren. In diesem Halbdunkel anziehung wird greifbarer und hängt weniger an Vermutungen. Auf den ersten Blick worte verführen, doch die Beständigkeit einer Geste berührt Sie am meisten.",
+      "work": "In diesem Halbdunkel eine lebhafte Debatte verlangt eine Richtung statt fünf neuer Wege. Auf den ersten Blick diese Konzentration könnte Ihrer Arbeit eine neue Handschrift verleihen. Unter einem neuen Licht ihre Vielseitigkeit kann ihren konkreten Wert beweisen.",
+      "finance": "Auf den ersten Blick das Budget wird zum Spiegel Ihrer Prioritäten statt zur Zahlenliste. Unter einem neuen Licht eine nützliche Ausgabe verdient Raum, wenn sie Zeit befreit, Talent fördert oder Entscheidungen wirklich vereinfacht.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "gemini",
+      "language": "es",
+      "general": "Bajo una luz nueva, una conversación intensa puede aclarar qué merece compromiso firme. Más tarde, el día ofrece un lujo raro: sentir que una decisión práctica posee también belleza, como si la libertad hubiera encontrado por fin su precio justo. En este claroscuro, una cuestión de valor se vuelve de pronto muy estimulante. A primera vista, no se trata solo de dinero, sino de tiempo, atención y talento: ¿dónde quieres colocarlos de verdad? Bajo una luz nueva, tu mente, normalmente rápida para cambiar de pista, encuentra satisfacción inesperada en la continuidad.",
+      "love": "Más tarde, una complicidad puede ganar densidad sin perder humor. En este claroscuro, la atracción se vuelve más tangible, menos suspendida en suposiciones. A primera vista, las palabras seducen, pero la constancia de un gesto es lo que más te toca.",
+      "work": "En este claroscuro, un debate vivo exige elegir un eje en vez de abrir cinco. A primera vista, esta concentración podría dar a tu trabajo una firma nueva. Bajo una luz nueva, tu versatilidad encuentra ocasión de probar su valor concreto.",
+      "finance": "A primera vista, el presupuesto se vuelve espejo de prioridades, no simple lista de cantidades. Bajo una luz nueva, un gasto útil merece sitio si libera tiempo, sostiene un talento o simplifica realmente tus elecciones.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "gemini",
+      "language": "it",
+      "general": "Sotto una luce nuova, una conversazione intensa può chiarire ciò che merita un impegno più solido. Più tardi, il giorno offre un lusso raro: sentire che una decisione pratica possiede anche bellezza, come se la libertà avesse finalmente trovato il suo giusto prezzo. In questo chiaroscuro, una questione di valore diventa improvvisamente molto stimolante. A prima vista, non riguarda solo denaro, ma tempo, attenzione e talento: dove volete davvero collocarli? Sotto una luce nuova, la mente, pronta a cambiare pista, trova inattesa soddisfazione nella continuità.",
+      "love": "Più tardi, una complicità guadagna profondità senza perdere umorismo. In questo chiaroscuro, l’attrazione diventa più tangibile, meno sospesa alle supposizioni. A prima vista, le parole seducono, ma è la costanza di un gesto a toccarvi maggiormente.",
+      "work": "In questo chiaroscuro, un dibattito vivace chiede di scegliere un asse invece di aprirne cinque. A prima vista, questa concentrazione potrebbe dare al lavoro una firma nuova. Sotto una luce nuova, la vostra versatilità trova occasione di dimostrare valore concreto.",
+      "finance": "A prima vista, il budget diventa specchio delle priorità, non semplice elenco di cifre. Sotto una luce nuova, una spesa utile merita spazio se libera tempo, sostiene un talento o semplifica davvero le vostre scelte.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "gemini",
+      "language": "pt",
+      "general": "Sob uma luz nova, uma conversa intensa esclarece aquilo que merece compromisso mais firme. Mais tarde, o dia oferece um luxo raro: sentir que uma decisão prática também possui beleza, como se a liberdade tivesse finalmente encontrado o seu preço justo. Neste claro-escuro, uma questão de valor torna-se subitamente estimulante. À primeira vista, não se trata apenas de dinheiro, mas de tempo, atenção e talento: onde deseja realmente colocá-los? Sob uma luz nova, a mente, pronta a mudar de pista, encontra satisfação inesperada na continuidade.",
+      "love": "Mais tarde, uma cumplicidade ganha profundidade sem perder humor. Neste claro-escuro, a atração torna-se mais tangível, menos suspensa em suposições. À primeira vista, as palavras seduzem, mas é a constância de um gesto que mais o toca.",
+      "work": "Neste claro-escuro, um debate vivo exige escolher um eixo em vez de abrir cinco. À primeira vista, esta concentração poderá dar ao trabalho uma nova assinatura. Sob uma luz nova, a sua versatilidade encontra oportunidade de provar valor concreto.",
+      "finance": "À primeira vista, o orçamento torna-se espelho das prioridades, não uma simples lista de valores. Sob uma luz nova, uma despesa útil merece espaço se libertar tempo, apoiar talento ou simplificar verdadeiramente as escolhas.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "gemini",
+      "language": "ru",
+      "general": "В новом свете интенсивная беседа проясняет, что заслуживает твёрдого участия. Позже день дарит редкую роскошь: почувствовать красоту практического решения, словно свобода наконец обрела справедливую цену. В этом полусвете вопрос ценности внезапно становится очень увлекательным. На первый взгляд речь не только о деньгах, но о времени, внимании и таланте: куда вы действительно хотите их направить? В новом свете ваш ум быстро меняет путь, однако теперь находит неожиданное удовлетворение в постоянстве.",
+      "love": "Позже близость способна стать глубже, не теряя юмора. В этом полусвете притяжение становится осязаемее и меньше зависит от предположений. На первый взгляд слова соблазняют, но сильнее всего вас трогает устойчивость жеста.",
+      "work": "В этом полусвете живая дискуссия просит выбрать одно направление вместо пяти. На первый взгляд такая сосредоточенность может подарить работе новый почерк. В новом свете ваша универсальность получает шанс доказать практическую ценность.",
+      "finance": "На первый взгляд бюджет становится зеркалом приоритетов, а не перечнем сумм. В новом свете полезная трата заслуживает места, если освобождает время, поддерживает талант или действительно упрощает выбор.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "gemini",
+      "language": "nl",
+      "general": "Onder een nieuw licht een intens gesprek maakt duidelijk wat steviger engagement verdient. Later de dag biedt een zeldzame luxe: voelen dat een praktische beslissing ook schoonheid bezit, alsof vrijheid eindelijk haar eerlijke prijs heeft gevonden. In dit halflicht een waardevraag wordt plots bijzonder prikkelend. Op het eerste gezicht het gaat niet alleen om geld, maar ook om tijd, aandacht en talent: waar wilt u die werkelijk inzetten? Onder een nieuw licht uw geest wisselt graag van spoor, maar vindt nu onverwachte voldoening in continuïteit.",
+      "love": "Later een verstandhouding kan dieper worden zonder humor te verliezen. In dit halflicht aantrekkingskracht wordt tastbaarder en rust minder op aannames. Op het eerste gezicht woorden verleiden, maar de standvastigheid van een gebaar raakt u het meest.",
+      "work": "In dit halflicht een levendig debat vraagt één richting in plaats van vijf nieuwe. Op het eerste gezicht deze concentratie kan uw werk een nieuw handschrift geven. Onder een nieuw licht uw veelzijdigheid krijgt gelegenheid haar praktische waarde te bewijzen.",
+      "finance": "Op het eerste gezicht het budget wordt een spiegel van prioriteiten, geen lijst met bedragen. Onder een nieuw licht een nuttige uitgave verdient ruimte wanneer ze tijd vrijmaakt, talent ondersteunt of keuzes werkelijk vereenvoudigt.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "cancer",
+      "language": "fr",
+      "general": "Plus tard, la journée valorise cette pluralité; En cessant de justifier chaque nuance, vous découvrez une forme d’assurance naturelle : celle qui n’a plus besoin de choisir entre protection et élan; Votre présence gagne en intensité, comme si les contours devenaient plus nets sans que la douceur disparaisse; Une humeur changeante peut surprendre l’entourage, mais elle révèle surtout un désir de ne plus vous réduire à un seul rôle; Vous avez le droit d’être tendre et déterminé, rêveur puis très concret.",
+      "love": "Dans ce clair-obscur, une émotion assumée peut rendre le lien plus proche et plus léger à la fois; La tendresse retrouve un délicieux relief; Le magnétisme vient de votre sincérité, non d’un jeu savamment calculé.",
+      "work": "Au premier regard, votre sens de l’atmosphère aide à désamorcer une tension sans renoncer au fond; On pourrait reconnaître votre capacité à faire avancer un groupe tout en préservant les personnes qui le composent.",
+      "finance": "Sous une lumière neuve, le budget peut l’accueillir, surtout si elle vous ressemble vraiment; L’essentiel reste de ne pas confondre récompense et compensation; Une envie personnelle réclame enfin une place distincte des besoins collectifs.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "cancer",
+      "language": "en",
+      "general": "Later on, the day values this plurality. In this half-light, by ceasing to justify every nuance, you discover a natural confidence: one that no longer needs to choose between protection and momentum. At first glance, your presence gains intensity, as though its outlines were sharper without losing softness. Under a fresher light, a shifting mood may surprise others, yet it mainly reveals a wish not to be reduced to a single role. Later on, you may be tender and determined, dreamy and then very practical.",
+      "love": "In this half-light, an acknowledged feeling may make the bond both closer and lighter. At first glance, tenderness recovers a delicious edge. Under a fresher light, magnetism comes from sincerity, not a carefully calculated game.",
+      "work": "At first glance, your sense of atmosphere helps defuse tension without abandoning substance. Under a fresher light, your ability to move a group forward while protecting the people within it may receive welcome recognition.",
+      "finance": "Under a fresher light, the budget can welcome it, especially if it truly resembles you. Later on, just avoid mistaking a reward for compensation. In this half-light, a personal wish finally asks for space apart from collective needs.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "cancer",
+      "language": "de",
+      "general": "Später der Tag würdigt diese Vielfalt. In diesem Halbdunkel wenn Sie nicht mehr jede Nuance rechtfertigen, entsteht natürliche Sicherheit, die nicht länger zwischen Schutz und Schwung wählen muss. Auf den ersten Blick ihre Präsenz gewinnt Intensität, als würden Konturen schärfer, ohne Sanftheit zu verlieren. Unter einem neuen Licht wechselnde Stimmung überrascht vielleicht andere, zeigt aber vor allem den Wunsch, nicht auf eine Rolle reduziert zu werden. Später sie dürfen zärtlich und bestimmt, verträumt und dann sehr praktisch sein.",
+      "love": "In diesem Halbdunkel ein angenommenes Gefühl kann die Verbindung zugleich näher und leichter machen. Auf den ersten Blick zärtlichkeit erhält einen köstlichen neuen Reiz. Unter einem neuen Licht magnetismus entsteht aus Aufrichtigkeit, nicht aus berechnetem Spiel.",
+      "work": "Auf den ersten Blick ihr Gespür für Atmosphäre hilft, Spannung zu lösen, ohne den Inhalt aufzugeben. Unter einem neuen Licht ihre Fähigkeit, eine Gruppe voranzubringen und zugleich die Menschen zu schützen, könnte Anerkennung finden.",
+      "finance": "Unter einem neuen Licht das Budget kann ihn aufnehmen, besonders wenn er wirklich zu Ihnen passt. Später verwechseln Sie Belohnung nur nicht mit Ausgleich. In diesem Halbdunkel ein persönlicher Wunsch fordert endlich Raum neben gemeinsamen Bedürfnissen.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "cancer",
+      "language": "es",
+      "general": "Más tarde, el día valora esa pluralidad. En este claroscuro, al dejar de justificar cada matiz, descubres una confianza natural: la que ya no necesita elegir entre protección e impulso. A primera vista, tu presencia gana intensidad, como si los contornos fueran más nítidos sin perder suavidad. Bajo una luz nueva, un humor cambiante puede sorprender al entorno, pero revela sobre todo ganas de no quedar reducido a un único papel. Más tarde, puedes ser tierno y determinado, soñador y después muy práctico.",
+      "love": "En este claroscuro, una emoción asumida puede volver el vínculo más cercano y ligero a la vez. A primera vista, la ternura recupera un delicioso relieve. Bajo una luz nueva, el magnetismo nace de tu sinceridad, no de un juego calculado.",
+      "work": "A primera vista, tu sentido del ambiente ayuda a desactivar una tensión sin renunciar al fondo. Bajo una luz nueva, podrían reconocer tu capacidad para hacer avanzar al grupo mientras cuidas a quienes lo componen.",
+      "finance": "Bajo una luz nueva, el presupuesto puede acogerlo, sobre todo si realmente se parece a ti. Más tarde, no confundas recompensa y compensación. En este claroscuro, un deseo personal reclama por fin un lugar distinto de las necesidades colectivas.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "cancer",
+      "language": "it",
+      "general": "Più tardi, la giornata valorizza questa pluralità. In questo chiaroscuro, smettendo di giustificare ogni sfumatura, scoprite una sicurezza naturale che non deve più scegliere tra protezione e slancio. A prima vista, la vostra presenza acquista intensità, come se i contorni diventassero più netti senza perdere dolcezza. Sotto una luce nuova, un umore mutevole può sorprendere gli altri, ma rivela soprattutto il desiderio di non essere ridotti a un solo ruolo. Più tardi, potete essere teneri e determinati, sognatori e poi molto concreti.",
+      "love": "In questo chiaroscuro, un’emozione accolta può rendere il legame più vicino e leggero insieme. A prima vista, la tenerezza ritrova un delizioso rilievo. Sotto una luce nuova, il magnetismo nasce dalla sincerità, non da un gioco calcolato.",
+      "work": "A prima vista, il vostro senso dell’atmosfera aiuta a disinnescare la tensione senza rinunciare alla sostanza. Sotto una luce nuova, potrebbe essere riconosciuta la capacità di far avanzare il gruppo proteggendo chi lo compone.",
+      "finance": "Sotto una luce nuova, il budget può accoglierlo, soprattutto se vi somiglia davvero. Più tardi, l’essenziale è non confondere ricompensa e compensazione. In questo chiaroscuro, un desiderio personale reclama finalmente spazio distinto dai bisogni collettivi.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "cancer",
+      "language": "pt",
+      "general": "Mais tarde, o dia valoriza essa pluralidade. Neste claro-escuro, ao deixar de justificar cada nuance, descobre uma confiança natural que já não precisa de escolher entre proteção e impulso. À primeira vista, a sua presença ganha intensidade, como se os contornos ficassem mais nítidos sem perder doçura. Sob uma luz nova, um humor variável pode surpreender os outros, mas revela sobretudo vontade de não se reduzir a um papel. Mais tarde, pode ser terno e determinado, sonhador e depois muito concreto.",
+      "love": "Neste claro-escuro, uma emoção assumida pode tornar o vínculo mais próximo e mais leve ao mesmo tempo. À primeira vista, a ternura recupera um delicioso relevo. Sob uma luz nova, o magnetismo vem da sinceridade, não de um jogo calculado.",
+      "work": "À primeira vista, o seu sentido do ambiente ajuda a desarmar tensão sem abandonar a essência. Sob uma luz nova, poderão reconhecer a sua capacidade de fazer o grupo avançar enquanto protege as pessoas que o compõem.",
+      "finance": "Sob uma luz nova, o orçamento pode recebê-lo, sobretudo se realmente se parece consigo. Mais tarde, o essencial é não confundir recompensa e compensação. Neste claro-escuro, um desejo pessoal reclama finalmente espaço distinto das necessidades coletivas.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "cancer",
+      "language": "ru",
+      "general": "Позже день ценит эту множественность. В этом полусвете перестав объяснять каждый оттенок, вы находите естественную уверенность, которой больше не нужно выбирать между защитой и порывом. На первый взгляд ваше присутствие становится интенсивнее, словно контуры обретают чёткость без утраты мягкости. В новом свете переменчивое настроение может удивить окружающих, но прежде всего показывает нежелание ограничиваться одной ролью. Позже вы можете быть нежным и решительным, мечтательным, а затем очень практичным.",
+      "love": "В этом полусвете принятое чувство делает связь одновременно ближе и легче. На первый взгляд нежность вновь обретает восхитительную остроту. В новом свете магнетизм рождается из искренности, а не рассчитанной игры.",
+      "work": "На первый взгляд чутьё на атмосферу помогает снять напряжение, не отказываясь от сути. В новом свете способность двигать группу вперёд и беречь людей внутри неё может получить признание.",
+      "finance": "В новом свете бюджет способен его принять, особенно если оно действительно вам соответствует. Позже не перепутайте награду с компенсацией. В этом полусвете личное желание наконец требует места рядом с общими нуждами.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "cancer",
+      "language": "nl",
+      "general": "Later de dag waardeert die veelheid. In dit halflicht wanneer u niet langer elke nuance uitlegt, ontstaat natuurlijke zekerheid die niet meer hoeft te kiezen tussen bescherming en vaart. Op het eerste gezicht uw aanwezigheid wordt intenser, alsof de contouren scherper zijn zonder zachtheid te verliezen. Onder een nieuw licht wisselende stemming kan anderen verrassen, maar toont vooral dat u niet tot één rol wilt worden beperkt. Later u mag teder en vastberaden, dromerig en daarna heel praktisch zijn.",
+      "love": "In dit halflicht een aanvaard gevoel kan de band tegelijk hechter en lichter maken. Op het eerste gezicht tederheid krijgt een heerlijk nieuw reliëf. Onder een nieuw licht magnetisme komt uit oprechtheid, niet uit berekend spel.",
+      "work": "Op het eerste gezicht uw gevoel voor sfeer helpt spanning te ontmijnen zonder de kern op te geven. Onder een nieuw licht uw vermogen een groep vooruit te brengen en de mensen daarin te beschermen, kan erkenning krijgen.",
+      "finance": "Onder een nieuw licht het budget kan hem dragen, vooral wanneer hij echt bij u past. Later verwar beloning alleen niet met compensatie. In dit halflicht een persoonlijke wens vraagt eindelijk ruimte naast gezamenlijke behoeften.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "leo",
+      "language": "fr",
+      "general": "Dans ce clair-obscur, vous n’avez rien à prouver aujourd’hui; Cette discrétion choisie n’est pas un effacement : c’est la chambre noire où se développe une image destinée, plus tard, à captiver tous les regards; Le monde extérieur semble légèrement assourdi, ce qui vous permet d’entendre une inspiration plus rare; Sous le calme apparent, votre imaginaire travaille avec une intensité remarquable; Un projet, un désir ou une réponse gagne à rester encore un peu hors champ, le temps d’acquérir sa forme juste.",
+      "love": "Au premier regard, un échange protégé du bruit laisse apparaître une tendresse profonde; Le secret, ici, n’est pas distance, mais pure délicatesse; Une attirance discrète possède davantage de charme qu’un scénario trop visible.",
+      "work": "Sous une lumière neuve, la tentation de montrer trop tôt le résultat pourrait disperser son énergie; Votre exigence artistique trouve sa meilleure alliée dans une préparation silencieuse; Un travail en coulisses prend une tournure prometteuse.",
+      "finance": "Plus tard, repos, intimité ou création personnelle peuvent justifier une dépense mesurée; Ce choix nourrit votre rayonnement futur lorsqu’il répond à un besoin réel, et non au désir d’oublier momentanément la fatigue.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "leo",
+      "language": "en",
+      "general": "In this half-light, you have nothing to prove today. At first glance, this chosen discretion is not disappearance: it is the darkroom where an image develops, destined later to hold every gaze. Under a fresher light, the outer world feels slightly muted, allowing you to hear a rarer inspiration. Later on, beneath apparent calm, your imagination works with remarkable intensity. In this half-light, a project, desire or answer benefits from remaining out of frame a little longer while it finds its proper form.",
+      "love": "At first glance, an exchange sheltered from noise reveals deep tenderness. Under a fresher light, the secret here is not distance, but pure delicacy. Later on, a discreet attraction has more charm than an overexposed scenario.",
+      "work": "Under a fresher light, showing the result too early could scatter its energy. Later on, your artistic standards find their best ally in quiet preparation. In this half-light, behind-the-scenes work takes a promising turn.",
+      "finance": "Later on, measured spending on rest, intimacy or personal creation may be justified. In this half-light, it nourishes your future radiance when answering a real need rather than a temporary wish to forget tiredness.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "leo",
+      "language": "de",
+      "general": "In diesem Halbdunkel heute müssen Sie nichts beweisen. Auf den ersten Blick diese gewählte Diskretion ist kein Verschwinden, sondern die Dunkelkammer, in der sich ein Bild entwickelt, das später alle Blicke fesseln soll. Unter einem neuen Licht die Außenwelt wirkt leicht gedämpft, sodass eine seltenere Inspiration hörbar wird. Später unter der sichtbaren Ruhe arbeitet Ihre Fantasie mit bemerkenswerter Kraft. In diesem Halbdunkel ein Projekt, Wunsch oder eine Antwort sollte noch etwas außerhalb des Bildes bleiben, bis die richtige Form entsteht.",
+      "love": "Auf den ersten Blick ein vor Lärm geschützter Austausch zeigt tiefe Zärtlichkeit. Unter einem neuen Licht das Geheimnis ist hier keine Distanz, sondern reine Feinfühligkeit. Später stille Anziehung besitzt mehr Charme als ein allzu sichtbares Szenario.",
+      "work": "Unter einem neuen Licht ein zu frühes Ergebnis könnte Energie zerstreuen. Später ihr künstlerischer Anspruch findet in stiller Vorbereitung den besten Verbündeten. In diesem Halbdunkel arbeit hinter den Kulissen nimmt eine vielversprechende Wendung.",
+      "finance": "Später eine maßvolle Ausgabe für Ruhe, Intimität oder persönliche Gestaltung kann sinnvoll sein. In diesem Halbdunkel sie nährt künftige Ausstrahlung, wenn sie einem echten Bedürfnis und nicht bloß vorübergehender Müdigkeit dient.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "leo",
+      "language": "es",
+      "general": "En este claroscuro, hoy no tienes nada que demostrar. A primera vista, esta discreción elegida no es desaparición: es la cámara oscura donde se revela una imagen destinada más adelante a cautivar todas las miradas. Bajo una luz nueva, el mundo exterior parece algo amortiguado, permitiéndote oír una inspiración más rara. Más tarde, bajo la calma aparente, tu imaginación trabaja con notable intensidad. En este claroscuro, un proyecto, deseo o respuesta gana si permanece un poco más fuera de plano, hasta encontrar forma justa.",
+      "love": "A primera vista, un intercambio protegido del ruido deja aparecer ternura profunda. Bajo una luz nueva, el secreto aquí no es distancia, sino pura delicadeza. Más tarde, una atracción discreta posee más encanto que un escenario demasiado visible.",
+      "work": "Bajo una luz nueva, mostrar el resultado demasiado pronto podría dispersar su energía. Más tarde, tu exigencia artística encuentra su mejor aliada en una preparación silenciosa. En este claroscuro, un trabajo entre bastidores toma un giro prometedor.",
+      "finance": "Más tarde, un gasto medido en descanso, intimidad o creación personal puede justificarse. En este claroscuro, alimenta tu brillo futuro cuando responde a una necesidad real, no al deseo pasajero de olvidar el cansancio.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "leo",
+      "language": "it",
+      "general": "In questo chiaroscuro, oggi non avete nulla da dimostrare. A prima vista, questa discrezione scelta non è scomparsa: è la camera oscura in cui si sviluppa un’immagine destinata poi a catturare ogni sguardo. Sotto una luce nuova, il mondo esterno sembra leggermente attutito e vi permette di udire un’ispirazione più rara. Più tardi, sotto la calma apparente, l’immaginazione lavora con intensità notevole. In questo chiaroscuro, un progetto, desiderio o risposta guadagna dal restare ancora un po’ fuori campo, finché trova la forma giusta.",
+      "love": "A prima vista, uno scambio protetto dal rumore lascia apparire tenerezza profonda. Sotto una luce nuova, il segreto non è distanza, ma pura delicatezza. Più tardi, un’attrazione discreta possiede più fascino di uno scenario troppo visibile.",
+      "work": "Sotto una luce nuova, mostrare presto il risultato potrebbe disperderne l’energia. Più tardi, la vostra esigenza artistica trova la migliore alleata nella preparazione silenziosa. In questo chiaroscuro, un lavoro dietro le quinte prende una piega promettente.",
+      "finance": "Più tardi, una spesa misurata per riposo, intimità o creazione personale può essere giustificata. In questo chiaroscuro, nutre il futuro splendore se risponde a un bisogno reale, non al desiderio passeggero di dimenticare la stanchezza.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "leo",
+      "language": "pt",
+      "general": "Neste claro-escuro, hoje nada tem a provar. À primeira vista, esta discrição escolhida não é desaparecimento: é a câmara escura onde se revela uma imagem destinada mais tarde a captar todos os olhares. Sob uma luz nova, o mundo exterior parece ligeiramente abafado, permitindo ouvir uma inspiração mais rara. Mais tarde, sob a calma aparente, a imaginação trabalha com intensidade notável. Neste claro-escuro, um projeto, desejo ou resposta beneficia de ficar mais um pouco fora de campo, até encontrar a forma certa.",
+      "love": "À primeira vista, uma conversa protegida do ruído deixa surgir ternura profunda. Sob uma luz nova, o segredo aqui não é distância, mas delicadeza pura. Mais tarde, uma atração discreta possui mais encanto do que um cenário demasiado visível.",
+      "work": "Sob uma luz nova, mostrar cedo o resultado poderia dispersar-lhe a energia. Mais tarde, a sua exigência artística encontra a melhor aliada numa preparação silenciosa. Neste claro-escuro, um trabalho nos bastidores toma um rumo promissor.",
+      "finance": "Mais tarde, uma despesa moderada em descanso, intimidade ou criação pessoal pode justificar-se. Neste claro-escuro, alimenta o brilho futuro quando responde a necessidade real, não ao desejo passageiro de esquecer o cansaço.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "leo",
+      "language": "ru",
+      "general": "В этом полусвете сегодня нечего доказывать. На первый взгляд выбранная сдержанность — не исчезновение, а тёмная комната, где проявляется образ, предназначенный позже удерживать все взгляды. В новом свете внешний мир звучит чуть тише, позволяя услышать редкое вдохновение. Позже под видимым спокойствием воображение работает с замечательной силой. В этом полусвете проекту, желанию или ответу полезно ещё немного оставаться за кадром, пока не найдётся правильная форма.",
+      "love": "На первый взгляд защищённая от шума беседа показывает глубокую нежность. В новом свете секрет здесь не дистанция, а чистая деликатность. Позже тихое притяжение обладает большим очарованием, чем слишком заметный сценарий.",
+      "work": "В новом свете слишком ранний показ результата может рассеять энергию. Позже ваши художественные требования находят лучшего союзника в тихой подготовке. В этом полусвете работа за кулисами принимает многообещающий оборот.",
+      "finance": "Позже умеренная трата на отдых, близость или личное творчество может быть разумной. В этом полусвете она питает будущее сияние, если отвечает реальной потребности, а не желанию временно забыть усталость.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "leo",
+      "language": "nl",
+      "general": "In dit halflicht vandaag hoeft u niets te bewijzen. Op het eerste gezicht deze gekozen discretie is geen verdwijning, maar de donkere kamer waar een beeld ontstaat dat later alle blikken zal vasthouden. Onder een nieuw licht de buitenwereld klinkt wat gedempt, waardoor een zeldzamere inspiratie hoorbaar wordt. Later onder de zichtbare rust werkt uw verbeelding met opmerkelijke kracht. In dit halflicht een project, verlangen of antwoord mag nog even buiten beeld blijven terwijl het de juiste vorm vindt.",
+      "love": "Op het eerste gezicht een tegen lawaai beschermd gesprek toont diepe tederheid. Onder een nieuw licht het geheim is hier geen afstand, maar pure fijngevoeligheid. Later stille aantrekking bezit meer charme dan een te zichtbaar scenario.",
+      "work": "Onder een nieuw licht te vroeg tonen kan energie verspreiden. Later uw artistieke maatstaf vindt zijn beste bondgenoot in stille voorbereiding. In dit halflicht werk achter de schermen neemt een veelbelovende wending.",
+      "finance": "Later een gematigde uitgave voor rust, intimiteit of persoonlijke creatie kan zinvol zijn. In dit halflicht ze voedt latere uitstraling wanneer ze een echte behoefte dient, niet alleen tijdelijke vermoeidheid.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "virgo",
+      "language": "fr",
+      "general": "Au premier regard, votre précision reste précieuse, à condition qu’elle serve le mouvement plutôt que la perfection; La journée prouve qu’une structure souple peut être remarquablement solide lorsqu’elle accueille l’élan de chacun; Un projet collectif cesse d’être une simple addition de bonnes volontés et commence à ressembler à une véritable aventure; Vous percevez les fragilités du groupe, mais aussi son potentiel d’invention; Une parole plus émotionnelle que prévu peut redistribuer les rôles ou rapprocher des personnes qui s’observaient de loin.",
+      "love": "Sous une lumière neuve, vous n’avez pas besoin de lui donner immédiatement un nom; Sa beauté tient peut-être à cette transition, discrète mais impossible à ignorer; Une relation amicale révèle une nuance tendre ou troublante.",
+      "work": "Plus tard, votre analyse distingue l’urgence réelle du bruit ambiant; Cette clarté pourrait vous placer naturellement au centre du dialogue; Une équipe trouve un second souffle grâce à une proposition simple et bien formulée.",
+      "finance": "Dans ce clair-obscur, une cause, une sortie ou un projet entre amis sollicite vos moyens; La dépense a du sens si elle correspond à un plaisir partagé authentique, sans vous faire porter silencieusement la part des autres.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "virgo",
+      "language": "en",
+      "general": "At first glance, your precision remains valuable when it serves movement rather than perfection. Under a fresher light, the day proves that a flexible structure can be remarkably solid when it welcomes everyone's momentum. Later on, a collective project stops being a mere sum of good intentions and begins to resemble a genuine adventure. In this half-light, you notice the group's vulnerabilities as well as its inventive potential. At first glance, a more emotional statement than expected may redistribute roles or draw together people who had watched from afar.",
+      "love": "Under a fresher light, you need not name it immediately. Later on, its beauty may lie in this transition, discreet yet impossible to ignore. In this half-light, a friendship reveals a tender or intriguing nuance.",
+      "work": "Later on, your analysis separates real urgency from surrounding noise. In this half-light, this clarity may naturally place you at the heart of the dialogue. At first glance, a team finds fresh energy through a simple, well-worded proposal.",
+      "finance": "In this half-light, a cause, outing or plan with friends calls on your resources. At first glance, the expense makes sense when it reflects genuine shared pleasure without leaving you silently carrying everyone else's share.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "virgo",
+      "language": "de",
+      "general": "Auf den ersten Blick ihre Präzision bleibt wertvoll, wenn sie Bewegung statt Perfektion unterstützt. Unter einem neuen Licht eine flexible Struktur kann erstaunlich fest sein, sobald sie den Schwung aller aufnimmt. Später ein gemeinsames Projekt ist nicht länger bloß die Summe guter Absichten und beginnt wie ein echtes Abenteuer zu wirken. In diesem Halbdunkel sie sehen die Schwächen der Gruppe ebenso wie ihr erfinderisches Potenzial. Auf den ersten Blick eine unerwartet emotionale Aussage kann Rollen verschieben oder Menschen zusammenbringen, die sich aus der Ferne beobachteten.",
+      "love": "Unter einem neuen Licht sie müssen ihr nicht sofort einen Namen geben. Später ihre Schönheit liegt vielleicht in diesem stillen, aber unübersehbaren Übergang. In diesem Halbdunkel eine Freundschaft zeigt eine zärtliche oder aufregende Nuance.",
+      "work": "Später ihre Analyse trennt echte Dringlichkeit vom Lärm. In diesem Halbdunkel diese Klarheit bringt Sie ganz natürlich ins Zentrum des Dialogs. Auf den ersten Blick ein Team erhält durch einen einfachen, gut formulierten Vorschlag neue Energie.",
+      "finance": "In diesem Halbdunkel eine Sache, ein Ausflug oder ein Plan mit Freunden beansprucht Ihre Mittel. Auf den ersten Blick die Ausgabe passt, wenn sie echte gemeinsame Freude ausdrückt, ohne dass Sie still den Anteil anderer tragen.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "virgo",
+      "language": "es",
+      "general": "A primera vista, tu precisión sigue siendo valiosa si sirve al movimiento y no a la perfección. Bajo una luz nueva, el día demuestra que una estructura flexible resulta extraordinariamente sólida cuando acoge el impulso de todos. Más tarde, un proyecto colectivo deja de ser simple suma de buenas voluntades y comienza a parecer una aventura verdadera. En este claroscuro, percibes las fragilidades del grupo, pero también su potencial inventivo. A primera vista, una palabra más emocional de lo previsto puede redistribuir papeles o acercar a personas que se observaban de lejos.",
+      "love": "Bajo una luz nueva, no hace falta darle nombre inmediatamente. Más tarde, su belleza quizá resida en esta transición, discreta pero imposible de ignorar. En este claroscuro, una relación amistosa revela un matiz tierno o inquietante.",
+      "work": "Más tarde, tu análisis distingue la urgencia real del ruido. En este claroscuro, esta claridad podría situarte naturalmente en el centro del diálogo. A primera vista, un equipo encuentra un segundo aliento gracias a una propuesta sencilla y bien formulada.",
+      "finance": "En este claroscuro, una causa, salida o proyecto entre amigos solicita tus medios. A primera vista, el gasto tiene sentido si corresponde a un placer compartido auténtico, sin hacerte asumir silenciosamente la parte ajena.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "virgo",
+      "language": "it",
+      "general": "A prima vista, la vostra precisione resta preziosa quando serve il movimento e non la perfezione. Sotto una luce nuova, una struttura flessibile può essere sorprendentemente solida accogliendo lo slancio di ciascuno. Più tardi, un progetto collettivo smette di essere semplice somma di buone volontà e comincia a sembrare una vera avventura. In questo chiaroscuro, percepite le fragilità del gruppo, ma anche il potenziale inventivo. A prima vista, una parola più emotiva del previsto può ridistribuire i ruoli o avvicinare persone che si osservavano da lontano.",
+      "love": "Sotto una luce nuova, non serve darle subito un nome. Più tardi, la sua bellezza può stare proprio in questa transizione discreta, ma impossibile da ignorare. In questo chiaroscuro, un’amicizia rivela una sfumatura tenera o intrigante.",
+      "work": "Più tardi, la vostra analisi separa l’urgenza vera dal rumore. In questo chiaroscuro, questa chiarezza vi pone naturalmente al centro del dialogo. A prima vista, una squadra ritrova energia grazie a una proposta semplice e ben formulata.",
+      "finance": "In questo chiaroscuro, una causa, un’uscita o un progetto tra amici sollecita i vostri mezzi. A prima vista, la spesa ha senso se esprime un piacere condiviso autentico, senza farvi sostenere in silenzio la parte altrui.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "virgo",
+      "language": "pt",
+      "general": "À primeira vista, a sua precisão continua preciosa quando serve o movimento e não a perfeição. Sob uma luz nova, uma estrutura flexível pode ser extraordinariamente sólida quando acolhe o impulso de todos. Mais tarde, um projeto coletivo deixa de ser simples soma de boas vontades e começa a parecer verdadeira aventura. Neste claro-escuro, percebe as fragilidades do grupo, mas também o potencial inventivo. À primeira vista, uma palavra mais emocional do que o previsto pode redistribuir papéis ou aproximar pessoas que se observavam à distância.",
+      "love": "Sob uma luz nova, não precisa de lhe dar imediatamente um nome. Mais tarde, a beleza pode estar nesta transição discreta, mas impossível de ignorar. Neste claro-escuro, uma amizade revela uma nuance terna ou intrigante.",
+      "work": "Mais tarde, a sua análise separa urgência real do ruído. Neste claro-escuro, esta clareza coloca-o naturalmente no centro do diálogo. À primeira vista, uma equipa recupera energia graças a uma proposta simples e bem formulada.",
+      "finance": "Neste claro-escuro, uma causa, saída ou projeto entre amigos solicita os seus meios. À primeira vista, a despesa faz sentido se exprime prazer partilhado autêntico, sem o fazer suportar silenciosamente a parte alheia.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "virgo",
+      "language": "ru",
+      "general": "На первый взгляд ваша точность остаётся ценной, когда служит движению, а не совершенству. В новом свете гибкая структура способна оказаться удивительно прочной, если принимает импульс каждого. Позже общий проект перестаёт быть суммой добрых намерений и начинает походить на настоящее приключение. В этом полусвете вы видите уязвимости группы и её изобретательный потенциал. На первый взгляд неожиданно эмоциональная реплика может перераспределить роли или сблизить людей, наблюдавших издалека.",
+      "love": "В новом свете не обязательно немедленно давать ему название. Позже красота может жить именно в этом тихом, но очевидном переходе. В этом полусвете дружба раскрывает нежный или волнующий оттенок.",
+      "work": "Позже ваш анализ отделяет настоящую срочность от шума. В этом полусвете эта ясность естественно помещает вас в центр разговора. На первый взгляд команда получает новую энергию благодаря простому и точному предложению.",
+      "finance": "В этом полусвете общее дело, прогулка или план с друзьями требуют средств. На первый взгляд трата уместна, когда отражает настоящее совместное удовольствие и не заставляет вас молча нести чужую долю.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "virgo",
+      "language": "nl",
+      "general": "Op het eerste gezicht uw precisie blijft waardevol wanneer ze beweging boven perfectie dient. Onder een nieuw licht een flexibele structuur kan opvallend stevig zijn zodra ze ieders vaart verwelkomt. Later een gezamenlijk project is niet langer een optelsom van goede bedoelingen en begint op een echt avontuur te lijken. In dit halflicht u ziet de kwetsbaarheid én de vindingrijkheid van de groep. Op het eerste gezicht een onverwacht emotionele uitspraak kan rollen verplaatsen of mensen samenbrengen die elkaar op afstand bekeken.",
+      "love": "Onder een nieuw licht u hoeft haar niet meteen een naam te geven. Later de schoonheid ligt misschien in deze stille maar onmiskenbare overgang. In dit halflicht een vriendschap toont een tedere of spannende nuance.",
+      "work": "Later uw analyse scheidt echte urgentie van lawaai. In dit halflicht deze helderheid brengt u vanzelf in het hart van de dialoog. Op het eerste gezicht een team krijgt nieuwe energie door een eenvoudig, goed verwoord voorstel.",
+      "finance": "In dit halflicht een zaak, uitstap of plan met vrienden vraagt middelen. Op het eerste gezicht de uitgave klopt wanneer ze echte gedeelde vreugde uitdrukt zonder dat u stil het aandeel van anderen draagt.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "libra",
+      "language": "fr",
+      "general": "Sous une lumière neuve, la journée pourrait ainsi modifier subtilement la manière dont on vous perçoit; Derrière le charme apparaît une autorité calme, moins soucieuse de plaire et beaucoup plus difficile à oublier; Votre image publique se charge d’une profondeur inhabituelle; Un choix professionnel, une prise de parole ou une responsabilité visible peut révéler davantage de vous que prévu; Vous savez présenter les choses avec élégance, mais le moment réclame aussi une conviction personnelle; L’émotion ne fragilise pas votre position ; elle lui donne un enjeu.",
+      "love": "Plus tard, le charme devient passionnant lorsqu’il quitte la surface; Une attention sans calcul répondra mieux à vos attentes; Le regard d’une personne admirative vous touche, tout en éveillant une question sur la sincérité.",
+      "work": "Dans ce clair-obscur, le débat peut être vif, mais vous refusez les accords décoratifs; Votre capacité à formuler une décision équilibrée pourrait asseoir durablement votre crédibilité; Une mission exposée met votre diplomatie à l’épreuve.",
+      "finance": "Au premier regard, sa pertinence augmente si elle sert plusieurs usages; L’élégance la plus convaincante ne dépend pas toujours du prix affiché; Une dépense destinée à soutenir votre activité ou votre présentation paraît séduisante.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "libra",
+      "language": "en",
+      "general": "Under a fresher light, the day may subtly alter how people perceive you. Later on, behind the charm appears a calm authority, less concerned with pleasing and far harder to forget. In this half-light, your public image takes on unusual depth. At first glance, a professional choice, speech or visible responsibility may reveal more of you than expected. Under a fresher light, you know how to present matters elegantly, yet the moment also requires personal conviction. Later on, emotion does not weaken your position; it gives it stakes.",
+      "love": "Later on, charm becomes fascinating when it leaves the surface. In this half-light, an uncalculated kindness answers your expectations more fully. At first glance, an admiring gaze touches you while raising a question about sincerity.",
+      "work": "In this half-light, debate may be lively, but you refuse decorative agreements. At first glance, your ability to frame a balanced decision could establish lasting credibility. Under a fresher light, a prominent assignment tests your diplomacy.",
+      "finance": "At first glance, its relevance increases when it serves several purposes. Under a fresher light, the most convincing elegance does not always depend on the displayed price. Later on, spending intended to support your work or presentation looks attractive.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "libra",
+      "language": "de",
+      "general": "Unter einem neuen Licht der Tag verändert vielleicht subtil, wie man Sie wahrnimmt. Später hinter dem Charme erscheint ruhige Autorität, weniger auf Gefallen bedacht und sehr viel schwerer zu vergessen. In diesem Halbdunkel ihr öffentliches Bild erhält ungewöhnliche Tiefe. Auf den ersten Blick eine berufliche Wahl, eine Wortmeldung oder sichtbare Verantwortung kann mehr von Ihnen zeigen als geplant. Unter einem neuen Licht sie präsentieren Dinge elegant, doch der Moment fordert auch persönliche Überzeugung. Später gefühl schwächt Ihre Position nicht, sondern gibt ihr Bedeutung.",
+      "love": "Später charme wird spannend, sobald er die Oberfläche verlässt. In diesem Halbdunkel unberechnete Aufmerksamkeit erfüllt Ihre Erwartungen besser. Auf den ersten Blick ein bewundernder Blick berührt Sie und weckt zugleich die Frage nach Aufrichtigkeit.",
+      "work": "In diesem Halbdunkel die Debatte kann lebhaft sein, doch dekorative Einigungen lehnen Sie ab. Auf den ersten Blick eine ausgewogene Entscheidung könnte Ihre Glaubwürdigkeit dauerhaft festigen. Unter einem neuen Licht eine exponierte Aufgabe prüft Ihre Diplomatie.",
+      "finance": "Auf den ersten Blick ihre Berechtigung wächst, wenn sie mehreren Zwecken dient. Unter einem neuen Licht die überzeugendste Eleganz hängt nicht immer vom sichtbaren Preis ab. Später eine Ausgabe für Tätigkeit oder Auftreten wirkt reizvoll.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "libra",
+      "language": "es",
+      "general": "Bajo una luz nueva, la jornada podría modificar sutilmente cómo te perciben. Más tarde, tras el encanto aparece una autoridad tranquila, menos preocupada por agradar y mucho más difícil de olvidar. En este claroscuro, tu imagen pública se carga de una profundidad poco habitual. A primera vista, una elección profesional, intervención o responsabilidad visible puede revelar más de ti de lo previsto. Bajo una luz nueva, sabes presentar las cosas con elegancia, pero el momento requiere también convicción personal. Más tarde, la emoción no debilita tu posición; le da importancia.",
+      "love": "Más tarde, el encanto se vuelve apasionante al dejar la superficie. En este claroscuro, una atención sin cálculo responde mejor a tus expectativas. A primera vista, la mirada de una persona admirativa te toca y despierta una pregunta sobre su sinceridad.",
+      "work": "En este claroscuro, el debate puede ser vivo, pero rechazas acuerdos decorativos. A primera vista, tu capacidad para formular una decisión equilibrada podría establecer duraderamente tu credibilidad. Bajo una luz nueva, una misión expuesta pone a prueba tu diplomacia.",
+      "finance": "A primera vista, su pertinencia aumenta si sirve varios usos. Bajo una luz nueva, la elegancia más convincente no siempre depende del precio mostrado. Más tarde, un gasto destinado a sostener tu actividad o presentación parece atractivo.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "libra",
+      "language": "it",
+      "general": "Sotto una luce nuova, la giornata potrebbe modificare sottilmente il modo in cui siete percepiti. Più tardi, dietro il fascino appare un’autorità calma, meno ansiosa di piacere e molto più difficile da dimenticare. In questo chiaroscuro, la vostra immagine pubblica acquista una profondità insolita. A prima vista, una scelta professionale, un intervento o una responsabilità visibile può rivelare più del previsto. Sotto una luce nuova, sapete presentare tutto con eleganza, ma il momento richiede convinzione personale. Più tardi, l’emozione non indebolisce la posizione; le dà importanza.",
+      "love": "Più tardi, il fascino diventa interessante quando lascia la superficie. In questo chiaroscuro, un’attenzione senza calcolo risponde meglio alle vostre aspettative. A prima vista, uno sguardo ammirato vi tocca e solleva una domanda sulla sincerità.",
+      "work": "In questo chiaroscuro, il confronto può essere acceso, ma rifiutate accordi decorativi. A prima vista, la capacità di formulare una decisione equilibrata potrebbe consolidare la vostra credibilità. Sotto una luce nuova, un incarico esposto mette alla prova la diplomazia.",
+      "finance": "A prima vista, la pertinenza aumenta se serve più usi. Sotto una luce nuova, l’eleganza più convincente non dipende sempre dal prezzo esposto. Più tardi, una spesa per sostenere attività o immagine appare seducente.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "libra",
+      "language": "pt",
+      "general": "Sob uma luz nova, o dia poderá alterar subtilmente a forma como é visto. Mais tarde, por detrás do charme surge uma autoridade calma, menos preocupada em agradar e muito mais difícil de esquecer. Neste claro-escuro, a sua imagem pública ganha uma profundidade invulgar. À primeira vista, uma escolha profissional, intervenção ou responsabilidade visível pode revelar mais do que o esperado. Sob uma luz nova, sabe apresentar tudo com elegância, mas o momento também exige convicção pessoal. Mais tarde, a emoção não enfraquece a posição; dá-lhe importância.",
+      "love": "Mais tarde, o charme torna-se fascinante quando abandona a superfície. Neste claro-escuro, uma atenção sem cálculo responde melhor às suas expectativas. À primeira vista, o olhar admirado de alguém toca-o e desperta uma questão sobre sinceridade.",
+      "work": "Neste claro-escuro, o debate pode ser vivo, mas recusa acordos decorativos. À primeira vista, a sua capacidade de formular uma decisão equilibrada poderá consolidar duradouramente a credibilidade. Sob uma luz nova, uma missão exposta põe a diplomacia à prova.",
+      "finance": "À primeira vista, a pertinência aumenta se servir vários usos. Sob uma luz nova, a elegância mais convincente nem sempre depende do preço exibido. Mais tarde, uma despesa para apoiar atividade ou apresentação parece sedutora.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "libra",
+      "language": "ru",
+      "general": "В новом свете день способен незаметно изменить восприятие окружающих. Позже за обаянием появляется спокойная власть, меньше стремящаяся понравиться и гораздо труднее забываемая. В этом полусвете ваш публичный образ обретает необычную глубину. На первый взгляд профессиональный выбор, выступление или заметная ответственность могут открыть больше, чем ожидалось. В новом свете вы умеете элегантно представить ситуацию, однако момент требует личной убеждённости. Позже эмоция не ослабляет позицию, а придаёт ей значение.",
+      "love": "Позже очарование становится интересным, когда покидает поверхность. В этом полусвете бескорыстное внимание точнее отвечает вашим ожиданиям. На первый взгляд восхищённый взгляд трогает вас и одновременно вызывает вопрос об искренности.",
+      "work": "В этом полусвете спор может быть оживлённым, но декоративные соглашения вам не нужны. На первый взгляд умение сформулировать сбалансированное решение способно надолго укрепить доверие. В новом свете заметная задача проверяет дипломатию.",
+      "finance": "На первый взгляд её оправданность растёт, если вещь служит нескольким целям. В новом свете самая убедительная элегантность не всегда зависит от указанной цены. Позже трата на работу или внешний образ кажется привлекательной.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "libra",
+      "language": "nl",
+      "general": "Onder een nieuw licht de dag kan subtiel veranderen hoe men u ziet. Later achter de charme verschijnt kalm gezag, minder gericht op behagen en veel moeilijker te vergeten. In dit halflicht uw publieke beeld krijgt ongebruikelijke diepte. Op het eerste gezicht een professionele keuze, toespraak of zichtbare verantwoordelijkheid kan meer van u tonen dan verwacht. Onder een nieuw licht u presenteert zaken elegant, maar het moment vraagt ook persoonlijke overtuiging. Later emotie verzwakt uw positie niet; ze geeft haar betekenis.",
+      "love": "Later charme wordt boeiend wanneer hij de oppervlakte verlaat. In dit halflicht onberekende aandacht past beter bij uw verwachtingen. Op het eerste gezicht een bewonderende blik raakt u en roept tegelijk vragen over oprechtheid op.",
+      "work": "In dit halflicht het debat kan levendig zijn, maar decoratieve akkoorden weigert u. Op het eerste gezicht een evenwichtige beslissing kan uw geloofwaardigheid duurzaam vestigen. Onder een nieuw licht een zichtbare opdracht beproeft uw diplomatie.",
+      "finance": "Op het eerste gezicht de waarde stijgt wanneer ze meerdere doelen dient. Onder een nieuw licht de meest overtuigende elegantie hangt niet altijd samen met de getoonde prijs. Later een uitgave voor werk of presentatie lokt.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "scorpio",
+      "language": "fr",
+      "general": "Plus tard, votre intuition détecte ce que le récit officiel laisse de côté, tandis que votre sensibilité capte la part humaine du sujet; La journée vous emmène loin sans vous disperser : chaque détour semble, mystérieusement, vous rapprocher de vous-même; Une porte s’ouvre sur un horizon intellectuel, culturel ou géographique qui réveille votre appétit de profondeur; Vous ne cherchez pas le dépaysement pour fuir, mais pour comprendre autrement; Une conversation pourrait remettre en mouvement une conviction restée trop longtemps immobile.",
+      "love": "Dans ce clair-obscur, vous pourriez être sensible à une personne qui déplace votre regard sans chercher à vous convaincre; La curiosité devient une forme d’intimité; Une rencontre d’idées nourrit le désir autant qu’un geste tendre.",
+      "work": "Au premier regard, une discussion intense vous oblige à préciser votre pensée; Ce défi intellectuel peut donner au projet une profondeur décisive; Étude, recherche ou stratégie bénéficie de votre goût pour les questions difficiles.",
+      "finance": "Sous une lumière neuve, l’enthousiasme est parfaitement légitime si l’utilité dépasse nettement le prestige; Un cadre financier précis laisse davantage de place à l’exploration réelle; Formation, voyage ou ressource spécialisée représente un investissement possible.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "scorpio",
+      "language": "en",
+      "general": "Later on, your instinct detects what the official account leaves aside, while your sensitivity catches the human part of the subject. In this half-light, the day carries you far without scattering you: every detour mysteriously seems to bring you closer to yourself. At first glance, a door opens onto an intellectual, cultural or geographical horizon that revives your appetite for depth. Under a fresher light, you do not seek elsewhere to escape, but to understand differently. Later on, a conversation may set a long-static belief in motion.",
+      "love": "In this half-light, you may respond to someone who shifts your perspective without trying to persuade you. At first glance, curiosity becomes a form of intimacy. Under a fresher light, a meeting of minds feeds desire as much as a tender gesture.",
+      "work": "At first glance, an intense discussion forces you to sharpen your thinking. Under a fresher light, this intellectual challenge may give the project decisive depth. Later on, study, research or strategy benefits from your taste for difficult questions.",
+      "finance": "Under a fresher light, enthusiasm is entirely legitimate when usefulness outweighs prestige. Later on, a precise financial frame leaves more room for genuine exploration. In this half-light, training, travel or a specialist resource represents a possible investment.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "scorpio",
+      "language": "de",
+      "general": "Später ihre Intuition erkennt, was die offizielle Erzählung auslässt, während Ihre Sensibilität den menschlichen Anteil erfasst. In diesem Halbdunkel der Tag trägt Sie weit, ohne zu zerstreuen: Jeder Umweg bringt Sie geheimnisvoll näher zu sich. Auf den ersten Blick eine Tür öffnet sich zu einem geistigen, kulturellen oder geografischen Horizont, der Ihren Hunger nach Tiefe weckt. Unter einem neuen Licht sie suchen nicht Flucht, sondern eine andere Art des Verstehens. Später ein Gespräch kann eine lange unbewegte Überzeugung wieder in Gang setzen.",
+      "love": "In diesem Halbdunkel jemand, der Ihre Sicht verschiebt, ohne überzeugen zu wollen, kann Sie berühren. Auf den ersten Blick neugier wird zur Form von Intimität. Unter einem neuen Licht eine Begegnung der Gedanken nährt Begehren ebenso wie eine zärtliche Geste.",
+      "work": "Auf den ersten Blick eine intensive Diskussion zwingt Sie zur Präzision. Unter einem neuen Licht diese geistige Herausforderung kann dem Projekt entscheidende Tiefe geben. Später studium, Forschung oder Strategie profitiert von Ihrer Freude an schwierigen Fragen.",
+      "finance": "Unter einem neuen Licht begeisterung ist berechtigt, wenn der Nutzen Prestige überwiegt. Später ein genauer Finanzrahmen lässt mehr Raum für echte Erkundung. In diesem Halbdunkel weiterbildung, Reise oder Fachressource kann eine Investition sein.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "scorpio",
+      "language": "es",
+      "general": "Más tarde, tu intuición detecta lo que el relato oficial deja a un lado, mientras tu sensibilidad capta la parte humana del asunto. En este claroscuro, el día te lleva lejos sin dispersarte: cada desvío parece, misteriosamente, acercarte más a ti. A primera vista, una puerta se abre hacia un horizonte intelectual, cultural o geográfico que despierta tu apetito de profundidad. Bajo una luz nueva, no buscas evasión, sino otra manera de comprender. Más tarde, una conversación podría poner en movimiento una convicción demasiado estática.",
+      "love": "En este claroscuro, podría atraerte alguien que desplaza tu mirada sin intentar convencerte. A primera vista, la curiosidad se convierte en forma de intimidad. Bajo una luz nueva, un encuentro de ideas alimenta el deseo tanto como un gesto tierno.",
+      "work": "A primera vista, una discusión intensa te obliga a precisar el pensamiento. Bajo una luz nueva, este desafío puede dar al proyecto profundidad decisiva. Más tarde, estudio, investigación o estrategia se beneficia de tu gusto por las preguntas difíciles.",
+      "finance": "Bajo una luz nueva, el entusiasmo es legítimo cuando la utilidad supera al prestigio. Más tarde, un marco financiero preciso deja mayor espacio a la exploración real. En este claroscuro, formación, viaje o recurso especializado representa una inversión posible.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "scorpio",
+      "language": "it",
+      "general": "Più tardi, l’intuito coglie ciò che il racconto ufficiale trascura, mentre la sensibilità capta la parte umana. In questo chiaroscuro, il giorno vi porta lontano senza disperdervi: ogni deviazione sembra misteriosamente avvicinarvi a voi stessi. A prima vista, una porta si apre su un orizzonte intellettuale, culturale o geografico che risveglia il vostro appetito di profondità. Sotto una luce nuova, non cercate altrove per fuggire, ma per comprendere diversamente. Più tardi, una conversazione può rimettere in moto una convinzione rimasta immobile.",
+      "love": "In questo chiaroscuro, potreste essere sensibili a chi sposta il vostro sguardo senza voler convincere. A prima vista, la curiosità diventa una forma d’intimità. Sotto una luce nuova, un incontro di idee nutre il desiderio quanto un gesto tenero.",
+      "work": "A prima vista, una discussione intensa obbliga a precisare il pensiero. Sotto una luce nuova, questa sfida può dare profondità decisiva al progetto. Più tardi, studio, ricerca o strategia beneficia del vostro gusto per le domande difficili.",
+      "finance": "Sotto una luce nuova, l’entusiasmo è legittimo quando l’utilità supera il prestigio. Più tardi, una cornice finanziaria precisa lascia più spazio all’esplorazione autentica. In questo chiaroscuro, formazione, viaggio o risorsa specialistica può rappresentare un investimento.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "scorpio",
+      "language": "pt",
+      "general": "Mais tarde, a intuição deteta o que o relato oficial omite, enquanto a sensibilidade capta a dimensão humana. Neste claro-escuro, o dia leva-o longe sem dispersar: cada desvio parece, misteriosamente, aproximá-lo mais de si. À primeira vista, uma porta abre-se para um horizonte intelectual, cultural ou geográfico que desperta o seu apetite de profundidade. Sob uma luz nova, não procura evasão, mas compreender de outro modo. Mais tarde, uma conversa pode devolver movimento a uma convicção demasiado imóvel.",
+      "love": "Neste claro-escuro, poderá sentir-se atraído por quem muda o seu olhar sem tentar convencer. À primeira vista, a curiosidade torna-se forma de intimidade. Sob uma luz nova, um encontro de ideias alimenta o desejo tanto como um gesto terno.",
+      "work": "À primeira vista, uma conversa intensa obriga a precisar o pensamento. Sob uma luz nova, este desafio pode dar profundidade decisiva ao projeto. Mais tarde, estudo, pesquisa ou estratégia beneficia do seu gosto por perguntas difíceis.",
+      "finance": "Sob uma luz nova, o entusiasmo é legítimo quando a utilidade supera o prestígio. Mais tarde, um quadro financeiro preciso deixa mais espaço à exploração autêntica. Neste claro-escuro, formação, viagem ou recurso especializado representa investimento possível.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "scorpio",
+      "language": "ru",
+      "general": "Позже интуиция замечает пропуски официального рассказа, а чувствительность улавливает человеческую сторону. В этом полусвете день уносит далеко, не рассеивая: каждый обходной путь загадочно приближает вас к себе. На первый взгляд дверь открывается к интеллектуальному, культурному или географическому горизонту, пробуждая вашу тягу к глубине. В новом свете вы ищете не бегство, а иной способ понимания. Позже разговор способен привести в движение убеждение, долго остававшееся неподвижным.",
+      "love": "В этом полусвете вас может тронуть человек, меняющий ваш взгляд без попытки убедить. На первый взгляд любопытство становится формой близости. В новом свете встреча мыслей питает желание не меньше нежного жеста.",
+      "work": "На первый взгляд напряжённый разговор заставляет уточнить мысль. В новом свете этот интеллектуальный вызов может придать проекту решающую глубину. Позже учёба, исследование или стратегия выигрывает от любви к трудным вопросам.",
+      "finance": "В новом свете энтузиазм уместен, когда польза важнее престижа. Позже точные финансовые рамки оставляют больше пространства настоящему исследованию. В этом полусвете обучение, путешествие или специальный ресурс может стать вложением.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "scorpio",
+      "language": "nl",
+      "general": "Later uw intuïtie merkt wat het officiële verhaal overslaat, terwijl uw gevoeligheid het menselijke deel opvangt. In dit halflicht de dag voert u ver zonder te versnipperen: elke omweg lijkt u geheimzinnig dichter bij uzelf te brengen. Op het eerste gezicht een deur opent naar een intellectuele, culturele of geografische horizon die uw honger naar diepte wekt. Onder een nieuw licht u zoekt geen vlucht, maar een andere manier van begrijpen. Later een gesprek kan een lang onbeweeglijk geloof opnieuw laten bewegen.",
+      "love": "In dit halflicht iemand die uw blik verschuift zonder te overtuigen, kan u raken. Op het eerste gezicht nieuwsgierigheid wordt een vorm van intimiteit. Onder een nieuw licht een ontmoeting van gedachten voedt verlangen even sterk als een teder gebaar.",
+      "work": "Op het eerste gezicht een intens gesprek dwingt tot scherpte. Onder een nieuw licht deze geestelijke uitdaging kan het project beslissende diepte geven. Later studie, onderzoek of strategie profiteert van uw liefde voor moeilijke vragen.",
+      "finance": "Onder een nieuw licht enthousiasme past wanneer nut zwaarder weegt dan prestige. Later een precies financieel kader laat meer ruimte voor echte verkenning. In dit halflicht opleiding, reis of gespecialiseerde bron kan een investering zijn.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "sagittarius",
+      "language": "fr",
+      "general": "Dans ce clair-obscur, votre premier réflexe sera peut-être d’alléger l’atmosphère ; pourtant, la profondeur possède aujourd’hui son propre souffle; En restant présent sans dramatiser, vous transformez une tension intime en espace de mouvement et de vérité; Vous voilà face à une aventure qui ne se mesure ni en kilomètres ni en nouveautés; Elle concerne la confiance, le partage et cette part de vous qui accepte de changer au contact de l’autre; Un sujet délicat peut surgir avec une franchise presque libératrice.",
+      "love": "Au premier regard, vous appréciez la franchise, mais aussi le respect des zones encore fragiles; Cette délicatesse n’enlève rien à la passion, bien au contraire; Le désir gagne en intensité lorsqu’une confiance réelle s’installe.",
+      "work": "Sous une lumière neuve, votre vision globale ouvre la discussion, tandis que les détails assurent sa solidité; Un accord plus mature peut émerger; Un partenariat demande une révision honnête des apports et des attentes.",
+      "finance": "Plus tard, un dossier commun, une dette ou une dépense partagée mérite des limites explicites; La générosité reste belle et pleinement vivante lorsqu’elle ne crée ni dépendance silencieuse ni ressentiment différé plus tard.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "sagittarius",
+      "language": "en",
+      "general": "In this half-light, your first instinct may be to lighten the mood; yet depth has its own breath today. At first glance, by remaining present without dramatising, you turn intimate tension into a space for movement and truth. Under a fresher light, you face an adventure measured neither in miles nor novelty. Later on, it concerns trust, sharing and the part of you willing to change through contact with another. In this half-light, a delicate subject may surface with almost liberating candour.",
+      "love": "At first glance, you value candour, but also respect for areas that remain fragile. Under a fresher light, this delicacy takes nothing from passion; quite the opposite. Later on, desire intensifies when real trust settles in.",
+      "work": "Under a fresher light, your broad view opens the discussion while details secure it. Later on, a more mature agreement may emerge. In this half-light, a partnership calls for an honest review of contributions and expectations.",
+      "finance": "Later on, a shared file, debt or joint expense deserves explicit limits. In this half-light, generosity remains beautiful and fully alive when it creates neither quiet dependency nor resentment later on.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "sagittarius",
+      "language": "de",
+      "general": "In diesem Halbdunkel vielleicht möchten Sie zuerst die Stimmung erleichtern; doch Tiefe besitzt heute ihren eigenen Atem. Auf den ersten Blick wenn Sie präsent bleiben, ohne zu dramatisieren, wird intime Spannung zu Raum für Bewegung und Wahrheit. Unter einem neuen Licht sie stehen vor einem Abenteuer, das weder in Kilometern noch Neuheiten gemessen wird. Später es betrifft Vertrauen, Teilen und jenen Teil, der sich im Kontakt mit anderen verändern lässt. In diesem Halbdunkel ein heikles Thema kann mit fast befreiender Offenheit auftauchen.",
+      "love": "Auf den ersten Blick sie schätzen Offenheit, aber auch Respekt für noch empfindliche Bereiche. Unter einem neuen Licht diese Feinfühligkeit mindert Leidenschaft nicht, ganz im Gegenteil. Später das Begehren wird stärker, wenn echtes Vertrauen einzieht.",
+      "work": "Unter einem neuen Licht ihre Gesamtsicht eröffnet das Gespräch, während Einzelheiten es absichern. Später eine reifere Vereinbarung kann entstehen. In diesem Halbdunkel eine Partnerschaft verlangt ehrliche Prüfung von Beiträgen und Erwartungen.",
+      "finance": "Später ein gemeinsamer Vorgang, eine Schuld oder geteilte Ausgabe braucht klare Grenzen. In diesem Halbdunkel großzügigkeit bleibt schön und lebendig, wenn sie weder stille Abhängigkeit noch späteren Groll erzeugt.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "sagittarius",
+      "language": "es",
+      "general": "En este claroscuro, tu primer reflejo quizá sea aligerar el ambiente; sin embargo, la profundidad tiene hoy su propio aliento. A primera vista, al permanecer presente sin dramatizar, transformas una tensión íntima en espacio de movimiento y verdad. Bajo una luz nueva, te encuentras ante una aventura que no se mide en kilómetros ni novedades. Más tarde, trata de confianza, reparto y esa parte de ti que acepta cambiar al contacto con otra persona. En este claroscuro, un asunto delicado puede surgir con franqueza casi liberadora.",
+      "love": "A primera vista, aprecias la franqueza, pero también el respeto por las zonas todavía frágiles. Bajo una luz nueva, esta delicadeza no resta pasión; ocurre todo lo contrario. Más tarde, el deseo gana intensidad cuando se instala confianza real.",
+      "work": "Bajo una luz nueva, tu visión global abre la conversación y los detalles aseguran su solidez. Más tarde, puede surgir un acuerdo más maduro. En este claroscuro, una colaboración exige revisar honestamente aportaciones y expectativas.",
+      "finance": "Más tarde, un expediente común, deuda o gasto compartido merece límites explícitos. En este claroscuro, la generosidad sigue bella y plenamente viva cuando no crea dependencia silenciosa ni resentimiento posterior.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "sagittarius",
+      "language": "it",
+      "general": "In questo chiaroscuro, il primo riflesso sarà forse alleggerire l’atmosfera; eppure la profondità possiede oggi un respiro proprio. A prima vista, restando presenti senza drammatizzare, trasformate una tensione intima in spazio di movimento e verità. Sotto una luce nuova, siete davanti a un’avventura che non si misura in chilometri né novità. Più tardi, riguarda fiducia, condivisione e quella parte di voi disposta a cambiare nel contatto con l’altro. In questo chiaroscuro, un tema delicato può emergere con franchezza quasi liberatoria.",
+      "love": "A prima vista, apprezzate la franchezza, ma anche il rispetto delle zone fragili. Sotto una luce nuova, questa delicatezza non sottrae nulla alla passione, anzi. Più tardi, il desiderio acquista intensità quando si stabilisce fiducia reale.",
+      "work": "Sotto una luce nuova, la vostra visione complessiva apre il dialogo, mentre i dettagli ne assicurano solidità. Più tardi, può emergere un accordo più maturo. In questo chiaroscuro, il lavoro condiviso richiede una revisione onesta di contributi e attese.",
+      "finance": "Più tardi, un dossier comune, un debito o una spesa condivisa merita limiti espliciti. In questo chiaroscuro, la generosità resta bella e viva quando non crea dipendenza silenziosa né risentimento futuro.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "sagittarius",
+      "language": "pt",
+      "general": "Neste claro-escuro, o primeiro reflexo talvez seja aliviar o ambiente; contudo, a profundidade possui hoje respiração própria. À primeira vista, mantendo-se presente sem dramatizar, transforma tensão íntima em espaço de movimento e verdade. Sob uma luz nova, está perante uma aventura que não se mede em quilómetros nem novidades. Mais tarde, diz respeito a confiança, partilha e à parte de si que aceita mudar no contacto com outra pessoa. Neste claro-escuro, um assunto delicado pode surgir com franqueza quase libertadora.",
+      "love": "À primeira vista, aprecia franqueza, mas também respeito pelas zonas ainda frágeis. Sob uma luz nova, esta delicadeza nada retira à paixão, muito pelo contrário. Mais tarde, o desejo ganha intensidade quando se instala confiança real.",
+      "work": "Sob uma luz nova, a sua visão global abre a conversa e os detalhes garantem-lhe solidez. Mais tarde, poderá surgir um acordo mais maduro. Neste claro-escuro, uma colaboração exige revisão honesta dos contributos e expectativas.",
+      "finance": "Mais tarde, um processo comum, dívida ou despesa partilhada merece limites explícitos. Neste claro-escuro, a generosidade continua bela e viva quando não cria dependência silenciosa nem ressentimento posterior.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "sagittarius",
+      "language": "ru",
+      "general": "В этом полусвете первый порыв — облегчить атмосферу, но сегодня у глубины собственное дыхание. На первый взгляд оставаясь рядом без драматизации, вы превращаете интимное напряжение в пространство движения и правды. В новом свете перед вами приключение, которое не измеряется километрами или новизной. Позже оно касается доверия, общего ресурса и той части вас, которая готова меняться в контакте с другим. В этом полусвете чувствительная тема может возникнуть с почти освобождающей прямотой.",
+      "love": "На первый взгляд вы цените прямоту, но также уважение к ещё уязвимым областям. В новом свете такая деликатность не уменьшает страсть, а совсем наоборот. Позже желание усиливается, когда возникает настоящее доверие.",
+      "work": "В новом свете ваш широкий взгляд открывает разговор, а детали обеспечивают прочность. Позже может появиться более зрелое соглашение. В этом полусвете сотрудничество требует честно пересмотреть вклад и ожидания.",
+      "finance": "Позже общее дело, долг или совместная трата требуют ясных границ. В этом полусвете щедрость остаётся красивой и живой, если не создаёт молчаливой зависимости или будущей обиды.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "sagittarius",
+      "language": "nl",
+      "general": "In dit halflicht uw eerste reflex is misschien de sfeer lichter maken; toch heeft diepte vandaag eigen adem. Op het eerste gezicht door aanwezig te blijven zonder drama, verandert intieme spanning in ruimte voor beweging en waarheid. Onder een nieuw licht u staat voor een avontuur dat niet in kilometers of nieuwigheid wordt gemeten. Later het gaat over vertrouwen, delen en het deel van u dat door contact met een ander wil veranderen. In dit halflicht een gevoelig onderwerp kan met bijna bevrijdende openheid verschijnen.",
+      "love": "Op het eerste gezicht u waardeert openheid, maar ook respect voor nog kwetsbare zones. Onder een nieuw licht deze fijnheid vermindert passie niet; integendeel. Later verlangen wordt sterker wanneer werkelijk vertrouwen landt.",
+      "work": "Onder een nieuw licht uw brede blik opent het gesprek, terwijl details de stevigheid bewaken. Later een rijper akkoord kan ontstaan. In dit halflicht een samenwerking vraagt eerlijke herziening van bijdragen en verwachtingen.",
+      "finance": "Later een gezamenlijk dossier, schuld of gedeelde uitgave verdient duidelijke grenzen. In dit halflicht gulheid blijft mooi en levend wanneer ze geen stille afhankelijkheid of later wrok veroorzaakt.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "capricorn",
+      "language": "fr",
+      "general": "Au premier regard, une conversation franche peut redonner du rythme à une alliance ralentie par les habitudes; La solidité devient alors souple, attentive, capable de durer sans se figer; Une relation importante vous invite à quitter un instant la logique du plan pour entrer dans celle du vivant; Les réactions de l’autre ne suivent peut-être pas le scénario prévu, mais elles révèlent une information essentielle; Vous n’avez pas perdu la maîtrise ; vous découvrez simplement un langage qui ne se commande pas.",
+      "love": "Sous une lumière neuve, le lien se nourrit moins de promesses à long terme que d’une disponibilité sincère, ici et maintenant; Cette présence a quelque chose de profondément rassurant; Une tendresse directe surprend agréablement votre réserve.",
+      "work": "Plus tard, vous pouvez rester exigeant sans tout centraliser; La confiance accordée à une personne compétente libère votre énergie pour un enjeu plus stratégique; Une collaboration réclame un partage plus clair de l’autorité.",
+      "finance": "Dans ce clair-obscur, une décision financière à deux nécessite une lecture commune des priorités; Les chiffres ne refroidissent pas le projet ; ils lui offrent un cadre où l’engagement de chacun peut rester libre et visible.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "capricorn",
+      "language": "en",
+      "general": "At first glance, candid conversation may restore rhythm to an alliance slowed by habit. Under a fresher light, solidity then becomes flexible, attentive and capable of lasting without becoming fixed. Later on, an important relationship invites you to leave the logic of planning briefly and enter that of living experience. In this half-light, the other's reactions may not follow the expected script, but they reveal essential information. At first glance, you have not lost control; you are simply discovering a language that cannot be commanded.",
+      "love": "Under a fresher light, the bond draws less on long-term promises than on sincere availability here and now. Later on, this presence feels profoundly reassuring. In this half-light, direct tenderness pleasantly surprises your reserve.",
+      "work": "Later on, you can remain demanding without centralising everything. In this half-light, trust placed in a capable person frees your energy for a more strategic issue. At first glance, a collaboration requires a clearer sharing of authority.",
+      "finance": "In this half-light, a joint financial decision needs a shared view of priorities. At first glance, figures do not chill the plan; they offer a frame in which each person's commitment can remain free and visible.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "capricorn",
+      "language": "de",
+      "general": "Auf den ersten Blick ein offenes Gespräch kann einer von Gewohnheit gebremsten Allianz Rhythmus zurückgeben. Unter einem neuen Licht festigkeit wird flexibel, aufmerksam und langlebig, ohne zu erstarren. Später eine wichtige Beziehung lädt Sie ein, kurz die Logik des Plans zu verlassen und die des Lebendigen zu betreten. In diesem Halbdunkel die Reaktion des Gegenübers folgt vielleicht nicht dem erwarteten Drehbuch, liefert aber wesentliche Information. Auf den ersten Blick sie haben die Kontrolle nicht verloren, sondern entdecken eine Sprache, die sich nicht befehlen lässt.",
+      "love": "Unter einem neuen Licht die Verbindung lebt weniger von langfristigen Versprechen als von aufrichtiger Verfügbarkeit im Hier und Jetzt. Später diese Präsenz wirkt tief beruhigend. In diesem Halbdunkel direkte Zärtlichkeit überrascht Ihre Zurückhaltung angenehm.",
+      "work": "Später sie können anspruchsvoll bleiben, ohne alles zu zentralisieren. In diesem Halbdunkel vertrauen in eine fähige Person schafft Energie für ein strategischeres Thema. Auf den ersten Blick eine Zusammenarbeit braucht klarere Verteilung von Autorität.",
+      "finance": "In diesem Halbdunkel eine gemeinsame finanzielle Entscheidung verlangt dieselbe Sicht auf Prioritäten. Auf den ersten Blick zahlen kühlen den Plan nicht ab; sie schaffen einen Rahmen, in dem das Engagement aller frei und sichtbar bleibt.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "capricorn",
+      "language": "es",
+      "general": "A primera vista, una conversación franca puede devolver ritmo a una alianza ralentizada por hábitos. Bajo una luz nueva, la solidez se vuelve entonces flexible, atenta y capaz de durar sin quedarse rígida. Más tarde, una relación importante te invita a abandonar por un momento la lógica del plan y entrar en la de lo vivo. En este claroscuro, las reacciones ajenas quizá no sigan el guion previsto, pero revelan información esencial. A primera vista, no has perdido el control; descubres un lenguaje que no se gobierna.",
+      "love": "Bajo una luz nueva, el vínculo se alimenta menos de promesas a largo plazo que de disponibilidad sincera, aquí y ahora. Más tarde, esta presencia resulta profundamente tranquilizadora. En este claroscuro, una ternura directa sorprende agradablemente tu reserva.",
+      "work": "Más tarde, puedes seguir siendo exigente sin centralizarlo todo. En este claroscuro, la confianza concedida a alguien competente libera energía para una cuestión más estratégica. A primera vista, una colaboración reclama un reparto más claro de la autoridad.",
+      "finance": "En este claroscuro, una decisión financiera a dos necesita una lectura común de prioridades. A primera vista, las cifras no enfrían el proyecto; ofrecen un marco donde el compromiso de cada cual permanece libre y visible.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "capricorn",
+      "language": "it",
+      "general": "A prima vista, una conversazione franca può restituire ritmo a un’alleanza rallentata dalle abitudini. Sotto una luce nuova, la solidità diventa flessibile, attenta e capace di durare senza irrigidirsi. Più tardi, una relazione importante vi invita a lasciare per un attimo la logica del piano ed entrare in quella della vita. In questo chiaroscuro, le reazioni altrui forse non seguono il copione, ma rivelano informazioni essenziali. A prima vista, non avete perso controllo; scoprite un linguaggio che non si comanda.",
+      "love": "Sotto una luce nuova, il legame si nutre meno di promesse lontane che di una disponibilità sincera, qui e ora. Più tardi, questa presenza rassicura profondamente. In questo chiaroscuro, una tenerezza diretta sorprende piacevolmente la vostra riserva.",
+      "work": "Più tardi, potete restare esigenti senza centralizzare tutto. In questo chiaroscuro, la fiducia data a una persona capace libera energia per una questione strategica. A prima vista, una collaborazione richiede una condivisione più chiara dell’autorità.",
+      "finance": "In questo chiaroscuro, una decisione finanziaria comune richiede una lettura condivisa delle priorità. A prima vista, i numeri non raffreddano il progetto; offrono un quadro in cui l’impegno di ciascuno resta libero e visibile.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "capricorn",
+      "language": "pt",
+      "general": "À primeira vista, uma conversa franca pode devolver ritmo a uma aliança travada pelos hábitos. Sob uma luz nova, a solidez torna-se então flexível, atenta e capaz de durar sem ficar rígida. Mais tarde, uma relação importante convida-o a abandonar por momentos a lógica do plano e entrar na do que está vivo. Neste claro-escuro, as reações alheias talvez não sigam o guião, mas revelam informação essencial. À primeira vista, não perdeu controlo; descobre apenas uma linguagem que não se comanda.",
+      "love": "Sob uma luz nova, o vínculo alimenta-se menos de promessas longínquas do que de disponibilidade sincera, aqui e agora. Mais tarde, esta presença tranquiliza profundamente. Neste claro-escuro, uma ternura direta surpreende agradavelmente a sua reserva.",
+      "work": "Mais tarde, pode continuar exigente sem centralizar tudo. Neste claro-escuro, a confiança dada a uma pessoa competente liberta energia para uma questão mais estratégica. À primeira vista, uma colaboração exige partilha mais clara da autoridade.",
+      "finance": "Neste claro-escuro, uma decisão financeira conjunta precisa de leitura comum das prioridades. À primeira vista, os números não arrefecem o projeto; oferecem um quadro onde o compromisso de cada um permanece livre e visível.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "capricorn",
+      "language": "ru",
+      "general": "На первый взгляд откровенная беседа способна вернуть ритм союзу, замедленному привычками. В новом свете твёрдость становится гибкой, внимательной и способной длиться без оцепенения. Позже важные отношения приглашают ненадолго оставить логику плана и войти в логику живого. В этом полусвете реакция другого может не следовать сценарию, но раскрывает существенную информацию. На первый взгляд вы не потеряли управление, а обнаружили язык, которому нельзя приказывать.",
+      "love": "В новом свете связь питается не далёкими обещаниями, а искренней доступностью здесь и сейчас. Позже такое присутствие глубоко успокаивает. В этом полусвете прямая нежность приятно удивляет вашу сдержанность.",
+      "work": "Позже можно сохранять требовательность, не сосредоточивая всё у себя. В этом полусвете доверие компетентному человеку освобождает энергию для стратегического вопроса. На первый взгляд сотрудничеству нужно яснее разделить власть.",
+      "finance": "В этом полусвете совместное финансовое решение требует общего понимания приоритетов. На первый взгляд цифры не охлаждают проект; они дают рамку, где участие каждого остаётся свободным и видимым.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "capricorn",
+      "language": "nl",
+      "general": "Op het eerste gezicht een open gesprek kan ritme teruggeven aan een door gewoonten vertraagde alliantie. Onder een nieuw licht stevigheid wordt soepel, aandachtig en duurzaam zonder te verstarren. Later een belangrijke relatie nodigt uit de logica van het plan even te verlaten en die van het levende te betreden. In dit halflicht de ander volgt misschien niet het verwachte script, maar onthult essentiële informatie. Op het eerste gezicht u bent de leiding niet kwijt; u ontdekt een taal die niet te bevelen is.",
+      "love": "Onder een nieuw licht de band leeft minder van verre beloften dan van oprechte beschikbaarheid hier en nu. Later deze aanwezigheid stelt diep gerust. In dit halflicht directe tederheid verrast uw terughoudendheid prettig.",
+      "work": "Later u kunt veeleisend blijven zonder alles te centraliseren. In dit halflicht vertrouwen in iemand die bekwaam is, maakt energie vrij voor een strategischer onderwerp. Op het eerste gezicht een samenwerking vraagt duidelijker verdeling van gezag.",
+      "finance": "In dit halflicht een gezamenlijke financiële beslissing vereist dezelfde lezing van prioriteiten. Op het eerste gezicht cijfers koelen het plan niet af; ze bieden een kader waarin ieders engagement vrij en zichtbaar blijft.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aquarius",
+      "language": "fr",
+      "general": "Sous une lumière neuve, la journée vous rappelle qu’une idée devient vraiment moderne lorsqu’elle améliore la vie réelle; Le futur commence parfois par un geste étonnamment simple; Les détails du quotidien vous parlent avec une insistance nouvelle; Une habitude, un outil ou une organisation révèle soudain ce qu’elle facilite — et ce qu’elle épuise; Votre génie naturel pour repenser les systèmes trouve un terrain très concret; Nul besoin de tout révolutionner : un déplacement minuscule peut rendre l’ensemble beaucoup plus respirable.",
+      "love": "Plus tard, quelqu’un qui comprend votre rythme sans chercher à le contrôler marque des points; Le lien respire grâce à cette alliance de liberté et de fiabilité; Une attention pratique prend une valeur très tendre.",
+      "work": "Dans ce clair-obscur, votre proposition originale rencontre quelques résistances, mais elle répond à une fatigue réelle; La preuve par l’usage sera plus éloquente que le débat; Une méthode peut être simplifiée sans perdre sa rigueur.",
+      "finance": "Au premier regard, un achat destiné à gagner du temps ou du confort semble pertinent s’il remplace réellement une contrainte; L’accumulation technologique, en revanche, risque de créer autant de tâches qu’elle prétend en supprimer.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aquarius",
+      "language": "en",
+      "general": "Under a fresher light, the day reminds you that an idea becomes truly modern when it improves real life. Later on, the future sometimes begins with an astonishingly simple gesture. In this half-light, everyday details speak with new insistence. At first glance, a habit, tool or organisation suddenly reveals what it makes easier — and what it exhausts. Under a fresher light, your natural genius for redesigning systems finds very practical ground. Later on, there is no need to revolutionise everything: a tiny shift may make the whole arrangement breathe much better.",
+      "love": "Later on, someone who understands your rhythm without trying to control it scores highly. In this half-light, the bond breathes through this alliance of freedom and reliability. At first glance, practical attention takes on tender value.",
+      "work": "In this half-light, your original proposal meets some resistance, but answers genuine fatigue. At first glance, proof through use will be more eloquent than debate. Under a fresher light, a method may be simplified without losing rigour.",
+      "finance": "At first glance, a purchase designed to save time or increase comfort seems worthwhile if it truly replaces a constraint. Under a fresher light, technological accumulation, however, may create as many tasks as it claims to remove.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aquarius",
+      "language": "de",
+      "general": "Unter einem neuen Licht der Tag erinnert daran, dass eine Idee erst modern wird, wenn sie das wirkliche Leben verbessert. Später zukunft beginnt manchmal mit einer erstaunlich einfachen Geste. In diesem Halbdunkel alltagsdetails sprechen mit neuer Beharrlichkeit. Auf den ersten Blick eine Gewohnheit, ein Werkzeug oder eine Organisation zeigt plötzlich, was sie erleichtert und was sie erschöpft. Unter einem neuen Licht ihr Talent, Systeme neu zu denken, findet sehr praktischen Boden. Später es braucht keine totale Revolution: Eine winzige Verschiebung kann alles viel besser atmen lassen.",
+      "love": "Später jemand, der Ihren Rhythmus versteht, ohne ihn kontrollieren zu wollen, gewinnt Punkte. In diesem Halbdunkel die Verbindung atmet durch das Bündnis von Freiheit und Zuverlässigkeit. Auf den ersten Blick praktische Aufmerksamkeit erhält zärtlichen Wert.",
+      "work": "In diesem Halbdunkel ihr origineller Vorschlag trifft Widerstand, antwortet aber auf echte Erschöpfung. Auf den ersten Blick der Beweis in der Anwendung spricht stärker als die Debatte. Unter einem neuen Licht eine Methode kann vereinfacht werden, ohne Strenge zu verlieren.",
+      "finance": "Auf den ersten Blick ein Kauf für Zeitgewinn oder Komfort ist sinnvoll, wenn er tatsächlich eine Einschränkung ersetzt. Unter einem neuen Licht technische Ansammlung dagegen kann ebenso viele Aufgaben schaffen, wie sie zu beseitigen verspricht.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aquarius",
+      "language": "es",
+      "general": "Bajo una luz nueva, el día recuerda que una idea es realmente moderna cuando mejora la vida real. Más tarde, el futuro empieza a veces con un gesto sorprendentemente sencillo. En este claroscuro, los detalles cotidianos te hablan con nueva insistencia. A primera vista, un hábito, herramienta u organización revela de pronto lo que facilita y lo que agota. Bajo una luz nueva, tu genio natural para repensar sistemas encuentra un terreno muy concreto. Más tarde, no hace falta revolucionarlo todo: un desplazamiento minúsculo puede volver el conjunto mucho más respirable.",
+      "love": "Más tarde, alguien que comprende tu ritmo sin intentar controlarlo gana puntos. En este claroscuro, el vínculo respira mediante esta alianza entre libertad y fiabilidad. A primera vista, una atención práctica adquiere un valor muy tierno.",
+      "work": "En este claroscuro, tu propuesta original encuentra resistencias, pero responde a un cansancio real. A primera vista, la prueba mediante el uso será más elocuente que el debate. Bajo una luz nueva, un método puede simplificarse sin perder rigor.",
+      "finance": "A primera vista, una compra destinada a ahorrar tiempo o aumentar confort parece pertinente si sustituye realmente una limitación. Bajo una luz nueva, la acumulación tecnológica, en cambio, puede crear tantas tareas como pretende eliminar.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aquarius",
+      "language": "it",
+      "general": "Sotto una luce nuova, la giornata ricorda che un’idea diventa davvero moderna quando migliora la vita reale. Più tardi, il futuro comincia talvolta con un gesto sorprendentemente semplice. In questo chiaroscuro, i dettagli quotidiani vi parlano con nuova insistenza. A prima vista, un’abitudine, uno strumento o un’organizzazione rivela ciò che facilita e ciò che esaurisce. Sotto una luce nuova, il vostro talento nel ripensare i sistemi trova terreno concreto. Più tardi, non serve rivoluzionare tutto: un minuscolo spostamento può rendere l’insieme più respirabile.",
+      "love": "Più tardi, chi comprende il vostro ritmo senza cercare di controllarlo guadagna punti. In questo chiaroscuro, il legame respira attraverso questa alleanza di libertà e affidabilità. A prima vista, un’attenzione pratica assume valore tenero.",
+      "work": "In questo chiaroscuro, la vostra proposta originale incontra resistenza, ma risponde a una stanchezza reale. A prima vista, la prova nell’uso sarà più eloquente del dibattito. Sotto una luce nuova, un metodo può essere semplificato senza perdere rigore.",
+      "finance": "A prima vista, un acquisto pensato per risparmiare tempo o aumentare il comfort è sensato se elimina davvero un vincolo. Sotto una luce nuova, l’accumulo tecnologico, invece, può creare tanti compiti quanti promette di cancellarne.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aquarius",
+      "language": "pt",
+      "general": "Sob uma luz nova, o dia recorda que uma ideia se torna verdadeiramente moderna quando melhora a vida real. Mais tarde, o futuro começa por vezes com um gesto surpreendentemente simples. Neste claro-escuro, os detalhes quotidianos falam-lhe com nova insistência. À primeira vista, um hábito, ferramenta ou organização revela subitamente aquilo que facilita e o que esgota. Sob uma luz nova, o seu talento para repensar sistemas encontra terreno muito concreto. Mais tarde, não é preciso revolucionar tudo: uma pequena mudança pode tornar o conjunto muito mais respirável.",
+      "love": "Mais tarde, alguém que compreende o seu ritmo sem tentar controlá-lo marca pontos. Neste claro-escuro, o vínculo respira nesta aliança entre liberdade e fiabilidade. À primeira vista, uma atenção prática ganha valor muito terno.",
+      "work": "Neste claro-escuro, a sua proposta original encontra resistência, mas responde a um cansaço real. À primeira vista, a prova pela utilização será mais eloquente do que o debate. Sob uma luz nova, um método pode ser simplificado sem perder rigor.",
+      "finance": "À primeira vista, uma compra destinada a poupar tempo ou aumentar conforto parece pertinente se substituir realmente uma limitação. Sob uma luz nova, a acumulação tecnológica, porém, pode criar tantas tarefas como promete eliminar.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aquarius",
+      "language": "ru",
+      "general": "В новом свете день напоминает, что идея становится современной, когда улучшает реальную жизнь. Позже будущее иногда начинается с удивительно простого жеста. В этом полусвете повседневные детали говорят с новой настойчивостью. На первый взгляд привычка, инструмент или организация внезапно показывает, что облегчает, а что истощает. В новом свете ваш талант переосмысливать системы находит практическую почву. Позже полная революция не нужна: крошечное смещение может позволить всему лучше дышать.",
+      "love": "Позже тот, кто понимает ваш ритм без желания контролировать, набирает очки. В этом полусвете связь дышит благодаря союзу свободы и надёжности. На первый взгляд практичное внимание получает нежную ценность.",
+      "work": "В этом полусвете оригинальное предложение встречает сопротивление, но отвечает на настоящую усталость. На первый взгляд доказательство применением окажется красноречивее спора. В новом свете метод можно упростить без потери строгости.",
+      "finance": "На первый взгляд покупка для экономии времени или удобства уместна, если действительно заменяет ограничение. В новом свете накопление технологий, напротив, может создать столько же задач, сколько обещает убрать.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "aquarius",
+      "language": "nl",
+      "general": "Onder een nieuw licht de dag herinnert dat een idee pas modern wordt wanneer het het echte leven verbetert. Later de toekomst begint soms met een verrassend eenvoudig gebaar. In dit halflicht dagelijkse details spreken met nieuwe aandrang. Op het eerste gezicht een gewoonte, hulpmiddel of organisatie toont plots wat ze vergemakkelijkt en wat ze uitput. Onder een nieuw licht uw gave om systemen opnieuw te denken vindt praktisch terrein. Later een totale revolutie is niet nodig: een kleine verschuiving kan alles veel beter laten ademen.",
+      "love": "Later iemand die uw ritme begrijpt zonder het te willen beheersen, scoort punten. In dit halflicht de band ademt door deze alliantie van vrijheid en betrouwbaarheid. Op het eerste gezicht praktische aandacht krijgt een tedere waarde.",
+      "work": "In dit halflicht uw originele voorstel ontmoet weerstand, maar beantwoordt echte vermoeidheid. Op het eerste gezicht bewijs door gebruik spreekt luider dan debat. Onder een nieuw licht een methode kan eenvoudiger zonder strengheid te verliezen.",
+      "finance": "Op het eerste gezicht een aankoop voor tijdwinst of comfort is zinvol als hij werkelijk een beperking vervangt. Onder een nieuw licht technologische opeenstapeling kan echter evenveel taken maken als ze belooft te verwijderen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "pisces",
+      "language": "fr",
+      "general": "Plus tard, montrez juste assez pour faire circuler la lumière; L’enthousiasme qui répond ne garantit rien, mais il confirme que votre monde intérieur sait ouvrir des portes bien réelles; Votre imagination trouve aujourd’hui un public, même modeste, et cette rencontre change tout; Une création, une idée ou une manière singulière d’exprimer vos émotions pourrait toucher quelqu’un sans passer par de longues explications; Le plaisir devient moteur, non distraction; Vous sentez toutefois la nécessité de protéger ce qui reste fragile.",
+      "love": "Dans ce clair-obscur, une complicité légère peut révéler un sentiment plus profond; Le romantisme gagne en charme lorsqu’il accepte le rire, l’imprévu et quelques délicieuses maladresses; La douceur se fait joueuse, parfois même audacieuse.",
+      "work": "Au premier regard, votre sensibilité apporte la nuance qui manquait; Un échange passionné peut finalement renforcer sa cohérence; Une idée créative reçoit une écoute attentive si elle garde un lien avec le besoin concret.",
+      "finance": "Sous une lumière neuve, une dépense culturelle, artistique ou récréative vous attire; Elle trouve sa juste mesure lorsqu’elle nourrit vraiment une pratique ou un souvenir durable, plutôt qu’une simple envie de prolonger agréablement l’instant.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "pisces",
+      "language": "en",
+      "general": "Later on, show just enough to let the light circulate. In this half-light, the answering enthusiasm guarantees nothing, but confirms that your inner world knows how to open very real doors. At first glance, your imagination finds an audience today, however modest, and the encounter changes everything. Under a fresher light, a creation, idea or singular way of expressing feeling may touch someone without lengthy explanation. Later on, pleasure becomes an engine, not a distraction. In this half-light, you still sense the need to protect what remains fragile.",
+      "love": "In this half-light, light rapport may reveal a deeper feeling. At first glance, romance gains charm when it welcomes laughter, surprise and several delightful imperfections. Under a fresher light, gentleness becomes playful and occasionally daring.",
+      "work": "At first glance, your sensitivity provides the missing nuance. Under a fresher light, a passionate exchange may ultimately strengthen its coherence. Later on, a creative idea receives an attentive hearing when it remains connected to a practical need.",
+      "finance": "Under a fresher light, cultural, artistic or recreational spending attracts you. Later on, it finds its proper measure when it nourishes a practice or lasting memory rather than merely extending the moment.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "pisces",
+      "language": "de",
+      "general": "Später zeigen Sie gerade genug, damit Licht zirkuliert. In diesem Halbdunkel die Antwort garantiert nichts, bestätigt aber, dass Ihre innere Welt ganz reale Türen öffnen kann. Auf den ersten Blick ihre Fantasie findet heute ein Publikum, wenn auch ein kleines, und diese Begegnung verändert alles. Unter einem neuen Licht eine Schöpfung, Idee oder besondere Form des Gefühlsausdrucks kann ohne lange Erklärung berühren. Später freude wird zum Motor statt zur Ablenkung. In diesem Halbdunkel dennoch wollen Sie das noch Zerbrechliche schützen.",
+      "love": "In diesem Halbdunkel leichte Vertrautheit kann ein tieferes Gefühl zeigen. Auf den ersten Blick romantik gewinnt Charme, wenn sie Lachen, Unerwartetes und einige reizende Unvollkommenheiten zulässt. Unter einem neuen Licht sanftheit wird verspielt und gelegentlich mutig.",
+      "work": "Auf den ersten Blick ihre Sensibilität liefert die fehlende Nuance. Unter einem neuen Licht ein leidenschaftlicher Austausch kann schließlich die Stimmigkeit stärken. Später eine kreative Idee findet Gehör, wenn sie mit einem praktischen Bedarf verbunden bleibt.",
+      "finance": "Unter einem neuen Licht kulturelle, künstlerische oder vergnügliche Ausgaben locken. Später sie finden ihr Maß, wenn sie eine Praxis oder dauerhafte Erinnerung nähren, statt nur den Augenblick zu verlängern.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "pisces",
+      "language": "es",
+      "general": "Más tarde, muestra lo justo para que circule la luz. En este claroscuro, el entusiasmo recibido no garantiza nada, pero confirma que tu mundo interior sabe abrir puertas muy reales. A primera vista, tu imaginación encuentra hoy un público, aunque modesto, y ese encuentro lo cambia todo. Bajo una luz nueva, una creación, idea o manera singular de expresar emociones puede tocar a alguien sin largas explicaciones. Más tarde, el placer se vuelve motor, no distracción. En este claroscuro, aun así, sientes que debes proteger cuanto sigue frágil.",
+      "love": "En este claroscuro, una complicidad ligera puede revelar un sentimiento más profundo. A primera vista, el romanticismo gana encanto cuando acepta la risa, lo imprevisto y algunas deliciosas torpezas. Bajo una luz nueva, la dulzura se vuelve juguetona e incluso audaz.",
+      "work": "A primera vista, tu sensibilidad aporta el matiz ausente. Bajo una luz nueva, un intercambio apasionado puede finalmente reforzar su coherencia. Más tarde, una idea creativa recibe atención si mantiene un vínculo con la necesidad concreta.",
+      "finance": "Bajo una luz nueva, un gasto cultural, artístico o recreativo te atrae. Más tarde, encuentra su justa medida cuando alimenta una práctica o un recuerdo duradero, en lugar de prolongar simplemente el instante.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "pisces",
+      "language": "it",
+      "general": "Più tardi, mostrate appena abbastanza perché la luce circoli. In questo chiaroscuro, l’entusiasmo ricevuto non garantisce nulla, ma conferma che il vostro mondo interiore sa aprire porte reali. A prima vista, la vostra immaginazione trova oggi un pubblico, anche modesto, e l’incontro cambia tutto. Sotto una luce nuova, una creazione, un’idea o un modo singolare di esprimere emozioni può toccare senza lunghe spiegazioni. Più tardi, il piacere diventa motore, non distrazione. In questo chiaroscuro, sentite comunque il bisogno di proteggere ciò che resta fragile.",
+      "love": "In questo chiaroscuro, una complicità leggera può rivelare un sentimento più profondo. A prima vista, il romanticismo guadagna fascino quando accoglie riso, imprevisto e deliziose imperfezioni. Sotto una luce nuova, la dolcezza diventa giocosa, talvolta audace.",
+      "work": "A prima vista, la vostra sensibilità porta la sfumatura mancante. Sotto una luce nuova, uno scambio appassionato può infine rafforzarne la coerenza. Più tardi, un’idea creativa riceve ascolto se resta collegata a un bisogno concreto.",
+      "finance": "Sotto una luce nuova, una spesa culturale, artistica o ricreativa vi attira. Più tardi, trova la misura quando nutre una pratica o un ricordo duraturo, invece di prolungare semplicemente l’istante.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "pisces",
+      "language": "pt",
+      "general": "Mais tarde, mostre apenas o suficiente para a luz circular. Neste claro-escuro, o entusiasmo recebido não garante nada, mas confirma que o seu mundo interior sabe abrir portas reais. À primeira vista, a sua imaginação encontra hoje um público, mesmo modesto, e esse encontro muda tudo. Sob uma luz nova, uma criação, ideia ou maneira singular de expressar emoções pode tocar alguém sem longas explicações. Mais tarde, o prazer torna-se motor, não distração. Neste claro-escuro, ainda assim, sente necessidade de proteger aquilo que continua frágil.",
+      "love": "Neste claro-escuro, uma cumplicidade leve pode revelar sentimento mais profundo. À primeira vista, o romantismo ganha encanto quando acolhe riso, surpresa e deliciosas imperfeições. Sob uma luz nova, a doçura torna-se brincalhona e por vezes ousada.",
+      "work": "À primeira vista, a sua sensibilidade traz a nuance em falta. Sob uma luz nova, uma conversa apaixonada pode finalmente reforçar-lhe a coerência. Mais tarde, uma ideia criativa recebe atenção se permanecer ligada a necessidade concreta.",
+      "finance": "Sob uma luz nova, uma despesa cultural, artística ou recreativa atrai-o. Mais tarde, encontra a medida quando alimenta uma prática ou memória duradoura, em vez de apenas prolongar o instante.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "pisces",
+      "language": "ru",
+      "general": "Позже покажите ровно достаточно для движения света. В этом полусвете ответ ничего не гарантирует, но подтверждает: внутренний мир умеет открывать вполне реальные двери. На первый взгляд ваше воображение сегодня находит публику, пусть небольшую, и эта встреча меняет всё. В новом свете творение, идея или необычный способ выражать чувства могут тронуть без долгих объяснений. Позже удовольствие становится двигателем, а не отвлечением. В этом полусвете всё же вам хочется защитить то, что пока хрупко.",
+      "love": "В этом полусвете лёгкая близость может раскрыть более глубокое чувство. На первый взгляд романтика обретает шарм, принимая смех, неожиданность и несколько восхитительных несовершенств. В новом свете мягкость становится игривой и порой смелой.",
+      "work": "На первый взгляд ваша чувствительность добавляет недостающий оттенок. В новом свете страстный обмен в итоге способен укрепить её стройность. Позже творческая идея получает внимание, если связана с практической нуждой.",
+      "finance": "В новом свете культурная, художественная или развлекательная трата привлекает вас. Позже она обретает меру, когда питает практику или долговечную память, а не только продлевает мгновение.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-12",
+      "sign": "pisces",
+      "language": "nl",
+      "general": "Later toon precies genoeg om licht te laten stromen. In dit halflicht het antwoord garandeert niets, maar bevestigt dat uw innerlijke wereld heel echte deuren kan openen. Op het eerste gezicht uw verbeelding vindt vandaag een publiek, hoe bescheiden ook, en die ontmoeting verandert alles. Onder een nieuw licht een creatie, idee of unieke uitdrukking van gevoel kan raken zonder lange uitleg. Later plezier wordt motor in plaats van afleiding. In dit halflicht toch wilt u beschermen wat nog kwetsbaar is.",
+      "love": "In dit halflicht lichte vertrouwdheid kan een dieper gevoel tonen. Op het eerste gezicht romantiek wint charme wanneer ze lachen, verrassing en enkele heerlijke onvolmaaktheden toelaat. Onder een nieuw licht zachtheid wordt speels en soms gedurfd.",
+      "work": "Op het eerste gezicht uw gevoeligheid levert de ontbrekende nuance. Onder een nieuw licht een gepassioneerd gesprek kan uiteindelijk de samenhang versterken. Later een creatief idee vindt gehoor wanneer het met een praktische behoefte verbonden blijft.",
+      "finance": "Onder een nieuw licht culturele, artistieke of recreatieve uitgaven trekken. Later ze vinden hun maat wanneer ze een praktijk of blijvende herinnering voeden in plaats van alleen het ogenblik te verlengen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    }
+  ]
+}
