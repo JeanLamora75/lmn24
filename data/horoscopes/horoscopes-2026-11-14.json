@@ -1,0 +1,1077 @@
+{
+  "date": "2026-11-14",
+  "generatedAt": "2026-11-06T01:30:34.411328+01:00",
+  "timezone": "Europe/Paris",
+  "astronomy": {
+    "validationStatus": "PARTIAL",
+    "source": "CosmyDay",
+    "sourceUrl": "https://api.cosmyday.com/",
+    "attribution": "Données astronomiques : CosmyDay — https://cosmyday.com (utilisation avec attribution requise).",
+    "requestedDateTime": "2026-11-14T12:00:00+01:00",
+    "requestedTimezone": "Europe/Paris",
+    "requestedUtc": "2026-11-14T11:00:00+00:00",
+    "calculationParameters": {
+      "year": 2026,
+      "month": 11,
+      "day": 14,
+      "hour": 12,
+      "minute": 0,
+      "lat": 48.8566,
+      "lon": 2.3522
+    },
+    "confirmedParameters": [
+      "Paramètres envoyés: date 2026-11-14, heure 12:00, latitude 48.8566, longitude 2.3522",
+      "Documentation fournisseur: heure locale aux coordonnées, fuseau résolu par le fournisseur",
+      "Réponse identifiée avec positions, signes, longitudes et vitesses"
+    ],
+    "unconfirmedParameters": [
+      "Horodatage effectif absent de la réponse",
+      "Zodiaque tropical non déclaré explicitement dans la réponse",
+      "Référentiel géocentrique non déclaré explicitement dans la réponse",
+      "Aucune comparaison indépendante des positions"
+    ],
+    "responseConfirmedDateTime": null,
+    "validationNotes": "La documentation confirme que l’heure transmise à /natal est locale aux coordonnées et que le fournisseur résout le fuseau. La réponse fournit des positions exploitables, sans confirmer explicitement l’instant calculé ni les drapeaux tropical et géocentrique. Les aspects majeurs sont dérivés arithmétiquement des longitudes reçues; ce contrôle ne valide pas indépendamment l’éphéméride. Rédaction symbolique prudente, sans présenter de configuration précise comme vérifiée.",
+    "editorialMode": "symbolic",
+    "referenceVersion": "LMN24 technical V4.1",
+    "editorialVersion": "LMN24 V5 — Horoscope Premium",
+    "validationChecks": {
+      "providerResponseRetrieved": true,
+      "requiredBodiesPresent": true,
+      "longitudeRangesChecked": true,
+      "signIndexConsistencyChecked": true,
+      "retrogradeSpeedConsistencyChecked": true,
+      "aspectArithmeticChecked": true,
+      "independentEphemerisVerification": false
+    },
+    "interpretationRules": {
+      "zodiac": "Western tropical convention used only as a symbolic editorial framework; provider response flag unconfirmed",
+      "coordinatePreference": "Geocentric preferred; not explicitly confirmed by provider response",
+      "solarMethod": "Conditional whole-sign solar sectors derived from received sign indices, used only as symbolic prompts",
+      "traditionalRulers": {
+        "aries": "Mars",
+        "taurus": "Venus",
+        "gemini": "Mercury",
+        "cancer": "Moon",
+        "leo": "Sun",
+        "virgo": "Mercury",
+        "libra": "Venus",
+        "scorpio": "Mars",
+        "sagittarius": "Jupiter",
+        "capricorn": "Saturn",
+        "aquarius": "Saturn",
+        "pisces": "Jupiter"
+      },
+      "majorAspects": {
+        "conjunction": {
+          "angle": 0,
+          "orb": 8
+        },
+        "sextile": {
+          "angle": 60,
+          "orb": 4
+        },
+        "square": {
+          "angle": 90,
+          "orb": 6
+        },
+        "trine": {
+          "angle": 120,
+          "orb": 6
+        },
+        "opposition": {
+          "angle": 180,
+          "orb": 8
+        }
+      }
+    },
+    "editorialTones": {
+      "aries": "audacieuse et précise",
+      "taurus": "veloutée et lucide",
+      "gemini": "vive et secrète",
+      "cancer": "protectrice et lumineuse",
+      "leo": "fière et méthodique",
+      "virgo": "fine et déterminée",
+      "libra": "romantique et ambitieuse",
+      "scorpio": "intense et joueuse",
+      "sagittarius": "exploratrice et exigeante",
+      "capricorn": "sobre et magnétique",
+      "aquarius": "inventive et chaleureuse",
+      "pisces": "poétique et concrète"
+    },
+    "languageVariants": {
+      "en": "en-GB",
+      "pt": "pt-PT"
+    },
+    "historyNotes": "Quatorze journées précédentes, du 31 octobre au 13 novembre 2026, consultées dans les huit langues pour les thèmes, structures, ouvertures et chutes.",
+    "ephemerisPath": "data/astrology/ephemeris/astrology-2026-11-14.json",
+    "editorialReview": {
+      "reference": "LMN24 V5 — Horoscope Premium",
+      "frenchPassCompleted": true,
+      "internationalPassCompleted": true,
+      "assessment": "Appréciation éditoriale subjective; contrôles techniques séparés."
+    }
+  },
+  "horoscopes": [
+    {
+      "date": "2026-11-14",
+      "sign": "aries",
+      "language": "fr",
+      "general": "La conversation prend des chemins de traverse, et cela vous va bien; Vous retrouvez le plaisir de la répartie, avec une curiosité plus vive que votre besoin d’avoir raison; Le mouvement reste stimulant lorsqu’il ouvre une porte au lieu de claquer la précédente; Un échange bref peut réveiller une idée que l’effort seul n’arrivait plus à déplacer; Une formule trop mordante peut néanmoins partir avant que vous en mesuriez l’effet; Cette journée a le rythme d’une promenade dont le meilleur détour n’apparaissait sur aucun plan.",
+      "love": "Les mots ont du courant; Votre franchise séduit davantage quand elle ne cherche pas à gagner : la complicité préfère le rebond au dernier mot; Une réponse vive, un message un peu joueur peut donner envie de prolonger le contact.",
+      "work": "Une discussion peut débloquer une perspective que vous abordiez trop frontalement; L’impatience reste présente si l’on vous demande des précisions ; le sujet peut pourtant gagner de l’ampleur sans perdre sa netteté; Votre rapidité devient précieuse pour relier des idées.",
+      "finance": "Les petites dépenses accompagnent facilement les envies de mouvement : trajet improvisé, pause agréable, découverte en chemin; L’ensemble peut prendre plus de place que prévu, sans que chaque achat ait vraiment compté; Le plaisir paraît léger à chaque étape.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aries",
+      "language": "en",
+      "general": "In motion, conversation takes the scenic route, and that suits you. At a measured pace, you rediscover the pleasure of a quick reply, curiosity livelier than the need to be right. To a different rhythm, movement stays stimulating when it opens a door rather than slamming the previous one. When evening comes, a brief exchange may awaken an idea that effort alone could no longer shift. In motion, a sharp phrase might nevertheless escape before you gauge its effect. At a measured pace, this day has the rhythm of a walk whose finest detour appeared on no map.",
+      "love": "At a measured pace, words carry a charge. To a different rhythm, your frankness appeals more when it does not try to win: intimacy sometimes prefers another exchange to having the final word. When evening comes, a lively reply or playful message can make you want to prolong contact.",
+      "work": "To a different rhythm, a discussion may unlock a prospect you were approaching too directly. When evening comes, impatience remains if someone requests detail; yet the subject can grow in scope without losing its definition or essential clarity. In motion, your speed becomes valuable in linking distant ideas.",
+      "finance": "When evening comes, small expenses readily accompany movement: an improvised journey, a pleasant pause, a discovery along the way. In motion, together the purchases may occupy more space than expected, without every one of them having truly mattered. At a measured pace, pleasure seems light at each stage.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aries",
+      "language": "de",
+      "general": "In Bewegung das Gespräch nimmt Nebenwege, und das liegt Ihnen. Mit bedachtem Schritt sie entdecken die Freude an der Schlagfertigkeit wieder, neugieriger als rechthaberisch. In einem anderen Rhythmus bewegung bleibt anregend, wenn sie eine Tür öffnet, statt die vorige zuzuschlagen. Wenn der Abend kommt ein kurzer Austausch weckt vielleicht eine Idee, die sich durch Anstrengung allein nicht mehr bewegen ließ. In Bewegung eine bissige Formulierung kann allerdings herausrutschen, bevor Sie ihre Wirkung einschätzen. Mit bedachtem Schritt dieser Tag hat den Rhythmus eines Spaziergangs, dessen schönster Umweg auf keinem Plan stand.",
+      "love": "Mit bedachtem Schritt worte stehen unter Strom. In einem anderen Rhythmus ihre Offenheit gefällt mehr, wenn sie nicht gewinnen will: Nähe mag manchmal den nächsten Ballwechsel lieber als das letzte Wort. Wenn der Abend kommt eine lebhafte Antwort oder spielerische Nachricht macht Lust, den Kontakt zu verlängern.",
+      "work": "In einem anderen Rhythmus ein Gespräch kann eine Perspektive lösen, die Sie zu frontal angingen. Wenn der Abend kommt ungeduld bleibt, wenn jemand Genauigkeit verlangt; doch das Thema darf größer werden, ohne deshalb seine klare Kontur zu verlieren. In Bewegung ihre Schnelligkeit hilft, entfernte Ideen zu verbinden.",
+      "finance": "Wenn der Abend kommt kleine Ausgaben begleiten die Bewegung: eine spontane Fahrt, eine angenehme Pause, eine Entdeckung unterwegs. In Bewegung zusammen nimmt das vielleicht mehr Raum ein als gedacht, ohne dass jeder einzelne Kauf wirklich etwas bedeutet hätte. Mit bedachtem Schritt jeder Genuss wirkt leicht.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aries",
+      "language": "es",
+      "general": "En movimiento, la conversación toma caminos secundarios, y eso le sienta bien. Con paso medido, recupera el gusto por la réplica, con una curiosidad más viva que la necesidad de tener razón. A otro ritmo, el movimiento sigue siendo estimulante cuando abre una puerta en vez de cerrar de golpe la anterior. Cuando llega la noche, un intercambio breve puede despertar una idea que el esfuerzo ya no lograba mover. En movimiento, una frase mordaz puede salir antes de medir su efecto. Con paso medido, la jornada tiene el ritmo de un paseo cuyo mejor desvío no figuraba en ningún plano.",
+      "love": "Con paso medido, las palabras tienen corriente. A otro ritmo, su franqueza seduce más cuando no intenta ganar: la complicidad prefiere a veces otro intercambio antes que quedarse con la última palabra. Cuando llega la noche, una respuesta viva o un mensaje juguetón invita a prolongar el contacto.",
+      "work": "A otro ritmo, una conversación puede desbloquear una perspectiva abordada demasiado de frente. Cuando llega la noche, la impaciencia sigue ahí si le piden precisiones; sin embargo, el asunto puede ganar amplitud sin perder su contorno ni su claridad. En movimiento, su rapidez ayuda a enlazar ideas distantes.",
+      "finance": "Cuando llega la noche, los pequeños gastos acompañan las ganas de movimiento: trayecto improvisado, pausa agradable, descubrimiento en camino. En movimiento, el conjunto puede ocupar más de lo previsto, sin que cada compra haya contado realmente. Con paso medido, el placer parece ligero en cada etapa.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aries",
+      "language": "it",
+      "general": "Nel movimento, la conversazione prende strade laterali, e vi sta bene. A passo misurato, ritrovate il piacere della battuta, con una curiosità più viva del bisogno di avere ragione. Su un altro ritmo, il movimento resta stimolante quando apre una porta invece di sbattere la precedente. Quando arriva la sera, uno scambio breve può risvegliare un'idea che il solo sforzo non riusciva più a muovere. Nel movimento, una frase pungente può però partire prima che ne misuriate l'effetto. A passo misurato, la giornata ha il ritmo di una passeggiata il cui miglior sentiero non compariva sulla mappa.",
+      "love": "A passo misurato, le parole hanno una vivacità elettrica. Su un altro ritmo, la vostra franchezza seduce di più quando non vuole vincere: la complicità preferisce a volte un altro scambio all'ultima parola. Quando arriva la sera, una risposta vivace o un messaggio giocoso invita a prolungare il contatto.",
+      "work": "Su un altro ritmo, una discussione può sbloccare una prospettiva affrontata troppo frontalmente. Quando arriva la sera, l'impazienza resta se vi chiedono precisioni; il tema può però acquistare ampiezza senza perdere il suo contorno e la sua chiarezza. Nel movimento, la rapidità aiuta a collegare idee lontane.",
+      "finance": "Quando arriva la sera, le piccole spese accompagnano la voglia di movimento: tragitto improvvisato, pausa piacevole, scoperta per strada. Nel movimento, l'insieme può occupare più spazio del previsto, senza che ogni acquisto abbia contato davvero. A passo misurato, il piacere sembra leggero a ogni tappa.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aries",
+      "language": "pt",
+      "general": "Em movimento, a conversa segue por caminhos laterais, e isso assenta-lhe bem. A passo medido, recupera o prazer da resposta viva, com uma curiosidade maior do que a necessidade de ter razão. Noutro ritmo, o movimento continua estimulante quando abre uma porta em vez de fechar a anterior com estrondo. Quando chega a noite, uma troca breve pode despertar uma ideia que o esforço já não conseguia mover. Em movimento, uma frase mordaz pode sair antes de medir o efeito. A passo medido, o dia tem o ritmo de um passeio cujo melhor desvio não figurava em nenhum mapa.",
+      "love": "A passo medido, as palavras têm corrente. Noutro ritmo, a sua franqueza seduz mais quando não tenta ganhar: a cumplicidade prefere por vezes outra troca a ficar com a última palavra. Quando chega a noite, uma resposta viva ou mensagem brincalhona convida a prolongar o contacto.",
+      "work": "Noutro ritmo, uma conversa pode desbloquear uma perspetiva abordada demasiado de frente. Quando chega a noite, a impaciência permanece se pedirem pormenores; o assunto pode, porém, ganhar amplitude sem perder o contorno e a clareza que o tornam interessante. Em movimento, a rapidez ajuda a ligar ideias distantes.",
+      "finance": "Quando chega a noite, as pequenas despesas acompanham a vontade de movimento: trajeto improvisado, pausa agradável, descoberta pelo caminho. Em movimento, o conjunto pode ocupar mais espaço do que previa, sem que cada compra tenha realmente contado. A passo medido, o prazer parece leve em cada etapa.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aries",
+      "language": "ru",
+      "general": "В движении разговор сворачивает на боковые дорожки, и вам это подходит. Размеренным шагом возвращается удовольствие от быстрой реплики, а любопытство оживлённее потребности быть правым. В другом ритме движение увлекает, когда открывает дверь, а не захлопывает предыдущую. С наступлением вечера короткий обмен может разбудить идею, которую одним усилием уже не удавалось сдвинуть. В движении колкость, однако, способна вылететь раньше, чем вы оцените её действие. Размеренным шагом у дня ритм прогулки, чей лучший поворот не был отмечен ни на одной карте.",
+      "love": "Размеренным шагом в словах есть ток. В другом ритме прямота притягательнее, когда не пытается победить: близость иногда предпочитает следующий обмен репликами праву непременно оставить за собой последнее слово. С наступлением вечера живой ответ или игривое сообщение вызывает желание продолжить контакт.",
+      "work": "В другом ритме разговор может открыть перспективу, к которой вы подходили слишком прямо. С наступлением вечера просьба уточнить вызывает нетерпение, хотя тема способна стать шире, не потеряв очертаний и ясности. В движении быстрота помогает соединить далёкие идеи.",
+      "finance": "С наступлением вечера маленькие траты легко сопровождают движение: спонтанная поездка, приятная пауза, находка в пути. В движении вместе покупки могут занять больше места, чем ожидалось, хотя не каждая из них действительно что-то значила. Размеренным шагом на каждой остановке удовольствие кажется лёгким.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aries",
+      "language": "nl",
+      "general": "In beweging het gesprek neemt zijwegen, en dat past je goed. Met afgemeten pas je herontdekt het plezier van een snelle repliek, met nieuwsgierigheid die levendiger is dan je gelijk. Op een ander ritme beweging blijft boeiend als ze een deur opent in plaats van de vorige dicht te slaan. Wanneer de avond valt een korte uitwisseling kan een idee wekken dat inspanning alleen niet meer kon verschuiven. In beweging een scherpe formulering kan wel ontsnappen voordat je het effect beseft. Met afgemeten pas deze dag heeft het ritme van een wandeling waarvan de mooiste omweg op geen kaart stond.",
+      "love": "Met afgemeten pas woorden staan onder stroom. Op een ander ritme je openheid bekoort meer wanneer ze niet wil winnen: verbondenheid kiest soms liever de volgende uitwisseling dan het laatste woord. Wanneer de avond valt een levendig antwoord of speels bericht kan zin geven het contact te verlengen.",
+      "work": "Op een ander ritme een gesprek kan een vooruitzicht losmaken dat je te rechtstreeks benaderde. Wanneer de avond valt ongeduld blijft als iemand om details vraagt; toch kan het onderwerp ruimer worden zonder de contouren of helderheid te verliezen die het interessant maken. In beweging je snelheid helpt verre ideeën verbinden.",
+      "finance": "Wanneer de avond valt kleine uitgaven vergezellen de beweging: een spontane rit, een prettige pauze, een ontdekking onderweg. In beweging samen nemen de aankopen misschien meer plaats in dan verwacht, zonder dat elk ervan werkelijk iets heeft betekend. Met afgemeten pas het plezier lijkt per stap licht.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "taurus",
+      "language": "fr",
+      "general": "Ce que vous savez faire mérite parfois une autre étiquette; Ce regard neuf ne réclame pas une révolution ; il change déjà la façon dont vous habitez vos choix; La journée invite symboliquement à une aisance plus personnelle; Un talent familier, une expérience que vous minimisez ou un goût très personnel peut soudain vous apparaître comme une richesse; Une comparaison extérieure risque de brouiller cette découverte en lui donnant un prix trop vite; Votre valeur possède peut-être des ressources que vous n’avez jamais pensé à faire entrer dans le calcul.",
+      "love": "L’affection se rend sensible par une attention qui reconnaît vos goûts; Un geste choisi peut toucher juste, même s’il ne ressemble pas aux habitudes du lien; Vous aimez être vu dans le détail, sans devoir justifier ce qui vous plaît.",
+      "work": "Une compétence discrète peut intéresser davantage qu’un savoir-faire très affiché; La reconnaissance commence parfois là : quand ce qui semblait ordinaire chez vous devient précieux dans une situation précise; Vous avez de quoi apporter une nuance originale à un projet.",
+      "finance": "L’argent croise la question de vos possibilités, pas seulement celle de vos limites; Le sentiment d’aisance gagne à rester distinct d’une dépense destinée uniquement à prouver que vous pouvez vous l’offrir; Une envie nouvelle peut révéler une priorité différente.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "taurus",
+      "language": "en",
+      "general": "At a measured pace, what you know how to do sometimes deserves a different label. To a different rhythm, this fresh view demands no revolution; it already changes how you inhabit your choices. When evening comes, the day symbolically suggests a more personal ease. In motion, a familiar talent, experience you underplay or a highly personal taste may suddenly appear as wealth. At a measured pace, outside comparison could blur the discovery by putting a price on it too quickly. To a different rhythm, your worth may contain resources you have never thought to include in the calculation.",
+      "love": "To a different rhythm, affection becomes tangible through attention that recognises your tastes. When evening comes, a chosen gesture can reach you precisely, even when it does not resemble the relationship's usual habits. In motion, you enjoy being seen in detail without defending what you like.",
+      "work": "When evening comes, a discreet skill may interest people more than an advertised expertise. In motion, recognition sometimes begins when what feels ordinary in you becomes valuable within a particular situation and answers its specific need. At a measured pace, you can bring an original nuance to a project.",
+      "finance": "In motion, money meets the question of your possibilities, not merely your limits. At a measured pace, a sense of ease benefits from remaining separate from spending intended solely to prove that you can afford it. To a different rhythm, a new desire may reveal a different priority.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "taurus",
+      "language": "de",
+      "general": "Mit bedachtem Schritt was Sie können, verdient manchmal ein anderes Etikett. In einem anderen Rhythmus dieser neue Blick verlangt keine Revolution; er verändert bereits, wie Sie Ihre Entscheidungen bewohnen. Wenn der Abend kommt der Tag deutet symbolisch auf eine persönlichere Gelassenheit. In Bewegung ein vertrautes Talent, unterschätzte Erfahrung oder ein sehr persönlicher Geschmack erscheint plötzlich als Reichtum. Mit bedachtem Schritt ein äußerer Vergleich könnte die Entdeckung verwischen, indem er ihr zu schnell einen Preis gibt. In einem anderen Rhythmus ihr Wert besitzt vielleicht Reserven, die Sie nie in Ihre Rechnung aufgenommen haben.",
+      "love": "In einem anderen Rhythmus zuneigung wird durch Aufmerksamkeit spürbar, die Ihren Geschmack erkennt. Wenn der Abend kommt eine gewählte Geste kann genau treffen, selbst wenn sie nicht den Gewohnheiten der Beziehung entspricht. In Bewegung sie mögen es, im Detail gesehen zu werden, ohne Vorlieben zu rechtfertigen.",
+      "work": "Wenn der Abend kommt eine stille Fähigkeit interessiert vielleicht mehr als auffällig gezeigtes Können. In Bewegung anerkennung beginnt manchmal dort, wo etwas für Sie Alltägliches in einer bestimmten Situation plötzlich besonders wertvoll und passend wird. Mit bedachtem Schritt sie bringen eine eigenständige Nuance in ein Projekt.",
+      "finance": "In Bewegung geld berührt Ihre Möglichkeiten, nicht nur Grenzen. Mit bedachtem Schritt das Gefühl von Wohlstand bleibt stimmiger, wenn es sich von Ausgaben unterscheidet, die lediglich beweisen sollen, dass Sie sie sich leisten können. In einem anderen Rhythmus ein neuer Wunsch kann eine andere Priorität zeigen.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "taurus",
+      "language": "es",
+      "general": "Con paso medido, lo que sabe hacer merece a veces otra etiqueta. A otro ritmo, esa mirada nueva no reclama una revolución; ya cambia cómo habita sus elecciones. Cuando llega la noche, la jornada evoca simbólicamente una soltura más propia. En movimiento, un talento familiar, una experiencia que minimiza o un gusto personal puede aparecer de pronto como riqueza. Con paso medido, una comparación externa corre el riesgo de enturbiar el hallazgo al ponerle precio demasiado rápido. A otro ritmo, quizá su valor posea recursos que nunca había pensado incluir en el cálculo.",
+      "love": "A otro ritmo, el afecto se vuelve tangible mediante una atención que reconoce sus gustos. Cuando llega la noche, un gesto elegido puede acertar, aunque no se parezca a las costumbres del vínculo. En movimiento, le gusta que le vean en el detalle sin justificar lo que aprecia.",
+      "work": "Cuando llega la noche, una habilidad discreta puede interesar más que un conocimiento muy exhibido. En movimiento, el reconocimiento empieza a veces cuando lo que usted considera corriente se vuelve valioso dentro de una situación concreta y precisa. Con paso medido, tiene una aportación original para un proyecto.",
+      "finance": "En movimiento, el dinero encuentra la cuestión de sus posibilidades, no solo sus límites. Con paso medido, la sensación de holgura gana al distinguirse de una compra destinada únicamente a demostrar que puede permitírsela sin dificultad. A otro ritmo, un deseo nuevo puede revelar otra prioridad.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "taurus",
+      "language": "it",
+      "general": "A passo misurato, ciò che sapete fare merita talvolta un'altra etichetta. Su un altro ritmo, questo sguardo nuovo non chiede rivoluzioni; cambia già il modo di abitare le scelte. Quando arriva la sera, la giornata suggerisce simbolicamente un agio più personale. Nel movimento, un talento familiare, un'esperienza sminuita o un gusto personale appare improvvisamente come ricchezza. A passo misurato, un confronto esterno rischia di confondere la scoperta dandole troppo presto un prezzo. Su un altro ritmo, il vostro valore possiede forse risorse che non avevate mai pensato di far entrare nel conto.",
+      "love": "Su un altro ritmo, l'affetto diventa sensibile attraverso un'attenzione che riconosce i vostri gusti. Quando arriva la sera, un gesto scelto può colpire nel segno, anche se non somiglia alle abitudini del legame. Nel movimento, amate essere visti nei dettagli senza giustificare ciò che vi piace.",
+      "work": "Quando arriva la sera, una competenza discreta può interessare più di un sapere molto esibito. Nel movimento, il riconoscimento comincia talvolta quando ciò che per voi è ordinario diventa prezioso in una situazione precisa. A passo misurato, avete una sfumatura originale da portare a un progetto.",
+      "finance": "Nel movimento, il denaro incontra le possibilità, non soltanto i limiti. A passo misurato, il senso di agio guadagna restando distinto da una spesa destinata unicamente a dimostrare che potete permettervela senza alcuna difficoltà. Su un altro ritmo, un desiderio nuovo può rivelare una priorità diversa.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "taurus",
+      "language": "pt",
+      "general": "A passo medido, o que sabe fazer merece por vezes outra etiqueta. Noutro ritmo, este olhar novo não pede revolução; já muda a forma como habita as escolhas. Quando chega a noite, o dia sugere simbolicamente um à-vontade mais pessoal. Em movimento, um talento familiar, uma experiência desvalorizada ou um gosto pessoal pode surgir de repente como riqueza. A passo medido, uma comparação exterior arrisca confundir a descoberta ao dar-lhe um preço depressa demais. Noutro ritmo, o seu valor possui talvez recursos que nunca tinha pensado incluir nas contas.",
+      "love": "Noutro ritmo, o afeto torna-se sensível numa atenção que reconhece os seus gostos. Quando chega a noite, um gesto escolhido pode acertar, mesmo que não se pareça com os hábitos do vínculo. Em movimento, gosta de ser visto no pormenor sem justificar aquilo que aprecia.",
+      "work": "Quando chega a noite, uma competência discreta pode interessar mais do que um saber muito exibido. Em movimento, o reconhecimento começa por vezes quando aquilo que considera comum se torna precioso numa situação concreta e precisa. A passo medido, tem uma nuance original para trazer a um projeto.",
+      "finance": "Em movimento, o dinheiro encontra a questão das possibilidades, não apenas dos limites. A passo medido, a sensação de desafogo ganha ao distinguir-se de uma despesa destinada unicamente a provar que a pode fazer sem qualquer dificuldade. Noutro ritmo, um desejo novo pode revelar outra prioridade.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "taurus",
+      "language": "ru",
+      "general": "Размеренным шагом то, что вы умеете, иногда заслуживает другого названия. В другом ритме новый взгляд не требует революции: он уже меняет ваше отношение к выбору. С наступлением вечера день символически обращён к более личному ощущению достатка. В движении привычный талант, недооценённый опыт или личный вкус вдруг предстают богатством. Размеренным шагом чужое сравнение рискует смазать открытие, слишком быстро назначив ему цену. В другом ритме возможно, в вашей ценности есть ресурсы, которые вы никогда не включали в расчёт.",
+      "love": "В другом ритме нежность становится ощутимой во внимании, которое узнаёт ваши вкусы. С наступлением вечера выбранный жест может попасть точно, даже если он совсем не похож на привычный язык этой связи. В движении приятно быть замеченным в деталях, не объясняя своих предпочтений.",
+      "work": "С наступлением вечера тихое умение может заинтересовать сильнее широко выставленной компетенции. В движении признание иногда начинается там, где привычное для вас становится ценным в конкретной ситуации. Размеренным шагом у вас есть собственный оттенок для проекта.",
+      "finance": "В движении деньги встречаются с вопросом о возможностях, не только об ограничениях. Размеренным шагом ощущение достатка выигрывает, оставаясь отдельным от траты, призванной лишь доказать, что вы можете себе её позволить без труда. В другом ритме новое желание способно выявить другой приоритет.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "taurus",
+      "language": "nl",
+      "general": "Met afgemeten pas wat je kunt verdient soms een ander etiket. Op een ander ritme die nieuwe blik vraagt geen revolutie; hij verandert al hoe je je keuzes bewoont. Wanneer de avond valt de dag verwijst symbolisch naar een persoonlijker gemak. In beweging een vertrouwd talent, onderschatte ervaring of persoonlijke smaak kan ineens rijkdom lijken. Met afgemeten pas een vergelijking van buiten kan de ontdekking vertroebelen door er te snel een prijs op te zetten. Op een ander ritme je waarde bezit misschien bronnen die je nooit hebt meegeteld, juist omdat ze zo gewoon voelden.",
+      "love": "Op een ander ritme genegenheid wordt tastbaar door aandacht die je smaak herkent. Wanneer de avond valt een gekozen gebaar kan precies raken, ook als het niet op de gewoonten van de relatie lijkt. In beweging je wordt graag in detail gezien zonder te verdedigen wat je mooi vindt.",
+      "work": "Wanneer de avond valt een stille vaardigheid kan meer interesseren dan opvallend getoonde deskundigheid. In beweging erkenning begint soms wanneer wat voor jou gewoon is in een bepaalde situatie bijzonder waardevol blijkt en precies aan de behoefte raakt. Met afgemeten pas je hebt een eigen nuance voor een project.",
+      "finance": "In beweging geld raakt aan je mogelijkheden, niet alleen beperkingen. Met afgemeten pas het gevoel van ruimte wint wanneer het los blijft van een uitgave die uitsluitend moet bewijzen dat je je haar kunt veroorloven. Op een ander ritme een nieuw verlangen kan een andere prioriteit tonen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "gemini",
+      "language": "fr",
+      "general": "Le changement d’allure commence parfois par un refus de répéter; Une légèreté neuve accompagne cette envie, avec le risque de multiplier les versions de vous-même avant d’en goûter une seule; Une différence assumée, même minuscule, raconte davantage qu’une grande métamorphose dont vous seriez déjà lassé à la fin de la soirée; Vous avez envie de répondre autrement, de choisir une autre route ou de surprendre ceux qui connaissent trop bien vos répliques; Le jour possède une vivacité presque électrique, mais il peut aussi trouver son fil.",
+      "love": "Votre présence a quelque chose d’imprévisible qui peut séduire; Une attention inattendue peut rapprocher, tant qu’elle ne sert pas seulement à provoquer un effet; Vous aimez sentir que le lien garde du jeu, même dans une histoire connue.",
+      "work": "Une initiative originale peut modifier la manière dont votre contribution est perçue; La promesse reste plus convaincante lorsqu’elle laisse une place aux contraintes réelles; Votre souplesse vous aide à entrer dans un sujet sans en emprunter la porte habituelle.",
+      "finance": "Un achat peut vous attirer par la version de vous-même qu’il suggère; Le désir le plus intéressant sera peut-être celui qui subsiste une fois passée la nouveauté de l’image; L’idée amuse, sans imposer de changer tout le décor.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "gemini",
+      "language": "en",
+      "general": "To a different rhythm, a change of pace sometimes begins with refusing to repeat yourself. When evening comes, fresh lightness accompanies the wish, with the risk of multiplying versions of yourself before enjoying even one. In motion, a small difference you genuinely inhabit tells more than a grand transformation you would already have tired of by the end of the evening. At a measured pace, you want to answer differently, take another route or surprise those who know your replies too well. To a different rhythm, the day possesses an almost electric liveliness, yet it can find a thread.",
+      "love": "When evening comes, your presence has an unpredictability that can appeal. In motion, unexpected attention may draw you closer, provided it is not merely designed to produce an effect. At a measured pace, you enjoy feeling that a bond still has room to play, even in a familiar story.",
+      "work": "In motion, an original initiative can change how your contribution is perceived. At a measured pace, a promise remains more convincing when it leaves room for actual constraints rather than treating them as an afterthought. To a different rhythm, flexibility helps you enter a subject through an unfamiliar door.",
+      "finance": "At a measured pace, a purchase may attract you through the version of yourself it suggests. To a different rhythm, the most interesting desire may be the one surviving after the image has lost its novelty. When evening comes, the idea is amusing without requiring a complete change of scenery.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "gemini",
+      "language": "de",
+      "general": "In einem anderen Rhythmus ein anderer Takt beginnt manchmal mit der Weigerung, sich zu wiederholen. Wenn der Abend kommt neue Leichtigkeit begleitet den Wunsch, mit dem Risiko, viele Fassungen Ihrer selbst zu entwerfen, bevor Sie eine genießen. In Bewegung ein kleiner, wirklich gelebter Unterschied erzählt mehr als eine große Verwandlung, die Sie am Abend schon langweilt. Mit bedachtem Schritt sie möchten anders antworten, einen anderen Weg wählen oder Menschen überraschen, die Ihre Repliken zu gut kennen. In einem anderen Rhythmus der Tag ist beinahe elektrisch lebhaft und kann doch seinen Faden finden.",
+      "love": "Wenn der Abend kommt ihre Gegenwart hat etwas Unvorhersehbares, das reizvoll sein kann. In Bewegung eine unerwartete Aufmerksamkeit bringt vielleicht Nähe, solange sie nicht nur dazu dient, einen Effekt zu erzielen. Mit bedachtem Schritt sie mögen Spielraum in einer Verbindung, auch in einer bekannten Geschichte.",
+      "work": "In Bewegung eine eigenständige Initiative verändert womöglich den Blick auf Ihren Beitrag. Mit bedachtem Schritt ein Versprechen überzeugt mehr, wenn es wirklichen Grenzen Raum lässt, statt sie erst nachträglich zu berücksichtigen. In einem anderen Rhythmus beweglichkeit hilft Ihnen, ein Thema durch eine ungewohnte Tür zu betreten.",
+      "finance": "Mit bedachtem Schritt ein Kauf reizt durch die Version Ihrer selbst, die er andeutet. In einem anderen Rhythmus interessant ist vielleicht der Wunsch, der bleibt, wenn das Bild seinen ersten Neuigkeitsreiz verloren hat. Wenn der Abend kommt die Idee darf amüsieren, ohne den ganzen Hintergrund auszutauschen.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "gemini",
+      "language": "es",
+      "general": "A otro ritmo, cambiar de paso comienza a veces por negarse a repetir. Cuando llega la noche, una ligereza nueva acompaña ese deseo, con el riesgo de multiplicar versiones de sí antes de disfrutar una sola. En movimiento, una diferencia asumida, por pequeña que sea, cuenta más que una gran metamorfosis de la que ya se habría cansado al terminar la noche. Con paso medido, quiere responder de otra forma, elegir otro camino o sorprender a quienes conocen demasiado sus réplicas. A otro ritmo, la jornada posee una viveza casi eléctrica, pero también puede encontrar su hilo.",
+      "love": "Cuando llega la noche, su presencia tiene algo imprevisible que puede seducir. En movimiento, una atención inesperada puede acercar, mientras no sirva únicamente para provocar un efecto en la otra persona. Con paso medido, le gusta sentir que el vínculo conserva juego, incluso en una historia conocida.",
+      "work": "En movimiento, una iniciativa original puede modificar cómo se percibe su aportación. Con paso medido, la promesa resulta más convincente cuando deja sitio a las limitaciones reales en vez de relegarlas al final. A otro ritmo, la flexibilidad permite entrar en un asunto por una puerta inhabitual.",
+      "finance": "Con paso medido, una compra puede atraer por la versión de usted que sugiere. A otro ritmo, el deseo más interesante quizá sea el que permanece cuando la imagen ha perdido su primera novedad. Cuando llega la noche, la idea divierte sin exigir cambiar todo el decorado.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "gemini",
+      "language": "it",
+      "general": "Su un altro ritmo, cambiare passo comincia talvolta dal rifiuto di ripetere. Quando arriva la sera, una leggerezza nuova accompagna il desiderio, con il rischio di moltiplicare versioni di voi prima di assaporarne una. Nel movimento, una differenza vissuta, anche minima, racconta più di una grande metamorfosi di cui sareste già stanchi alla fine della serata. A passo misurato, volete rispondere diversamente, scegliere un'altra strada o sorprendere chi conosce troppo bene le vostre repliche. Su un altro ritmo, il giorno ha una vivacità quasi elettrica, ma può trovare il proprio filo.",
+      "love": "Quando arriva la sera, la vostra presenza ha un'imprevedibilità che può sedurre. Nel movimento, un'attenzione inattesa può avvicinare, finché non serve soltanto a provocare un effetto nell'altra persona. A passo misurato, vi piace sentire che il legame conserva gioco, anche in una storia nota.",
+      "work": "Nel movimento, un'iniziativa originale può modificare come viene percepito il vostro contributo. A passo misurato, la promessa convince di più quando lascia posto ai vincoli reali invece di considerarli soltanto dopo. Su un altro ritmo, la flessibilità aiuta a entrare in un tema da una porta insolita.",
+      "finance": "A passo misurato, un acquisto può attirare per la versione di voi che suggerisce. Su un altro ritmo, il desiderio più interessante sarà forse quello che resta quando l'immagine ha perso la sua prima novità. Quando arriva la sera, l'idea diverte senza imporre di cambiare tutto lo scenario.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "gemini",
+      "language": "pt",
+      "general": "Noutro ritmo, mudar de andamento começa por vezes pela recusa de repetir. Quando chega a noite, uma leveza nova acompanha o desejo, com o risco de multiplicar versões de si antes de saborear uma. Em movimento, uma diferença assumida, mesmo pequena, conta mais do que uma grande metamorfose de que já estaria farto ao fim da noite. A passo medido, quer responder de outra forma, escolher outro caminho ou surpreender quem conhece demasiado bem as suas réplicas. Noutro ritmo, o dia tem vivacidade quase elétrica, mas pode encontrar o seu fio.",
+      "love": "Quando chega a noite, a sua presença tem uma imprevisibilidade que pode seduzir. Em movimento, uma atenção inesperada pode aproximar, enquanto não servir apenas para provocar um efeito na outra pessoa. A passo medido, gosta de sentir que o vínculo conserva jogo, mesmo numa história conhecida.",
+      "work": "Em movimento, uma iniciativa original pode modificar a forma como o seu contributo é visto. A passo medido, a promessa convence mais quando deixa lugar às limitações reais, em vez de só as considerar depois. Noutro ritmo, a flexibilidade permite entrar num assunto por uma porta invulgar.",
+      "finance": "A passo medido, uma compra pode atrair pela versão de si que sugere. Noutro ritmo, o desejo mais interessante talvez seja aquele que permanece quando a imagem já perdeu a sua primeira novidade. Quando chega a noite, a ideia diverte sem exigir mudar todo o cenário.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "gemini",
+      "language": "ru",
+      "general": "В другом ритме изменение темпа иногда начинается с отказа повторяться. С наступлением вечера новая лёгкость сопровождает желание, с риском создать множество версий себя, не распробовав ни одной. В движении маленькое принятое отличие рассказывает больше, чем большая метаморфоза, от которой вы успели бы устать к концу вечера. Размеренным шагом хочется ответить иначе, выбрать другую дорогу или удивить тех, кто слишком хорошо знает ваши реплики. В другом ритме день почти электрически живой, но способен обрести нить.",
+      "love": "С наступлением вечера в вашем присутствии есть притягательная непредсказуемость. В движении неожиданный знак внимания может сблизить, пока он не служит только тому, чтобы произвести эффект. Размеренным шагом нравится ощущать, что связь сохраняет пространство для игры даже в знакомой истории.",
+      "work": "В движении оригинальная инициатива может изменить восприятие вашего вклада. Размеренным шагом обещание убедительнее, когда оставляет место реальным ограничениям, а не вспоминает о них лишь после того, как идея уже прозвучала. В другом ритме гибкость позволяет войти в тему через непривычную дверь.",
+      "finance": "Размеренным шагом покупка может привлекать версией вас, которую предлагает. В другом ритме самым интересным, возможно, окажется желание, сохранившееся после того, как у образа исчезнет первая новизна. С наступлением вечера идея забавляет, не требуя менять все декорации.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "gemini",
+      "language": "nl",
+      "general": "Op een ander ritme van tempo veranderen begint soms met weigeren jezelf te herhalen. Wanneer de avond valt nieuwe lichtheid begeleidt de wens, met het risico allerlei versies van jezelf te maken voordat je er één proeft. In beweging een klein verschil dat je werkelijk draagt vertelt meer dan een grote metamorfose waarvan je aan het eind van de avond al genoeg zou hebben. Met afgemeten pas je wilt anders antwoorden, een andere route nemen of mensen verrassen die je replieken te goed kennen. Op een ander ritme de dag is haast elektrisch levendig, maar kan zijn draad vinden.",
+      "love": "Wanneer de avond valt je aanwezigheid heeft een onvoorspelbaarheid die kan bekoren. In beweging onverwachte aandacht kan dichterbij brengen zolang ze niet alleen bedoeld is om bij de ander een effect op te roepen. Met afgemeten pas je voelt graag dat een band speelruimte houdt, ook in een bekend verhaal.",
+      "work": "In beweging een oorspronkelijk initiatief kan veranderen hoe je bijdrage wordt gezien. Met afgemeten pas een belofte overtuigt meer wanneer ze ruimte laat voor echte beperkingen in plaats van die pas achteraf mee te tellen. Op een ander ritme je soepelheid helpt een onderwerp via een ongewone deur binnen te gaan.",
+      "finance": "Met afgemeten pas een aankoop kan trekken door de versie van jezelf die hij suggereert. Op een ander ritme het interessantste verlangen is misschien dat wat overblijft wanneer het beeld zijn eerste nieuwigheid verloren heeft. Wanneer de avond valt het idee amuseert zonder het hele decor te hoeven veranderen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "cancer",
+      "language": "fr",
+      "general": "Le silence n’est pas vide ; il bourdonne de petites découvertes; Vous n’avez pas forcément envie de partager immédiatement cette vie intérieure; Le quotidien garde ses bruits, mais ils ne prennent pas toute la place; Une image aperçue, une musique ou une pensée arrivée sans prévenir peut vous accompagner longtemps après son passage; Elle offre une échappée douce, à condition de ne pas transformer chaque impression en présage; Il y a des journées où l’imagination trouve sa chambre secrète au milieu d’un monde parfaitement ordinaire.",
+      "love": "La tendresse se fait discrète, presque rêveuse; Vous aimez les liens qui savent rester proches sans demander de représentation permanente, avec cette douceur de n’avoir rien à jouer; Une présence peut vous émouvoir sans réclamer beaucoup de paroles.",
+      "work": "Une intuition créative peut prendre forme en arrière-plan d’une tâche plus visible; Cette impression mérite son espace, sans devenir pour autant une information confirmée ni une promesse faite à vos collaborateurs; Vous sentez une piste avant de savoir l’expliquer.",
+      "finance": "Le besoin d’évasion rend séduisants les plaisirs qui promettent de suspendre le temps; Le prix n’a pas à grandir avec la profondeur du repos que vous imaginez y trouver; Un livre, une musique ou une parenthèse choisie peut suffire.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "cancer",
+      "language": "en",
+      "general": "When evening comes, silence is not empty; it hums with small discoveries. In motion, you may not want to share this inner life immediately. At a measured pace, everyday life keeps its noises, but they do not occupy all the space. To a different rhythm, a passing image, music or an uninvited thought can accompany you long afterwards. When evening comes, it offers a gentle escape, provided every impression does not become an omen. In motion, some days imagination finds its secret room in the middle of a perfectly ordinary world.",
+      "love": "In motion, tenderness becomes discreet, almost dreamy. At a measured pace, you appreciate bonds able to stay close without demanding a continuous performance, with the sweetness of having no part to play for the other person. To a different rhythm, a presence can move you without asking for many words.",
+      "work": "At a measured pace, a creative hunch may develop behind a more visible task. To a different rhythm, the impression deserves space without becoming confirmed information or a promise already made to the people working alongside you. When evening comes, you sense a possibility before knowing how to explain it.",
+      "finance": "To a different rhythm, a need for escape makes pleasures promising suspended time appealing. When evening comes, the price need not grow with the depth of the rest you imagine finding inside that particular pause. In motion, a book, music or a chosen interlude may suffice.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "cancer",
+      "language": "de",
+      "general": "Wenn der Abend kommt stille ist nicht leer; sie summt vor kleinen Entdeckungen. In Bewegung dieses Innenleben möchten Sie nicht unbedingt sofort teilen. Mit bedachtem Schritt der Alltag behält seine Geräusche, doch sie besetzen nicht allen Raum. In einem anderen Rhythmus ein Bild, Musik oder ein unangemeldet auftauchender Gedanke begleitet Sie womöglich lange. Wenn der Abend kommt es bietet eine sanfte Flucht, solange nicht jeder Eindruck zum Vorzeichen wird. In Bewegung es gibt Tage, an denen die Fantasie ihr geheimes Zimmer mitten in einer vollkommen gewöhnlichen Welt findet.",
+      "love": "In Bewegung zärtlichkeit wird leise, fast verträumt. Mit bedachtem Schritt sie schätzen Verbindungen, die Nähe halten, ohne eine ständige Darbietung zu fordern: die Süße, füreinander einfach keine Rolle spielen zu müssen. In einem anderen Rhythmus eine Gegenwart berührt Sie, ohne viele Worte zu verlangen.",
+      "work": "Mit bedachtem Schritt ein schöpferischer Einfall nimmt vielleicht hinter einer sichtbaren Aufgabe Gestalt an. In einem anderen Rhythmus dieser Eindruck verdient Raum, ohne bereits bestätigte Information oder ein Versprechen gegenüber Ihren Mitarbeitern zu sein. Wenn der Abend kommt sie spüren eine Spur, bevor Sie sie erklären können.",
+      "finance": "In einem anderen Rhythmus das Bedürfnis nach Abstand macht Vergnügen reizvoll, das die Zeit anzuhalten verspricht. Wenn der Abend kommt der Preis muss nicht mit der Tiefe jener Erholung wachsen, die Ihre Vorstellung darin findet. In Bewegung ein Buch, Musik oder eine gewählte Pause kann genügen.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "cancer",
+      "language": "es",
+      "general": "Cuando llega la noche, el silencio no está vacío: zumba de pequeños descubrimientos. En movimiento, quizá no quiera compartir de inmediato esa vida interior. Con paso medido, lo cotidiano conserva sus ruidos, pero no ocupan todo el espacio. A otro ritmo, una imagen vista al pasar, una música o un pensamiento inesperado puede acompañarle mucho tiempo. Cuando llega la noche, ofrece una escapada suave, mientras no convierta cada impresión en presagio. En movimiento, hay jornadas en que la imaginación encuentra su habitación secreta en medio de un mundo perfectamente corriente.",
+      "love": "En movimiento, la ternura se vuelve discreta, casi soñadora. Con paso medido, aprecia los vínculos capaces de permanecer cerca sin exigir una actuación continua, con esa dulzura de no tener ningún papel que interpretar. A otro ritmo, una presencia puede emocionarle sin pedir muchas palabras.",
+      "work": "Con paso medido, una corazonada creativa puede tomar forma detrás de una tarea más visible. A otro ritmo, esa impresión merece espacio sin convertirse por ello en información confirmada ni en promesa hecha a quienes colaboran con usted. Cuando llega la noche, percibe una pista antes de saber explicarla.",
+      "finance": "A otro ritmo, la necesidad de evasión vuelve seductores los placeres que prometen suspender el tiempo. Cuando llega la noche, el precio no necesita crecer con la profundidad del descanso que imagina encontrar dentro. En movimiento, un libro, una música o una pausa elegida puede bastar.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "cancer",
+      "language": "it",
+      "general": "Quando arriva la sera, il silenzio non è vuoto: ronza di piccole scoperte. Nel movimento, non avete necessariamente voglia di condividere subito questa vita interiore. A passo misurato, il quotidiano conserva i rumori, ma non prendono tutto lo spazio. Su un altro ritmo, un'immagine, una musica o un pensiero arrivato senza preavviso può accompagnarvi a lungo. Quando arriva la sera, offre una fuga dolce, finché non trasforma ogni impressione in presagio. Nel movimento, ci sono giorni in cui l'immaginazione trova la propria stanza segreta nel mezzo di un mondo perfettamente ordinario.",
+      "love": "Nel movimento, la tenerezza diventa discreta, quasi sognante. A passo misurato, amate i legami che sanno restare vicini senza pretendere una rappresentazione continua, con la dolcezza di non avere una parte da recitare. Su un altro ritmo, una presenza può commuovervi senza chiedere molte parole.",
+      "work": "A passo misurato, un'intuizione creativa può prendere forma dietro un compito più visibile. Su un altro ritmo, l'impressione merita spazio senza diventare per questo un'informazione confermata né una promessa già fatta a chi lavora accanto a voi. Quando arriva la sera, sentite una pista prima di saperla spiegare.",
+      "finance": "Su un altro ritmo, il bisogno di evasione rende seducenti i piaceri che promettono di sospendere il tempo. Quando arriva la sera, il prezzo non deve crescere con la profondità del riposo che immaginate di trovarvi. Nel movimento, un libro, una musica o una parentesi scelta può bastare.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "cancer",
+      "language": "pt",
+      "general": "Quando chega a noite, o silêncio não está vazio: zumbe de pequenas descobertas. Em movimento, talvez não queira partilhar logo esta vida interior. A passo medido, o quotidiano conserva os ruídos, mas não ocupam todo o espaço. Noutro ritmo, uma imagem vista de passagem, uma música ou um pensamento inesperado pode acompanhá-lo durante muito tempo. Quando chega a noite, oferece uma fuga doce, enquanto não transforma cada impressão em presságio. Em movimento, há dias em que a imaginação encontra o seu quarto secreto no meio de um mundo perfeitamente comum.",
+      "love": "Em movimento, a ternura torna-se discreta, quase sonhadora. A passo medido, aprecia vínculos que sabem permanecer próximos sem exigir uma representação contínua, com aquela doçura de não ter qualquer papel para desempenhar junto do outro. Noutro ritmo, uma presença pode comovê-lo sem pedir muitas palavras.",
+      "work": "A passo medido, uma intuição criativa pode ganhar forma por detrás de uma tarefa mais visível. Noutro ritmo, a impressão merece espaço sem se tornar, por isso, informação confirmada nem promessa feita a quem trabalha consigo. Quando chega a noite, sente uma pista antes de saber explicá-la.",
+      "finance": "Noutro ritmo, a necessidade de evasão torna sedutores os prazeres que prometem suspender o tempo. Quando chega a noite, o preço não precisa de crescer com a profundidade do descanso que imagina encontrar ali. Em movimento, um livro, uma música ou uma pausa escolhida pode bastar.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "cancer",
+      "language": "ru",
+      "general": "С наступлением вечера тишина не пуста: она гудит маленькими открытиями. В движении не обязательно хочется сразу делиться этой внутренней жизнью. Размеренным шагом повседневность сохраняет шумы, но они не занимают всего пространства. В другом ритме случайный образ, музыка или незваная мысль способны сопровождать вас долго. С наступлением вечера она предлагает мягкую передышку, пока каждое впечатление не превращается в предзнаменование. В движении бывают дни, когда воображение находит свою тайную комнату посреди совершенно обычного мира.",
+      "love": "В движении нежность становится тихой, почти мечтательной. Размеренным шагом вы цените связи, которые остаются близкими, не требуя непрерывного представления, и эту сладость возможности ничего не играть. В другом ритме чьё-то присутствие трогает без множества слов.",
+      "work": "Размеренным шагом творческая догадка может оформиться за более заметной задачей. В другом ритме впечатление заслуживает пространства, не становясь от этого подтверждённой информацией или обещанием, которое уже дано людям, работающим с вами. С наступлением вечера вы чувствуете направление раньше, чем умеете объяснить.",
+      "finance": "В другом ритме потребность отвлечься делает привлекательными удовольствия, обещающие остановить время. С наступлением вечера цена не обязана расти вместе с глубиной отдыха, который воображение рассчитывает найти. В движении книги, музыки или выбранной паузы может хватить.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "cancer",
+      "language": "nl",
+      "general": "Wanneer de avond valt stilte is niet leeg; ze gonst van kleine ontdekkingen. In beweging misschien wil je dit innerlijke leven niet meteen delen. Met afgemeten pas het dagelijkse leven houdt zijn geluiden, maar ze bezetten niet alle ruimte. Op een ander ritme een beeld, muziek of een onaangekondigde gedachte kan lang bij je blijven. Wanneer de avond valt het biedt een zachte uitweg zolang niet iedere indruk een voorteken wordt. In beweging sommige dagen vindt de verbeelding haar geheime kamer midden in een volkomen gewone wereld, zonder dat die wereld daarvoor hoeft te veranderen.",
+      "love": "In beweging tederheid wordt discreet, bijna dromerig. Met afgemeten pas je houdt van banden die dichtbij blijven zonder een voortdurende voorstelling te eisen, met de zachtheid van geen rol te hoeven spelen voor de ander. Op een ander ritme een aanwezigheid kan ontroeren zonder veel woorden te vragen.",
+      "work": "Met afgemeten pas een creatieve ingeving kan achter een zichtbaardere taak vorm krijgen. Op een ander ritme die indruk verdient ruimte zonder daardoor bevestigde informatie te worden of een belofte die al aan collega's is gedaan. Wanneer de avond valt je voelt een spoor voordat je het kunt uitleggen.",
+      "finance": "Op een ander ritme behoefte aan ontsnapping maakt genoegens verleidelijk die de tijd beloven stil te zetten. Wanneer de avond valt de prijs hoeft niet mee te groeien met de diepte van de rust die je erin denkt te vinden. In beweging een boek, muziek of gekozen pauze kan volstaan.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "leo",
+      "language": "fr",
+      "general": "La table s’agrandit, et les idées aussi; Vous avez de l’enthousiasme à offrir, mais une proposition différente de la vôtre risque de froisser votre fierté; La journée retrouve une ampleur chaleureuse lorsque votre présence donne du courage sans distribuer les rôles; Un groupe, un réseau ou un projet à plusieurs voix peut réveiller votre goût d’un avenir qui ne se raconte pas seul; L’intérêt vient pourtant de ce mélange, pas de son uniformité; Le collectif peut devenir une scène où personne n’a besoin de disparaître pour vous laisser briller.",
+      "love": "L’amitié donne une lumière particulière à l’attirance; La complicité gagne du relief lorsqu’elle possède aussi un monde à regarder ensemble; Vous êtes sensible à quelqu’un qui vous accompagne dans une idée autant que dans un moment tendre.",
+      "work": "Une ambition collective peut retrouver de l’élan grâce à votre capacité à rendre la suite désirable; Le défi consiste à laisser aux autres une part d’invention, pas seulement un enthousiasme à approuver; Vous savez donner un visage à un projet.",
+      "finance": "Une envie de participer peut vous entraîner vers une dépense commune; Une contribution choisie garde plus de chaleur qu’un engagement pris pour ne pas décevoir; Le plaisir du groupe est réel, sans garantir l’intérêt de chaque option proposée.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "leo",
+      "language": "en",
+      "general": "In motion, the table grows, and so do the ideas. At a measured pace, you have enthusiasm to offer, although a proposal different from yours could bruise your pride. To a different rhythm, the day regains warm breadth when your presence gives courage without assigning roles. When evening comes, a group, a network or a project with several voices may awaken your appetite for a future not told alone. In motion, yet the interest lies in the mixture, not uniformity. At a measured pace, a collective can become a stage where nobody has to disappear so that you can shine.",
+      "love": "At a measured pace, friendship gives attraction a particular light. To a different rhythm, intimacy gains definition when it also has a world that the two of you can look at together. When evening comes, you respond to someone who accompanies you in an idea as readily as in a tender moment.",
+      "work": "To a different rhythm, a collective ambition may regain momentum through your ability to make what comes next desirable. When evening comes, the challenge is allowing others a real share of invention, not merely enthusiasm they can approve. In motion, you know how to give a project a face.",
+      "finance": "When evening comes, wanting to participate can draw you towards joint spending. In motion, a chosen contribution retains more warmth than a commitment made mainly to avoid disappointing anyone. At a measured pace, the pleasure of the group is real without guaranteeing the value of every option.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "leo",
+      "language": "de",
+      "general": "In Bewegung der Tisch wird größer, und die Ideen ebenfalls. Mit bedachtem Schritt sie haben Begeisterung zu geben, doch ein anderer Vorschlag könnte Ihren Stolz treffen. In einem anderen Rhythmus der Tag gewinnt warme Weite, wenn Ihre Gegenwart Mut macht, ohne Rollen zu verteilen. Wenn der Abend kommt eine Gruppe, ein Netzwerk oder ein vielstimmiges Projekt weckt vielleicht Lust auf eine Zukunft, die nicht allein erzählt wird. In Bewegung gerade die Mischung macht das Ganze interessant, nicht Einheitlichkeit. Mit bedachtem Schritt gemeinschaft darf eine Bühne sein, auf der niemand verschwinden muss, damit Sie glänzen.",
+      "love": "Mit bedachtem Schritt freundschaft gibt Anziehung ein besonderes Licht. In einem anderen Rhythmus gemeinsamkeit bekommt mehr Kontur, wenn es auch eine Welt gibt, auf die Sie zusammen schauen können. Wenn der Abend kommt sie reagieren auf jemanden, der eine Idee ebenso begleitet wie einen zärtlichen Moment.",
+      "work": "In einem anderen Rhythmus ein gemeinsames Ziel gewinnt durch Ihre Fähigkeit, das Kommende begehrenswert zu machen, vielleicht Schwung. Wenn der Abend kommt entscheidend ist, anderen einen wirklichen Anteil am Erfinden zu lassen, nicht nur Begeisterung, die sie bestätigen dürfen. In Bewegung sie geben einem Projekt ein Gesicht.",
+      "finance": "Wenn der Abend kommt der Wunsch mitzumachen führt womöglich zu gemeinsamen Ausgaben. In Bewegung ein gewählter Beitrag bewahrt mehr Wärme als eine Verpflichtung, die vor allem Enttäuschung vermeiden soll. Mit bedachtem Schritt die Gruppenfreude ist echt, garantiert aber nicht den Wert jeder vorgeschlagenen Option.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "leo",
+      "language": "es",
+      "general": "En movimiento, la mesa crece, y también las ideas. Con paso medido, tiene entusiasmo que ofrecer, aunque una propuesta distinta puede herir su orgullo. A otro ritmo, la jornada recupera amplitud cálida cuando su presencia da valor sin repartir papeles. Cuando llega la noche, un grupo, una red o un proyecto a varias voces puede despertar su gusto por un futuro que no se cuenta a solas. En movimiento, el interés está precisamente en la mezcla, no en su uniformidad. Con paso medido, lo colectivo puede ser un escenario donde nadie deba desaparecer para que usted brille.",
+      "love": "Con paso medido, la amistad da una luz particular a la atracción. A otro ritmo, la complicidad gana relieve cuando posee también un mundo que ambos pueden mirar y descubrir juntos, más allá de sí mismos. Cuando llega la noche, le conmueve quien acompaña una idea tanto como un momento tierno.",
+      "work": "A otro ritmo, una ambición colectiva puede recuperar impulso gracias a su capacidad de hacer deseable lo que viene. Cuando llega la noche, el reto está en dejar una parte real de invención a los demás, no solo entusiasmo que aprobar. En movimiento, sabe dar rostro a un proyecto.",
+      "finance": "Cuando llega la noche, las ganas de participar pueden llevarle hacia un gasto común. En movimiento, una aportación elegida conserva más calidez que un compromiso aceptado sobre todo para no decepcionar a nadie. Con paso medido, el placer del grupo es real sin garantizar el interés de cada opción.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "leo",
+      "language": "it",
+      "general": "Nel movimento, il tavolo si allarga, e anche le idee. A passo misurato, avete entusiasmo da offrire, ma una proposta diversa rischia di ferire l'orgoglio. Su un altro ritmo, la giornata ritrova ampiezza calorosa quando la vostra presenza dà coraggio senza distribuire parti. Quando arriva la sera, un gruppo, una rete o un progetto a più voci può risvegliare il gusto di un futuro che non si racconta da soli. Nel movimento, l'interesse sta nella mescolanza, non nell'uniformità. A passo misurato, il collettivo può diventare una scena dove nessuno deve sparire per lasciarvi brillare.",
+      "love": "A passo misurato, l'amicizia dà una luce particolare all'attrazione. Su un altro ritmo, la complicità acquista rilievo quando possiede anche un mondo da guardare insieme, oltre a ciò che accade soltanto fra voi. Quando arriva la sera, vi tocca chi accompagna un'idea quanto un momento tenero.",
+      "work": "Su un altro ritmo, un'ambizione collettiva può ritrovare slancio grazie alla capacità di rendere desiderabile il seguito. Quando arriva la sera, la sfida è lasciare agli altri una parte vera d'invenzione, non soltanto un entusiasmo da approvare e seguire. Nel movimento, sapete dare volto a un progetto.",
+      "finance": "Quando arriva la sera, la voglia di partecipare può trascinarvi verso una spesa comune. Nel movimento, un contributo scelto conserva più calore di un impegno preso soprattutto per non deludere nessuno. A passo misurato, il piacere del gruppo è reale, senza garantire l'interesse di ogni opzione.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "leo",
+      "language": "pt",
+      "general": "Em movimento, a mesa cresce, e as ideias também. A passo medido, tem entusiasmo para oferecer, embora uma proposta diferente possa ferir o orgulho. Noutro ritmo, o dia recupera amplitude calorosa quando a sua presença dá coragem sem distribuir papéis. Quando chega a noite, um grupo, uma rede ou um projeto a várias vozes pode despertar o gosto de um futuro que não se conta sozinho. Em movimento, o interesse está precisamente na mistura, não na uniformidade. A passo medido, o coletivo pode ser um palco onde ninguém tenha de desaparecer para o deixar brilhar.",
+      "love": "A passo medido, a amizade dá uma luz particular à atração. Noutro ritmo, a cumplicidade ganha relevo quando possui também um mundo que ambos podem olhar e descobrir juntos, para além de si mesmos. Quando chega a noite, toca-lhe quem acompanha uma ideia tanto como um momento terno.",
+      "work": "Noutro ritmo, uma ambição coletiva pode recuperar impulso pela sua capacidade de tornar o que vem a seguir desejável. Quando chega a noite, o desafio é deixar aos outros uma parte real de invenção, não apenas entusiasmo para aprovar. Em movimento, sabe dar rosto a um projeto.",
+      "finance": "Quando chega a noite, a vontade de participar pode levá-lo a uma despesa comum. Em movimento, um contributo escolhido conserva mais calor do que um compromisso aceite sobretudo para não desiludir ninguém. A passo medido, o prazer do grupo é real sem garantir o interesse de cada opção.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "leo",
+      "language": "ru",
+      "general": "В движении стол становится больше, и идеи тоже. Размеренным шагом вам есть чем воодушевить, хотя чужое предложение способно задеть гордость. В другом ритме день возвращает тёплую широту, когда ваше присутствие придаёт смелость, не распределяя роли. С наступлением вечера группа, круг знакомств или многоголосый проект могут разбудить вкус к будущему, которое не рассказывают в одиночку. В движении однако интерес именно в смеси, не в одинаковости. Размеренным шагом общее дело может стать сценой, где никому не нужно исчезать, чтобы дать вам сиять.",
+      "love": "Размеренным шагом дружба придаёт притяжению особый свет. В другом ритме близость обретает объём, когда у неё есть ещё и мир, на который можно смотреть вместе. С наступлением вечера вам близок тот, кто сопровождает идею так же охотно, как нежный момент.",
+      "work": "В другом ритме общая амбиция может ожить благодаря вашему умению делать продолжение желанным. С наступлением вечера важно оставить другим настоящую долю изобретения, а не только воодушевление, которое им предлагается одобрить. В движении вы умеете придавать проекту лицо.",
+      "finance": "С наступлением вечера желание участвовать может увлечь к общей трате. В движении выбранный вклад сохраняет больше тепла, чем обязательство, принятое главным образом ради того, чтобы никого не разочаровать. Размеренным шагом радость компании реальна, но не гарантирует ценность каждого варианта.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "leo",
+      "language": "nl",
+      "general": "In beweging de tafel wordt groter, en de ideeën ook. Met afgemeten pas je hebt enthousiasme te geven, al kan een ander voorstel je trots raken. Op een ander ritme de dag krijgt warme ruimte wanneer je aanwezigheid moed geeft zonder rollen toe te wijzen. Wanneer de avond valt een groep, netwerk of veelstemmig project kan je smaak wekken voor een toekomst die niet alleen wordt verteld. In beweging de belangstelling zit juist in het mengsel, niet in eenvormigheid. Met afgemeten pas het collectief mag een podium zijn waar niemand verdwijnt om jou te laten schitteren.",
+      "love": "Met afgemeten pas vriendschap geeft aantrekkingskracht een bijzonder licht. Op een ander ritme verbondenheid krijgt reliëf wanneer er ook een wereld is waar jullie samen naar kunnen kijken. Wanneer de avond valt je wordt geraakt door iemand die je in een idee evenzeer begeleidt als in een teder moment.",
+      "work": "Op een ander ritme een gezamenlijke ambitie kan vaart terugvinden doordat jij het vervolg aantrekkelijk maakt. Wanneer de avond valt de uitdaging is anderen een werkelijk aandeel in het bedenken te laten, niet alleen enthousiasme dat ze mogen goedkeuren. In beweging je weet een project een gezicht te geven.",
+      "finance": "Wanneer de avond valt de wens mee te doen kan naar gezamenlijke uitgaven leiden. In beweging een gekozen bijdrage houdt meer warmte dan een toezegging die vooral is gedaan om niemand teleur te stellen. Met afgemeten pas het groepsplezier is echt zonder de waarde van iedere optie te garanderen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "virgo",
+      "language": "fr",
+      "general": "Être remarqué peut provoquer un léger vertige; Vous avez envie que le résultat soit juste, avec cette tentation de retoucher ce qui était déjà suffisamment vivant; Votre précision gagne à rester une signature, non une armure; Une idée, une manière de présenter les choses ou une qualité que vous pensiez secondaire peut attirer un regard différent; La journée possède un potentiel d’exposition, sans promettre de consécration; Ce qui vous distingue pourrait tenir autant à votre façon d’habiter une responsabilité qu’à l’absence de défaut dans ce que vous montrez.",
+      "love": "Vous pouvez être touché par une admiration que vous n’aviez pas cherchée; La tendresse reste plus proche lorsqu’elle ne vous demande pas de devenir la version irréprochable que l’autre semble voir; Elle fait du bien, tout en réveillant une réserve.",
+      "work": "Une perspective de visibilité professionnelle peut devenir stimulante, même si elle arrive sous une forme modeste; Un échange peut ouvrir cette question sans constituer déjà une promotion; Votre contribution mérite d’être reconnue pour son intelligence, pas seulement pour sa fiabilité.",
+      "finance": "L’envie de soutenir une ambition par un achat devient compréhensible : équipement, présentation, apprentissage; La dépense la plus solide ne fait pas porter tout l’avenir à l’objet choisi; Le projet peut y gagner du confort, pas une garantie de reconnaissance.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "virgo",
+      "language": "en",
+      "general": "At a measured pace, being noticed can produce a slight dizziness. To a different rhythm, you want the result to be right, with the temptation to retouch something already alive enough. When evening comes, precision benefits from remaining a signature rather than armour. In motion, an idea, a way of presenting things or a quality you considered secondary may attract a different gaze. At a measured pace, the day carries a possibility of exposure, not a promise of acclaim. To a different rhythm, what distinguishes you may lie as much in how you inhabit responsibility as in the absence of flaws in what you show.",
+      "love": "To a different rhythm, admiration you did not seek may touch you. When evening comes, tenderness remains closer when it does not require you to become the faultless version that someone else appears to see when they look at you. In motion, it feels good while awakening some reserve.",
+      "work": "When evening comes, the prospect of professional visibility can stimulate you even in a modest form. In motion, a conversation may open that question without already amounting to a promotion or a confirmed advancement. At a measured pace, your contribution deserves recognition for its intelligence, not merely its reliability.",
+      "finance": "In motion, buying something to support an ambition feels understandable: equipment, presentation, learning. At a measured pace, the strongest expense does not expect the chosen object to carry the weight of an entire future. To a different rhythm, it can make the project more comfortable, not guarantee recognition.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "virgo",
+      "language": "de",
+      "general": "Mit bedachtem Schritt bemerkt zu werden kann leicht schwindelig machen. In einem anderen Rhythmus sie möchten, dass das Ergebnis stimmt, und könnten etwas nachbessern, das längst lebendig genug war. Wenn der Abend kommt genauigkeit darf Handschrift bleiben statt Rüstung. In Bewegung eine Idee, eine Darstellung oder eine vermeintlich nebensächliche Qualität zieht vielleicht einen anderen Blick an. Mit bedachtem Schritt der Tag bietet Sichtbarkeit, verspricht keine Weihe. In einem anderen Rhythmus ihre Besonderheit liegt womöglich ebenso darin, wie Sie Verantwortung ausfüllen, wie in der Fehlerlosigkeit dessen, was Sie zeigen.",
+      "love": "In einem anderen Rhythmus unbeabsichtigte Bewunderung kann Sie berühren. Wenn der Abend kommt zärtlichkeit bleibt näher, wenn sie nicht verlangt, dass Sie zur makellosen Fassung werden, die der andere in Ihnen zu sehen scheint und vielleicht ein wenig idealisiert. In Bewegung sie tut gut und weckt zugleich Zurückhaltung.",
+      "work": "Wenn der Abend kommt eine Aussicht auf berufliche Sichtbarkeit reizt, selbst in bescheidener Form. In Bewegung ein Gespräch öffnet vielleicht diese Frage, ohne bereits eine Beförderung oder einen bestätigten Aufstieg zu bedeuten. Mit bedachtem Schritt ihr Beitrag verdient Anerkennung für seine Klugheit, nicht nur Verlässlichkeit.",
+      "finance": "In Bewegung eine Ausgabe zur Unterstützung von Ehrgeiz ist verständlich: Ausrüstung, Präsentation, Lernen. Mit bedachtem Schritt die solideste Ausgabe erwartet nicht vom gewählten Gegenstand, allein die Last einer ganzen beruflichen Zukunft tragen zu müssen. In einem anderen Rhythmus das Projekt gewinnt Komfort, keine Anerkennungsgarantie.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "virgo",
+      "language": "es",
+      "general": "Con paso medido, que le presten atención puede provocar un pequeño vértigo. A otro ritmo, quiere acertar con el resultado, con la tentación de retocar lo que ya estaba suficientemente vivo. Cuando llega la noche, su precisión gana al seguir siendo firma, no armadura. En movimiento, una idea, una forma de presentar o una cualidad que juzgaba secundaria puede atraer otra mirada. Con paso medido, la jornada ofrece exposición, sin prometer consagración. A otro ritmo, quizá le distinga tanto su forma de habitar una responsabilidad como la ausencia de defectos en lo que muestra.",
+      "love": "A otro ritmo, una admiración que no buscaba puede conmoverle. Cuando llega la noche, la ternura permanece más cerca cuando no exige que se convierta en esa versión irreprochable que la otra persona parece ver y quizá idealiza un poco. En movimiento, sienta bien, pero despierta reserva.",
+      "work": "Cuando llega la noche, una perspectiva de visibilidad profesional puede estimular aunque llegue modestamente. En movimiento, una conversación puede abrir esa cuestión sin constituir todavía un ascenso ni una mejora profesional ya confirmada. Con paso medido, su aportación merece reconocimiento por su inteligencia, no solo por su fiabilidad.",
+      "finance": "En movimiento, comprar para apoyar una ambición resulta comprensible: equipo, presentación, aprendizaje. Con paso medido, el gasto más sólido no hace que el objeto elegido cargue por sí solo con todo el peso del futuro. A otro ritmo, el proyecto puede ganar comodidad, no garantía de reconocimiento.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "virgo",
+      "language": "it",
+      "general": "A passo misurato, essere notati può dare una lieve vertigine. Su un altro ritmo, volete che il risultato sia giusto, con la tentazione di ritoccare ciò che era già vivo abbastanza. Quando arriva la sera, la precisione guadagna restando firma, non armatura. Nel movimento, un'idea, una presentazione o una qualità ritenuta secondaria attira forse uno sguardo diverso. A passo misurato, la giornata offre esposizione senza promettere consacrazione. Su un altro ritmo, ciò che vi distingue può stare nel modo di abitare una responsabilità quanto nell'assenza di difetti in quello che mostrate.",
+      "love": "Su un altro ritmo, un'ammirazione non cercata può toccarvi. Quando arriva la sera, la tenerezza resta più vicina quando non chiede di diventare quella versione irreprensibile che l'altro sembra vedere e forse idealizza un poco nel guardarvi. Nel movimento, fa bene, ma risveglia una riserva.",
+      "work": "Quando arriva la sera, una prospettiva di visibilità professionale può stimolare anche in forma modesta. Nel movimento, uno scambio può aprire la questione senza essere già una promozione o un avanzamento effettivamente confermato. A passo misurato, il contributo merita riconoscimento per l'intelligenza, non soltanto l'affidabilità.",
+      "finance": "Nel movimento, spendere per sostenere un'ambizione è comprensibile: attrezzatura, presentazione, apprendimento. A passo misurato, la spesa più solida non fa portare all'oggetto scelto tutto il peso di un intero futuro professionale. Su un altro ritmo, il progetto può guadagnare comfort, non una garanzia di riconoscimento.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "virgo",
+      "language": "pt",
+      "general": "A passo medido, ser notado pode provocar uma ligeira vertigem. Noutro ritmo, quer que o resultado esteja certo, com a tentação de retocar aquilo que já estava suficientemente vivo. Quando chega a noite, a precisão ganha ao continuar assinatura, não armadura. Em movimento, uma ideia, uma apresentação ou uma qualidade considerada secundária pode atrair um olhar diferente. A passo medido, o dia oferece exposição sem prometer consagração. Noutro ritmo, o que o distingue pode estar tanto na forma de habitar uma responsabilidade como na ausência de defeitos no que mostra.",
+      "love": "Noutro ritmo, uma admiração que não procurava pode tocá-lo. Quando chega a noite, a ternura fica mais próxima quando não exige que se transforme nessa versão irrepreensível que a outra pessoa parece ver e talvez idealize um pouco ao olhar para si. Em movimento, sabe bem, mas desperta reserva.",
+      "work": "Quando chega a noite, uma perspetiva de visibilidade profissional pode estimular mesmo numa forma modesta. Em movimento, uma conversa pode abrir essa questão sem constituir ainda promoção nem progressão profissional que já esteja efetivamente confirmada. A passo medido, o contributo merece reconhecimento pela inteligência, não apenas pela fiabilidade.",
+      "finance": "Em movimento, comprar para apoiar uma ambição é compreensível: equipamento, apresentação, aprendizagem. A passo medido, a despesa mais sólida não faz o objeto escolhido carregar sozinho todo o peso de um futuro profissional. Noutro ritmo, o projeto pode ganhar conforto, não garantia de reconhecimento.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "virgo",
+      "language": "ru",
+      "general": "Размеренным шагом быть замеченным иногда слегка кружит голову. В другом ритме хочется точного результата, с соблазном подправить то, что уже достаточно живо. С наступлением вечера точность выигрывает, оставаясь почерком, а не бронёй. В движении идея, способ представить материал или второстепенное, на ваш взгляд, качество могут привлечь другой взгляд. Размеренным шагом день допускает видимость, не обещая триумфа. В другом ритме ваша особенность может заключаться в том, как вы наполняете ответственность, не меньше, чем в отсутствии недостатков в показанном.",
+      "love": "В другом ритме неискомое восхищение может тронуть. С наступлением вечера нежность остаётся ближе, когда не требует стать той безупречной версией, которую другой будто бы видит в вас и, возможно, немного идеализирует. В движении оно приятно и одновременно вызывает сдержанность.",
+      "work": "С наступлением вечера перспектива профессиональной заметности увлекает даже в скромной форме. В движении разговор может открыть этот вопрос, ещё не означая повышения или уже подтверждённого движения вверх. Размеренным шагом ваш вклад заслуживает признания за ум, не только за надёжность.",
+      "finance": "В движении покупать в поддержку амбиции понятно: оборудование, оформление, обучение. Размеренным шагом самая прочная трата не заставляет выбранную вещь в одиночку нести весь вес профессионального будущего. В другом ритме проект может стать удобнее, но признание не гарантировано.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "virgo",
+      "language": "nl",
+      "general": "Met afgemeten pas opgemerkt worden kan licht duizelig maken. Op een ander ritme je wilt dat het resultaat klopt, met de verleiding iets te retoucheren dat al levendig genoeg was. Wanneer de avond valt precisie mag handschrift blijven in plaats van pantser. In beweging een idee, presentatie of kwaliteit die je bijkomstig vond kan een andere blik aantrekken. Met afgemeten pas de dag biedt zichtbaarheid zonder bekroning te beloven. Op een ander ritme wat je onderscheidt ligt misschien evenzeer in hoe je verantwoordelijkheid bewoont als in het ontbreken van gebreken aan wat je laat zien.",
+      "love": "Op een ander ritme bewondering die je niet zocht kan je raken. Wanneer de avond valt tederheid blijft dichterbij wanneer ze niet vraagt dat je de onberispelijke versie wordt die de ander in je lijkt te zien en misschien wat idealiseert. In beweging ze doet goed en wekt tegelijk reserve.",
+      "work": "Wanneer de avond valt een vooruitzicht op professionele zichtbaarheid kan stimuleren, ook in bescheiden vorm. In beweging een gesprek kan die vraag openen zonder al een promotie of een daadwerkelijk bevestigde stap omhoog te betekenen. Met afgemeten pas je bijdrage verdient erkenning voor intelligentie, niet alleen betrouwbaarheid.",
+      "finance": "In beweging een aankoop om ambitie te steunen is begrijpelijk: apparatuur, presentatie, leren. Met afgemeten pas de stevigste uitgave verwacht niet van het gekozen voorwerp dat het alleen het gewicht van je hele toekomst draagt. Op een ander ritme het project wint misschien comfort, geen garantie op erkenning.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "libra",
+      "language": "fr",
+      "general": "L’ailleurs prend un ton plus léger; Vous n’avez pas besoin d’un grand départ pour sentir l’horizon bouger; Le charme du jour tient justement à cette ouverture encore libre; Une idée étrangère à vos habitudes, un récit ou un projet de découverte peut vous rendre une envie que la routine avait un peu endormie; Une réserve apparaît si l’enthousiasme exige trop vite une décision ou une dépense; Vous pouvez vous laisser attirer par une possibilité sans lui confier immédiatement les clés de toute votre vie.",
+      "love": "Le désir aime les conversations qui font voyager; La proximité se nourrit aussi de ce qui reste à découvrir, lorsque la curiosité n’essaie pas de tout rendre familier; Une différence de regard peut devenir séduisante sans devoir être immédiatement comprise.",
+      "work": "Une idée venue d’un autre domaine peut enrichir une perspective professionnelle; Le plaisir de découvrir reste fécond lorsqu’il ne transforme pas chaque nouveauté en raison de renoncer à tout l’existant; Votre sens des correspondances lui donne une forme accessible.",
+      "finance": "Un projet d’évasion ou d’apprentissage peut rendre les chiffres moins présents que les images; Une première mesure concrète peut lui donner une rive, sans prétendre financer tout l’horizon; Le rêve garde sa valeur sans exiger une réponse immédiate.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "libra",
+      "language": "en",
+      "general": "To a different rhythm, elsewhere takes on a lighter tone. When evening comes, you do not need a grand departure to feel the horizon move. In motion, the day's charm lies precisely in this opening, still free. At a measured pace, an unfamiliar idea, a story or a plan to explore may restore an appetite routine had slightly dulled. To a different rhythm, hesitation appears if enthusiasm demands a decision or expense too quickly. When evening comes, you can feel drawn to a possibility without immediately handing it the keys to your whole life.",
+      "love": "When evening comes, desire enjoys conversations that travel. In motion, closeness also feeds on what remains to discover, when curiosity does not try to turn every unfamiliar corner into something already comfortably known. At a measured pace, a different outlook can be attractive without needing immediate explanation.",
+      "work": "In motion, an idea from another field may enrich a professional prospect. At a measured pace, discovery remains fertile when it does not turn every novelty into a reason to abandon everything that already exists. To a different rhythm, your feel for connections gives it an accessible shape.",
+      "finance": "At a measured pace, a dream of escape or learning can make figures less present than pictures. To a different rhythm, one concrete measure can offer it a shore without pretending to finance the entire horizon. When evening comes, the dream keeps its worth without requiring an immediate answer.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "libra",
+      "language": "de",
+      "general": "In einem anderen Rhythmus die Ferne bekommt einen leichteren Ton. Wenn der Abend kommt ein großer Aufbruch ist nicht nötig, damit sich der Horizont bewegt. In Bewegung gerade die noch freie Öffnung macht den Tag reizvoll. Mit bedachtem Schritt eine ungewohnte Idee, eine Erzählung oder ein Entdeckungsplan weckt Lust, die Routine etwas eingeschläfert hatte. In einem anderen Rhythmus zurückhaltung entsteht, wenn Begeisterung zu schnell Entscheidung oder Ausgabe verlangt. Wenn der Abend kommt eine Möglichkeit darf Sie anziehen, ohne sofort die Schlüssel zu Ihrem ganzen Leben zu bekommen.",
+      "love": "Wenn der Abend kommt begehren liebt Gespräche, die reisen lassen. In Bewegung nähe lebt auch vom noch Unbekannten, wenn Neugier nicht versucht, jede fremde Ecke gleich zu etwas bereits Vertrautem zu machen. Mit bedachtem Schritt ein anderer Blick kann verführen, ohne sofort verstanden zu werden.",
+      "work": "In Bewegung eine Idee aus einem anderen Gebiet bereichert vielleicht eine berufliche Perspektive. Mit bedachtem Schritt entdecken bleibt fruchtbar, wenn nicht jede Neuigkeit zum Grund wird, alles Bestehende auf einmal aufzugeben. In einem anderen Rhythmus ihr Gespür für Verbindungen gibt ihr eine zugängliche Form.",
+      "finance": "Mit bedachtem Schritt ein Reise- oder Lernwunsch lässt Zahlen hinter Bildern verschwinden. In einem anderen Rhythmus ein erstes konkretes Maß gibt ihm vielleicht ein Ufer, ohne vorzutäuschen, damit ließe sich bereits der ganze Horizont finanzieren. Wenn der Abend kommt der Traum bleibt wertvoll, ohne sofortige Antwort zu verlangen.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "libra",
+      "language": "es",
+      "general": "A otro ritmo, lo lejano adopta un tono más ligero. Cuando llega la noche, no necesita una gran partida para sentir moverse el horizonte. En movimiento, el encanto está justamente en esa apertura todavía libre. Con paso medido, una idea ajena a sus hábitos, un relato o un plan de descubrimiento puede devolverle un deseo algo dormido por la rutina. A otro ritmo, aparece reserva si el entusiasmo exige decidir o gastar demasiado pronto. Cuando llega la noche, puede dejarse atraer por una posibilidad sin entregarle enseguida las llaves de toda su vida.",
+      "love": "Cuando llega la noche, el deseo disfruta de las conversaciones que hacen viajar. En movimiento, la cercanía se alimenta también de lo que queda por descubrir, cuando la curiosidad no intenta volver familiar cada rincón desconocido. Con paso medido, una mirada diferente puede seducir sin exigir comprensión inmediata.",
+      "work": "En movimiento, una idea de otro ámbito puede enriquecer una perspectiva profesional. Con paso medido, descubrir sigue siendo fértil cuando cada novedad no se convierte en motivo para renunciar a todo lo que ya existe. A otro ritmo, su sentido de las correspondencias le da una forma accesible.",
+      "finance": "Con paso medido, un proyecto de evasión o aprendizaje vuelve las imágenes más presentes que las cifras. A otro ritmo, una primera medida concreta puede darle una orilla, sin pretender financiar con ella todo el horizonte. Cuando llega la noche, el sueño conserva valor sin exigir respuesta inmediata.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "libra",
+      "language": "it",
+      "general": "Su un altro ritmo, l'altrove prende un tono più leggero. Quando arriva la sera, non serve una grande partenza per sentire muovere l'orizzonte. Nel movimento, il fascino del giorno sta proprio nell'apertura ancora libera. A passo misurato, un'idea estranea alle abitudini, un racconto o un progetto di scoperta può restituire una voglia assopita dalla routine. Su un altro ritmo, una riserva compare se l'entusiasmo pretende troppo presto una decisione o una spesa. Quando arriva la sera, potete lasciarvi attirare da una possibilità senza consegnarle subito le chiavi di tutta la vita.",
+      "love": "Quando arriva la sera, il desiderio ama le conversazioni che fanno viaggiare. Nel movimento, la vicinanza si nutre anche di ciò che resta da scoprire, quando la curiosità non tenta di rendere ogni angolo già familiare. A passo misurato, uno sguardo diverso può sedurre senza essere subito compreso.",
+      "work": "Nel movimento, un'idea proveniente da un altro settore può arricchire una prospettiva professionale. A passo misurato, scoprire resta fertile quando ogni novità non diventa ragione per rinunciare a tutto ciò che esiste già. Su un altro ritmo, il vostro senso delle corrispondenze le dà una forma accessibile.",
+      "finance": "A passo misurato, un progetto di evasione o apprendimento rende le immagini più presenti dei numeri. Su un altro ritmo, una prima misura concreta può dargli una riva, senza fingere di finanziare così tutto l'orizzonte. Quando arriva la sera, il sogno mantiene valore senza pretendere una risposta immediata.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "libra",
+      "language": "pt",
+      "general": "Noutro ritmo, o longe ganha um tom mais leve. Quando chega a noite, não precisa de uma grande partida para sentir o horizonte mover-se. Em movimento, o encanto está justamente nesta abertura ainda livre. A passo medido, uma ideia alheia aos hábitos, um relato ou um plano de descoberta pode devolver um desejo adormecido pela rotina. Noutro ritmo, surge reserva se o entusiasmo exige decidir ou gastar cedo demais. Quando chega a noite, pode deixar-se atrair por uma possibilidade sem lhe entregar imediatamente as chaves de toda a sua vida.",
+      "love": "Quando chega a noite, o desejo gosta das conversas que fazem viajar. Em movimento, a proximidade alimenta-se também do que falta descobrir, quando a curiosidade não tenta tornar familiar cada recanto que ainda é desconhecido. A passo medido, um olhar diferente pode seduzir sem exigir compreensão imediata.",
+      "work": "Em movimento, uma ideia de outro domínio pode enriquecer uma perspetiva profissional. A passo medido, descobrir continua fértil quando cada novidade não se torna motivo para renunciar a tudo aquilo que já existe e funciona. Noutro ritmo, o seu sentido das correspondências dá-lhe uma forma acessível.",
+      "finance": "A passo medido, um projeto de evasão ou aprendizagem torna as imagens mais presentes do que os números. Noutro ritmo, uma primeira medida concreta pode dar-lhe uma margem, sem pretender financiar com ela todo o horizonte. Quando chega a noite, o sonho conserva valor sem exigir resposta imediata.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "libra",
+      "language": "ru",
+      "general": "В другом ритме у далёкого появляется более лёгкий тон. С наступлением вечера не нужен большой отъезд, чтобы почувствовать движение горизонта. В движении обаяние дня именно в ещё свободном проёме. Размеренным шагом непривычная идея, рассказ или замысел открытия может вернуть желание, немного усыплённое рутиной. В другом ритме осторожность возникает, если воодушевление слишком быстро требует решения или расходов. С наступлением вечера можно поддаться притяжению возможности, не отдавая ей сразу ключи от всей своей жизни.",
+      "love": "С наступлением вечера желание любит разговоры, уносящие в путешествие. В движении близость питается и тем, что ещё предстоит открыть, когда любопытство не пытается сделать каждый неизвестный уголок заранее привычным. Размеренным шагом другой взгляд привлекает, не требуя немедленного понимания.",
+      "work": "В движении идея из другой области может обогатить профессиональную перспективу. Размеренным шагом открытия плодотворны, когда каждая новинка не превращается в причину отказаться от всего, что уже существует. В другом ритме ваше чувство связей придаёт ей доступную форму.",
+      "finance": "Размеренным шагом замысел поездки или обучения делает картинки заметнее цифр. В другом ритме первая конкретная мера может дать ей берег, не притворяясь, будто этим уже оплачен весь горизонт. С наступлением вечера мечта сохраняет ценность, не требуя немедленного ответа.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "libra",
+      "language": "nl",
+      "general": "Op een ander ritme elders krijgt een lichtere toon. Wanneer de avond valt je hoeft niet groots te vertrekken om de horizon te voelen bewegen. In beweging de charme zit juist in de opening die nog vrij is. Met afgemeten pas een ongewoon idee, een verhaal of een ontdekkingsplan kan een verlangen terugbrengen dat door routine wat was ingedommeld. Op een ander ritme reserve verschijnt als enthousiasme te snel een besluit of uitgave eist. Wanneer de avond valt een mogelijkheid mag je aantrekken zonder onmiddellijk de sleutels tot je hele leven te krijgen en er de richting van te bepalen.",
+      "love": "Wanneer de avond valt verlangen houdt van gesprekken die laten reizen. In beweging nabijheid leeft ook van wat nog ontdekt moet worden, wanneer nieuwsgierigheid niet probeert iedere onbekende hoek direct helemaal vertrouwd te maken. Met afgemeten pas een andere blik kan verleiden zonder meteen begrepen te worden.",
+      "work": "In beweging een idee uit een ander vakgebied kan een professioneel vooruitzicht verrijken. Met afgemeten pas ontdekken blijft vruchtbaar wanneer niet iedere nieuwigheid een reden wordt om alles wat al bestaat meteen achter te laten. Op een ander ritme je gevoel voor verbanden geeft het een toegankelijke vorm.",
+      "finance": "Met afgemeten pas een reis- of leerplan maakt beelden aanweziger dan cijfers. Op een ander ritme een eerste concrete maat kan een oever geven zonder te doen alsof daarmee al de hele horizon betaald is. Wanneer de avond valt de droom houdt zijn waarde zonder onmiddellijk antwoord te eisen.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "scorpio",
+      "language": "fr",
+      "general": "Une confidence peut changer la température d’un échange; Votre intensité trouve ici un terrain plus fin que l’enquête : celui d’une confiance qui se construit sans tout réclamer; La journée possède une profondeur calme, avec parfois un trouble inattendu; Vous percevez ce qu’une personne accepte de montrer, mais aussi l’effort que cela lui demande; Une curiosité insistante pourrait refermer ce qui commençait à s’ouvrir; Certaines vérités prennent davantage de poids lorsqu’elles sont reçues simplement, sans qu’on cherche aussitôt la porte suivante derrière elles.",
+      "love": "Le désir se mêle à une confiance vivante; Un rapprochement peut gagner en force lorsqu’il ne devient pas l’obligation de livrer tout ce que chacun garde encore; Vous êtes sensible à ce qui se dévoile sans mise en scène.",
+      "work": "Une association peut vous intéresser par la complémentarité des forces, pas seulement par le contrôle du résultat; Cette lucidité devient précieuse lorsqu’elle ouvre une coopération au lieu de vous rendre seul indispensable; Vous voyez ce qui manque au tableau.",
+      "finance": "Les ressources partagées demandent autant de clarté que de confiance; L’accord matériel n’a pas à porter, à lui seul, toute la preuve de votre engagement affectif; Un projet commun peut paraître plus attirant lorsque les rôles se distinguent.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "scorpio",
+      "language": "en",
+      "general": "When evening comes, a confidence can change the temperature of an exchange. In motion, intensity finds subtler ground here than investigation: trust being built without demanding everything. At a measured pace, the day has a quiet depth, occasionally touched by unexpected feeling. To a different rhythm, you perceive what someone agrees to reveal, but also the effort involved. When evening comes, insistent curiosity could close what had begun to open. In motion, some truths acquire greater weight when received simply, without immediately searching for the next door behind them or expecting another revelation to follow the first.",
+      "love": "In motion, desire mingles with living trust. At a measured pace, closeness can gain strength when it does not become an obligation to surrender everything each person still keeps privately, or to explain every last hidden feeling. To a different rhythm, you respond to what reveals itself without staging.",
+      "work": "At a measured pace, an association may interest you through complementary strengths rather than control over the result. To a different rhythm, that clarity becomes valuable when it opens cooperation instead of making you the only indispensable person involved. When evening comes, you see what is missing from the picture.",
+      "finance": "To a different rhythm, shared resources call for clarity as much as trust. When evening comes, a material agreement does not need to carry, on its own, the entire proof of your emotional commitment. In motion, a common project may become more appealing when roles are distinct.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "scorpio",
+      "language": "de",
+      "general": "Wenn der Abend kommt eine Vertraulichkeit verändert vielleicht die Temperatur eines Gesprächs. In Bewegung ihre Intensität findet hier feineres Gelände als die Untersuchung: Vertrauen, das wächst, ohne alles einzufordern. Mit bedachtem Schritt der Tag besitzt ruhige Tiefe und gelegentlich unerwartete Unruhe. In einem anderen Rhythmus sie spüren, was jemand zeigt, und zugleich die Mühe, die es kostet. Wenn der Abend kommt drängende Neugier könnte schließen, was sich gerade öffnete. In Bewegung manche Wahrheit bekommt mehr Gewicht, wenn sie schlicht empfangen wird, ohne sofort hinter ihr die nächste Tür zu suchen.",
+      "love": "In Bewegung begehren mischt sich mit lebendigem Vertrauen. Mit bedachtem Schritt nähe gewinnt Kraft, wenn sie nicht zur Pflicht wird, alles Private auszuliefern oder jedes Gefühl zu erklären, das jemand noch für sich behält. In einem anderen Rhythmus sie reagieren auf das, was sich ohne Inszenierung zeigt.",
+      "work": "Mit bedachtem Schritt eine Verbindung interessiert durch ergänzende Stärken, nicht nur Kontrolle über das Ergebnis. In einem anderen Rhythmus diese Klarheit wird wertvoll, wenn sie Zusammenarbeit eröffnet, statt am Ende nur Sie selbst unersetzlich werden zu lassen. Wenn der Abend kommt sie sehen, was im Bild fehlt.",
+      "finance": "In einem anderen Rhythmus gemeinsame Mittel brauchen Klarheit ebenso wie Vertrauen. Wenn der Abend kommt die materielle Vereinbarung muss nicht allein den gesamten Beweis Ihrer gefühlsmäßigen Bindung tragen oder jeden Zweifel an Nähe auflösen. In Bewegung ein gemeinsames Projekt wird reizvoller, wenn Rollen sich unterscheiden.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "scorpio",
+      "language": "es",
+      "general": "Cuando llega la noche, una confidencia puede cambiar la temperatura de un intercambio. En movimiento, su intensidad encuentra un terreno más fino que la investigación: una confianza que se construye sin pedirlo todo. Con paso medido, la jornada tiene una profundidad serena, con alguna turbación inesperada. A otro ritmo, percibe lo que alguien acepta mostrar, pero también el esfuerzo que supone. Cuando llega la noche, una curiosidad insistente podría cerrar lo que empezaba a abrirse. En movimiento, ciertas verdades pesan más cuando se reciben sencillamente, sin buscar enseguida la puerta siguiente detrás de ellas.",
+      "love": "En movimiento, el deseo se mezcla con una confianza viva. Con paso medido, un acercamiento gana fuerza cuando no se convierte en obligación de entregar todo lo que cada persona conserva todavía para sí. A otro ritmo, le atrae lo que se revela sin puesta en escena.",
+      "work": "Con paso medido, una asociación puede interesarle por la complementariedad de fuerzas, no solo por controlar el resultado. A otro ritmo, esa lucidez es valiosa cuando abre cooperación en vez de convertirle en la única persona imprescindible del conjunto. Cuando llega la noche, ve lo que falta en el cuadro.",
+      "finance": "A otro ritmo, los recursos compartidos requieren claridad tanto como confianza. Cuando llega la noche, el acuerdo material no tiene que cargar por sí solo con toda la prueba de su compromiso afectivo ni resolver cada duda. En movimiento, un proyecto común puede atraer más cuando los papeles se distinguen.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "scorpio",
+      "language": "it",
+      "general": "Quando arriva la sera, una confidenza può cambiare la temperatura di uno scambio. Nel movimento, l'intensità trova un terreno più fine dell'indagine: una fiducia che si costruisce senza reclamare tutto. A passo misurato, la giornata ha una profondità calma, con qualche turbamento inatteso. Su un altro ritmo, percepite ciò che qualcuno accetta di mostrare, ma anche lo sforzo che richiede. Quando arriva la sera, una curiosità insistente potrebbe richiudere ciò che iniziava ad aprirsi. Nel movimento, certe verità acquistano peso quando vengono accolte semplicemente, senza cercare subito la porta successiva dietro di loro.",
+      "love": "Nel movimento, il desiderio si mescola a una fiducia viva. A passo misurato, un avvicinamento acquista forza quando non diventa l'obbligo di consegnare tutto ciò che ciascuno conserva ancora per sé, sentimento dopo sentimento. Su un altro ritmo, vi attrae ciò che si rivela senza regia.",
+      "work": "A passo misurato, un'associazione interessa per la complementarità delle forze, non soltanto per il controllo del risultato. Su un altro ritmo, questa lucidità è preziosa quando apre cooperazione invece di rendere soltanto voi indispensabili a tutta l'operazione. Quando arriva la sera, vedete ciò che manca al quadro.",
+      "finance": "Su un altro ritmo, le risorse condivise chiedono chiarezza quanto fiducia. Quando arriva la sera, l'accordo materiale non deve portare da solo tutta la prova del vostro impegno affettivo né risolvere ogni dubbio sulla vicinanza. Nel movimento, un progetto comune può attirare di più quando i ruoli si distinguono.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "scorpio",
+      "language": "pt",
+      "general": "Quando chega a noite, uma confidência pode mudar a temperatura de uma conversa. Em movimento, a intensidade encontra um terreno mais fino do que a investigação: confiança que se constrói sem pedir tudo. A passo medido, o dia tem profundidade calma, com alguma perturbação inesperada. Noutro ritmo, percebe o que alguém aceita mostrar, mas também o esforço que isso exige. Quando chega a noite, uma curiosidade insistente poderia fechar o que começava a abrir-se. Em movimento, certas verdades ganham peso quando são recebidas simplesmente, sem procurar logo a porta seguinte por detrás delas.",
+      "love": "Em movimento, o desejo mistura-se com uma confiança viva. A passo medido, uma aproximação ganha força quando não se torna obrigação de entregar tudo aquilo que cada pessoa ainda guarda para si, sentimento após sentimento. Noutro ritmo, atrai-o o que se revela sem encenação.",
+      "work": "A passo medido, uma associação pode interessar pela complementaridade das forças, não apenas pelo controlo do resultado. Noutro ritmo, esta lucidez é preciosa quando abre cooperação, em vez de o tornar a única pessoa indispensável em toda a operação. Quando chega a noite, vê o que falta ao quadro.",
+      "finance": "Noutro ritmo, os recursos partilhados pedem clareza tanto como confiança. Quando chega a noite, o acordo material não tem de carregar sozinho toda a prova do seu compromisso afetivo nem resolver cada dúvida de proximidade. Em movimento, um projeto comum pode atrair mais quando os papéis se distinguem.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "scorpio",
+      "language": "ru",
+      "general": "С наступлением вечера доверительное признание способно изменить температуру разговора. В движении интенсивность находит здесь более тонкую почву, чем расследование: доверие строится, не требуя всего. Размеренным шагом у дня спокойная глубина, порой с неожиданным волнением. В другом ритме вы замечаете, что человек согласен показать, и усилие, которого это стоит. С наступлением вечера настойчивая любознательность могла бы закрыть начавшее открываться. В движении некоторые истины приобретают больший вес, когда их принимают просто, не пытаясь сразу отыскать за ними следующую дверь.",
+      "love": "В движении желание смешивается с живым доверием. Размеренным шагом сближение становится сильнее, когда не превращается в обязанность выдать всё, что каждый ещё хранит для себя. В другом ритме вам близко то, что открывается без постановки.",
+      "work": "Размеренным шагом союз может заинтересовать сочетанием сил, не только контролем результата. В другом ритме эта ясность ценна, когда открывает сотрудничество, вместо того чтобы в итоге сделать вас единственным незаменимым человеком. С наступлением вечера вы видите недостающее в картине.",
+      "finance": "В другом ритме общие ресурсы требуют ясности не меньше доверия. С наступлением вечера материальная договорённость не обязана в одиночку нести всё доказательство вашей эмоциональной вовлечённости. В движении совместный замысел привлекательнее, когда роли различимы.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "scorpio",
+      "language": "nl",
+      "general": "Wanneer de avond valt een vertrouwelijke mededeling kan de temperatuur van een gesprek veranderen. In beweging intensiteit vindt hier fijner terrein dan onderzoek: vertrouwen dat groeit zonder alles te eisen. Met afgemeten pas de dag heeft stille diepte, soms met onverwachte beroering. Op een ander ritme je merkt wat iemand wil tonen, maar ook wat het kost. Wanneer de avond valt aandringende nieuwsgierigheid kan sluiten wat net openging. In beweging sommige waarheden krijgen meer gewicht wanneer ze eenvoudig worden ontvangen, zonder meteen naar de volgende deur erachter te zoeken of nog een onthulling te verwachten.",
+      "love": "In beweging verlangen vermengt zich met levend vertrouwen. Met afgemeten pas toenadering wint kracht wanneer ze niet de verplichting wordt alles prijs te geven wat ieder nog voor zichzelf bewaart, gevoel na gevoel en zonder voorbehoud. Op een ander ritme je reageert op wat zich zonder enscenering toont.",
+      "work": "Met afgemeten pas een verbintenis kan interesseren door aanvullende krachten, niet alleen controle over het resultaat. Op een ander ritme die helderheid wordt waardevol wanneer ze samenwerking opent in plaats van alleen jou onmisbaar te maken voor het geheel. Wanneer de avond valt je ziet wat in het beeld ontbreekt.",
+      "finance": "Op een ander ritme gedeelde middelen vragen helderheid evenzeer als vertrouwen. Wanneer de avond valt de materiële afspraak hoeft niet alleen het hele bewijs van je gevoelsmatige betrokkenheid te dragen of iedere vraag over nabijheid te beantwoorden. In beweging een gezamenlijk plan kan aantrekkelijker worden wanneer rollen onderscheidbaar zijn.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "sagittarius",
+      "language": "fr",
+      "general": "La bonne surprise n’est pas toujours d’être suivi ; c’est parfois d’être rejoint autrement; Vous aimez l’élan, mais ce dialogue lui donne une forme moins solitaire; L’atmosphère reste pourtant ouverte, avec un vrai plaisir d’échange; Une personne peut apporter un angle imprévu à une envie que vous croyiez déjà bien dessinée; Une remarque trop franche risque de transformer la différence en duel inutile; L’aventure prend une dimension nouvelle lorsque vous ne savez pas exactement ce que l’autre ajoutera au prochain chapitre.",
+      "love": "L’attirance aime un partenaire de conversation autant qu’un compagnon d’échappée; La liberté du lien devient plus séduisante quand elle contient aussi l’envie sincère de revenir l’un vers l’autre; Une réponse inattendue peut réveiller le goût de se découvrir.",
+      "work": "Une collaboration peut élargir vos possibilités sans vous demander de perdre votre style; Une divergence bien réelle peut rendre le projet plus intéressant que l’accord obtenu trop facilement; Vous avez envie d’une alliance vivante, pas d’une approbation automatique.",
+      "finance": "Une proposition à deux peut modifier le coût d’un plaisir ou d’un projet; L’intérêt reste plus lisible lorsque l’enthousiasme commun ne remplace pas vos préférences et vos moyens personnels; Le partage ouvre des possibilités, sans rendre chaque dépense judicieuse.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "sagittarius",
+      "language": "en",
+      "general": "In motion, the welcome surprise is not always being followed; sometimes it is being met differently. At a measured pace, you enjoy momentum, but dialogue gives it a less solitary shape. To a different rhythm, yet the atmosphere remains open, with genuine pleasure in the exchange. When evening comes, someone may bring an unexpected angle to a wish you thought already well drawn. In motion, an overly blunt remark could turn difference into a needless duel. At a measured pace, adventure acquires another dimension when you do not know exactly what the other person will add to the next chapter.",
+      "love": "At a measured pace, attraction appreciates a conversational partner as much as a companion for escape. To a different rhythm, freedom within a bond becomes more appealing when it also contains a sincere wish to return to one another. When evening comes, an unexpected reply may awaken the pleasure of discovery.",
+      "work": "To a different rhythm, collaboration may broaden possibilities without asking you to lose your style. When evening comes, a genuine divergence can make the project more interesting than agreement obtained too easily and never given much thought. In motion, you want a living alliance, not automatic approval.",
+      "finance": "When evening comes, a proposal for two may change the cost of a pleasure or project. In motion, the benefit stays clearer when common enthusiasm does not replace your own preferences and the means available to you. At a measured pace, sharing opens possibilities without making every expense wise.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "sagittarius",
+      "language": "de",
+      "general": "In Bewegung die angenehme Überraschung ist nicht immer, dass jemand folgt; manchmal begegnet er Ihnen anders. Mit bedachtem Schritt sie mögen Schwung, doch das Gespräch macht ihn weniger einsam. In einem anderen Rhythmus dabei bleibt die Atmosphäre weit und der Austausch erfreulich. Wenn der Abend kommt ein Mensch bringt einen unerwarteten Blick auf einen scheinbar fertigen Wunsch. In Bewegung eine allzu offene Bemerkung könnte Unterschied in ein unnötiges Duell verwandeln. Mit bedachtem Schritt abenteuer bekommt eine neue Dimension, wenn Sie nicht genau wissen, was der andere dem nächsten Kapitel hinzufügen wird.",
+      "love": "Mit bedachtem Schritt anziehung mag Gesprächspartner ebenso wie Begleiter für die Flucht ins Weite. In einem anderen Rhythmus freiheit in einer Verbindung wird reizvoller, wenn sie zugleich den ehrlichen Wunsch enthält, immer wieder zueinander zurückzufinden. Wenn der Abend kommt eine unerwartete Antwort weckt vielleicht Entdeckerfreude.",
+      "work": "In einem anderen Rhythmus zusammenarbeit erweitert Möglichkeiten, ohne dass Sie Ihren Stil aufgeben müssen. Wenn der Abend kommt ein wirklicher Unterschied kann das Projekt interessanter machen als ein zu leicht gewonnenes Einverständnis, das niemand je ernsthaft geprüft hat. In Bewegung sie möchten ein lebendiges Bündnis, keine automatische Zustimmung.",
+      "finance": "Wenn der Abend kommt ein Vorschlag für zwei verändert womöglich den Preis eines Vergnügens oder Projekts. In Bewegung der Nutzen bleibt lesbarer, wenn gemeinsame Begeisterung nicht Ihre eigenen Vorlieben und persönlichen Mittel ersetzt. Mit bedachtem Schritt teilen öffnet Möglichkeiten, macht nicht jede Ausgabe klug.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "sagittarius",
+      "language": "es",
+      "general": "En movimiento, la sorpresa agradable no siempre es que le sigan, sino que le acompañen de otra manera. Con paso medido, le gusta el impulso, pero el diálogo le da una forma menos solitaria. A otro ritmo, el ambiente sigue abierto y el intercambio da gusto. Cuando llega la noche, alguien puede aportar un enfoque imprevisto a un deseo que creía bien dibujado. En movimiento, una observación demasiado franca puede convertir la diferencia en duelo inútil. Con paso medido, la aventura adquiere otra dimensión cuando no sabe exactamente qué añadirá el otro al próximo capítulo.",
+      "love": "Con paso medido, la atracción aprecia al compañero de conversación tanto como al de escapada. A otro ritmo, la libertad del vínculo seduce más cuando también contiene el deseo sincero de volver el uno hacia el otro. Cuando llega la noche, una respuesta inesperada puede despertar ganas de descubrirse.",
+      "work": "A otro ritmo, una colaboración puede ampliar posibilidades sin hacerle perder su estilo. Cuando llega la noche, una divergencia real vuelve a veces el proyecto más interesante que un acuerdo demasiado fácil que nadie ha pensado con verdadera atención. En movimiento, quiere una alianza viva, no aprobación automática.",
+      "finance": "Cuando llega la noche, una propuesta para dos puede modificar el coste de un placer o proyecto. En movimiento, el interés resulta más claro cuando el entusiasmo común no sustituye sus preferencias ni los medios personales disponibles. Con paso medido, compartir abre posibilidades sin volver acertado cada gasto.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "sagittarius",
+      "language": "it",
+      "general": "Nel movimento, la sorpresa piacevole non è sempre essere seguiti: talvolta è essere raggiunti diversamente. A passo misurato, amate lo slancio, ma il dialogo gli dà una forma meno solitaria. Su un altro ritmo, l'atmosfera resta però aperta, con vero piacere nello scambio. Quando arriva la sera, qualcuno può portare un taglio imprevisto a un desiderio che credevate già disegnato. Nel movimento, un'osservazione troppo franca rischia di trasformare la differenza in duello inutile. A passo misurato, l'avventura acquista un'altra dimensione quando non sapete esattamente che cosa l'altro aggiungerà al prossimo capitolo.",
+      "love": "A passo misurato, l'attrazione ama un compagno di conversazione quanto di fuga. Su un altro ritmo, la libertà del legame seduce di più quando contiene anche il desiderio sincero di tornare l'uno verso l'altro. Quando arriva la sera, una risposta inattesa può risvegliare il gusto di scoprirsi.",
+      "work": "Su un altro ritmo, una collaborazione può ampliare possibilità senza chiedere di perdere il vostro stile. Quando arriva la sera, una divergenza reale può rendere il progetto più interessante di un accordo ottenuto troppo facilmente e mai veramente pensato. Nel movimento, volete un'alleanza viva, non approvazione automatica.",
+      "finance": "Quando arriva la sera, una proposta a due può modificare il costo di un piacere o progetto. Nel movimento, l'interesse resta più leggibile quando l'entusiasmo comune non sostituisce le vostre preferenze e i mezzi personali disponibili. A passo misurato, condividere apre possibilità, senza rendere saggia ogni spesa.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "sagittarius",
+      "language": "pt",
+      "general": "Em movimento, a surpresa agradável nem sempre é ser seguido; às vezes é ser acompanhado de outra maneira. A passo medido, gosta do impulso, mas o diálogo dá-lhe uma forma menos solitária. Noutro ritmo, o ambiente continua aberto, com verdadeiro prazer na troca. Quando chega a noite, alguém pode trazer um ângulo imprevisto a um desejo que julgava bem desenhado. Em movimento, uma observação demasiado franca pode transformar a diferença num duelo inútil. A passo medido, a aventura ganha outra dimensão quando não sabe exatamente o que o outro acrescentará ao próximo capítulo.",
+      "love": "A passo medido, a atração aprecia um parceiro de conversa tanto como de escapadela. Noutro ritmo, a liberdade do vínculo seduz mais quando contém também o desejo sincero de voltar um para o outro. Quando chega a noite, uma resposta inesperada pode acordar a vontade de se descobrir.",
+      "work": "Noutro ritmo, uma colaboração pode alargar possibilidades sem o fazer perder o seu estilo. Quando chega a noite, uma divergência real torna por vezes o projeto mais interessante do que um acordo demasiado fácil que ninguém pensou com atenção. Em movimento, quer uma aliança viva, não aprovação automática.",
+      "finance": "Quando chega a noite, uma proposta a dois pode modificar o custo de um prazer ou projeto. Em movimento, o interesse é mais claro quando o entusiasmo comum não substitui as suas preferências nem os meios pessoais disponíveis. A passo medido, partilhar abre possibilidades sem tornar acertada cada despesa.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "sagittarius",
+      "language": "ru",
+      "general": "В движении приятная неожиданность не всегда в том, что за вами следуют: иногда вас встречают иначе. Размеренным шагом вы любите порыв, но диалог делает его менее одиноким. В другом ритме между тем атмосфера открыта, а обмен доставляет удовольствие. С наступлением вечера кто-то может внести неожиданный ракурс в уже оформленное желание. В движении слишком прямая реплика рискует превратить различие в ненужную дуэль. Размеренным шагом приключение обретает новое измерение, когда вы не знаете точно, что другой добавит к следующей главе.",
+      "love": "Размеренным шагом притяжение ценит собеседника не меньше спутника для побега. В другом ритме свобода связи привлекательнее, когда включает и искреннее стремление возвращаться навстречу. С наступлением вечера неожиданный ответ может разбудить желание узнавать друг друга.",
+      "work": "В другом ритме сотрудничество расширяет возможности, не требуя утраты стиля. С наступлением вечера настоящее расхождение может сделать проект интереснее слишком легко полученного согласия, о котором никто по-настоящему не думал. В движении вам нужен живой союз, не автоматическое одобрение.",
+      "finance": "С наступлением вечера предложение на двоих может изменить стоимость удовольствия или проекта. В движении польза понятнее, когда общее воодушевление не подменяет ваши предпочтения и те личные средства, которыми вы действительно располагаете. Размеренным шагом разделение открывает возможности, но не делает каждую трату разумной.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "sagittarius",
+      "language": "nl",
+      "general": "In beweging de prettige verrassing is niet altijd gevolgd worden; soms komt iemand je anders tegemoet. Met afgemeten pas je houdt van vaart, maar de dialoog maakt haar minder eenzaam. Op een ander ritme toch blijft de sfeer open en het uitwisselen plezierig. Wanneer de avond valt een persoon kan een onverwachte hoek toevoegen aan een wens die al uitgetekend leek. In beweging een te openhartige opmerking kan verschil tot onnodig duel maken. Met afgemeten pas avontuur krijgt een nieuwe dimensie wanneer je niet precies weet wat de ander aan het volgende hoofdstuk zal toevoegen.",
+      "love": "Met afgemeten pas aantrekking waardeert een gesprekspartner evenzeer als een metgezel voor ontsnapping. Op een ander ritme vrijheid in de band wordt verleidelijker wanneer ze ook de oprechte wens bevat steeds weer naar elkaar terug te keren. Wanneer de avond valt een onverwacht antwoord kan ontdekkingszin wakker maken.",
+      "work": "Op een ander ritme samenwerking kan mogelijkheden vergroten zonder je stijl te kosten. Wanneer de avond valt een werkelijk verschil kan het project interessanter maken dan te gemakkelijk verkregen overeenstemming waar niemand echt goed over heeft nagedacht. In beweging je wilt een levend bondgenootschap, geen automatische goedkeuring.",
+      "finance": "Wanneer de avond valt een voorstel voor twee kan de kosten van plezier of een project veranderen. In beweging het voordeel blijft duidelijker wanneer gezamenlijk enthousiasme niet je eigen voorkeuren en beschikbare persoonlijke middelen vervangt. Met afgemeten pas delen opent mogelijkheden zonder elke uitgave verstandig te maken.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "capricorn",
+      "language": "fr",
+      "general": "Le quotidien se permet une petite insolence; Vous avez le goût du travail accompli ; cette journée y ajoute celui d’une surprise légère; Rien n’exige que chaque minute rapporte quelque chose de mesurable; Une manière différente de faire, un détour ou une rencontre au milieu des obligations peut réveiller un plaisir que vous n’aviez pas inscrit au programme; Une interruption peut d’abord agacer avant de déplacer utilement votre regard; Le relief vient parfois de ce qui échappe à la ligne droite, sans vous faire perdre le chemin.",
+      "love": "L’affection se glisse entre deux occupations, avec une chaleur sans cérémonie; Le désir n’a pas toujours besoin d’un moment exceptionnel pour retrouver sa place dans votre vie; Vous pouvez être touché par une présence qui rend l’ordinaire moins mécanique.",
+      "work": "Une méthode inhabituelle peut donner un nouvel intérêt à un travail connu; La nouveauté devient stimulante lorsqu’elle enrichit votre expérience, sans vous obliger à faire comme si tout commençait aujourd’hui; Vous aimez sentir qu’une amélioration produit un effet réel.",
+      "finance": "Une dépense pratique peut aussi contenir une envie de changer le rythme des journées; Un petit confort choisi peut avoir plus d’usage qu’une solution spectaculaire censée réinventer tout votre quotidien; Le bénéfice attendu mérite de rester concret.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "capricorn",
+      "language": "en",
+      "general": "At a measured pace, everyday life permits itself a small impertinence. To a different rhythm, you appreciate work completed; this day adds the appeal of a light surprise. When evening comes, not every minute has to yield something measurable. In motion, a different approach, a detour or an encounter among obligations may awaken pleasure you did not schedule. At a measured pace, an interruption can first irritate, then usefully shift your gaze. To a different rhythm, definition sometimes comes from whatever escapes the straight line without losing the path.",
+      "love": "To a different rhythm, affection slips between tasks with unceremonious warmth. When evening comes, desire does not always need an exceptional occasion to recover its place in the life you already share or inhabit. In motion, you may be touched by a presence making ordinary life less mechanical.",
+      "work": "When evening comes, an unfamiliar method may give known work fresh interest. In motion, novelty becomes stimulating when it enriches experience without requiring you to act as though everything were beginning today for the very first time. At a measured pace, you enjoy an improvement with a real effect.",
+      "finance": "In motion, a practical expense may also hold a wish to change the rhythm of your days. At a measured pace, a small chosen comfort can prove more useful than a spectacular solution supposedly reinventing the whole routine. To a different rhythm, the expected benefit deserves to remain concrete.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "capricorn",
+      "language": "de",
+      "general": "Mit bedachtem Schritt der Alltag erlaubt sich eine kleine Frechheit. In einem anderen Rhythmus sie mögen erledigte Arbeit; der Tag ergänzt sie um eine leichte Überraschung. Wenn der Abend kommt nicht jede Minute muss messbar Ertrag bringen. In Bewegung eine andere Vorgehensweise, ein Umweg oder eine Begegnung zwischen Pflichten weckt vielleicht ein ungeplantes Vergnügen. Mit bedachtem Schritt eine Unterbrechung ärgert erst und verschiebt dann nützlich den Blick. In einem anderen Rhythmus manchmal entsteht Tiefe durch etwas, das die Gerade verlässt, ohne den Weg zu verlieren und ohne deshalb Ihr ganzes Gefüge umzustoßen.",
+      "love": "In einem anderen Rhythmus zuneigung schlüpft zwischen Aufgaben, warm und ohne Zeremoniell. Wenn der Abend kommt begehren braucht nicht immer einen außergewöhnlichen Anlass, um im bereits gelebten Leben wieder seinen Platz zu finden. In Bewegung eine Gegenwart berührt Sie vielleicht, weil sie Gewöhnliches weniger mechanisch macht.",
+      "work": "Wenn der Abend kommt eine ungewohnte Methode gibt bekannter Arbeit neues Interesse. In Bewegung neues regt an, wenn es Ihre Erfahrung bereichert, ohne zu verlangen, so zu tun, als beginne heute alles zum allerersten Mal. Mit bedachtem Schritt sie mögen Verbesserungen mit wirklicher Wirkung.",
+      "finance": "In Bewegung eine praktische Ausgabe enthält vielleicht den Wunsch nach anderem Tagesrhythmus. Mit bedachtem Schritt ein kleiner gewählter Komfort hat womöglich mehr Gebrauchswert als eine spektakuläre Lösung, die angeblich den gesamten Alltag neu erfinden soll. In einem anderen Rhythmus der erhoffte Nutzen darf konkret bleiben.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "capricorn",
+      "language": "es",
+      "general": "Con paso medido, lo cotidiano se permite una pequeña insolencia. A otro ritmo, le gusta el trabajo cumplido; esta jornada añade una sorpresa ligera. Cuando llega la noche, no hace falta que cada minuto produzca algo medible. En movimiento, otra manera de hacer, un desvío o un encuentro entre obligaciones puede despertar un placer que no había programado. Con paso medido, una interrupción puede irritar primero y después desplazar útilmente la mirada. A otro ritmo, el relieve nace a veces de lo que escapa a la línea recta sin hacerle perder el camino.",
+      "love": "A otro ritmo, el afecto se cuela entre ocupaciones con calidez sin ceremonia. Cuando llega la noche, el deseo no siempre necesita una ocasión excepcional para recuperar su sitio en la vida que ya tiene. En movimiento, puede conmoverle una presencia que vuelve menos mecánico lo corriente.",
+      "work": "Cuando llega la noche, un método inhabitual puede dar interés nuevo a un trabajo conocido. En movimiento, la novedad estimula cuando enriquece su experiencia sin obligarle a actuar como si todo empezara hoy por primera vez. Con paso medido, le gusta que una mejora tenga efecto real.",
+      "finance": "En movimiento, un gasto práctico puede contener también ganas de cambiar el ritmo diario. Con paso medido, un pequeño confort elegido puede tener más utilidad que una solución espectacular que supuestamente reinventará toda su vida cotidiana. A otro ritmo, el beneficio esperado merece seguir siendo concreto.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "capricorn",
+      "language": "it",
+      "general": "A passo misurato, il quotidiano si permette una piccola insolenza. Su un altro ritmo, amate il lavoro compiuto; il giorno aggiunge una sorpresa leggera. Quando arriva la sera, non ogni minuto deve rendere qualcosa di misurabile. Nel movimento, un modo diverso di fare, una deviazione o un incontro fra gli obblighi può risvegliare un piacere non programmato. A passo misurato, un'interruzione può prima irritare e poi spostare utilmente lo sguardo. Su un altro ritmo, il rilievo viene talvolta da ciò che sfugge alla linea retta senza far perdere la strada, dentro un percorso che resta vostro.",
+      "love": "Su un altro ritmo, l'affetto si infila fra due occupazioni, con calore senza cerimonie. Quando arriva la sera, il desiderio non ha sempre bisogno di un'occasione eccezionale per ritrovare posto nella vita che avete già. Nel movimento, può toccarvi una presenza che rende meno meccanico l'ordinario.",
+      "work": "Quando arriva la sera, un metodo insolito può dare nuovo interesse a un lavoro noto. Nel movimento, la novità stimola quando arricchisce l'esperienza, senza obbligare a fingere che tutto cominci oggi per la prima volta. A passo misurato, vi piace sentire che un miglioramento ha effetto reale.",
+      "finance": "Nel movimento, una spesa pratica può contenere anche voglia di cambiare il ritmo dei giorni. A passo misurato, un piccolo comfort scelto può avere più uso di una soluzione spettacolare che promette di reinventare tutto il quotidiano. Su un altro ritmo, il beneficio atteso merita concretezza.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "capricorn",
+      "language": "pt",
+      "general": "A passo medido, o quotidiano permite-se uma pequena insolência. Noutro ritmo, gosta do trabalho cumprido; este dia acrescenta uma surpresa ligeira. Quando chega a noite, não é preciso que cada minuto produza algo mensurável. Em movimento, outra forma de fazer, um desvio ou um encontro entre obrigações pode despertar um prazer que não tinha programado. A passo medido, uma interrupção pode irritar primeiro e depois deslocar utilmente o olhar. Noutro ritmo, o relevo nasce por vezes do que escapa à linha reta sem o fazer perder o caminho.",
+      "love": "Noutro ritmo, o afeto insinua-se entre ocupações, com calor sem cerimónia. Quando chega a noite, o desejo nem sempre precisa de uma ocasião excecional para recuperar lugar na vida que já tem. Em movimento, pode tocá-lo uma presença que torna menos mecânico o que é comum.",
+      "work": "Quando chega a noite, um método invulgar pode dar interesse novo a um trabalho conhecido. Em movimento, a novidade estimula quando enriquece a experiência sem o obrigar a fingir que tudo começa hoje pela primeira vez. A passo medido, gosta de sentir que uma melhoria tem efeito real.",
+      "finance": "Em movimento, uma despesa prática pode conter também vontade de mudar o ritmo diário. A passo medido, um pequeno conforto escolhido pode ter mais utilização do que uma solução espetacular que supostamente reinventará todo o quotidiano. Noutro ritmo, o benefício esperado merece continuar concreto.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "capricorn",
+      "language": "ru",
+      "general": "Размеренным шагом повседневность позволяет себе маленькую дерзость. В другом ритме вам нравится завершённая работа; этот день добавляет лёгкую неожиданность. С наступлением вечера не каждая минута обязана давать измеримый доход. В движении другой способ действовать, обходной путь или встреча среди обязанностей может разбудить незапланированное удовольствие. Размеренным шагом помеха способна сперва раздражать, а затем полезно сместить взгляд. В другом ритме объём иногда появляется благодаря тому, что выходит за прямую линию, не заставляя терять дорогу.",
+      "love": "В другом ритме нежность проскальзывает между делами с теплом без церемоний. С наступлением вечера желанию не всегда нужен исключительный повод, чтобы вернуть себе место в жизни, которой вы уже живёте. В движении может тронуть присутствие, делающее обычное менее механическим.",
+      "work": "С наступлением вечера непривычный метод придаёт знакомой работе новый интерес. В движении новизна увлекает, когда обогащает опыт, не вынуждая делать вид, будто всё начинается сегодня впервые. Размеренным шагом вам нравится улучшение с реальным эффектом.",
+      "finance": "В движении практичная трата может содержать желание изменить ритм дней. Размеренным шагом небольшой выбранный комфорт бывает нужнее эффектного решения, будто бы способного заново изобрести всю повседневность. В другом ритме ожидаемая польза заслуживает конкретности.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "capricorn",
+      "language": "nl",
+      "general": "Met afgemeten pas het dagelijks leven veroorlooft zich een kleine brutaliteit. Op een ander ritme je houdt van afgerond werk; de dag voegt een lichte verrassing toe. Wanneer de avond valt niet iedere minuut hoeft meetbaar iets op te brengen. In beweging een andere aanpak, omweg of ontmoeting tussen verplichtingen kan ongepland plezier wakker maken. Met afgemeten pas een onderbreking kan eerst irriteren en daarna je blik nuttig verschuiven. Op een ander ritme reliëf komt soms van wat buiten de rechte lijn gaat zonder je het pad te laten verliezen, binnen een richting die nog steeds de jouwe is.",
+      "love": "Op een ander ritme genegenheid glipt tussen bezigheden met onceremoniële warmte. Wanneer de avond valt verlangen heeft niet altijd een uitzonderlijk moment nodig om zijn plaats terug te vinden in het leven dat je al hebt. In beweging een aanwezigheid kan raken doordat ze het gewone minder mechanisch maakt.",
+      "work": "Wanneer de avond valt een ongebruikelijke methode kan bekend werk nieuw interessant maken. In beweging vernieuwing stimuleert wanneer ze ervaring verrijkt zonder te vragen te doen alsof alles vandaag voor het eerst begint en er niets voorafging. Met afgemeten pas je houdt van een verbetering met werkelijk effect.",
+      "finance": "In beweging een praktische uitgave kan ook verlangen naar een ander dagritme bevatten. Met afgemeten pas een klein gekozen comfort kan nuttiger zijn dan een spectaculaire oplossing die zogenaamd je hele dagelijkse leven opnieuw zal uitvinden. Op een ander ritme het verwachte voordeel mag concreet blijven.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aquarius",
+      "language": "fr",
+      "general": "L’imagination a décidé de sortir sans manteau raisonnable; Vous n’avez pas perdu votre esprit critique ; il accepte une place moins centrale; Le plaisir n’a pas besoin de ce tribunal; Une idée de jeu, une création ou une attirance peut vous donner envie d’essayer quelque chose simplement parce que cela vous amuse; Une réaction tiède peut néanmoins réveiller le réflexe de défendre votre originalité comme une cause; Ce qui pétille dans la journée, c’est peut-être cette liberté rare : inventer sans devoir immédiatement justifier la différence.",
+      "love": "La séduction prend une allure joueuse et un peu décalée; Une complicité peut naître d’un détail absurde, avec une chaleur que personne n’avait pensé à expliquer; Vous aimez les signes qui ne semblent pas sortis d’un répertoire connu.",
+      "work": "Une proposition créative peut attirer l’attention par son angle inattendu; L’audace garde sa force lorsqu’elle rencontre une forme concrète, même imparfaite, au lieu de rester une intention brillante; Vous avez envie de faire exister une idée, pas seulement d’en discuter.",
+      "finance": "Les envies de loisir ou de création réveillent le goût d’un achat inhabituel; L’originalité reste plus libre lorsque son prix ne lui impose pas de transformer toute votre existence; Le plaisir peut être réel sans devenir une révolution personnelle.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aquarius",
+      "language": "en",
+      "general": "To a different rhythm, imagination has decided to go out without its sensible coat. When evening comes, your critical mind has not vanished; it accepts a less central role. In motion, pleasure does not need that tribunal. At a measured pace, a game, a creation or an attraction may tempt you to try something simply because it amuses you. To a different rhythm, a lukewarm response could nevertheless revive the reflex to defend originality as a cause. When evening comes, what sparkles in the day may be this rare freedom: inventing without having to justify the difference immediately to an audience.",
+      "love": "When evening comes, seduction becomes playful and slightly unconventional. In motion, a shared absurd detail can kindle intimacy, with a warmth nobody had thought to explain or account for in advance. At a measured pace, you enjoy signals that do not seem borrowed from a familiar repertoire.",
+      "work": "In motion, a creative proposal may attract attention through its unexpected angle. At a measured pace, boldness retains its strength when it encounters concrete form, even imperfect, instead of remaining only a brilliant intention. To a different rhythm, you want an idea to exist, not merely to discuss it.",
+      "finance": "At a measured pace, spending on leisure or creativity awakens a taste for the unusual. To a different rhythm, originality stays freer when its price does not oblige it to transform every corner of your existence. When evening comes, the pleasure can be real without becoming a personal revolution.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aquarius",
+      "language": "de",
+      "general": "In einem anderen Rhythmus die Fantasie geht ohne ihren vernünftigen Mantel aus. Wenn der Abend kommt ihr kritischer Geist ist nicht verschwunden; er akzeptiert einen weniger zentralen Platz. In Bewegung genuss braucht dieses Gericht nicht. Mit bedachtem Schritt ein Spiel, eine eigene Arbeit oder Anziehung macht vielleicht Lust, etwas bloß aus Vergnügen zu versuchen. In einem anderen Rhythmus ein lauer Eindruck könnte dennoch den Reflex wecken, Originalität wie eine Sache zu verteidigen. Wenn der Abend kommt was am Tag prickelt, ist vielleicht die seltene Freiheit, etwas zu erfinden, ohne den Unterschied sofort rechtfertigen zu müssen.",
+      "love": "Wenn der Abend kommt verführung wird verspielt und etwas unkonventionell. In Bewegung gemeinsamkeit entsteht vielleicht aus einem absurden Detail, mit einer Wärme, die niemand im Voraus erklären oder vernünftig begründen wollte. Mit bedachtem Schritt sie mögen Zeichen, die nicht aus einem bekannten Repertoire stammen.",
+      "work": "In Bewegung ein kreativer Vorschlag fällt durch den unerwarteten Blickwinkel auf. Mit bedachtem Schritt mut behält Kraft, wenn er konkrete, auch unvollkommene Form findet, statt nur als brillante Absicht im Raum stehen zu bleiben. In einem anderen Rhythmus sie möchten eine Idee verwirklichen, nicht bloß besprechen.",
+      "finance": "Mit bedachtem Schritt freizeit oder Kreativität wecken Lust auf einen ungewöhnlichen Kauf. In einem anderen Rhythmus originalität bleibt freier, wenn ihr Preis sie nicht verpflichtet, gleich Ihre gesamte Existenz von Grund auf zu verändern. Wenn der Abend kommt das Vergnügen darf echt sein, ohne persönliche Revolution zu werden.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aquarius",
+      "language": "es",
+      "general": "A otro ritmo, la imaginación ha salido sin su abrigo razonable. Cuando llega la noche, no ha perdido el espíritu crítico; acepta un puesto menos central. En movimiento, el placer no necesita ese tribunal. Con paso medido, un juego, una creación o una atracción puede animarle a probar algo solo porque divierte. A otro ritmo, una reacción tibia puede despertar, sin embargo, el reflejo de defender la originalidad como una causa. Cuando llega la noche, lo que chispea quizá sea esta libertad poco frecuente: inventar sin tener que justificar de inmediato la diferencia ante los demás.",
+      "love": "Cuando llega la noche, la seducción se vuelve juguetona y algo excéntrica. En movimiento, la complicidad puede nacer de un detalle absurdo, con una calidez que nadie había pensado explicar ni justificar de antemano. Con paso medido, le gustan las señales que no parecen salir de un repertorio conocido.",
+      "work": "En movimiento, una propuesta creativa puede atraer por su enfoque inesperado. Con paso medido, la audacia conserva fuerza cuando encuentra una forma concreta, incluso imperfecta, en lugar de quedarse únicamente en una intención brillante. A otro ritmo, quiere que una idea exista, no solo discutirla.",
+      "finance": "Con paso medido, las ganas de ocio o creación despiertan el gusto por una compra inhabitual. A otro ritmo, la originalidad sigue más libre cuando su precio no le exige transformar por completo toda su existencia. Cuando llega la noche, el placer puede ser real sin convertirse en revolución personal.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aquarius",
+      "language": "it",
+      "general": "Su un altro ritmo, l'immaginazione esce senza il cappotto ragionevole. Quando arriva la sera, lo spirito critico non è sparito; accetta un posto meno centrale. Nel movimento, il piacere non ha bisogno di quel tribunale. A passo misurato, un gioco, una creazione o un'attrazione può invogliare a tentare qualcosa soltanto perché diverte. Su un altro ritmo, una reazione tiepida può però risvegliare il riflesso di difendere l'originalità come una causa. Quando arriva la sera, a frizzare nel giorno è forse una libertà rara: inventare senza dover giustificare immediatamente la differenza agli occhi di qualcuno.",
+      "love": "Quando arriva la sera, la seduzione diventa giocosa e un po' eccentrica. Nel movimento, una complicità può nascere da un dettaglio assurdo, con un calore che nessuno aveva pensato di spiegare o giustificare prima. A passo misurato, amate i segni che non sembrano usciti da un repertorio noto.",
+      "work": "Nel movimento, una proposta creativa attira per un taglio inatteso. A passo misurato, l'audacia mantiene forza quando incontra una forma concreta, anche imperfetta, invece di restare solamente un'intenzione brillante sospesa nell'aria. Su un altro ritmo, avete voglia che un'idea esista, non soltanto di discuterne.",
+      "finance": "A passo misurato, le voglie di svago o creazione risvegliano il gusto di un acquisto insolito. Su un altro ritmo, l'originalità resta più libera quando il prezzo non le impone di trasformare ogni parte della vostra esistenza. Quando arriva la sera, il piacere può essere reale senza diventare rivoluzione personale.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aquarius",
+      "language": "pt",
+      "general": "Noutro ritmo, a imaginação saiu sem o seu casaco razoável. Quando chega a noite, não perdeu o espírito crítico; aceita um lugar menos central. Em movimento, o prazer não precisa desse tribunal. A passo medido, um jogo, uma criação ou uma atração pode dar vontade de experimentar algo só porque diverte. Noutro ritmo, uma reação morna pode, porém, acordar o reflexo de defender a originalidade como uma causa. Quando chega a noite, o que cintila talvez seja esta liberdade rara: inventar sem ter de justificar imediatamente a diferença perante os outros.",
+      "love": "Quando chega a noite, a sedução torna-se brincalhona e um pouco excêntrica. Em movimento, a cumplicidade pode nascer de um pormenor absurdo, com um calor que ninguém tinha pensado explicar nem justificar antecipadamente. A passo medido, gosta de sinais que não parecem sair de um repertório conhecido.",
+      "work": "Em movimento, uma proposta criativa pode atrair pelo ângulo inesperado. A passo medido, a audácia conserva força quando encontra uma forma concreta, mesmo imperfeita, em vez de continuar apenas uma intenção brilhante suspensa no ar. Noutro ritmo, quer que uma ideia exista, não apenas discuti-la.",
+      "finance": "A passo medido, as vontades de lazer ou criação despertam o gosto por uma compra invulgar. Noutro ritmo, a originalidade continua mais livre quando o preço não a obriga a transformar toda a sua existência. Quando chega a noite, o prazer pode ser real sem se tornar revolução pessoal.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aquarius",
+      "language": "ru",
+      "general": "В другом ритме воображение вышло без своего благоразумного пальто. С наступлением вечера критический ум не исчез — он согласен занять менее центральное место. В движении удовольствию не нужен этот суд. Размеренным шагом игра, творчество или притяжение могут вызвать желание попробовать что-то просто ради забавы. В другом ритме прохладный отклик, однако, способен разбудить привычку защищать оригинальность как дело принципа. С наступлением вечера возможно, в дне искрится редкая свобода: придумывать без необходимости немедленно оправдывать отличие перед чьим-то взглядом.",
+      "love": "С наступлением вечера соблазнение становится игривым и чуть странным. В движении близость может начаться с нелепой детали и тепла, которое никто не собирался заранее объяснять или обосновывать. Размеренным шагом вам нравятся знаки, не взятые из знакомого репертуара.",
+      "work": "В движении творческое предложение привлекает неожиданным углом. Размеренным шагом смелость сохраняет силу, встречая конкретную, пусть несовершенную форму, вместо того чтобы остаться единственным блестящим намерением. В другом ритме хочется, чтобы идея существовала, а не только обсуждалась.",
+      "finance": "Размеренным шагом желания отдохнуть или создать что-то будят вкус к необычной покупке. В другом ритме оригинальность свободнее, когда цена не заставляет её преобразовать всё ваше существование. С наступлением вечера удовольствие реально и без личной революции.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "aquarius",
+      "language": "nl",
+      "general": "Op een ander ritme de verbeelding gaat zonder haar verstandige jas naar buiten. Wanneer de avond valt je kritische geest is niet weg; hij aanvaardt een minder centrale plaats. In beweging plezier heeft die rechtbank niet nodig. Met afgemeten pas een spel, creatie of aantrekkingskracht kan je verleiden iets te proberen louter omdat het leuk is. Op een ander ritme een lauwe reactie kan toch de reflex wekken originaliteit als een zaak te verdedigen. Wanneer de avond valt wat sprankelt is misschien zeldzame vrijheid: verzinnen zonder het verschil meteen aan een publiek te hoeven uitleggen of ervoor te pleiten.",
+      "love": "Wanneer de avond valt verleiding wordt speels en een beetje ongewoon. In beweging verbondenheid kan ontstaan uit een absurd detail, met warmte die niemand vooraf had willen verklaren of redelijk verantwoorden. Met afgemeten pas je houdt van signalen die niet uit een bekend repertoire lijken te komen.",
+      "work": "In beweging een creatief voorstel kan aandacht trekken door de onverwachte hoek. Met afgemeten pas durf behoudt kracht wanneer ze een concrete vorm vindt, ook onvolmaakt, in plaats van enkel een briljante bedoeling te blijven. Op een ander ritme je wilt dat een idee bestaat, niet alleen erover praten.",
+      "finance": "Met afgemeten pas uitgaven aan plezier of creativiteit wekken zin in een ongewone aankoop. Op een ander ritme originaliteit blijft vrijer wanneer de prijs haar niet verplicht iedere hoek van je bestaan helemaal te veranderen. Wanneer de avond valt het genoegen kan echt zijn zonder persoonlijke revolutie te worden.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "pisces",
+      "language": "fr",
+      "general": "La maison n’est pas seulement un lieu ; elle peut devenir une humeur; Vous êtes sensible à ces nuances qui échappent aux grands projets; La journée se prête à un ancrage imaginatif; Une envie de lumière, un objet déplacé ou la façon dont une voix résonne dans une pièce change votre perception du familier; Une nostalgie peut passer, douce ou plus troublante, sans devoir dicter le décor; Il suffit parfois d’un détail pour sentir que l’on revient quelque part, même lorsque rien n’a réellement changé d’adresse.",
+      "love": "La tendresse cherche une proximité où l’on puisse rester un peu distrait, un peu rêveur, sans être moins aimé; Un moment familier peut retrouver une intimité presque neuve; Vous appréciez les présences qui n’exigent pas de spectacle.",
+      "work": "Une idée professionnelle peut mûrir dans un cadre plus personnel, loin des échanges très formels; Cette richesse devient plus partageable lorsqu’elle trouve une image claire, sans promettre que tout sera facile; Votre imagination relie des impressions que d’autres séparent.",
+      "finance": "Les envies liées au foyer prennent une couleur sensible : rendre un lieu plus doux, plus beau, à vous; Une transformation mesurée peut laisser au budget une place pour le reste; Le plaisir ne réclame pas forcément un grand chantier.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "pisces",
+      "language": "en",
+      "general": "When evening comes, home is not merely a place; it can become a mood. In motion, you respond to nuances that escape grand projects. At a measured pace, the day lends itself to imaginative anchoring. To a different rhythm, a wish for light, an object moved or a voice resonating in a room changes your perception of the familiar. When evening comes, nostalgia may pass through, gentle or more unsettling, without having to dictate the scenery. In motion, sometimes one detail is enough to feel you are returning somewhere, even when nothing has actually changed its address.",
+      "love": "In motion, tenderness seeks closeness where you can remain slightly distracted, a little dreamy, without being less loved. At a measured pace, a familiar moment may recover an intimacy almost new, without needing an exceptional setting to make it real. To a different rhythm, you appreciate presences demanding no spectacle.",
+      "work": "At a measured pace, a professional idea may mature in a more personal setting, away from formal exchanges. To a different rhythm, that richness becomes easier to share when it finds a clear image without promising that every subsequent step will be easy. When evening comes, imagination links impressions others separate.",
+      "finance": "To a different rhythm, desires for home acquire a sensitive colour: making somewhere softer, lovelier, more your own. When evening comes, a measured transformation can leave room in the budget for the rest of your life. In motion, pleasure does not necessarily call for major works.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "pisces",
+      "language": "de",
+      "general": "Wenn der Abend kommt zuhause ist nicht nur ein Ort, es kann eine Stimmung werden. In Bewegung sie spüren Nuancen, die großen Vorhaben entgehen. Mit bedachtem Schritt der Tag eignet sich für fantasievolles Verwurzeln. In einem anderen Rhythmus lust auf Licht, ein umgestellter Gegenstand oder eine Stimme im Zimmer verändert den Blick aufs Vertraute. Wenn der Abend kommt nostalgie darf vorbeiziehen, sanft oder beunruhigender, ohne den Hintergrund bestimmen zu müssen. In Bewegung manchmal genügt ein Detail, um sich heimkehrend zu fühlen, obwohl nichts tatsächlich die Adresse gewechselt hat.",
+      "love": "In Bewegung zärtlichkeit sucht Nähe, in der man etwas zerstreut und verträumt sein darf, ohne weniger geliebt zu werden. Mit bedachtem Schritt ein vertrauter Augenblick findet vielleicht eine beinahe neue Intimität, ganz ohne außergewöhnlichen Rahmen. In einem anderen Rhythmus sie mögen Gegenwart ohne Spektakel.",
+      "work": "Mit bedachtem Schritt eine berufliche Idee reift womöglich im persönlicheren Umfeld, fern formeller Gespräche. In einem anderen Rhythmus diese Fülle lässt sich leichter teilen, sobald sie ein klares Bild findet, ohne zu versprechen, alles werde mühelos. Wenn der Abend kommt ihre Fantasie verbindet Eindrücke, die andere trennen.",
+      "finance": "In einem anderen Rhythmus wohnwünsche bekommen eine empfindsame Farbe: einen Ort weicher, schöner, eigener machen. Wenn der Abend kommt eine maßvolle Veränderung kann im Budget Raum für den übrigen Teil des Lebens lassen, der ebenfalls zählt. In Bewegung vergnügen verlangt nicht zwangsläufig eine große Baustelle.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "pisces",
+      "language": "es",
+      "general": "Cuando llega la noche, la casa no es solo un lugar: puede convertirse en un ánimo. En movimiento, le afectan matices que escapan a los grandes proyectos. Con paso medido, la jornada favorece un arraigo imaginativo. A otro ritmo, las ganas de luz, un objeto movido o una voz que resuena en una habitación cambian su percepción de lo familiar. Cuando llega la noche, puede pasar una nostalgia dulce o inquietante sin dictar el decorado. En movimiento, a veces basta un detalle para sentir que vuelve a algún sitio, aunque nada haya cambiado realmente de dirección.",
+      "love": "En movimiento, la ternura busca cercanía donde se pueda estar algo distraído, algo soñador, sin ser menos amado. Con paso medido, un momento familiar puede recuperar una intimidad casi nueva sin necesitar un escenario extraordinario. A otro ritmo, aprecia las presencias que no exigen espectáculo.",
+      "work": "Con paso medido, una idea profesional puede madurar en un marco personal, lejos de intercambios muy formales. A otro ritmo, esa riqueza se comparte mejor cuando encuentra una imagen clara, sin prometer que todo resultará fácil después. Cuando llega la noche, su imaginación une impresiones que otros separan.",
+      "finance": "A otro ritmo, los deseos para el hogar adquieren un color sensible: volver un lugar más suave, bello y propio. Cuando llega la noche, una transformación medida puede dejar espacio en el presupuesto para el resto de su vida. En movimiento, el placer no requiere necesariamente grandes obras.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "pisces",
+      "language": "it",
+      "general": "Quando arriva la sera, la casa non è soltanto un luogo: può diventare un umore. Nel movimento, sentite sfumature che sfuggono ai grandi progetti. A passo misurato, la giornata si presta a un radicamento immaginativo. Su un altro ritmo, una voglia di luce, un oggetto spostato o una voce nella stanza cambia la percezione del familiare. Quando arriva la sera, una nostalgia dolce o inquietante può passare senza imporre la scenografia. Nel movimento, basta talvolta un dettaglio per sentire di tornare da qualche parte, anche quando nulla ha davvero cambiato indirizzo.",
+      "love": "Nel movimento, la tenerezza cerca vicinanza dove si possa restare distratti e sognanti senza essere meno amati. A passo misurato, un momento familiare può ritrovare un'intimità quasi nuova, senza bisogno di un'ambientazione eccezionale per renderla autentica. Su un altro ritmo, apprezzate presenze che non pretendono spettacolo.",
+      "work": "A passo misurato, un'idea professionale può maturare in un contesto personale, lontano da scambi formali. Su un altro ritmo, questa ricchezza si condivide meglio quando trova un'immagine chiara, senza promettere che tutto il seguito sarà necessariamente facile. Quando arriva la sera, l'immaginazione collega impressioni che altri separano.",
+      "finance": "Su un altro ritmo, i desideri per la casa prendono un colore sensibile: rendere un luogo più dolce, bello e vostro. Quando arriva la sera, una trasformazione misurata può lasciare spazio nel bilancio per tutto il resto. Nel movimento, il piacere non richiede per forza un grande cantiere.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "pisces",
+      "language": "pt",
+      "general": "Quando chega a noite, a casa não é só um lugar: pode tornar-se um estado de espírito. Em movimento, sente nuances que escapam aos grandes projetos. A passo medido, o dia favorece um enraizamento imaginativo. Noutro ritmo, a vontade de luz, um objeto deslocado ou uma voz numa divisão muda a perceção do familiar. Quando chega a noite, uma nostalgia doce ou inquietante pode passar sem ditar o cenário. Em movimento, às vezes basta um pormenor para sentir que regressa a algum lado, mesmo quando nada mudou realmente de morada.",
+      "love": "Em movimento, a ternura procura proximidade onde se possa estar um pouco distraído e sonhador sem ser menos amado. A passo medido, um momento familiar pode recuperar uma intimidade quase nova, sem precisar de um cenário extraordinário. Noutro ritmo, aprecia presenças que não exigem espetáculo.",
+      "work": "A passo medido, uma ideia profissional pode amadurecer num enquadramento pessoal, longe de trocas muito formais. Noutro ritmo, esta riqueza partilha-se melhor quando encontra uma imagem clara, sem prometer que todo o caminho seguinte será fácil. Quando chega a noite, a imaginação liga impressões que outros separam.",
+      "finance": "Noutro ritmo, os desejos para o lar ganham uma cor sensível: tornar um lugar mais doce, belo e seu. Quando chega a noite, uma transformação medida pode deixar espaço no orçamento para todo o resto da sua vida. Em movimento, o prazer não exige necessariamente grandes obras.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "pisces",
+      "language": "ru",
+      "general": "С наступлением вечера дом не только место — он может стать настроением. В движении вы чувствительны к нюансам, ускользающим от больших проектов. Размеренным шагом день располагает к воображаемому укоренению. В другом ритме желание света, переставленный предмет или голос в комнате меняют ощущение знакомого. С наступлением вечера может пройти ностальгия, мягкая или тревожнее, не диктуя декораций. В движении иногда одной детали достаточно, чтобы почувствовать возвращение куда-то, хотя ничто на самом деле не сменило адреса.",
+      "love": "В движении нежность ищет близость, в которой можно оставаться рассеянным и мечтательным, не становясь менее любимым. Размеренным шагом знакомый момент способен вернуть почти новую интимность, не требуя особого антуража. В другом ритме вы цените присутствие без спектакля.",
+      "work": "Размеренным шагом профессиональная идея может зреть в личной обстановке, вдали от формальных разговоров. В другом ритме богатством легче поделиться, когда оно находит ясный образ, не обещая, что каждый последующий шаг непременно окажется лёгким. С наступлением вечера воображение соединяет впечатления, которые другие разделяют.",
+      "finance": "В другом ритме домашние желания приобретают тонкий оттенок: сделать место мягче, красивее, больше своим. С наступлением вечера умеренное преображение способно оставить в бюджете пространство для остальной жизни. В движении удовольствие не обязательно требует большой стройки.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-14",
+      "sign": "pisces",
+      "language": "nl",
+      "general": "Wanneer de avond valt thuis is niet alleen een plaats; het kan een stemming worden. In beweging je voelt nuances die grote plannen ontgaan. Met afgemeten pas de dag leent zich voor verbeeldingsvol wortelen. Op een ander ritme zin in licht, een verplaatst voorwerp of een stem in een kamer verandert je kijk op het vertrouwde. Wanneer de avond valt nostalgie mag passeren, zacht of onrustiger, zonder het decor te bepalen. In beweging soms volstaat een detail om thuiskomst te voelen, zelfs wanneer niets werkelijk van adres is veranderd en de muren gewoon dezelfde zijn.",
+      "love": "In beweging tederheid zoekt nabijheid waarin je wat verstrooid en dromerig mag blijven zonder minder geliefd te worden. Met afgemeten pas een vertrouwd ogenblik kan bijna nieuwe intimiteit terugvinden zonder een uitzonderlijke omgeving nodig te hebben om echt te zijn. Op een ander ritme je waardeert aanwezigheid zonder spektakel.",
+      "work": "Met afgemeten pas een professioneel idee kan rijpen in een persoonlijker kader, ver van formele gesprekken. Op een ander ritme die rijkdom wordt beter deelbaar zodra ze een helder beeld vindt, zonder te beloven dat alles daarna gemakkelijk zal gaan. Wanneer de avond valt je verbeelding verbindt indrukken die anderen scheiden.",
+      "finance": "Op een ander ritme wensen voor thuis krijgen een gevoelige kleur: een plek zachter, mooier en meer van jezelf maken. Wanneer de avond valt een afgemeten verandering kan in het budget ruimte laten voor de rest van je leven. In beweging plezier vraagt niet noodzakelijk grote werken.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    }
+  ]
+}
