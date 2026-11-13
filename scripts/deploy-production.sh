@@ -22,31 +22,33 @@ if [ ! -f .env ]; then
   exit 1
 fi
 
-# Next.js may regenerate its tracked next-env.d.ts during a build.
-# Only that specific unstaged generated file may be reset; block every other
-# tracked/staged change so no human edits are silently discarded.
-# Never discard unknown edits on the VPS. Report only repository-relative
-# file names and status codes (never file contents or environment values).
-# This diagnostic is safe to read from GitHub Actions without server access.
-CHANGED_TRACKED="$(git status --porcelain --untracked-files=no -- . ':(exclude)apps/frontend/next-env.d.ts')"
+# Next.js and TypeScript may regenerate these tracked artifacts during builds.
+# Only these exact unstaged generated paths are allowed to be restored.
+# Never discard staged edits or any other tracked change.
+GENERATED_PATHS=(apps/frontend/next-env.d.ts apps/frontend/tsconfig.tsbuildinfo)
+CHANGED_TRACKED="$(git status --porcelain --untracked-files=no -- . \
+  ':(exclude)apps/frontend/next-env.d.ts' \
+  ':(exclude)apps/frontend/tsconfig.tsbuildinfo')"
 if [ -n "$CHANGED_TRACKED" ] ||
-   ! git diff --cached --quiet -- apps/frontend/next-env.d.ts; then
-  echo "::error::OVH deployment blocked: tracked files were changed locally on the VPS." >&2
+   ! git diff --cached --quiet -- "${GENERATED_PATHS[@]}"; then
+  echo "::error::OVH deployment blocked: unexpected tracked changes on the VPS." >&2
   echo "Changed tracked files (status and paths only):" >&2
   if [ -n "$CHANGED_TRACKED" ]; then
     printf '%s\n' "$CHANGED_TRACKED" >&2
   fi
-  if ! git diff --cached --quiet -- apps/frontend/next-env.d.ts; then
-    echo "STAGED: apps/frontend/next-env.d.ts (manual review required)" >&2
+  if ! git diff --cached --quiet -- "${GENERATED_PATHS[@]}"; then
+    echo "Staged edits to generated files require manual review." >&2
   fi
-  echo "No local changes were overwritten. Review these paths before retrying deployment." >&2
+  echo "No unexpected local changes were overwritten." >&2
   exit 1
 fi
 
-if ! git diff --quiet -- apps/frontend/next-env.d.ts; then
-  echo "Resetting only Next.js-generated apps/frontend/next-env.d.ts before deploying..."
-  git restore --worktree -- apps/frontend/next-env.d.ts
-fi
+for generated_path in "${GENERATED_PATHS[@]}"; do
+  if ! git diff --quiet -- "$generated_path"; then
+    echo "Resetting only generated artifact: $generated_path"
+    git restore --worktree -- "$generated_path"
+  fi
+done
 
 # Refuse a deploy when required privileges or services are unavailable.
 sudo -n /usr/bin/systemctl is-active --quiet lmn24-backend.service
