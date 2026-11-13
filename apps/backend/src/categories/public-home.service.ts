@@ -127,6 +127,8 @@ export class PublicHomeService {
         LEFT JOIN country AS source_country ON source_country.id = s.country_id
         WHERE a.category_id = c.id
           AND a.language_iso_code2 = CAST(${locale} AS CHAR(2))
+          AND (a.published_at AT TIME ZONE 'Europe/Paris')::date
+              <= (CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Paris')::date
           AND a.article_url ~* '^https?://[^[:space:]]+$'
         ORDER BY a.published_at DESC, a.id DESC
         LIMIT CASE c.layout_type::text
