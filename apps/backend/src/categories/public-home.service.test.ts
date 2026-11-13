@@ -92,6 +92,10 @@ describe("SCRUM-26 — composition des sections", () => {
     expect(sql).toContain("LEFT JOIN country AS source_country ON source_country.id = s.country_id");
     expect(sql).toContain('recent.source_country_iso_code2 AS "sourceCountryIsoCode2"');
     expect(sql).toContain("a.language_iso_code2 = CAST(");
+    // La date est comparée dans le fuseau de référence du site,
+    // avant le LIMIT de chaque catégorie (y compris pour les articles publiés plus tard aujourd'hui).
+    expect(sql).toContain("AND (a.published_at AT TIME ZONE 'Europe/Paris')::date");
+    expect(sql).toContain("<= (CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Paris')::date");
     expect(sql).toContain("ORDER BY a.published_at DESC, a.id DESC");
     expect(sql).toContain("WHERE c.is_active = TRUE");
     expect(sql).toContain("ORDER BY c.display_order ASC");
