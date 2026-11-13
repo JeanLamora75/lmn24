@@ -25,9 +25,21 @@ fi
 # Next.js may regenerate its tracked next-env.d.ts during a build.
 # Only that specific unstaged generated file may be reset; block every other
 # tracked/staged change so no human edits are silently discarded.
-if [ -n "$(git status --porcelain --untracked-files=no -- . ':(exclude)apps/frontend/next-env.d.ts')" ] ||
+# Never discard unknown edits on the VPS. Report only repository-relative
+# file names and status codes (never file contents or environment values).
+# This diagnostic is safe to read from GitHub Actions without server access.
+CHANGED_TRACKED="$(git status --porcelain --untracked-files=no -- . ':(exclude)apps/frontend/next-env.d.ts')"
+if [ -n "$CHANGED_TRACKED" ] ||
    ! git diff --cached --quiet -- apps/frontend/next-env.d.ts; then
-  echo "Tracked files other than generated next-env.d.ts were modified on the VPS; deployment stopped" >&2
+  echo "::error::OVH deployment blocked: tracked files were changed locally on the VPS." >&2
+  echo "Changed tracked files (status and paths only):" >&2
+  if [ -n "$CHANGED_TRACKED" ]; then
+    printf '%s\n' "$CHANGED_TRACKED" >&2
+  fi
+  if ! git diff --cached --quiet -- apps/frontend/next-env.d.ts; then
+    echo "STAGED: apps/frontend/next-env.d.ts (manual review required)" >&2
+  fi
+  echo "No local changes were overwritten. Review these paths before retrying deployment." >&2
   exit 1
 fi
 
