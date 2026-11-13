@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 type Options = { sources: { id: string; name: string }[]; categories: { id: string; slug: string }[]; languages: { isoCode2: string }[] };
 type Video = { id: string; title: string; description: string | null; videoUrl: string; thumbnailUrl: string | null;
@@ -100,7 +101,7 @@ export function VideosAdmin() {
         <thead><tr><th>Vidéo</th><th>Média</th><th>Catégorie / langue</th><th>Publication YouTube</th><th>Visibilité</th><th>Actions</th></tr></thead>
         <tbody>{list.items.map(video=><tr key={video.id}>
           <td style={{minWidth:260,maxWidth:420}}><div className="d-flex gap-3 align-items-start">
-            {video.thumbnailUrl?<img src={video.thumbnailUrl} alt="" width={128} height={72} style={{objectFit:"cover",borderRadius:6}}/>:
+            {video.thumbnailUrl?<Image unoptimized src={video.thumbnailUrl} alt="" width={128} height={72} style={{objectFit:"cover",borderRadius:6}}/>:
               <div className="bg-body-secondary d-flex align-items-center justify-content-center rounded flex-shrink-0" style={{width:128,height:72}}>Vidéo</div>}
             <div className="text-break"><a href={video.videoUrl} target="_blank" rel="noopener noreferrer" className="fw-semibold">{video.title}</a>
               <div className="small text-body-secondary">{video.platformVideoId}</div></div></div></td>
