@@ -90,11 +90,19 @@ jobs:
           printf '%s\n' "$LMN24_DEPLOY_KNOWN_HOSTS" > "$SSH_DIR/known_hosts"
           chmod 600 "$SSH_DIR/id_ed25519" "$SSH_DIR/known_hosts"
 
-          ssh -i "$SSH_DIR/id_ed25519" \
+          if ! ssh -i "$SSH_DIR/id_ed25519" \
             -o BatchMode=yes \
             -o IdentitiesOnly=yes \
             -o StrictHostKeyChecking=yes \
             -o UserKnownHostsFile="$SSH_DIR/known_hosts" \
             -o ConnectTimeout=15 \
             ubuntu@57.128.190.216 \
-            "bash -s -- $DEPLOY_SHA" < scripts/deploy-production.sh
+            "bash -s -- $DEPLOY_SHA" < scripts/deploy-production.sh; then
+            {
+              echo "### OVH deployment did not complete"
+              echo "Review the \`Deploy using pinned SSH host key\` job log."
+              echo "If files were modified on the VPS, their statuses and paths are listed in that log."
+              echo "Unknown local changes are never overwritten automatically."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
