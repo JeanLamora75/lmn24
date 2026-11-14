@@ -1,5 +1,6 @@
 "use client";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
@@ -129,6 +130,7 @@ export function WeatherCitiesClient() {
  }
 
  return <main className="container-fluid px-3 px-lg-4 py-4">
+      <AdminFilterResetButton section="weather-cities" />
    <header className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
      <div>
        <h1 className="h2 mb-1">Villes météo</h1>
