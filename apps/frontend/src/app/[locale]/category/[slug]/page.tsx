@@ -6,6 +6,8 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { CategoryArticles } from "@/components/category/CategoryArticles";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { collectionSchema } from "@/lib/seo-schema";
 import type { CategoryPageResponse } from "@/components/category/category-page-data";
 import styles from "@/components/category/category.module.css";
 import { localizedCategoryHref } from "@/components/home/home-data";
@@ -103,6 +105,12 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <main className={"container px-3 px-lg-4 " + styles.page} style={sectionStyle}>
+      {page && <StructuredData data={collectionSchema({locale:locale as SeoLocale,
+        url:"https://www.lmn24.com/"+locale+"/category/"+slug,name:label,
+        description:SEO_COPY[locale as SeoLocale].categoryDescription(label),
+        breadcrumbs:[{name:"LMN24",url:"https://www.lmn24.com/"+locale},
+          {name:label,url:"https://www.lmn24.com/"+locale+"/category/"+slug}],
+      })}/>}
       <header className={styles.heading}>
         <h1 className={styles.title}>{label}</h1>
       </header>
