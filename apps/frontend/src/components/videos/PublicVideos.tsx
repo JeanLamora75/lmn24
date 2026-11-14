@@ -36,6 +36,7 @@ function VideoCard({video,locale,onPlay}:{video:PublicVideo;locale:string;onPlay
         // Thumbnails are fetched only from the source URL supplied by LMN24.
         // eslint-disable-next-line @next/next/no-img-element
         <img className={styles.thumbnail} src={video.thumbnailUrl} alt="" loading="lazy"
+          decoding="async" fetchPriority="low" width={480} height={270}
           onError={()=>setFailed(true)}/>:
         <span className={styles.imageFallback} aria-hidden="true">▶</span>}
       <span className={styles.playMark} aria-hidden="true">▶</span>
