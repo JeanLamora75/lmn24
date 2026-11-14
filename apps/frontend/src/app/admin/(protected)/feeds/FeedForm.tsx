@@ -116,6 +116,8 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
   });
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [pageError, setPageError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [addAnother, setAddAnother] = useState(true);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -287,6 +289,7 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
 
     setSaving(true);
     setPageError("");
+    setSuccessMessage("");
 
     try {
       const endpoint =
@@ -322,8 +325,16 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
         );
       }
 
-      router.push("/admin/feeds");
-      router.refresh();
+      if (mode === "create" && addAnother) {
+        // Preserve only the selected source to make successive feed creation fast.
+        // Every other field returns to its default, preventing an accidental duplicate.
+        setValues({ ...EMPTY_FEED, sourceId: values.sourceId });
+        setFieldErrors({});
+        setSuccessMessage("Flux RSS/XML enregistré. Vous pouvez ajouter un nouveau flux pour cette source.");
+      } else {
+        router.push("/admin/feeds");
+        router.refresh();
+      }
     } catch (error) {
       if (error instanceof Error) {
         setPageError(error.message);
@@ -465,6 +476,11 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
       {pageError ? (
         <div className="alert alert-danger" role="alert">
           {pageError}
+        </div>
+      ) : null}
+      {successMessage ? (
+        <div className="alert alert-success" role="status">
+          {successMessage}
         </div>
       ) : null}
 
@@ -662,6 +678,23 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
             </div>
           </div>
         </div>
+
+        {mode === "create" ? (
+          <div className="form-check form-switch mt-4">
+            <input
+              id="feed-add-another"
+              type="checkbox"
+              role="switch"
+              className="form-check-input"
+              checked={addAnother}
+              disabled={saving}
+              onChange={(event) => setAddAnother(event.target.checked)}
+            />
+            <label className="form-check-label" htmlFor="feed-add-another">
+              Ajouter Nouveau
+            </label>
+          </div>
+        ) : null}
 
         <div className="d-flex flex-column flex-sm-row gap-2 mt-4">
           <button
