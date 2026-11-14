@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const session = vi.fn();
-const configured = vi.fn();
-const report = vi.fn();
+const {session, configured, report} = vi.hoisted(() => ({
+  session: vi.fn(), configured: vi.fn(), report: vi.fn(),
+}));
 vi.mock("@/lib/admin-auth", () => ({getAdminSession:session}));
 vi.mock("@/lib/search-console", () => ({
   isSearchConsoleConfigured:configured, getSearchConsoleReport:report,
