@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { publicLocaleMatcher } from "./proxy-matcher";
+import { readFileSync } from "node:fs";
+
+// Next.js requires inline static matcher config; inspect that literal, without
+// importing the next-intl server runtime into Vitest.
+const source = readFileSync(new URL("./proxy.ts", import.meta.url), "utf8");
+const declared = source.match(/matcher:\\s*(\\[[^\\n]+\\])/);
+if (!declared) throw new Error("Static proxy matcher missing");
+const publicLocaleMatcher = JSON.parse(declared[1]) as string[];
 
 const matches = (path: string) => new RegExp("^" + publicLocaleMatcher[0] + "$").test(path);
 describe("SEO sitemap locale redirect regression",()=>{
