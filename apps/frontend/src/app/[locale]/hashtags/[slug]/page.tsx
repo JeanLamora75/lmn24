@@ -6,6 +6,8 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { CategoryArticles } from "@/components/category/CategoryArticles";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { collectionSchema, pageBreadcrumbs } from "@/lib/seo-schema";
 import type { HomeArticle } from "@/components/home/home-data";
 import categoryStyles from "@/components/category/category.module.css";
 import { HashtagThumbnail } from "@/components/hashtags/HashtagThumbnail";
@@ -95,6 +97,13 @@ export default async function PublicHashtagDetail({ params }: Props) {
   const accent = { "--category-accent": "#0D6EFD" } as CSSProperties;
   return (
     <main className={"container px-3 px-lg-4 " + categoryStyles.page} style={accent}>
+      <StructuredData data={collectionSchema({locale:locale as SeoLocale,
+        url:"https://www.lmn24.com/"+locale+"/hashtags/"+slug,
+        name:subject.name,
+        description:SEO_COPY[locale as SeoLocale].hashtagDescription(subject.name),
+        breadcrumbs:pageBreadcrumbs(locale as SeoLocale,labels.title,"hashtags",
+          {title:subject.name,slug}),
+      })}/>
       <nav aria-label={labels.back} className="mt-4 mb-3">
         <Link href={"/" + locale + "/hashtags"} className="text-decoration-none">
           ← {labels.back}
