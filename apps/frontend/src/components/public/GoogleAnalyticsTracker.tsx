@@ -76,6 +76,7 @@ export function GoogleAnalyticsTracker() {
   const text = labels[locale as Locale] ?? labels.fr;
   const [consent, setConsent] = useState<Choice | null>(null);
   const [ready, setReady] = useState(false);
+  const [trackerReady, setTrackerReady] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const scriptRef = useRef<HTMLScriptElement | null>(null);
 
@@ -93,6 +94,7 @@ export function GoogleAnalyticsTracker() {
     if (!ready || consent !== "accepted") return;
     window.dataLayer ??= [];
     window.gtag ??= (...args: unknown[]) => { window.dataLayer?.push(args); };
+    window.gtag("consent", "default", { analytics_storage: "granted" });
     window.gtag("js", new Date());
     // Page views are sent only by PageViewTracker, including client-side transitions.
     window.gtag("config", GA4_MEASUREMENT_ID, { send_page_view: false });
@@ -104,12 +106,14 @@ export function GoogleAnalyticsTracker() {
       document.head.appendChild(script);
       scriptRef.current = script;
     }
+    setTrackerReady(true);
   }, [ready, consent]);
 
   function choose(value: Choice) {
     try { window.localStorage.setItem(ANALYTICS_CONSENT_KEY, value); }
     catch { /* Blocked storage: do not persist the decision. */ }
     if (value === "refused") {
+      setTrackerReady(false);
       // No new analytics events are emitted after consent is withdrawn.
       window.gtag?.("consent", "update", { analytics_storage: "denied" });
       scriptRef.current?.remove();
@@ -123,7 +127,7 @@ export function GoogleAnalyticsTracker() {
   const visible = ready && (consent === null || showSettings);
   return (
     <>
-      <Suspense fallback={null}><PageViewTracker enabled={ready && consent === "accepted"} /></Suspense>
+      <Suspense fallback={null}><PageViewTracker enabled={ready && trackerReady && consent === "accepted"} /></Suspense>
       {visible ? (
         <section className={styles.banner} role="dialog" aria-modal="false" aria-label={text.title}>
           <div className={styles.content}>
