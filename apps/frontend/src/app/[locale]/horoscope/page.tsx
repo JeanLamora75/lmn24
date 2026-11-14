@@ -4,6 +4,7 @@ import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
 
 type Locale = "fr"|"en"|"de"|"es"|"pt"|"it"|"ru"|"nl";
 const SIGNS = [
@@ -27,7 +28,7 @@ const COPY: Record<Locale,{title:string;subtitle:string;choose:string;signs:stri
 type Props={params:Promise<{locale:string}>};
 export async function generateMetadata({params}:Props):Promise<Metadata>{
  const {locale}=await params;const c=COPY[locale as Locale]??COPY.fr;
- return {title:c.title,description:c.subtitle,alternates:{canonical:`/${locale}/horoscope`,languages:Object.fromEntries(routing.locales.map(l=>[l,`/${l}/horoscope`]))}};
+ return {title:c.title,description:c.subtitle,alternates:seoAlternates(locale as SeoLocale,"horoscope")};
 }
 export default async function HoroscopeIndex({params}:Props){
  const {locale}=await params;
