@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { DEFAULT_CATEGORY_HOME_COLOR } from "@lmn24/contracts";
 import { hasLocale } from "next-intl";
@@ -10,6 +11,8 @@ import styles from "@/components/category/category.module.css";
 import { localizedCategoryHref } from "@/components/home/home-data";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
+import { getSeoAvailableLocales } from "@/lib/seo-availability";
+import { seoAlternates, seoUnavailable, type SeoLocale } from "@/lib/seo-metadata";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +57,18 @@ async function loadFirstPage(
   } catch {
     return null;
   }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, slug } = await params;
+  if (!hasLocale(routing.locales, locale) ||
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 255) {
+    return seoUnavailable;
+  }
+  const available = await getSeoAvailableLocales("categories", slug);
+  // Missing or empty language variants must never be treated as equivalents.
+  if (!available?.includes(locale as SeoLocale)) return seoUnavailable;
+  return { alternates: seoAlternates(locale as SeoLocale, "category", slug, available) };
 }
 
 export default async function CategoryPage({ params }: Props) {
