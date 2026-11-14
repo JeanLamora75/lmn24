@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
 import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
+import { seoSocial } from "@/lib/seo-social";
 
 export const dynamic = "force-dynamic";
 const SIGNS = ["aries","taurus","gemini","cancer","leo","virgo","libra","scorpio","sagittarius","capricorn","aquarius","pisces"] as const;
@@ -39,9 +40,13 @@ export async function generateMetadata({params,searchParams}:Props):Promise<Meta
  if(!hasLocale(routing.locales,locale)||!SIGNS.some(s=>s===sign))return {};
  const name=titleFor(locale as Locale,sign);
  const dated = (await searchParams).date !== undefined;
- return {title:`${TEXT[locale as Locale].title} — ${name}`,description:`${TEXT[locale as Locale].title} ${name}`,
+ const title=`${TEXT[locale as Locale].title} — ${name}`;
+ const description=`${TEXT[locale as Locale].title} ${name}. ${TEXT[locale as Locale].disclaimer}.`;
+ return {title,description,
    ...(dated ? { robots: { index: false, follow: true } } : {}),
-   alternates:seoAlternates(locale as SeoLocale,"horoscope",sign)};
+   alternates:seoAlternates(locale as SeoLocale,"horoscope",sign),
+   ...seoSocial(locale as SeoLocale,title+" | LMN24",description,
+     "https://www.lmn24.com/"+locale+"/horoscope/"+sign)};
 }
 export default async function HoroscopeSignPage({params,searchParams}:Props){
  const {locale,sign}=await params;
