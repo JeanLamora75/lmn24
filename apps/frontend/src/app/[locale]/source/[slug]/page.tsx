@@ -12,6 +12,7 @@ import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
 import { getSeoAvailableLocales } from "@/lib/seo-availability";
 import { seoAlternates, seoUnavailable, type SeoLocale } from "@/lib/seo-metadata";
+import { seoSocial, SEO_COPY, cleanSeoText } from "@/lib/seo-social";
 
 export const dynamic = "force-dynamic";
 
@@ -71,7 +72,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const available = await getSeoAvailableLocales("sources", slug);
   // Missing or empty language variants must never be treated as equivalents.
   if (!available?.includes(locale as SeoLocale)) return seoUnavailable;
-  return { alternates: seoAlternates(locale as SeoLocale, "source", slug, available) };
+  const lang = locale as SeoLocale;
+  const page = await loadFirstPage(locale, slug);
+  if (!page || page === "not-found") return seoUnavailable;
+  const name = cleanSeoText(page.source.name, 90);
+  if (!name) return seoUnavailable;
+  const title = name + " — " + SEO_COPY[lang].source;
+  const description = cleanSeoText(page.source.description) ??
+    SEO_COPY[lang].sourceDescription(name);
+  const url = "https://www.lmn24.com/" + locale + "/source/" + slug;
+  return { title, description,
+    alternates: seoAlternates(lang, "source", slug, available),
+    ...seoSocial(lang, title + " | LMN24", description, url) };
 }
 
 export default async function PublicSourcePage({ params }: Props) {
