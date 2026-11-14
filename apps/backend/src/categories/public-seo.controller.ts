@@ -32,6 +32,38 @@ export class PublicSeoController {
     return this.database.prisma.hashtag.count({ where: this.where(kind, locale) });
   }
 
+  @Get("languages")
+  @Header("Cache-Control", "public, max-age=60, stale-while-revalidate=240")
+  async languages(@Query("kind") kind?: string, @Query("slug") slug?: string) {
+    if ((kind !== "categories" && kind !== "sources") ||
+      !slug || slug.length > 255 || !slugPattern.test(slug)) {
+      throw new BadRequestException("Paramètres SEO invalides.");
+    }
+    const db = this.database.prisma;
+    if (kind === "categories") {
+      const category = await db.category.findUnique({
+        where: { slug }, select: { id: true, isActive: true },
+      });
+      if (!category?.isActive) return { locales: [] };
+      const languages = await db.article.groupBy({
+        by: ["languageIsoCode2"],
+        where: { categoryId: category.id, source: { isActive: true } },
+      });
+      return { locales: languages.map(item => item.languageIsoCode2)
+        .filter(locale => LOCALES.includes(locale as Locale)) };
+    }
+    const source = await db.source.findUnique({
+      where: { slug }, select: { id: true, isActive: true },
+    });
+    if (!source?.isActive) return { locales: [] };
+    const languages = await db.article.groupBy({
+      by: ["languageIsoCode2"],
+      where: { sourceId: source.id, category: { isActive: true } },
+    });
+    return { locales: languages.map(item => item.languageIsoCode2)
+      .filter(locale => LOCALES.includes(locale as Locale)) };
+  }
+
   @Get("sitemap-counts")
   @Header("Cache-Control", "public, max-age=60, stale-while-revalidate=240")
   async counts() {
