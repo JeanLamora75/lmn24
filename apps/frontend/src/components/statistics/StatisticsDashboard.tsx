@@ -131,6 +131,7 @@ export function StatisticsDashboard() {
       <nav className="d-flex gap-2 mb-3" aria-label="Sources de statistiques">
         <span className="btn btn-primary" aria-current="page">Statistiques LMN24</span>
         <Link href="/admin/site-statistics/google-analytics" className="btn btn-outline-secondary">Google Analytics</Link>
+        <Link href="/admin/site-statistics/search-console" className="btn btn-outline-secondary">Search Console</Link>
       </nav>
       <AdminFilterResetButton section="site-statistics" />
     <header className="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
