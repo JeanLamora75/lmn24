@@ -69,7 +69,7 @@ export function SearchConsoleDashboard() {
       <p className="mb-0 mt-2">L&apos;accès à Search Console doit être autorisé explicitement pour la propriété concernée.</p>
     </div>:null}
     {data?<div>
-      <p className="text-body-secondary small">Propriété : <code>{data.property}</code>. Données finales jusqu'à trois jours avant aujourd'hui, susceptibles d&apos;être différées. Une absence de données ne signifie pas absence d'indexation.</p>
+      <p className="text-body-secondary small">Propriété : <code>{data.property}</code>. Données finales jusqu&apos;à trois jours avant aujourd&apos;hui, susceptibles d&apos;être différées. Une absence de données ne signifie pas absence d&apos;indexation.</p>
       <div className="row g-3 mb-4">
         {[
           ["Clics depuis Google",number(data.totalClicks)],
