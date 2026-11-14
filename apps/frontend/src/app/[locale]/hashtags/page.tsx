@@ -48,10 +48,14 @@ function formattedDate(iso: string | null | undefined, locale: string): string {
   }).format(new Date(iso)) + " UTC";
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
   const labels = getHashtagLabels(locale);
+  const filters = await searchParams;
+  // Filtered and paginated rankings are volatile: keep only the base landing indexed.
+  const filtered = Object.keys(filters).length > 0;
   return { title: labels.title, description: labels.description,
+    ...(filtered ? { robots: { index: false, follow: true } } : {}),
     alternates: seoAlternates(locale as SeoLocale, "hashtags") };
 }
 
