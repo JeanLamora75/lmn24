@@ -1,6 +1,8 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 type FileInfo={fileName:string;date:string;count:number;expected:number;status:string;lastImportAt:string|null;error:string|null};
 type Run={id:string;sourceFile:string;startedAt:string;status:string;itemsInserted:number;itemsSkipped:number;errorMessage:string|null};
 const SIGNS=["aries","taurus","gemini","cancer","leo","virgo","libra","scorpio","sagittarius","capricorn","aquarius","pisces"];
@@ -17,8 +19,8 @@ export default function HoroscopesPage(){
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [message,setMessage]=useState("");
-  const [sign,setSign]=useState("aries");
-  const [lang,setLang]=useState("fr");
+  const [sign,setSign]=useAdminSessionFilter("horoscopes", "sign", "aries");
+  const [lang,setLang]=useAdminSessionFilter("horoscopes", "lang", "fr");
   const [preview,setPreview]=useState<Record<string,string>|null>(null);
   const [selected,setSelected]=useState("");
   const refresh=useCallback(async()=>{const [f,h]=await Promise.all([api<FileInfo[]>("overview"),api<Run[]>("history")]);setFiles(f);setHistory(h);},[]);
@@ -58,6 +60,7 @@ export default function HoroscopesPage(){
   const imported=files.filter(x=>x.count===96).length;
   const partial=files.filter(x=>x.count>0&&x.count<96).length;
   return <main className="container py-4">
+    <AdminFilterResetButton section="horoscopes" />
     <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
       <div><h1 className="h3 mb-1">Gestion des horoscopes</h1><p className="text-body-secondary mb-0">Imports manuels et couverture des 12 signes dans 8 langues</p></div>
       <Link className="btn btn-outline-secondary" href="/admin">Retour administration</Link>
