@@ -5,12 +5,17 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
 import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
+import { SEO_COPY, seoSocial } from "@/lib/seo-social";
 import { PublicVideos, type VideosPage } from "@/components/videos/PublicVideos";
 export const dynamic="force-dynamic";
 type Props={params:Promise<{locale:string}>};
 export async function generateMetadata({params}:Props):Promise<Metadata>{
   const {locale}=await params;
-  return {title:locale==="fr"?"Vidéos du monde":"World videos",description:"Vidéos des médias internationaux, sélectionnées par langue.",alternates:seoAlternates(locale as SeoLocale,"videos")};
+  if (!hasLocale(routing.locales,locale)) return {robots:{index:false}};
+  const lang=locale as SeoLocale;
+  const {videoTitle:title,videoDescription:description}=SEO_COPY[lang];
+  return {title,description,alternates:seoAlternates(lang,"videos"),
+    ...seoSocial(lang,title+" | LMN24",description,"https://www.lmn24.com/"+locale+"/videos")};
 }
 export default async function VideosPageRoute({params}:Props){
   const {locale}=await params;
