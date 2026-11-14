@@ -26,13 +26,13 @@ export function readStoredFilter<T extends string | number | boolean>(
   return fallback;
 }
 
-export function clearAdminSessionFilters(): void {
+export function clearAdminSessionFilters(section?: string): void {
   if (typeof window === "undefined") return;
   try {
     const storage = window.sessionStorage;
     for (let index = storage.length - 1; index >= 0; index--) {
       const key = storage.key(index);
-      if (key?.startsWith(PREFIX)) storage.removeItem(key);
+      if (key?.startsWith(section ? PREFIX + section + ":" : PREFIX)) storage.removeItem(key);
     }
   } catch {
     // Private browsing and disabled storage keep filters in React state only.
@@ -56,6 +56,7 @@ export function useAdminSessionFilter<T extends string | number | boolean>(
     } catch {
       // Storage can be disabled; fall back to in-memory behavior.
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRestored(true);
     // initial is the initial value for this mounted view; changing the
     // persisted storage key is not supported during component lifetime.
