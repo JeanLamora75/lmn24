@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { CategoryArticles } from "@/components/category/CategoryArticles";
 import { StructuredData } from "@/components/seo/StructuredData";
+import { PublicBreadcrumbs } from "@/components/seo/PublicBreadcrumbs";
 import { collectionSchema } from "@/lib/seo-schema";
 import styles from "@/components/category/category.module.css";
 import type { HomeArticle } from "@/components/home/home-data";
@@ -121,6 +122,9 @@ export default async function PublicSourcePage({ params }: Props) {
         </div>
       ) : (
         <>
+          <PublicBreadcrumbs label={labels.articles} items={[
+            { label: "LMN24", href: "/" + locale }, { label: page.source.name },
+          ]} />
           <SourceProfile source={page.source} />
           <section aria-label={labels.articles}>
             {page.items.length === 0 ? (
