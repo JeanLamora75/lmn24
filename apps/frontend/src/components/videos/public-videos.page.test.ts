@@ -17,6 +17,13 @@ describe("SCRUM-43 public videos home screen", () => {
     expect(component).toContain("VideoPlayerModal");
   });
 
+  it("reserves thumbnail dimensions, defers offscreen loads and decodes without blocking paint", () => {
+    expect(component).toContain('width={480} height={270}');
+    expect(component).toContain('loading="lazy"');
+    expect(component).toContain('decoding="async"');
+    expect(component).toContain('fetchPriority="low"');
+  });
+
   it("fetches SSR videos without depending on the filters endpoint", () => {
     expect(page).toContain('"/public/videos?locale="+encodeURIComponent(locale)');
     expect(page).not.toContain("/public/videos/filters");
