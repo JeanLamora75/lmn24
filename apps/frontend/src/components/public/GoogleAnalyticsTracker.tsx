@@ -94,7 +94,7 @@ export function GoogleAnalyticsTracker() {
     if (!ready || consent !== "accepted") return;
     window.dataLayer ??= [];
     window.gtag ??= (...args: unknown[]) => { window.dataLayer?.push(args); };
-    window.gtag("consent", "default", { analytics_storage: "granted" });
+    window.gtag("consent", "update", { analytics_storage: "granted" });
     window.gtag("js", new Date());
     // Page views are sent only by PageViewTracker, including client-side transitions.
     window.gtag("config", GA4_MEASUREMENT_ID, { send_page_view: false });
@@ -106,6 +106,7 @@ export function GoogleAnalyticsTracker() {
       document.head.appendChild(script);
       scriptRef.current = script;
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTrackerReady(true);
   }, [ready, consent]);
 
