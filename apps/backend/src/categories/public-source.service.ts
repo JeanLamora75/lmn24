@@ -78,6 +78,7 @@ export class PublicSourceService {
         source: {
           select: {
             name: true,
+            slug: true,
             logoUrl: true,
             country: { select: { isoCode2: true } },
           },
@@ -109,6 +110,7 @@ export class PublicSourceService {
         publishedAt: row.publishedAt,
         source: {
           name: row.source.name,
+          slug: row.source.slug,
           logoUrl: row.source.logoUrl,
           countryIsoCode2: row.source.country.isoCode2,
         },
