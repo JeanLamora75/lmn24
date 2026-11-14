@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { config } from "./proxy";
+import { publicLocaleMatcher } from "./proxy-matcher";
 
-const matches = (path: string) => new RegExp("^" + config.matcher[0] + "$").test(path);
+const matches = (path: string) => new RegExp("^" + publicLocaleMatcher[0] + "$").test(path);
 describe("SEO sitemap locale redirect regression",()=>{
   it("never passes sitemap shards into the next-intl locale redirect middleware",()=>{
     for(const kind of ["categories","sources","hashtags"])
