@@ -14,6 +14,7 @@ import { routing, type AppLocale } from "@/i18n/routing";
 export const metadata: Metadata = {
   title: { default: "LMN24", template: "%s | LMN24" },
   description: "Agrégateur multilingue d'actualités internationales.",
+  icons: { icon: [{ url: "/logo_lmn24.png", type: "image/png", sizes: "192x192" }], shortcut: "/logo_lmn24.png", apple: "/logo_lmn24.png" },
 };
 
 export function generateStaticParams() {

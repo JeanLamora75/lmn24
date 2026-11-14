@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 
 type Continent="EU"|"AS"|"AF"|"NA"|"SA"|"OC";
 type City={
@@ -25,19 +26,21 @@ function flag(code:string) {
 function normalize(s:string) {
  return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 }
-async function request<T>(path:string, init?:RequestInit):Promise<T>{
+
+export function WeatherCitiesClient() {
+ const router = useRouter();
+ const request = useCallback(async <T,>(path:string, init?:RequestInit):Promise<T> => {
  const res=await fetch("/api/admin/weather-cities"+path,{cache:"no-store",...init});
  const body:unknown=await res.json().catch(()=>null);
  if(!res.ok) {
-   if(res.status===401){ window.location.assign("/admin/login");throw new Error("Session expirée."); }
+   if(res.status===401){ router.replace("/admin/login");throw new Error("Session expirée."); }
    if(res.status===403)throw new Error("Accès réservé aux administrateurs.");
    throw new Error(typeof body==="object"&&body&&"message" in body?
      String(body.message):"Une erreur est survenue.");
  }
  return body as T;
-}
+ }, [router]);
 
-export function WeatherCitiesClient() {
  const [items,setItems]=useState<City[]>([]);
  const [busy,setBusy]=useState(false);
  const [loading,setLoading]=useState(true);
@@ -64,7 +67,7 @@ export function WeatherCitiesClient() {
      if(alive){setItems(d.items);setLoading(false);}
    }).catch(e=>{if(alive){setError(String(e));setLoading(false);}});
    return ()=>{alive=false;};
- },[]);
+ },[request]);
  const filtered=useMemo(()=>items.filter(c=>{
    const matches=!search||normalize([c.name,c.slug,c.countryIso2,REGIONS[c.continentCode]].join(" ")).includes(normalize(search));
    return matches&&(continent==="all"||c.continentCode===continent)

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Type = "INFOS" | "VIDEOS" | "WEATHER" | "HOROSCOPE_IMPORT";
@@ -23,7 +23,7 @@ export function SchedulerSettings() {
   const [enabledDraft,setEnabledDraft] = useState<Record<string,boolean>>({});
   const [error,setError] = useState("");
   const [notice,setNotice] = useState("");
-  async function load() {
+  const load = useCallback(async () => {
     const res = await fetch("/api/admin/scheduler-settings",{cache:"no-store"});
     if (res.status===401) { router.replace("/admin/login"); return; }
     if(!res.ok) throw new Error("Impossible de récupérer la configuration du planificateur.");
@@ -34,8 +34,8 @@ export function SchedulerSettings() {
     setDraft(Object.fromEntries(body.configured.map(x=>[
       x.parserType, x.parserType==="HOROSCOPE_IMPORT" ? x.localTime??"06:15" : String(x.intervalMinutes??60)
     ])));
-  }
-  useEffect(()=>{let live=true;void (async()=>{try{await load()}catch(e){if(live)setError(String(e))}finally{if(live)setLoading(false)}})();return()=>{live=false};},[]);
+  }, [router]);
+  useEffect(()=>{let live=true;void (async()=>{try{await load()}catch(e){if(live)setError(String(e))}finally{if(live)setLoading(false)}})();return()=>{live=false};},[load]);
   async function save(row:Config) {
     setError("");setNotice("");
     const horoscope=row.parserType==="HOROSCOPE_IMPORT";

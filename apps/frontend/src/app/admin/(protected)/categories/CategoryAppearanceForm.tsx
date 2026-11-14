@@ -332,7 +332,6 @@ export function CategoryAppearanceForm({ categoryId }: Props) {
                           value={option.layoutType}
                           checked={layoutType === option.layoutType}
                           onChange={(event) => updateLayout(event.target.value)}
-                          aria-invalid={Boolean(fieldErrors.layoutType)}
                           className="form-check-input mt-1"
                         />
                         <span className={styles.choiceDetails}>
