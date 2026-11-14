@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { PublicFooter } from "@/components/public/PublicFooter";
+import { GoogleAnalyticsTracker } from "@/components/public/GoogleAnalyticsTracker";
 import { PublicHeader } from "@/components/public/PublicHeader";
 import { routing, type AppLocale } from "@/i18n/routing";
 
@@ -42,6 +43,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <PublicHeader />
           <div className="flex-grow-1">{children}</div>
           <PublicFooter />
+          <GoogleAnalyticsTracker />
         </NextIntlClientProvider>
       </body>
     </html>
