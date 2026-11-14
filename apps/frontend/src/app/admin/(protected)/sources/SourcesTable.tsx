@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -170,16 +171,16 @@ export function SourcesTable() {
     totalPages: 0,
   });
 
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
-  const [countryId, setCountryId] = useState("");
-  const [status, setStatus] = useState<"all" | "active" | "inactive">("all");
-  const [page, setPage] = useState(1);
-  const [feedRange, setFeedRange] = useState("all");
-  const [articleRange, setArticleRange] = useState("all");
-  const [missingSocial, setMissingSocial] = useState("all");
+  const [searchInput, setSearchInput] = useAdminSessionFilter("sources", "searchInput", "");
+  const [search, setSearch] = useAdminSessionFilter("sources", "search", "");
+  const [countryId, setCountryId] = useAdminSessionFilter("sources", "countryId", "");
+  const [status, setStatus] = useAdminSessionFilter<"all" | "active" | "inactive">("sources", "status", "all");
+  const [page, setPage] = useAdminSessionFilter("sources", "page", 1);
+  const [feedRange, setFeedRange] = useAdminSessionFilter("sources", "feedRange", "all");
+  const [articleRange, setArticleRange] = useAdminSessionFilter("sources", "articleRange", "all");
+  const [missingSocial, setMissingSocial] = useAdminSessionFilter("sources", "missingSocial", "all");
   const [pageSize, setPageSize] =
-    useState<(typeof PAGE_SIZES)[number]>(10);
+    useAdminSessionFilter<(typeof PAGE_SIZES)[number]>("sources", "pageSize", 10);
   const [reloadKey, setReloadKey] = useState(0);
 
   const [loading, setLoading] = useState(true);
