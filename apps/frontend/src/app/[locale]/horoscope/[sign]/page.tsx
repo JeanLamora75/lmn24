@@ -5,6 +5,7 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
+import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
 
 export const dynamic = "force-dynamic";
 const SIGNS = ["aries","taurus","gemini","cancer","leo","virgo","libra","scorpio","sagittarius","capricorn","aquarius","pisces"] as const;
@@ -38,7 +39,7 @@ export async function generateMetadata({params}:Props):Promise<Metadata>{
  if(!hasLocale(routing.locales,locale)||!SIGNS.some(s=>s===sign))return {};
  const name=titleFor(locale as Locale,sign);
  return {title:`${TEXT[locale as Locale].title} — ${name}`,description:`${TEXT[locale as Locale].title} ${name}`,
-   alternates:{canonical:`/${locale}/horoscope/${sign}`,languages:Object.fromEntries(routing.locales.map(l=>[l,`/${l}/horoscope/${sign}`]))}};
+   alternates:seoAlternates(locale as SeoLocale,"horoscope",sign)};
 }
 export default async function HoroscopeSignPage({params,searchParams}:Props){
  const {locale,sign}=await params;
