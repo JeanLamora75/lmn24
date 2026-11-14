@@ -13,6 +13,7 @@ import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
 import { getSeoAvailableLocales } from "@/lib/seo-availability";
 import { seoAlternates, seoUnavailable, type SeoLocale } from "@/lib/seo-metadata";
+import { seoSocial, SEO_COPY, cleanSeoText } from "@/lib/seo-social";
 
 export const dynamic = "force-dynamic";
 
@@ -68,7 +69,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const available = await getSeoAvailableLocales("categories", slug);
   // Missing or empty language variants must never be treated as equivalents.
   if (!available?.includes(locale as SeoLocale)) return seoUnavailable;
-  return { alternates: seoAlternates(locale as SeoLocale, "category", slug, available) };
+  const lang = locale as SeoLocale;
+  const messages = await getMessages({ locale });
+  const categoryNames = messages.categories as Record<string, string>;
+  const label = cleanSeoText(categoryNames[slug] ?? slug.replace(/-/g, " "), 90) ?? slug;
+  const title = label + " — " + SEO_COPY[lang].category;
+  const description = SEO_COPY[lang].categoryDescription(label);
+  const url = "https://www.lmn24.com/" + locale + "/category/" + slug;
+  return { title, description,
+    alternates: seoAlternates(lang, "category", slug, available),
+    ...seoSocial(lang, title + " | LMN24", description, url) };
 }
 
 export default async function CategoryPage({ params }: Props) {
