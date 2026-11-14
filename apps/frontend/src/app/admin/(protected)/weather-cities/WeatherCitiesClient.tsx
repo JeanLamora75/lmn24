@@ -1,4 +1,5 @@
 "use client";
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
@@ -137,9 +138,9 @@ export function WeatherCitiesClient() {
        <p className="text-body-secondary mb-0">Gérez les villes suivies par la météo mondiale LMN24.</p>
      </div>
      <div className="d-flex flex-wrap gap-2">
-       <Link href="/admin" className="btn btn-outline-secondary">Retour administration</Link>
+       <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour administration</Link>
        <button className="btn btn-primary" type="button" disabled={busy}
-         onClick={()=>editor===false?edit():setEditor(false)}>
+         onClick={()=>editor===false?edit():setEditor(false)}><AdminIcon name="x-circle" className="me-2 align-middle" /> 
          {editor===false?"Ajouter une ville":"Fermer le formulaire"}
        </button>
      </div>
@@ -211,11 +212,11 @@ export function WeatherCitiesClient() {
          </div>
        </div>
        <div className="d-flex flex-wrap gap-2 mt-4">
-         <button className="btn btn-primary" disabled={busy} type="submit">
+         <button className="btn btn-primary" disabled={busy} type="submit"><AdminIcon name="floppy" className="me-2 align-middle" /> 
            {busy?"Enregistrement…":"Enregistrer"}
          </button>
          <button className="btn btn-outline-secondary" type="button"
-           disabled={busy} onClick={()=>setEditor(false)}>Annuler</button>
+           disabled={busy} onClick={()=>setEditor(false)}><AdminIcon name="x-circle" className="me-2 align-middle" /> Annuler</button>
        </div>
      </form>
    </section>}
@@ -231,11 +232,11 @@ export function WeatherCitiesClient() {
          value={typed} onChange={e=>setTyped(e.target.value)}/>
        <div className="d-flex gap-2 flex-wrap">
          <button className="btn btn-danger" type="button"
-           disabled={busy||!impact||typed!==deleting.slug} onClick={()=>void remove()}>
+           disabled={busy||!impact||typed!==deleting.slug} onClick={()=>void remove()}><AdminIcon name="trash" className="me-2 align-middle" /> 
            Supprimer définitivement
          </button>
          <button className="btn btn-outline-secondary" type="button"
-           disabled={busy} onClick={()=>{setDeleting(null);setImpact(null);}}>Annuler</button>
+           disabled={busy} onClick={()=>{setDeleting(null);setImpact(null);}}><AdminIcon name="x-circle" className="me-2 align-middle" /> Annuler</button>
        </div>
      </div>
    </section>}
@@ -276,7 +277,7 @@ export function WeatherCitiesClient() {
        {loading?"Chargement…":`${filtered.length} résultat(s) · ${items.filter(x=>x.isActive).length} villes actives sur ${items.length}`}
      </span>
      <button className="btn btn-outline-secondary btn-sm" type="button" disabled={busy}
-       onClick={()=>void run(load,"Liste actualisée.")}>Actualiser</button>
+       onClick={()=>void run(load,"Liste actualisée.")}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser</button>
    </div>
    <div className="card shadow-sm">
      <div className="table-responsive">
@@ -301,9 +302,9 @@ export function WeatherCitiesClient() {
              </label></td>
              <td><div className="d-flex flex-wrap gap-2">
                <button className="btn btn-outline-primary btn-sm" disabled={busy}
-                 type="button" onClick={()=>edit(city)}>Modifier</button>
+                 type="button" onClick={()=>edit(city)}><AdminIcon name="pencil-square" className="me-2 align-middle" /> Modifier</button>
                <button className="btn btn-outline-danger btn-sm" disabled={busy}
-                 type="button" onClick={()=>confirmDelete(city)}>Supprimer</button>
+                 type="button" onClick={()=>confirmDelete(city)}><AdminIcon name="trash" className="me-2 align-middle" /> Supprimer</button>
              </div></td>
            </tr>)}
            {!loading&&visible.length===0&&<tr><td colSpan={7}
