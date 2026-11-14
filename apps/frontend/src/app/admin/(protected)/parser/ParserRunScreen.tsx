@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -343,6 +344,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
 
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
+      <AdminFilterResetButton section="parser" />
       <div className="mb-4">
         <Link href="/admin" className="btn btn-outline-secondary">
           Retour à l’administration
