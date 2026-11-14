@@ -1,5 +1,6 @@
 "use client";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
 import {useCallback,useEffect,useMemo,useState} from "react";
 
@@ -98,6 +99,7 @@ export function WeatherMonitoringPanel({period,from,to,visible}:{
   },[visible]);
   if(!visible)return null;
   return <section className="card shadow-sm mb-4" aria-labelledby="weather-monitor-title">
+    <AdminFilterResetButton section="weather-monitoring" />
     <div className="card-body p-4">
       <div className="d-flex justify-content-between flex-wrap align-items-center gap-2 mb-3">
         <div>
