@@ -803,7 +803,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                             href={feedUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="btn btn-sm btn-outline-secondary"
+                            className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                             title="Ouvrir le flux"
                             aria-label={"Ouvrir le flux " + label}
                           >
@@ -824,7 +824,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                             encodeURIComponent(feed.id) +
                             "/edit"
                           }
-                          className="btn btn-sm btn-outline-primary"
+                          className="btn btn-sm btn-outline-primary lmn-admin-compact-action"
                           title="Modifier le flux"
                           aria-label={"Modifier le flux " + label}
                         >
@@ -839,7 +839,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                         </Link>
                         <button
                           type="button"
-                          className="btn btn-sm btn-outline-danger"
+                          className="btn btn-sm btn-outline-danger lmn-admin-compact-action"
                           title={"Supprimer le flux " + label}
                           aria-label={"Supprimer le flux " + label}
                           disabled={updating}
@@ -860,7 +860,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                         className={"d-lg-none " + styles.mobileActions}
                       >
                         <summary
-                          className="btn btn-sm btn-outline-secondary"
+                          className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                           aria-label={"Actions pour le flux " + label}
                           title="Actions"
                         >
