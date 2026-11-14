@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Link from "next/link";
 import {useCallback,useEffect,useMemo,useState} from "react";
 import {useRouter} from "next/navigation";
@@ -32,7 +33,7 @@ export default function WeatherParserScreen(){
   const router=useRouter();
   const [cities,setCities]=useState<City[]>([]);
   const [runs,setRuns]=useState<WeatherRun[]>([]);
-  const [continent,setContinent]=useState<WeatherContinent|"all">("all");
+  const [continent,setContinent]=useAdminSessionFilter<WeatherContinent|"all">("weather-parser", "continent", "all");
   const [selectedId,setSelectedId]=useState<string|null>(null);
   const [loading,setLoading]=useState(true);
   const [starting,setStarting]=useState(false);
