@@ -11,7 +11,7 @@ export type PublicHomeArticle = {
   imageUrl: string | null;
   articleUrl: string;
   publishedAt: Date;
-  source: { name: string; logoUrl: string | null; countryIsoCode2: string | null };
+  source: { name: string; slug?: string; logoUrl: string | null; countryIsoCode2: string | null };
 };
 
 export type PublicHomeSection = {
@@ -36,6 +36,7 @@ type PublicHomeRow = {
   articleUrl: string;
   publishedAt: Date;
   sourceName: string;
+  sourceSlug?: string;
   sourceLogoUrl: string | null;
   sourceCountryIsoCode2: string | null;
 };
@@ -77,6 +78,7 @@ export function groupPublicHomeRows(
       publishedAt: row.publishedAt,
       source: {
         name: row.sourceName,
+        ...(row.sourceSlug ? {slug:row.sourceSlug} : {}),
         logoUrl: row.sourceLogoUrl,
         countryIsoCode2: row.sourceCountryIsoCode2,
       },
@@ -108,6 +110,7 @@ export class PublicHomeService {
         recent.article_url AS "articleUrl",
         recent.published_at AS "publishedAt",
         recent.source_name AS "sourceName",
+        recent.source_slug AS "sourceSlug",
         recent.source_logo_url AS "sourceLogoUrl",
         recent.source_country_iso_code2 AS "sourceCountryIsoCode2"
       FROM category AS c
@@ -120,6 +123,7 @@ export class PublicHomeService {
           a.article_url,
           a.published_at,
           s.name AS source_name,
+          s.slug AS source_slug,
           s.logo_url AS source_logo_url,
           source_country.iso_code2::text AS source_country_iso_code2
         FROM article AS a
