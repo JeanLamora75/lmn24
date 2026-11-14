@@ -1,4 +1,4 @@
-import { getBackendUrl } from "@/lib/admin-backend";
+import { getBackendUrl } from "./admin-backend";
 
 export const SEO_ORIGIN = "https://www.lmn24.com";
 export const SEO_LOCALES = ["fr", "en", "de", "es", "pt", "it", "ru", "nl"] as const;
