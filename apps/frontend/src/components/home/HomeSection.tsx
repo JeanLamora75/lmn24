@@ -61,6 +61,10 @@ export function ArticleCard({
       }).format(pubDate)
     : null;
   const compact = layoutType === "HEADLINES" || layoutType === "COMPACT";
+  const sourceSlug = article.source.slug;
+  const sourceHref = sourceSlug && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(sourceSlug)
+    ? "/" + encodeURIComponent(locale) + "/source/" + encodeURIComponent(sourceSlug)
+    : null;
 
   const content = (
     <>
@@ -105,6 +109,11 @@ export function ArticleCard({
         </a>
       ) : (
         <div className={styles.articleLink}>{content}</div>
+      )}
+      {sourceHref && (
+        <Link href={sourceHref} className={styles.sourceDirectoryLink}>
+          {article.source.name}
+        </Link>
       )}
     </article>
   );
