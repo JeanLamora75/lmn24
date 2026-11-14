@@ -9,6 +9,7 @@ import {weatherCopy} from "@/components/weather/weather-copy";
 import {parseWeatherResponse,type WeatherResponse} from "@/components/weather/weather-data";
 import {routing} from "@/i18n/routing";
 import {getBackendUrl} from "@/lib/admin-backend";
+import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
 
 export const dynamic="force-dynamic";
 type Props=Readonly<{params:Promise<{locale:string}>}>;
@@ -19,10 +20,7 @@ export async function generateMetadata({params}:Props):Promise<Metadata>{
   return {
     title:c.title,
     description:c.description,
-    alternates:{
-      canonical:"/"+locale+"/weather",
-      languages:Object.fromEntries(routing.locales.map(lang=>[lang,"/"+lang+"/weather"])),
-    },
+    alternates: seoAlternates(locale as SeoLocale, "weather"),
   };
 }
 export default async function WeatherHomePage({params}:Props){
