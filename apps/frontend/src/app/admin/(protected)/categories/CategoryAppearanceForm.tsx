@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -223,7 +224,7 @@ export function CategoryAppearanceForm({ categoryId }: Props) {
   if (!category) {
     return (
       <main className="container py-5">
-        <Link href="/admin/categories" className="btn btn-outline-secondary mb-4">
+        <Link href="/admin/categories" className="btn btn-outline-secondary mb-4"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           ← Retour aux catégories
         </Link>
         <div role="alert" className="alert alert-danger">
@@ -254,10 +255,10 @@ export function CategoryAppearanceForm({ categoryId }: Props) {
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
       <div className="d-flex gap-2 flex-wrap mb-4">
-        <Link href="/admin" className="btn btn-outline-secondary">
+        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour à l’administration
         </Link>
-        <Link href="/admin/categories" className="btn btn-outline-secondary">
+        <Link href="/admin/categories" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour aux catégories
         </Link>
       </div>
@@ -430,14 +431,14 @@ export function CategoryAppearanceForm({ categoryId }: Props) {
                       aria-disabled={saving}
                       className={"btn btn-outline-secondary" + (saving ? " disabled" : "")}
                       tabIndex={saving ? -1 : undefined}
-                    >
+                    ><AdminIcon name="x-circle" className="me-2 align-middle" /> 
                       Annuler
                     </Link>
                     <button
                       type="submit"
                       className="btn btn-primary"
                       disabled={saving || unchanged}
-                    >
+                    ><AdminIcon name="floppy" className="me-2 align-middle" /> 
                       {saving ? "Enregistrement…" : "Enregistrer"}
                     </button>
                   </div>
