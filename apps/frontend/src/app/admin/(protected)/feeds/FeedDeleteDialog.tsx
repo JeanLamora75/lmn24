@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -122,7 +123,7 @@ export function FeedDeleteDialog({ feed, onClose, onDeleted }: Props) {
             className="btn btn-outline-secondary"
             disabled={deleting}
             onClick={() => dialogRef.current?.close()}
-          >
+          ><AdminIcon name="x-circle" className="me-2 align-middle" /> 
             Annuler
           </button>
           <button
@@ -130,7 +131,7 @@ export function FeedDeleteDialog({ feed, onClose, onDeleted }: Props) {
             className="btn btn-danger"
             disabled={loading || feedRuns === null || deleting || activeRuns > 0}
             onClick={() => void confirmDelete()}
-          >
+          ><AdminIcon name="trash" className="me-2 align-middle" /> 
             {deleting ? "Suppression…" : "Supprimer définitivement"}
           </button>
         </div>
