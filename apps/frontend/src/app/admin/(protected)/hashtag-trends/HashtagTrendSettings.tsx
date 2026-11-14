@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -97,7 +98,7 @@ export function HashtagTrendSettings() {
           <h1 className="h2 mb-1">Paramètres des tendances</h1>
           <p className="text-body-secondary mb-0">Détection des sujets en forte progression dans l’actualité mondiale.</p>
         </div>
-        <Link className="btn btn-outline-secondary" href="/admin">Retour administration</Link>
+        <Link className="btn btn-outline-secondary" href="/admin"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour administration</Link>
       </div>
       {error && <div className="alert alert-danger" role="alert">{error}</div>}
       {success && <div className="alert alert-success" role="status">{success}</div>}
@@ -117,8 +118,8 @@ export function HashtagTrendSettings() {
           Le score sert au tri ; le pourcentage affiché au public reste une variation réelle.
         </div>
         <div className="d-flex justify-content-end gap-2">
-          <Link href="/admin" className="btn btn-outline-secondary">Annuler</Link>
-          <button className="btn btn-primary" type="submit" disabled={saving || loading}>
+          <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="x-circle" className="me-2 align-middle" /> Annuler</Link>
+          <button className="btn btn-primary" type="submit" disabled={saving || loading}><AdminIcon name="floppy" className="me-2 align-middle" /> 
             {saving ? "Enregistrement…" : "Enregistrer les seuils"}
           </button>
         </div>
