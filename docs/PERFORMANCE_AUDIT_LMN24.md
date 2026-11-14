@@ -28,6 +28,7 @@ Pour l'INP, ne pas le remplacer par TBT ; le TBT n'est qu'un indicateur labo com
 
 - Les cartes vidéo ont un ratio visuel CSS `16 / 9` et une image avec dimensions natives `480×270`, réservant un espace stable.
 - Images de vignettes vidéo hors écran : `loading=lazy`, `decoding=async`, `fetchPriority=low`.
+- Un seul média prioritaire par page initiale sur l’accueil et les listes catégorie : premier article avec `loading=eager` et `fetchPriority=high` ; toutes les autres images restent lazy. Cette hypothèse LCP est à confirmer par une nouvelle mesure après déploiement.
 - Le lecteur vidéo reste chargé seulement lorsque la modale est ouverte (pas d'iframe YouTube au chargement de la galerie).
 - Le tag Google Analytics reste bloqué avant consentement, sans requête à la librairie Google lors de la première navigation.
 - Les images d'articles RSS externes sont actuellement en `next/image unoptimized` ; l'optimisation de serveurs tiers nécessite un modèle de confiance (proxy, cache et licences) **avant** de modifier ce comportement.
