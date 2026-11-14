@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
@@ -118,8 +119,8 @@ export function HashtagsAdmin() {
           <p className="text-body-secondary mb-0">Gérer les sujets et leurs alias multilingues.</p>
         </div>
         <div className="d-flex gap-2">
-          <Link className="btn btn-outline-secondary" href="/admin">Retour admin</Link>
-          <Link className="btn btn-primary" href="/admin/hashtags/new">Ajouter un hashtag</Link>
+          <Link className="btn btn-outline-secondary" href="/admin"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour admin</Link>
+          <Link className="btn btn-primary" href="/admin/hashtags/new"><AdminIcon name="plus-circle" className="me-2 align-middle" /> Ajouter un hashtag</Link>
         </div>
       </div>
       <form className="row g-2 mb-3" onSubmit={submit}>
@@ -139,7 +140,7 @@ export function HashtagsAdmin() {
           </select>
         </div>
         <div className="col-md-3">
-          <button className="btn btn-outline-primary w-100" type="submit">Rechercher</button>
+          <button className="btn btn-outline-primary w-100" type="submit"><AdminIcon name="search" className="me-2 align-middle" /> Rechercher</button>
         </div>
       </form>
       {error && <div className="alert alert-danger" role="alert">{error}</div>}
@@ -193,9 +194,9 @@ export function HashtagsAdmin() {
                   <td>
                     <div className="d-flex gap-2">
                       <Link className="btn btn-sm btn-outline-primary"
-                        href={"/admin/hashtags/" + item.id + "/edit"}>Modifier</Link>
+                        href={"/admin/hashtags/" + item.id + "/edit"}><AdminIcon name="pencil-square" className="me-2 align-middle" /> Modifier</Link>
                       <button type="button" className="btn btn-sm btn-outline-danger"
-                        disabled={busyId === item.id} onClick={() => void remove(item)}>
+                        disabled={busyId === item.id} onClick={() => void remove(item)}><AdminIcon name="trash" className="me-2 align-middle" /> 
                         Supprimer
                       </button>
                     </div>
