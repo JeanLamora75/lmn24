@@ -24,7 +24,7 @@ describe("SCRUM-96 localized and safe social metadata", () => {
       expect(social.openGraph?.url).toBe(url);
       expect(social.openGraph?.title).toBe("Example | LMN24");
       expect(social.openGraph?.description).toBe("Public media details");
-      expect(social.twitter?.card).toBe("summary");
+      expect(social.twitter).toMatchObject({ card: "summary" });
       expect(social.twitter?.images).toEqual([SEO_BRAND_IMAGE]);
       expect((social.openGraph?.images as Array<{url:string}>)[0]?.url).toBe(SEO_SITE + "/logo_lmn24.png");
     }
