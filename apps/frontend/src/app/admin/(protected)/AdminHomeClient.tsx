@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
@@ -48,7 +49,7 @@ export function AdminHomeClient() {
               className="btn btn-outline-secondary"
               onClick={() => setQuery("")}
               aria-label="Effacer la recherche"
-            >
+            ><AdminIcon name="arrow-counterclockwise" className="me-2 align-middle" /> 
               Effacer
             </button>
           )}
@@ -67,7 +68,7 @@ export function AdminHomeClient() {
             <p className="text-body-secondary mb-3">
               Essayez un autre mot-clé ou réaffichez toutes les fonctionnalités.
             </p>
-            <button type="button" className="btn btn-primary" onClick={() => setQuery("")}>
+            <button type="button" className="btn btn-primary" onClick={() => setQuery("")}><AdminIcon name="arrow-counterclockwise" className="me-2 align-middle" /> 
               Réinitialiser la recherche
             </button>
           </section>
