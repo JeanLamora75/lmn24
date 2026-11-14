@@ -1,4 +1,4 @@
-import { fetchSeoCounts, indexXml, SEO_ORIGIN, SEO_KINDS, SEO_LOCALES, sitemapResponse } from "@/lib/seo-sitemap";
+import { fetchSeoCounts, indexXml, SEO_ORIGIN, SEO_KINDS, SEO_LOCALES, sitemapResponse } from "../../lib/seo-sitemap";
 export const dynamic = "force-dynamic";
 export async function GET(): Promise<Response> {
   try {
