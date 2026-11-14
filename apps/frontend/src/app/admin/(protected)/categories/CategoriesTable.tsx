@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
@@ -315,7 +316,7 @@ export function CategoriesTable() {
       </header>
 
       <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
-        <Link href="/admin" className="btn btn-outline-secondary">
+        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour à l’administration
         </Link>
 
@@ -350,7 +351,7 @@ export function CategoriesTable() {
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
           />
-          <button type="submit" className="btn btn-outline-primary">
+          <button type="submit" className="btn btn-outline-primary"><AdminIcon name="search" className="me-2 align-middle" /> 
             Rechercher
           </button>
         </form>
@@ -600,7 +601,7 @@ export function CategoriesTable() {
                             Ouvrir la page
                           </a>
 
-                          <Link href={editUrl} className="dropdown-item">
+                          <Link href={editUrl} className="dropdown-item"><AdminIcon name="pencil-square" className="me-2 align-middle" /> 
                             Modifier
                           </Link>
                         </div>
