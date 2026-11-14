@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -207,15 +208,15 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
     totalPages: 0,
   });
 
-  const [searchInput, setSearchInput] = useState(initialSourceName);
-  const [search, setSearch] = useState("");
-  const [sourceId, setSourceId] = useState(initialSourceId);
-  const [categoryId, setCategoryId] = useState("");
-  const [language, setLanguage] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("all");
-  const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useAdminSessionFilter("feeds", "searchInput", initialSourceName);
+  const [search, setSearch] = useAdminSessionFilter("feeds", "search", "");
+  const [sourceId, setSourceId] = useAdminSessionFilter("feeds", "sourceId", initialSourceId);
+  const [categoryId, setCategoryId] = useAdminSessionFilter("feeds", "categoryId", "");
+  const [language, setLanguage] = useAdminSessionFilter("feeds", "language", "");
+  const [status, setStatus] = useAdminSessionFilter<StatusFilter>("feeds", "status", "all");
+  const [page, setPage] = useAdminSessionFilter("feeds", "page", 1);
   const [pageSize, setPageSize] =
-    useState<(typeof PAGE_SIZES)[number]>(10);
+    useAdminSessionFilter<(typeof PAGE_SIZES)[number]>("feeds", "pageSize", 10);
   const [reloadKey, setReloadKey] = useState(0);
 
   const [loading, setLoading] = useState(true);
