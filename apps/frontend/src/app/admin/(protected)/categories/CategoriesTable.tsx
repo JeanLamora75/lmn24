@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -135,12 +136,12 @@ export function CategoriesTable() {
   const wasOrganizingRef = useRef(false);
 
   const [items, setItems] = useState<CategoryItem[]>([]);
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("all");
-  const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useAdminSessionFilter("categories", "searchInput", "");
+  const [search, setSearch] = useAdminSessionFilter("categories", "search", "");
+  const [status, setStatus] = useAdminSessionFilter<StatusFilter>("categories", "status", "all");
+  const [page, setPage] = useAdminSessionFilter("categories", "page", 1);
   const [pageSize, setPageSize] =
-    useState<(typeof PAGE_SIZES)[number]>(10);
+    useAdminSessionFilter<(typeof PAGE_SIZES)[number]>("categories", "pageSize", 10);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
