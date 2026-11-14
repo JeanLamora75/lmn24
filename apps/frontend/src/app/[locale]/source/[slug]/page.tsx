@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -9,6 +10,8 @@ import { SourceProfile, type PublicSource } from "@/components/source/SourceProf
 import sourceStyles from "@/components/source/source.module.css";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
+import { getSeoAvailableLocales } from "@/lib/seo-availability";
+import { seoAlternates, seoUnavailable, type SeoLocale } from "@/lib/seo-metadata";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +60,18 @@ async function loadFirstPage(
   } catch {
     return null;
   }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, slug } = await params;
+  if (!hasLocale(routing.locales, locale) ||
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 255) {
+    return seoUnavailable;
+  }
+  const available = await getSeoAvailableLocales("sources", slug);
+  // Missing or empty language variants must never be treated as equivalents.
+  if (!available?.includes(locale as SeoLocale)) return seoUnavailable;
+  return { alternates: seoAlternates(locale as SeoLocale, "source", slug, available) };
 }
 
 export default async function PublicSourcePage({ params }: Props) {
