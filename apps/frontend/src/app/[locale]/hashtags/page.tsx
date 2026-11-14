@@ -13,6 +13,7 @@ import styles from "@/components/hashtags/hashtags.module.css";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
 import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
+import { seoSocial } from "@/lib/seo-social";
 
 export const dynamic = "force-dynamic";
 const PAGE_SIZE = 20;
@@ -56,7 +57,10 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const filtered = Object.keys(filters).length > 0;
   return { title: labels.title, description: labels.description,
     ...(filtered ? { robots: { index: false, follow: true } } : {}),
-    alternates: seoAlternates(locale as SeoLocale, "hashtags") };
+    alternates: seoAlternates(locale as SeoLocale, "hashtags"),
+    ...seoSocial(locale as SeoLocale, labels.title + " | LMN24", labels.description,
+      "https://www.lmn24.com/" + locale + "/hashtags"),
+  };
 }
 
 export default async function PublicHashtagsPage({ params, searchParams }: Props) {
