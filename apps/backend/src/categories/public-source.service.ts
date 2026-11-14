@@ -59,6 +59,7 @@ export class PublicSourceService {
       where: {
         sourceId: source.id,
         languageIsoCode2: locale,
+        category: { isActive: true },
         ...(cursor ? {
           OR: [
             { publishedAt: { lt: cursor.publishedAt } },
