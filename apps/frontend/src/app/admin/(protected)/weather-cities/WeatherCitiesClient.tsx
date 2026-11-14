@@ -1,4 +1,5 @@
 "use client";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
@@ -46,11 +47,11 @@ export function WeatherCitiesClient() {
  const [loading,setLoading]=useState(true);
  const [error,setError]=useState("");
  const [success,setSuccess]=useState("");
- const [search,setSearch]=useState("");
- const [continent,setContinent]=useState("all");
- const [status,setStatus]=useState("all");
- const [page,setPage]=useState(1);
- const [size,setSize]=useState(25);
+ const [search,setSearch]=useAdminSessionFilter("weather-cities", "search", "");
+ const [continent,setContinent]=useAdminSessionFilter("weather-cities", "continent", "all");
+ const [status,setStatus]=useAdminSessionFilter("weather-cities", "status", "all");
+ const [page,setPage]=useAdminSessionFilter("weather-cities", "page", 1);
+ const [size,setSize]=useAdminSessionFilter("weather-cities", "size", 25);
  const [editor,setEditor]=useState<City|null|false>(false);
  const [form,setForm]=useState<Input>({...EMPTY});
  const [impact,setImpact]=useState<DeleteImpact|null>(null);
