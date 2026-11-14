@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -219,7 +220,7 @@ export function AdminLoginForm() {
               type="submit"
               className="btn btn-primary w-100"
               disabled={isSubmitting}
-            >
+            ><AdminIcon name="check-circle" className="me-2 align-middle" /> 
               {isSubmitting ? (
                 <>
                   <span
