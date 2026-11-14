@@ -66,10 +66,10 @@ export function SearchConsoleDashboard() {
     </div>
     {loading?<p role="status">Lecture des données Search Console…</p>:null}
     {error?<div className="alert alert-warning" role="alert">{error}
-      <p className="mb-0 mt-2">L'accès à Search Console doit être autorisé explicitement pour la propriété concernée.</p>
+      <p className="mb-0 mt-2">L&apos;accès à Search Console doit être autorisé explicitement pour la propriété concernée.</p>
     </div>:null}
     {data?<div>
-      <p className="text-body-secondary small">Propriété : <code>{data.property}</code>. Données finales jusqu'à trois jours avant aujourd'hui, susceptibles d'être différées. Une absence de données ne signifie pas absence d'indexation.</p>
+      <p className="text-body-secondary small">Propriété : <code>{data.property}</code>. Données finales jusqu'à trois jours avant aujourd'hui, susceptibles d&apos;être différées. Une absence de données ne signifie pas absence d'indexation.</p>
       <div className="row g-3 mb-4">
         {[
           ["Clics depuis Google",number(data.totalClicks)],
@@ -85,7 +85,7 @@ export function SearchConsoleDashboard() {
       </div>
       <div className="card shadow-sm mb-4"><div className="card-body">
         <h2 className="h5">Sitemap</h2>
-        {data.sitemapStatus==="unavailable"?<p className="text-warning">État du sitemap indisponible dans l'API.</p>:
+        {data.sitemapStatus==="unavailable"?<p className="text-warning">État du sitemap indisponible dans l&apos;API.</p>:
         data.sitemapStatus==="missing"?<p className="text-warning">Aucun sitemap LMN24 soumis ou retrouvé sur cette propriété. Soumettre le sitemap depuis Google Search Console.</p>:
         data.sitemap?<dl className="row mb-0">
           <dt className="col-sm-4">URL</dt><dd className="col-sm-8"><code>{data.sitemap.path}</code></dd>
@@ -95,7 +95,7 @@ export function SearchConsoleDashboard() {
           <dt className="col-sm-4">Erreurs / avertissements</dt><dd className="col-sm-8">{data.sitemap.errors} / {data.sitemap.warnings}</dd>
           <dt className="col-sm-4">URL soumises / indexées</dt><dd className="col-sm-8">{data.sitemap.submitted??"Non disponible"} / {data.sitemap.indexed??"Non disponible"}</dd>
         </dl>:null}
-        <p className="small text-body-secondary mt-3 mb-0">Une soumission ne garantit pas l'indexation. Les chiffres de sitemap peuvent être incomplets ou différés.</p>
+        <p className="small text-body-secondary mt-3 mb-0">Une soumission ne garantit pas l&apos;indexation. Les chiffres de sitemap peuvent être incomplets ou différés.</p>
       </div></div>
       <div className="card shadow-sm"><div className="card-body">
         <h2 className="h5">Pages recevant des impressions</h2>
@@ -110,7 +110,7 @@ export function SearchConsoleDashboard() {
             <td className="text-end">{number(row.position)}</td>
           </tr>)}</tbody>
         </table></div>}
-        <p className="small text-body-secondary">Les 100 premières pages affichées ne constituent pas l'intégralité des pages indexées.</p>
+        <p className="small text-body-secondary">Les 100 premières pages affichées ne constituent pas l&apos;intégralité des pages indexées.</p>
       </div></div>
     </div>:null}
   </main>;
