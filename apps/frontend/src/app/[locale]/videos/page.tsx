@@ -4,12 +4,13 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
+import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
 import { PublicVideos, type VideosPage } from "@/components/videos/PublicVideos";
 export const dynamic="force-dynamic";
 type Props={params:Promise<{locale:string}>};
 export async function generateMetadata({params}:Props):Promise<Metadata>{
   const {locale}=await params;
-  return {title:locale==="fr"?"Vidéos du monde":"World videos",description:"Vidéos des médias internationaux, sélectionnées par langue."};
+  return {title:locale==="fr"?"Vidéos du monde":"World videos",description:"Vidéos des médias internationaux, sélectionnées par langue.",alternates:seoAlternates(locale as SeoLocale,"videos")};
 }
 export default async function VideosPageRoute({params}:Props){
   const {locale}=await params;
