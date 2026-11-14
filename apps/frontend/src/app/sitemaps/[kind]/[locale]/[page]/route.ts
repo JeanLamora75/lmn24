@@ -1,4 +1,4 @@
-import { dynamicUrl, fetchSeoItems, SEO_KINDS, SEO_LOCALES, sitemapResponse, urlsXml, type SeoKind, type SeoLocale } from "@/lib/seo-sitemap";
+import { dynamicUrl, fetchSeoItems, SEO_KINDS, SEO_LOCALES, sitemapResponse, urlsXml, type SeoKind, type SeoLocale } from "../../../../../lib/seo-sitemap";
 export const dynamic = "force-dynamic";
 type Params = { params: Promise<{ kind: string; locale: string; page: string }> };
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
