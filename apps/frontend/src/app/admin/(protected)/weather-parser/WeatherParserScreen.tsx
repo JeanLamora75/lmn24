@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
 import {useCallback,useEffect,useMemo,useState} from "react";
 import {useRouter} from "next/navigation";
@@ -95,6 +96,7 @@ export default function WeatherParserScreen(){
   }
 
   return <main className="container-fluid px-3 px-lg-4 py-4">
+      <AdminFilterResetButton section="weather-parser" />
     <div className="mb-4"><Link href="/admin" className="btn btn-outline-secondary">
       Retour à l’administration
     </Link></div>
