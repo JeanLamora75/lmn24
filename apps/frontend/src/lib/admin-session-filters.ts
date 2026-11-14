@@ -39,6 +39,12 @@ export function clearAdminSessionFilters(section?: string): void {
   }
 }
 
+// Primitive overloads widen default literal values ("all", 1, false) just
+// like React useState, while explicitly typed unions keep their constraints.
+export function useAdminSessionFilter(section: string, field: string, initial: string): [string, Dispatch<SetStateAction<string>>];
+export function useAdminSessionFilter(section: string, field: string, initial: number): [number, Dispatch<SetStateAction<number>>];
+export function useAdminSessionFilter(section: string, field: string, initial: boolean): [boolean, Dispatch<SetStateAction<boolean>>];
+export function useAdminSessionFilter<T extends string | number | boolean>(section: string, field: string, initial: T): [T, Dispatch<SetStateAction<T>>];
 export function useAdminSessionFilter<T extends string | number | boolean>(
   section: string,
   field: string,
