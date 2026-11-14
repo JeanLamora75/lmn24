@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -87,7 +88,7 @@ export default function ImportCsvPage() {
   const router = useRouter();
   const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [importType, setImportType] = useState("");
+  const [importType, setImportType] = useAdminSessionFilter("csv-import", "importType", "");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [analysis, setAnalysis] = useState<AnalysisState>(null);
