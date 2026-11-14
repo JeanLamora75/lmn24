@@ -538,7 +538,7 @@ export function CategoriesTable() {
                           href={publicUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn btn-sm btn-outline-secondary"
+                          className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                           title="Ouvrir la page"
                           aria-label={"Ouvrir la page " + label}
                         >
@@ -554,7 +554,7 @@ export function CategoriesTable() {
 
                         <Link
                           href={editUrl}
-                          className="btn btn-sm btn-outline-primary"
+                          className="btn btn-sm btn-outline-primary lmn-admin-compact-action"
                           title="Modifier la catégorie"
                           aria-label={"Modifier " + label}
                         >
@@ -573,7 +573,7 @@ export function CategoriesTable() {
                         className={"d-lg-none " + styles.mobileActions}
                       >
                         <summary
-                          className="btn btn-sm btn-outline-secondary"
+                          className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                           aria-label={"Actions pour " + label}
                           title="Actions"
                         >
