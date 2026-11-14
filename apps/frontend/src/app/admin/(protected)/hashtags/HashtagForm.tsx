@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -299,7 +300,7 @@ export function HashtagForm({ mode, hashtagId }: Props) {
           <button type="button" className="btn btn-sm btn-outline-primary"
             onClick={() => setValues((v) => ({
               ...v, aliases: [...v.aliases, { name: "", languageIsoCode2: "" }],
-            }))}>Ajouter un alias</button>
+            }))}><AdminIcon name="plus-circle" className="me-2 align-middle" /> Ajouter un alias</button>
         </div>
         <p className="text-body-secondary small">Ex. Moscou, Moscow, Москва. La langue est facultative et les mentions seront recherchées dans tous les articles.</p>
         {values.aliases.map((a, i) => (
@@ -325,7 +326,7 @@ export function HashtagForm({ mode, hashtagId }: Props) {
               <button type="button" className="btn btn-outline-danger w-100"
                 onClick={() => setValues((v) => ({
                   ...v, aliases: v.aliases.filter((_, j) => j !== i),
-                }))}>Retirer</button>
+                }))}><AdminIcon name="trash" className="me-2 align-middle" /> Retirer</button>
             </div>
           </div>
         ))}
@@ -333,7 +334,7 @@ export function HashtagForm({ mode, hashtagId }: Props) {
           {warnings.map((message) => <p className="mb-1" key={message}>{message}</p>)}
         </div>}
         <button type="button" className="btn btn-sm btn-outline-info align-self-start mt-2"
-          onClick={() => void checkWarnings()}>Analyser les risques d&apos;homonymes</button>
+          onClick={() => void checkWarnings()}><AdminIcon name="search" className="me-2 align-middle" /> Analyser les risques d&apos;homonymes</button>
         {mode === "edit" && (
           <section className="border rounded p-3 mt-3" aria-label="Analyse des articles existants">
             <h2 className="h6">Analyser les articles déjà enregistrés</h2>
@@ -343,12 +344,12 @@ export function HashtagForm({ mode, hashtagId }: Props) {
               sans création de liens article-hashtag en base.
             </p>
             <button type="button" className="btn btn-outline-primary btn-sm"
-              disabled={scanRunning} onClick={() => void analyzeHistory()}>
+              disabled={scanRunning} onClick={() => void analyzeHistory()}><AdminIcon name="search" className="me-2 align-middle" /> 
               {scanRunning ? "Analyse en cours…" : "Analyser les articles conservés"}
             </button>
             {scanRunning && (
               <button type="button" className="btn btn-outline-secondary btn-sm ms-2"
-                onClick={() => { cancelScan.current = true; }}>Arrêter</button>
+                onClick={() => { cancelScan.current = true; }}><AdminIcon name="x-circle" className="me-2 align-middle" /> Arrêter</button>
             )}
             {scanResult && (
               <p className="mt-2 mb-1 small" role="status">
@@ -359,7 +360,7 @@ export function HashtagForm({ mode, hashtagId }: Props) {
             )}
             <div className="mt-3">
               <button type="button" className="btn btn-sm btn-outline-success"
-                disabled={rebuildRequested} onClick={() => void rebuildHourly()}>
+                disabled={rebuildRequested} onClick={() => void rebuildHourly()}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> 
                 {rebuildRequested ? "Demande en cours…" : "Reconstruire les compteurs horaires"}
               </button>
               {rebuildNotice && <p className="form-text" role="status">{rebuildNotice}</p>}
@@ -388,7 +389,7 @@ export function HashtagForm({ mode, hashtagId }: Props) {
             )}
             {imageUrl && (
               <button type="button" className="btn btn-sm btn-outline-danger mt-2"
-                disabled={removingImage || saving} onClick={() => void removeImage()}>
+                disabled={removingImage || saving} onClick={() => void removeImage()}><AdminIcon name="trash" className="me-2 align-middle" /> 
                 {removingImage ? "Suppression…" : "Supprimer l’image"}
               </button>
             )}
@@ -452,7 +453,7 @@ export function HashtagForm({ mode, hashtagId }: Props) {
         </div>
         <div className="d-flex gap-2 justify-content-end mt-3">
           <Link className="btn btn-outline-secondary" href="/admin/hashtags">Annuler</Link>
-          <button type="submit" disabled={saving} className="btn btn-primary">
+          <button type="submit" disabled={saving} className="btn btn-primary"><AdminIcon name="floppy" className="me-2 align-middle" /> 
             {saving ? "Enregistrement…" : "Enregistrer"}
           </button>
         </div>
