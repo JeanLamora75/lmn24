@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { clearAdminSessionFilters } from "@/lib/admin-session-filters";
 import styles from "./login.module.css";
 
 const loginSchema = z.object({
@@ -113,6 +114,7 @@ export function AdminLoginForm() {
         return;
       }
 
+      clearAdminSessionFilters();
       router.replace("/admin");
       router.refresh();
     } catch {
