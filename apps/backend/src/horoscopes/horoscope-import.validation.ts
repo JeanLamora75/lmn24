@@ -18,7 +18,13 @@ const document = z.object({
   timezone: z.literal("Europe/Paris"),
   astronomy: z.object({
     validationStatus: z.string().min(1),
-    attribution: z.object({text:z.string().min(1),url:z.string().url()}).passthrough(),
+    // Historical files use {text,url}; newer generators emit a textual
+    // attribution containing the provider URL. Preserve the original JSON
+    // and fingerprint rather than rewriting repository-supplied files.
+    attribution: z.union([
+      z.object({text:z.string().min(1),url:z.string().url()}).passthrough(),
+      z.string().trim().min(1).regex(/https?:\/\/[^\s)]+/),
+    ]),
   }).passthrough(),
   horoscopes: z.array(item).length(96),
 }).passthrough();
