@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useState } from "react";
@@ -110,6 +111,7 @@ export function HashtagsAdmin() {
 
   return (
     <main className="container py-4 py-lg-5">
+      <AdminFilterResetButton section="hashtags" />
       <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
           <h1 className="h2 mb-1">Hashtags</h1>
