@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
@@ -153,7 +154,7 @@ export function ManualPurgeScreen() {
             Choisir une seule table et une seule opération à la fois.
           </p>
         </div>
-        <Link className="btn btn-outline-secondary" href="/admin">Retour administration</Link>
+        <Link className="btn btn-outline-secondary" href="/admin"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour administration</Link>
       </div>
       <div className="alert alert-danger" role="note">
         <strong>Action irréversible.</strong> Sauvegardez votre base avant une purge.
@@ -203,7 +204,7 @@ export function ManualPurgeScreen() {
           </div>
 
           <button type="button" className="btn btn-outline-primary mt-4"
-            disabled={activeJob || loading || launching} onClick={() => void loadPreview()}>
+            disabled={activeJob || loading || launching} onClick={() => void loadPreview()}><AdminIcon name="trash" className="me-2 align-middle" /> 
             {loading ? "Prévisualisation…" : "Prévisualiser la purge"}
           </button>
         </div>
@@ -250,11 +251,11 @@ export function ManualPurgeScreen() {
                 <button type="button" className="btn btn-danger"
                   disabled={!confirm || launching || activeJob ||
                     (mode === "all" && typed !== table)}
-                  onClick={() => void execute()}>
+                  onClick={() => void execute()}><AdminIcon name="play-circle" className="me-2 align-middle" /> 
                   {launching ? "Démarrage…" : "Confirmer la suppression"}
                 </button>
                 <button type="button" className="btn btn-outline-secondary ms-2"
-                  onClick={() => setPreview(null)}>Annuler</button>
+                  onClick={() => setPreview(null)}><AdminIcon name="x-circle" className="me-2 align-middle" /> Annuler</button>
               </>
             )}
             <p className="form-text mt-3 mb-0">
@@ -270,7 +271,7 @@ export function ManualPurgeScreen() {
           <div className="d-flex align-items-center justify-content-between gap-2">
             <h2 className="h5 mb-0">Exécutions récentes</h2>
             <button type="button" className="btn btn-outline-secondary btn-sm"
-              onClick={() => void refreshJobs()}>Actualiser</button>
+              onClick={() => void refreshJobs()}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser</button>
           </div>
           {jobs.length === 0 ? <p className="text-body-secondary mt-3 mb-0">
             Aucune purge exécutée depuis le dernier démarrage du backend.
