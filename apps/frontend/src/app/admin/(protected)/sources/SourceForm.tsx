@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -679,13 +680,13 @@ export function SourceForm({ mode, sourceId }: Props) {
   return (
     <main className="container py-4 py-lg-5">
       <div className="d-flex flex-wrap gap-2 mb-4">
-        <Link href="/admin" className="btn btn-outline-secondary">
+        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour à l’administration
         </Link>
         <Link
           href="/admin/sources"
           className="btn btn-outline-secondary"
-        >
+        ><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour aux sources
         </Link>
       </div>
@@ -903,7 +904,7 @@ export function SourceForm({ mode, sourceId }: Props) {
                   className="btn btn-outline-secondary w-100 mt-2"
                   disabled={discoveringSocial}
                   onClick={() => void discoverSocialLinks()}
-                >
+                ><AdminIcon name="search" className="me-2 align-middle" /> 
                   {discoveringSocial ? (
                     <>
                       <span className="spinner-border spinner-border-sm me-2" aria-hidden="true" />
@@ -979,7 +980,7 @@ export function SourceForm({ mode, sourceId }: Props) {
                           type="button"
                           className="btn btn-sm btn-outline-primary"
                           onClick={() => replaceDiscoveredLink(key)}
-                        >
+                        ><AdminIcon name="pencil-square" className="me-2 align-middle" /> 
                           Remplacer le lien {SOCIAL_LABELS[key]}
                         </button>
                       </div>
@@ -1018,7 +1019,7 @@ export function SourceForm({ mode, sourceId }: Props) {
             type="submit"
             className="btn btn-primary"
             disabled={saving || capturing || deleting}
-          >
+          ><AdminIcon name="floppy" className="me-2 align-middle" /> 
             {saving ? "Enregistrement…" : "Enregistrer"}
           </button>
 
@@ -1026,7 +1027,7 @@ export function SourceForm({ mode, sourceId }: Props) {
             href="/admin/sources"
             className="btn btn-outline-secondary"
             aria-disabled={saving || deleting}
-          >
+          ><AdminIcon name="x-circle" className="me-2 align-middle" /> 
             Annuler
           </Link>
 
@@ -1041,7 +1042,7 @@ export function SourceForm({ mode, sourceId }: Props) {
                 loadingDeleteImpact
               }
               onClick={() => void openDeleteDialog()}
-            >
+            ><AdminIcon name="trash" className="me-2 align-middle" /> 
               {loadingDeleteImpact
                 ? "Préparation…"
                 : "Supprimer"}
@@ -1102,7 +1103,7 @@ export function SourceForm({ mode, sourceId }: Props) {
                     className="btn btn-outline-secondary"
                     disabled={deleting}
                     onClick={() => setDeleteDialogOpen(false)}
-                  >
+                  ><AdminIcon name="x-circle" className="me-2 align-middle" /> 
                     Annuler
                   </button>
                   <button
