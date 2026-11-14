@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -52,8 +53,8 @@ function prettyDate(date: string | null): string {
 
 export function ManualPurgeScreen() {
   const router = useRouter();
-  const [table, setTable] = useState<Table>("article");
-  const [mode, setMode] = useState<Mode>("expired");
+  const [table, setTable] = useAdminSessionFilter<Table>("data-purge", "table", "article");
+  const [mode, setMode] = useAdminSessionFilter<Mode>("data-purge", "mode", "expired");
   const [preview, setPreview] = useState<Preview | null>(null);
   const [typed, setTyped] = useState("");
   const [confirm, setConfirm] = useState(false);
