@@ -4,6 +4,8 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { CategoryArticles } from "@/components/category/CategoryArticles";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { collectionSchema } from "@/lib/seo-schema";
 import styles from "@/components/category/category.module.css";
 import type { HomeArticle } from "@/components/home/home-data";
 import { SourceProfile, type PublicSource } from "@/components/source/SourceProfile";
@@ -102,6 +104,14 @@ export default async function PublicSourcePage({ params }: Props) {
 
   return (
     <main className={"container px-3 px-lg-4 " + sourceStyles.page}>
+      {page && <StructuredData data={collectionSchema({locale:locale as SeoLocale,
+        url:"https://www.lmn24.com/"+locale+"/source/"+slug,
+        name:page.source.name,
+        description:page.source.description?.trim() ||
+          SEO_COPY[locale as SeoLocale].sourceDescription(page.source.name),
+        breadcrumbs:[{name:"LMN24",url:"https://www.lmn24.com/"+locale},
+          {name:page.source.name,url:"https://www.lmn24.com/"+locale+"/source/"+slug}],
+      })}/>}
       {page === null ? (
         <div className="alert alert-danger" role="alert">
           {labels.error}{" "}
