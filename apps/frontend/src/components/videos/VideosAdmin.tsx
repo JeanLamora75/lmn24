@@ -1,4 +1,5 @@
 "use client";
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { useCallback, useEffect, useState } from "react";
@@ -78,7 +79,7 @@ export function VideosAdmin() {
       <div><Link href="/admin" className="btn btn-outline-secondary btn-sm mb-3">← Administration</Link>
         <h1 className="h2">Vidéos YouTube</h1><p className="text-body-secondary mb-0">Consulter, classer et modérer les vidéos importées.</p></div>
       <div className="d-flex gap-2"><Link className="btn btn-outline-primary" href="/admin/video-feeds">Flux vidéo</Link>
-        <button className="btn btn-primary" type="button" onClick={refresh} disabled={loading}>Actualiser</button></div>
+        <button className="btn btn-primary" type="button" onClick={refresh} disabled={loading}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser</button></div>
     </header>
     <section className="card mb-3"><div className="card-body row g-2">
       <div className="col-12 col-lg-4"><label className="form-label" htmlFor="videos-search">Recherche</label>
@@ -97,7 +98,7 @@ export function VideosAdmin() {
         <select id="videos-status" className="form-select" value={status} onChange={e=>{setStatus(e.target.value);setPage(1);}}>
           <option value="all">Toutes</option><option value="published">Publiées</option><option value="hidden">Masquées</option></select></div>
     </div></section>
-    {error&&<div role="alert" className="alert alert-danger">{error} <button type="button" className="btn btn-outline-danger btn-sm ms-2" onClick={refresh}>Réessayer</button></div>}
+    {error&&<div role="alert" className="alert alert-danger">{error} <button type="button" className="btn btn-outline-danger btn-sm ms-2" onClick={refresh}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Réessayer</button></div>}
     {loading&&<p role="status">Chargement des vidéos…</p>}
     {list&&<section className="card shadow-sm">
       <div className="table-responsive"><table className="table table-hover align-middle mb-0">
@@ -111,7 +112,7 @@ export function VideosAdmin() {
           <td>{video.source.name}</td><td>{video.category.slug}<div className="small text-body-secondary">{languageName(video.languageIsoCode2)}</div></td>
           <td>{new Date(video.publishedAt).toLocaleString("fr-FR")}</td>
           <td><span className={"badge "+(video.isPublished?"text-bg-success":"text-bg-secondary")}>{video.isPublished?"Publiée":"Masquée"}</span></td>
-          <td><div className="d-flex flex-wrap gap-2"><button className="btn btn-outline-primary btn-sm" onClick={()=>edit(video)}>Modifier</button>
+          <td><div className="d-flex flex-wrap gap-2"><button className="btn btn-outline-primary btn-sm" onClick={()=>edit(video)}><AdminIcon name="pencil-square" className="me-2 align-middle" /> Modifier</button>
             <button className="btn btn-outline-secondary btn-sm" disabled={busy===video.id}
               onClick={()=>void publish(video)}>{video.isPublished?"Masquer":"Publier"}</button></div></td>
         </tr>)}{list.items.length===0&&<tr><td colSpan={6} className="text-center text-body-secondary py-4">Aucune vidéo trouvée.</td></tr>}</tbody>
@@ -137,8 +138,8 @@ export function VideosAdmin() {
           <div className="form-check"><input className="form-check-input" id="edit-video-published" type="checkbox"
             checked={editPublished} onChange={e=>setEditPublished(e.target.checked)}/>
             <label className="form-check-label" htmlFor="edit-video-published">Vidéo publiée sur LMN24</label></div>
-        </div><div className="modal-footer"><button type="button" className="btn btn-outline-secondary" onClick={()=>setEditing(null)}>Annuler</button>
-          <button type="button" className="btn btn-primary" disabled={busy===editing.id} onClick={()=>void save()}>Enregistrer</button></div>
+        </div><div className="modal-footer"><button type="button" className="btn btn-outline-secondary" onClick={()=>setEditing(null)}><AdminIcon name="x-circle" className="me-2 align-middle" /> Annuler</button>
+          <button type="button" className="btn btn-primary" disabled={busy===editing.id} onClick={()=>void save()}><AdminIcon name="floppy" className="me-2 align-middle" /> Enregistrer</button></div>
       </div></div></div>}
   </main>;
 }
