@@ -17,6 +17,21 @@ describe("horoscope JSON validation",()=>{
     expect(parsed.data.horoscopes).toHaveLength(96);
     expect(parsed.fingerprint).toMatch(/^[a-f0-9]{64}$/);
   });
+  it("accepts the textual CosmyDay attribution used by newer horoscope files without rewriting it",()=>{
+    const source=fixture();
+    const stringAttribution="Données astronomiques : CosmyDay — https://cosmyday.com (utilisation avec attribution requise).";
+    const input={...source,astronomy:{...source.astronomy,attribution:stringAttribution}};
+    const json=JSON.stringify(input);
+    const parsed=validateHoroscopeJson(json,"horoscopes-2026-10-15.json");
+    expect(parsed.data.astronomy.attribution).toBe(stringAttribution);
+    expect(parsed.data.horoscopes).toHaveLength(96);
+  });
+  it("rejects a textual attribution without a source URL",()=>{
+    const source=fixture();
+    const input={...source,astronomy:{...source.astronomy,attribution:"Unknown source"}};
+    expect(()=>validateHoroscopeJson(JSON.stringify(input),"horoscopes-2026-10-15.json"))
+      .toThrow("Structure du fichier Horoscope invalide.");
+  });
   it("rejects duplicate combinations",()=>{
     const source=fixture();
     const first = source.horoscopes[0];
