@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -481,6 +482,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
 
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
+      <AdminFilterResetButton section="feeds" />
       <header className="mb-4">
         <h1 className="h2 mb-1">Flux RSS/XML</h1>
         <p className="text-body-secondary mb-0">
