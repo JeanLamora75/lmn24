@@ -34,11 +34,13 @@ function titleFor(locale:Locale,sign:string){
  const i=SIGNS.indexOf(sign as typeof SIGNS[number]);
  return i<0?"":TEXT[locale].signs[i];
 }
-export async function generateMetadata({params}:Props):Promise<Metadata>{
+export async function generateMetadata({params,searchParams}:Props):Promise<Metadata>{
  const {locale,sign}=await params;
  if(!hasLocale(routing.locales,locale)||!SIGNS.some(s=>s===sign))return {};
  const name=titleFor(locale as Locale,sign);
+ const dated = (await searchParams).date !== undefined;
  return {title:`${TEXT[locale as Locale].title} — ${name}`,description:`${TEXT[locale as Locale].title} ${name}`,
+   ...(dated ? { robots: { index: false, follow: true } } : {}),
    alternates:seoAlternates(locale as SeoLocale,"horoscope",sign)};
 }
 export default async function HoroscopeSignPage({params,searchParams}:Props){
