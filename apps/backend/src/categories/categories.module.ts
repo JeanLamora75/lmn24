@@ -9,6 +9,7 @@ import { PublicHomeCategoriesController } from "./public-home-categories.control
 import { PublicHomeController } from "./public-home.controller";
 import { PublicHomeService } from "./public-home.service";
 import { PublicSourceController } from "./public-source.controller";
+import { PublicSeoController } from "./public-seo.controller";
 import { PublicSourceService } from "./public-source.service";
 
 @Module({
@@ -19,6 +20,7 @@ import { PublicSourceService } from "./public-source.service";
     PublicHomeController,
     PublicCategoryController,
     PublicSourceController,
+    PublicSeoController,
   ],
   providers: [CategoriesService, PublicHomeService, PublicCategoryService, PublicSourceService],
 })
