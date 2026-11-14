@@ -9,6 +9,8 @@ import { AppModule } from "./app.module";
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
+  // Autorise les imports JSON d’horoscopes au-delà de la limite Express par défaut (100 Ko).
+  app.useBodyParser("json", { limit: "1mb" });
   app.enableShutdownHooks();
 
   const allowedOrigins = (process.env.CORS_ORIGINS ?? "http://localhost:3000")
