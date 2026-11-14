@@ -610,22 +610,37 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
                   ) : null}
                 </div>
 
-                <div className="form-check form-switch">
-                  <input
-                    id="feed-active"
-                    type="checkbox"
-                    className="form-check-input"
-                    checked={values.isActive}
-                    onChange={(event) =>
-                      updateValue("isActive", event.target.checked)
-                    }
-                  />
-                  <label
-                    className="form-check-label"
-                    htmlFor="feed-active"
-                  >
-                    Flux actif
-                  </label>
+                <div className="d-flex flex-wrap align-items-center gap-4">
+                  <div className="form-check form-switch mb-0">
+                    <input
+                      id="feed-active"
+                      type="checkbox"
+                      className="form-check-input"
+                      checked={values.isActive}
+                      onChange={(event) =>
+                        updateValue("isActive", event.target.checked)
+                      }
+                    />
+                    <label className="form-check-label" htmlFor="feed-active">
+                      Flux actif
+                    </label>
+                  </div>
+                  {mode === "create" ? (
+                    <div className="form-check form-switch mb-0">
+                      <input
+                        id="feed-add-another"
+                        type="checkbox"
+                        role="switch"
+                        className="form-check-input"
+                        checked={addAnother}
+                        disabled={saving}
+                        onChange={(event) => setAddAnother(event.target.checked)}
+                      />
+                      <label className="form-check-label" htmlFor="feed-add-another">
+                        Ajouter Nouveau
+                      </label>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -679,23 +694,6 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
             </div>
           </div>
         </div>
-
-        {mode === "create" ? (
-          <div className="form-check form-switch mt-4">
-            <input
-              id="feed-add-another"
-              type="checkbox"
-              role="switch"
-              className="form-check-input"
-              checked={addAnother}
-              disabled={saving}
-              onChange={(event) => setAddAnother(event.target.checked)}
-            />
-            <label className="form-check-label" htmlFor="feed-add-another">
-              Ajouter Nouveau
-            </label>
-          </div>
-        ) : null}
 
         <div className="d-flex flex-column flex-sm-row gap-2 mt-4">
           <button
