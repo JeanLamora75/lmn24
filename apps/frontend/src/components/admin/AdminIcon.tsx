@@ -8,7 +8,9 @@ export const ADMIN_ICON_NAMES = [
   "filetype-csv", "gear", "graph-up-arrow", "hash", "newspaper",
   "pencil-square", "play-circle", "plus-circle", "rss", "tags",
   "three-dots-vertical", "toggle-off", "toggle-on", "translate",
-  "trash", "youtube",
+  "trash", "youtube", "arrow-clockwise", "arrow-left", "arrow-counterclockwise",
+  "search", "floppy", "upload", "download", "eye", "x-circle", "funnel",
+  "check-circle", "play-fill", "list-ul",
 ] as const;
 export type AdminIconName = (typeof ADMIN_ICON_NAMES)[number];
 
