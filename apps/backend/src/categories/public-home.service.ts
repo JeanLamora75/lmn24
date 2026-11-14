@@ -130,6 +130,7 @@ export class PublicHomeService {
         INNER JOIN source AS s ON s.id = a.source_id
         LEFT JOIN country AS source_country ON source_country.id = s.country_id
         WHERE a.category_id = c.id
+          AND s.is_active = TRUE
           AND a.language_iso_code2 = CAST(${locale} AS CHAR(2))
           AND (a.published_at AT TIME ZONE 'Europe/Paris')::date
               <= (CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Paris')::date
