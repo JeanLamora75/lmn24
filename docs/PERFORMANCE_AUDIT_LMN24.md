@@ -13,6 +13,23 @@ Le workflow GitHub Actions `LMN24 performance audit (lab)` exécute Lighthouse d
 - Les mesures sont prises sans accepter les cookies d'analyse ; les effets GA4 **après** acceptation ne sont donc pas couverts. Il faudra une campagne distincte, consentement explicite, pour cet écart.
 - Les pages 404, les pages sans données, les erreurs de mesure et les redirections apparaissent dans les résultats ; ne jamais interpréter un score sur une 404 comme celui de la page attendue.
 
+## Baseline observée — 14 novembre 2026
+
+Cette baseline provient du runner GitHub Actions [#43622156804](https://github.com/JeanLamora75/lmn24/actions/runs/43622156804). Elle mesure **la production OVH avant les correctifs SCRUM-98**, une seule exécution Lighthouse par page et profil, sans accepter les cookies.
+
+| Page | Score mobile | LCP mobile | TBT mobile | CLS mobile | Score desktop | LCP desktop |
+|---|---:|---:|---:|---:|---:|---:|
+| Accueil `/fr` | 73 | 5 611 ms | 105 ms | 0 | 82 | 2 263 ms |
+| `/fr/category/international` | 75 | 5 456 ms | 155 ms | 0 | 90 | 1 596 ms |
+| `/fr/videos` | 92 | 2 881 ms | 49 ms | 0 | 89 | 1 714 ms |
+| `/fr/weather` | 99 | 1 658 ms | 45 ms | 0 | 100 | 650 ms |
+| `/fr/horoscope` | 96 | 2 727 ms | 93 ms | 0 | 100 | 626 ms |
+| Source réelle | non mesurée | — | — | — | non mesurée | — |
+
+Le TTFB Lighthouse mobile est d'environ 272 ms sur l'accueil, les catégories, les vidéos et la météo, et 145 ms sur l'horoscope. L'INP terrain n'a pas été mesuré. Ces scores ne sont ni un résultat CrUX ni une mesure après optimisation.
+
+**Priorité mesurée :** améliorer le LCP mobile de l'accueil et des catégories en premier sans dégrader le CLS ni la météo.
+
 ## Seuils d'observation indicatifs
 
 Ces valeurs sont des **repères à vérifier sur les données de terrain**, pas des résultats ni des engagements de performance :
