@@ -1,5 +1,7 @@
 "use client";
 
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { CountryFlag } from "@/components/home/CountryFlag";
@@ -83,13 +85,13 @@ function Kpi({ name, value, sub, href }: { name: string; value: string; sub?: st
 }
 
 export function StatisticsDashboard() {
-  const [period, setPeriod] = useState("7d");
-  const [countryId, setCountryId] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [language, setLanguage] = useState("");
-  const [sourceId, setSourceId] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const [period, setPeriod] = useAdminSessionFilter("site-statistics", "period", "7d");
+  const [countryId, setCountryId] = useAdminSessionFilter("site-statistics", "countryId", "");
+  const [categoryId, setCategoryId] = useAdminSessionFilter("site-statistics", "categoryId", "");
+  const [language, setLanguage] = useAdminSessionFilter("site-statistics", "language", "");
+  const [sourceId, setSourceId] = useAdminSessionFilter("site-statistics", "sourceId", "");
+  const [from, setFrom] = useAdminSessionFilter("site-statistics", "from", "");
+  const [to, setTo] = useAdminSessionFilter("site-statistics", "to", "");
   const [revision, setRevision] = useState(0);
   const [data, setData] = useState<Dashboard | null>(null);
   const [loading, setLoading] = useState(true);
@@ -125,6 +127,7 @@ export function StatisticsDashboard() {
   const o = data?.overview;
   const h = data?.health;
   return <main className="container-fluid px-3 px-lg-4 py-4">
+      <AdminFilterResetButton section="site-statistics" />
     <header className="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
       <div><Link href="/admin" className="btn btn-outline-secondary btn-sm mb-3">← Administration</Link>
         <h1 className="h2 mb-1">Statistiques LMN24</h1>
