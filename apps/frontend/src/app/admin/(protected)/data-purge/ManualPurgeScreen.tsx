@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -144,6 +145,7 @@ export function ManualPurgeScreen() {
 
   return (
     <main className="container py-4 py-lg-5">
+      <AdminFilterResetButton section="data-purge" />
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
         <div>
           <h1 className="h2 mb-1">Purge manuelle des données</h1>
