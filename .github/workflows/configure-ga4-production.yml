@@ -1,0 +1,53 @@
+name: Configure GA4 on OVH (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lmn24-production-deployment
+  cancel-in-progress: false
+
+jobs:
+  provision:
+    name: Install GA4 credentials without exposing secrets
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Configure the GA4 account on OVH over pinned SSH
+        shell: bash
+        env:
+          LMN24_DEPLOY_SSH_KEY: ${{ secrets.LMN24_DEPLOY_SSH_KEY }}
+          LMN24_DEPLOY_KNOWN_HOSTS: ${{ secrets.LMN24_DEPLOY_KNOWN_HOSTS }}
+          GA4_SERVICE_ACCOUNT_JSON: ${{ secrets.GA4_SERVICE_ACCOUNT_JSON }}
+        run: |
+          set -euo pipefail
+          if [ -z "$LMN24_DEPLOY_SSH_KEY" ] || [ -z "$LMN24_DEPLOY_KNOWN_HOSTS" ] || [ -z "$GA4_SERVICE_ACCOUNT_JSON" ]; then
+            echo "::error::Configure production secret GA4_SERVICE_ACCOUNT_JSON and the existing SSH deployment secrets."
+            exit 1
+          fi
+          SSH_DIR="$RUNNER_TEMP/ga4-ssh"
+          install -d -m 700 "$SSH_DIR"
+          printf '%s\n' "$LMN24_DEPLOY_SSH_KEY" > "$SSH_DIR/id_ed25519"
+          printf '%s\n' "$LMN24_DEPLOY_KNOWN_HOSTS" > "$SSH_DIR/known_hosts"
+          chmod 600 "$SSH_DIR/id_ed25519" "$SSH_DIR/known_hosts"
+          # The application code must first have been deployed to the VPS.
+          # Credential is streamed over SSH stdin and never printed to logs.
+          printf '%s' "$GA4_SERVICE_ACCOUNT_JSON" | ssh -i "$SSH_DIR/id_ed25519" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$SSH_DIR/known_hosts" \
+            -o ConnectTimeout=15 \
+            ubuntu@57.128.190.216 \
+            'node /home/ubuntu/lmn24/scripts/configure-ga4-ovh.mjs'
+          echo "GA4 OVH configuration installed. Verify connection in LMN24 admin > Statistiques du site > Google Analytics."
