@@ -1,0 +1,33 @@
+name: SEO live audit (read-only)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/seo-live-audit.mjs
+      - .github/workflows/seo-live-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: Inspect production URLs and SEO HTML
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.21.0
+      - name: Probe public LMN24 pages (GET only; no authentication)
+        run: node scripts/seo-live-audit.mjs | tee "$RUNNER_TEMP/seo-live-audit.jsonl"
+      - name: Store raw evidence as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-live-audit-jsonl
+          path: ${{ runner.temp }}/seo-live-audit.jsonl
+          retention-days: 30
