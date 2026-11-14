@@ -33,6 +33,12 @@ export function localizedCategoryHref(locale: string, slug: string): string {
     "/category/" + encodeURIComponent(slug);
 }
 
+export function localizedSourceHref(locale: string, slug: string | undefined): string | null {
+  if (!/^(?:fr|en|de|es|pt|it|ru|nl)$/.test(locale) ||
+      !slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null;
+  return "/" + locale + "/source/" + encodeURIComponent(slug);
+}
+
 export function safeExternalUrl(value: string | null): string | null {
   if (!value) return null;
   try {
