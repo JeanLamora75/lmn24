@@ -9,7 +9,6 @@ import { SEO_COPY, seoSocial } from "@/lib/seo-social";
 import { PublicVideos, type VideosPage } from "@/components/videos/PublicVideos";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { collectionSchema } from "@/lib/seo-schema";
-import { SEO_COPY } from "@/lib/seo-social";
 export const dynamic="force-dynamic";
 type Props={params:Promise<{locale:string}>};
 export async function generateMetadata({params}:Props):Promise<Metadata>{
