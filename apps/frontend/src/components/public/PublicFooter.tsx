@@ -73,7 +73,7 @@ export function PublicFooter() {
         className="container py-4"
         aria-label="Navigation secondaire LMN24"
       >
-        <div className="row g-4 d-none d-lg-flex">
+        <div className="row g-4">
           <div className="col-3">
             <ul className={styles.linkList}>
               <li>
