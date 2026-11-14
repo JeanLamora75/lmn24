@@ -1,4 +1,5 @@
 "use client";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -21,12 +22,12 @@ function languageName(code:string) {
 export function VideosAdmin() {
   const [options,setOptions]=useState<Options|null>(null);
   const [list,setList]=useState<Listing|null>(null);
-  const [search,setSearch]=useState("");
-  const [sourceId,setSource]=useState("");
-  const [categoryId,setCategory]=useState("");
-  const [language,setLanguage]=useState("");
-  const [status,setStatus]=useState("all");
-  const [page,setPage]=useState(1);
+  const [search,setSearch]=useAdminSessionFilter("videos", "search", "");
+  const [sourceId,setSource]=useAdminSessionFilter("videos", "sourceId", "");
+  const [categoryId,setCategory]=useAdminSessionFilter("videos", "categoryId", "");
+  const [language,setLanguage]=useAdminSessionFilter("videos", "language", "");
+  const [status,setStatus]=useAdminSessionFilter("videos", "status", "all");
+  const [page,setPage]=useAdminSessionFilter("videos", "page", 1);
   const [refreshKey,setRefreshKey]=useState(0);
   const [busy,setBusy]=useState<string|null>(null);
   const [loading,setLoading]=useState(true);
