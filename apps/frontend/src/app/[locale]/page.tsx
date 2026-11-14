@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -10,6 +11,7 @@ import {
 import styles from "@/components/home/home.module.css";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
+import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
 
 // Une recharge affiche les changements publiés et la configuration la plus récente.
 export const dynamic = "force-dynamic";
@@ -39,6 +41,12 @@ async function loadHome(locale: string): Promise<HomeSectionData[]> {
     throw new Error("home-api-invalid-response");
   }
   return prepareHomeSections(payload.items);
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return { robots: { index: false } };
+  return { alternates: seoAlternates(locale as SeoLocale) };
 }
 
 export default async function HomePage({ params }: Props) {
