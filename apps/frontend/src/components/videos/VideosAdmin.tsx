@@ -1,5 +1,6 @@
 "use client";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -72,6 +73,7 @@ export function VideosAdmin() {
     finally{setBusy(null);}
   }
   return <main className="container-fluid px-3 px-lg-4 py-4">
+      <AdminFilterResetButton section="videos" />
     <header className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
       <div><Link href="/admin" className="btn btn-outline-secondary btn-sm mb-3">← Administration</Link>
         <h1 className="h2">Vidéos YouTube</h1><p className="text-body-secondary mb-0">Consulter, classer et modérer les vidéos importées.</p></div>
