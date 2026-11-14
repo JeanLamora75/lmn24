@@ -13,6 +13,7 @@ import { getHashtagLabels } from "@/components/hashtags/hashtag-ranking-data";
 import styles from "@/components/hashtags/hashtags.module.css";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
+import { seoAlternates, seoUnavailable, type SeoLocale } from "@/lib/seo-metadata";
 
 export const dynamic = "force-dynamic";
 type Props = Readonly<{ params: Promise<{ locale: string; slug: string }> }>;
@@ -59,10 +60,11 @@ async function loadFirstArticles(slug: string): Promise<PublicHashtagPage | "not
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!hasLocale(routing.locales, locale) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
-    return { title: "Hashtags | LMN24" };
+    return seoUnavailable;
   }
   const subject = await loadHashtag(slug);
-  return { title: subject?.name ?? "Hashtags" };
+  if (!subject) return seoUnavailable;
+  return { title: subject.name, alternates: seoAlternates(locale as SeoLocale, "hashtags", slug) };
 }
 
 export default async function PublicHashtagDetail({ params }: Props) {
