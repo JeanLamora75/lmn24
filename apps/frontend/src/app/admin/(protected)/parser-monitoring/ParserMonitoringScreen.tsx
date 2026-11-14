@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
@@ -254,7 +255,7 @@ export function ParserMonitoringScreen() {
         <Link href="/admin/parser" className="btn btn-outline-primary btn-sm">Parser Infos</Link>
         <Link href="/admin/video-parser" className="btn btn-outline-primary btn-sm">Parser Vidéos</Link>
         <Link href="/admin/weather-parser" className="btn btn-outline-primary btn-sm">Parser Météo</Link>
-        <Link href="/admin" className="btn btn-outline-secondary btn-sm">Retour admin</Link>
+        <Link href="/admin" className="btn btn-outline-secondary btn-sm"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour admin</Link>
       </div>
     </div>
     <section className="card mb-4 shadow-sm" aria-label="Filtres de supervision">
@@ -323,7 +324,7 @@ export function ParserMonitoringScreen() {
           </div>}
           <div className="col-auto">
             <button type="button" className="btn btn-primary"
-              disabled={loading} onClick={()=>setRevision(n=>n+1)}>
+              disabled={loading} onClick={()=>setRevision(n=>n+1)}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> 
               {loading?"Chargement…":"Actualiser"}
             </button>
           </div>
@@ -341,7 +342,7 @@ export function ParserMonitoringScreen() {
     </section>
     {parser!=="WEATHER"&&error && <div className="alert alert-danger" role="alert">
       {error} <button className="btn btn-sm btn-outline-danger ms-2"
-        onClick={()=>setRevision(n=>n+1)}>Réessayer</button>
+        onClick={()=>setRevision(n=>n+1)}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Réessayer</button>
     </div>}
     <WeatherMonitoringPanel period={period} from={from} to={to}
       visible={parser==="ALL"||parser==="WEATHER"}/>
@@ -419,7 +420,7 @@ export function ParserMonitoringScreen() {
             <td>{duration(row.durationMs)}</td><td>{fmt(row.itemsFound)}</td>
             <td>{fmt(row.imported)}</td><td>{fmt(row.skipped)}</td>
             <td><button type="button" className="btn btn-outline-primary btn-sm"
-              onClick={()=>openRun(row)}>Détails</button></td>
+              onClick={()=>openRun(row)}><AdminIcon name="eye" className="me-2 align-middle" /> Détails</button></td>
           </tr>)}</tbody>
         </table>
       </div>}
