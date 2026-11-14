@@ -8,6 +8,7 @@ import { HomeArticleMedia } from "./HomeArticleMedia";
 import { HomeCarousel } from "./HomeCarousel";
 import {
   localizedCategoryHref,
+  localizedSourceHref,
   safeExternalUrl,
   type HomeArticle,
   type HomeSectionData,
@@ -61,10 +62,7 @@ export function ArticleCard({
       }).format(pubDate)
     : null;
   const compact = layoutType === "HEADLINES" || layoutType === "COMPACT";
-  const sourceSlug = article.source.slug;
-  const sourceHref = sourceSlug && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(sourceSlug)
-    ? "/" + encodeURIComponent(locale) + "/source/" + encodeURIComponent(sourceSlug)
-    : null;
+  const sourceHref = localizedSourceHref(locale, article.source.slug);
 
   const content = (
     <>
