@@ -7,6 +7,8 @@ import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
 import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
 import { seoSocial } from "@/lib/seo-social";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { collectionSchema, pageBreadcrumbs } from "@/lib/seo-schema";
 
 export const dynamic = "force-dynamic";
 const SIGNS = ["aries","taurus","gemini","cancer","leo","virgo","libra","scorpio","sagittarius","capricorn","aquarius","pisces"] as const;
@@ -69,6 +71,12 @@ export default async function HoroscopeSignPage({params,searchParams}:Props){
  // The source file explicitly requires a visible CosmyDay link on pages using its data.
  const attrUrl=attr?.url==="https://cosmyday.com"||attr?.url==="https://www.cosmyday.com"?attr.url:"https://cosmyday.com";
  return <main className="container py-4 py-lg-5">
+   <StructuredData data={collectionSchema({locale:lang,
+     url:"https://www.lmn24.com/"+locale+"/horoscope/"+sign,
+     name:t.title+" — "+name,
+     description:t.title+" "+name+". "+t.disclaimer+".",
+     breadcrumbs:pageBreadcrumbs(lang,t.title,"horoscope",{title:name,slug:sign}),
+   })}/>
    <Link href={`/${locale}/horoscope`} className="btn btn-outline-secondary mb-4">← {t.back}</Link>
    <header className="text-center mb-4">
      <div className="display-2 text-primary" aria-hidden="true">{SYMBOLS[index]}</div>
