@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -18,6 +19,7 @@ export function AdminHomeClient() {
 
   return (
     <main className="container-fluid px-3 px-lg-5 py-4 py-lg-5">
+      <AdminFilterResetButton section="home" />
       <header className={styles.pageHeader}>
         <h1 className="display-6 fw-semibold mb-2">Administration LMN24</h1>
         <p className="text-body-secondary mb-0">
