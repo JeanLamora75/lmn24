@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { clearAdminSessionFilters } from "@/lib/admin-session-filters";
 
 export function AdminFilterResetButton({ section }: { section: string }) {
@@ -14,7 +15,7 @@ export function AdminFilterResetButton({ section }: { section: string }) {
           // currently applied server-side pagination and search query.
           window.location.reload();
         }}
-      >
+      ><AdminIcon name="arrow-counterclockwise" className="me-2 align-middle" /> 
         Réinitialiser les filtres
       </button>
     </div>
