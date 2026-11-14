@@ -7,6 +7,13 @@ import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
 import { getHashtagLabels } from "@/components/hashtags/hashtag-ranking-data";
 import styles from "./PublicFooter.module.css";
+import { OPEN_ANALYTICS_SETTINGS_EVENT } from "./GoogleAnalyticsTracker";
+
+const COOKIE_SETTINGS_LABELS: Record<SupportedLocale, string> = {
+  fr: "Préférences cookies", en: "Cookie preferences", de: "Cookie-Einstellungen",
+  es: "Preferencias de cookies", pt: "Preferências de cookies", it: "Preferenze cookie",
+  ru: "Настройки cookie", nl: "Cookievoorkeuren",
+};
 
 const CATEGORY_SLUGS = [
   "international",
@@ -134,6 +141,11 @@ export function PublicFooter() {
 
       <div className={`border-top text-center ${styles.copyright}`}>
         © {new Date().getFullYear()} LMN24
+        <span className="mx-2" aria-hidden="true">·</span>
+        <button type="button" className="btn btn-link btn-sm p-0 align-baseline"
+          onClick={() => window.dispatchEvent(new Event(OPEN_ANALYTICS_SETTINGS_EVENT))}>
+          {COOKIE_SETTINGS_LABELS[locale]}
+        </button>
       </div>
     </footer>
   );
