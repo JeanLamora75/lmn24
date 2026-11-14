@@ -60,7 +60,7 @@ jobs:
         run: pnpm test
 
       - name: SEO behavioral regression (SCRUM-100)
-        run: pnpm --filter @lmn24/frontend exec vitest run src/lib/seo-regression.test.ts src/app/sitemap-routes.test.ts src/lib/seo-metadata.test.ts src/lib/seo-schema.test.ts src/lib/seo-social.test.ts
+        run: pnpm --filter @lmn24/frontend exec vitest run src/lib/seo-regression.test.ts src/app/sitemap-routes.test.ts src/lib/seo-metadata.test.ts src/lib/seo-schema.test.ts src/lib/seo-social.test.ts src/proxy-seo.test.ts
 
       - name: Build
         run: pnpm build
