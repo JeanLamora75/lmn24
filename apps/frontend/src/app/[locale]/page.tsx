@@ -97,7 +97,7 @@ export default async function HomePage({ params }: Props) {
       ) : sections.length === 0 ? (
         <p role="status" className={styles.emptyMessage}>{t.empty}</p>
       ) : (
-        sections.map((section) => {
+        sections.map((section, index) => {
           const label = labels[section.slug] ??
             section.slug.replace(/-/g, " ");
           return (
@@ -110,6 +110,7 @@ export default async function HomePage({ params }: Props) {
               moreNewsLabel={t.moreNews}
               previousLabel={t.previous}
               nextLabel={t.next}
+              aboveFold={index === 0}
             />
           );
         })
