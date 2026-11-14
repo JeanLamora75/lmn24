@@ -12,6 +12,7 @@ import {
 import styles from "@/components/hashtags/hashtags.module.css";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
+import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
 
 export const dynamic = "force-dynamic";
 const PAGE_SIZE = 20;
@@ -50,7 +51,8 @@ function formattedDate(iso: string | null | undefined, locale: string): string {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const labels = getHashtagLabels(locale);
-  return { title: labels.title, description: labels.description };
+  return { title: labels.title, description: labels.description,
+    alternates: seoAlternates(locale as SeoLocale, "hashtags") };
 }
 
 export default async function PublicHashtagsPage({ params, searchParams }: Props) {
