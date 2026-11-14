@@ -1,4 +1,5 @@
 "use client";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -52,12 +53,12 @@ const formatDate = (s: string | undefined) => s ? new Date(s).toLocaleString("fr
 export function VideoFeedsTable() {
   const [items,setItems] = useState<Listing | null>(null);
   const [options,setOptions] = useState<Options | null>(null);
-  const [search,setSearch] = useState("");
-  const [sourceId,setSourceId] = useState("");
-  const [categoryId,setCategoryId] = useState("");
-  const [language,setLanguage] = useState("");
-  const [status,setStatus] = useState("all");
-  const [page,setPage] = useState(1);
+  const [search,setSearch] = useAdminSessionFilter("video-feeds", "search", "");
+  const [sourceId,setSourceId] = useAdminSessionFilter("video-feeds", "sourceId", "");
+  const [categoryId,setCategoryId] = useAdminSessionFilter("video-feeds", "categoryId", "");
+  const [language,setLanguage] = useAdminSessionFilter("video-feeds", "language", "");
+  const [status,setStatus] = useAdminSessionFilter("video-feeds", "status", "all");
+  const [page,setPage] = useAdminSessionFilter("video-feeds", "page", 1);
   const [revision,setRevision] = useState(0);
   const [loading,setLoading] = useState(true);
   const [error,setError] = useState("");
