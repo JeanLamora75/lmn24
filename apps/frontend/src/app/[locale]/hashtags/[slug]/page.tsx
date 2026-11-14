@@ -14,6 +14,7 @@ import styles from "@/components/hashtags/hashtags.module.css";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
 import { seoAlternates, seoUnavailable, type SeoLocale } from "@/lib/seo-metadata";
+import { SEO_COPY, seoSocial, cleanSeoText } from "@/lib/seo-social";
 
 export const dynamic = "force-dynamic";
 type Props = Readonly<{ params: Promise<{ locale: string; slug: string }> }>;
@@ -64,7 +65,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   const subject = await loadHashtag(slug);
   if (!subject) return seoUnavailable;
-  return { title: subject.name, alternates: seoAlternates(locale as SeoLocale, "hashtags", slug) };
+  const lang = locale as SeoLocale;
+  const name = cleanSeoText(subject.name, 90);
+  if (!name) return seoUnavailable;
+  const title = name + " — " + SEO_COPY[lang].hashtag;
+  const description = SEO_COPY[lang].hashtagDescription(name);
+  const url = "https://www.lmn24.com/" + locale + "/hashtags/" + slug;
+  return { title, description, alternates: seoAlternates(lang, "hashtags", slug),
+    ...seoSocial(lang, title + " | LMN24", description, url) };
 }
 
 export default async function PublicHashtagDetail({ params }: Props) {
