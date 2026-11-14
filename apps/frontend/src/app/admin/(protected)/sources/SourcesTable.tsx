@@ -693,7 +693,7 @@ export function SourcesTable() {
 
                         <Link
                           href={"/admin/video-feeds/new?sourceId=" + encodeURIComponent(source.id)}
-                          className="btn btn-sm btn-outline-danger lmn-admin-compact-action"
+                          className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                           title={"Ajouter un flux vidéo YouTube à " + source.name}
                           aria-label={"Ajouter un flux vidéo YouTube à " + source.name}
                         >
