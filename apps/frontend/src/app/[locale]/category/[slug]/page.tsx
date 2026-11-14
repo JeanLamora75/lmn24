@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 
 import { CategoryArticles } from "@/components/category/CategoryArticles";
 import { StructuredData } from "@/components/seo/StructuredData";
+import { PublicBreadcrumbs } from "@/components/seo/PublicBreadcrumbs";
 import { collectionSchema } from "@/lib/seo-schema";
 import type { CategoryPageResponse } from "@/components/category/category-page-data";
 import styles from "@/components/category/category.module.css";
@@ -111,6 +112,9 @@ export default async function CategoryPage({ params }: Props) {
         breadcrumbs:[{name:"LMN24",url:"https://www.lmn24.com/"+locale},
           {name:label,url:"https://www.lmn24.com/"+locale+"/category/"+slug}],
       })}/>}
+      <PublicBreadcrumbs label={t.articles} items={[
+        { label: "LMN24", href: "/" + locale }, { label },
+      ]} />
       <header className={styles.heading}>
         <h1 className={styles.title}>{label}</h1>
       </header>
