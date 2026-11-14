@@ -113,7 +113,7 @@ function PaginationNav({
       <ul className={"pagination pagination-sm mb-0 " + styles.paginationList}>
         <li className={"page-item " + (pagination.page === 1 ? "disabled" : "")}>
           <button type="button" className="page-link" aria-label="Première page"
-            disabled={pagination.page === 1} onClick={() => onPageChange(1)}>«</button>
+            disabled={pagination.page === 1} onClick={() => onPageChange(1)}><AdminIcon name="chevron-double-left" size={16} /></button>
         </li>
         <li className={"page-item " + (pagination.page === 1 ? "disabled" : "")}>
           <button
@@ -122,9 +122,7 @@ function PaginationNav({
             aria-label="Page précédente"
             disabled={pagination.page === 1}
             onClick={() => onPageChange(pagination.page - 1)}
-          >
-            ‹
-          </button>
+          ><AdminIcon name="chevron-left" size={16} /></button>
         </li>
 
         {pageItems(pagination.page, pagination.totalPages).map((item) => (
@@ -147,14 +145,12 @@ function PaginationNav({
             aria-label="Page suivante"
             disabled={pagination.page === pagination.totalPages}
             onClick={() => onPageChange(pagination.page + 1)}
-          >
-            ›
-          </button>
+          ><AdminIcon name="chevron-right" size={16} /></button>
         </li>
         <li className={"page-item " + (pagination.page === pagination.totalPages ? "disabled" : "")}>
           <button type="button" className="page-link" aria-label="Dernière page"
             disabled={pagination.page === pagination.totalPages}
-            onClick={() => onPageChange(pagination.totalPages)}>»</button>
+            onClick={() => onPageChange(pagination.totalPages)}><AdminIcon name="chevron-double-right" size={16} /></button>
         </li>
       </ul>
     </nav>
