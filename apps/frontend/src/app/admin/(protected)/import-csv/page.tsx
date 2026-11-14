@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -301,6 +302,7 @@ export default function ImportCsvPage() {
 
   return (
     <main className="container py-4 py-lg-5">
+      <AdminFilterResetButton section="csv-import" />
       <div className="mb-4">
         <Link href="/admin" className="btn btn-outline-secondary">
           Retour à l’administration
