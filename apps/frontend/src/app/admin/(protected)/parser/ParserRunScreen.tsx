@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -97,9 +98,9 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [languages, setLanguages] = useState<LanguageItem[]>([]);
 
-  const [countryIsoCode2, setCountryIsoCode2] = useState("");
-  const [languageIsoCode2, setLanguageIsoCode2] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+  const [countryIsoCode2, setCountryIsoCode2] = useAdminSessionFilter("parser", "countryIsoCode2", "");
+  const [languageIsoCode2, setLanguageIsoCode2] = useAdminSessionFilter("parser", "languageIsoCode2", "");
+  const [categoryId, setCategoryId] = useAdminSessionFilter("parser", "categoryId", "");
 
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
