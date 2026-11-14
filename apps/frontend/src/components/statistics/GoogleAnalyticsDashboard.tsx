@@ -77,9 +77,10 @@ export function GoogleAnalyticsDashboard() {
         <h1 className="h2">Statistiques du site</h1>
         <p className="text-body-secondary">Audience Google Analytics 4, séparée des statistiques éditoriales LMN24.</p>
       </header>
-      <nav className="d-flex gap-2 mb-4" aria-label="Sources de statistiques">
+      <nav className="d-flex gap-2 flex-wrap mb-4" aria-label="Sources de statistiques">
         <Link href="/admin/site-statistics" className="btn btn-outline-secondary">Statistiques LMN24</Link>
         <span className="btn btn-primary" aria-current="page">Google Analytics</span>
+        <Link href="/admin/site-statistics/search-console" className="btn btn-outline-secondary">Search Console</Link>
       </nav>
       <div className="d-flex gap-2 align-items-center flex-wrap mb-4">
         <label htmlFor="ga4-period" className="form-label mb-0">Période</label>
