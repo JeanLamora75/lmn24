@@ -128,6 +128,10 @@ export function StatisticsDashboard() {
   const o = data?.overview;
   const h = data?.health;
   return <main className="container-fluid px-3 px-lg-4 py-4">
+      <nav className="d-flex gap-2 mb-3" aria-label="Sources de statistiques">
+        <span className="btn btn-primary" aria-current="page">Statistiques LMN24</span>
+        <Link href="/admin/site-statistics/google-analytics" className="btn btn-outline-secondary">Google Analytics</Link>
+      </nav>
       <AdminFilterResetButton section="site-statistics" />
     <header className="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
       <div><Link href="/admin" className="btn btn-outline-secondary btn-sm mb-3">← Administration</Link>
