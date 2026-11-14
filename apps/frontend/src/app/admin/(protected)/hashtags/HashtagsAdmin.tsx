@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useState } from "react";
@@ -24,11 +25,11 @@ async function message(response: Response): Promise<string> {
 export function HashtagsAdmin() {
   const router = useRouter();
   const [items, setItems] = useState<Item[]>([]);
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("all");
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [searchInput, setSearchInput] = useAdminSessionFilter("hashtags", "searchInput", "");
+  const [search, setSearch] = useAdminSessionFilter("hashtags", "search", "");
+  const [status, setStatus] = useAdminSessionFilter("hashtags", "status", "all");
+  const [page, setPage] = useAdminSessionFilter("hashtags", "page", 1);
+  const [pageSize, setPageSize] = useAdminSessionFilter("hashtags", "pageSize", 10);
   const [pagination, setPagination] = useState<ResponseData["pagination"]>({
     page: 1, pageSize: 10, total: 0, totalPages: 0,
   });
