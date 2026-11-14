@@ -12,6 +12,7 @@ import styles from "@/components/home/home.module.css";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
 import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
+import { seoSocial, SEO_COPY } from "@/lib/seo-social";
 
 // Une recharge affiche les changements publiés et la configuration la plus récente.
 export const dynamic = "force-dynamic";
@@ -46,7 +47,15 @@ async function loadHome(locale: string): Promise<HomeSectionData[]> {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return { robots: { index: false } };
-  return { alternates: seoAlternates(locale as SeoLocale) };
+  const lang = locale as SeoLocale;
+  const messages = await getMessages({ locale });
+  const home = messages.home as HomeTranslations;
+  const title = SEO_COPY[lang].homeTitle;
+  return { title, description: home.description,
+    alternates: seoAlternates(lang),
+    ...seoSocial(lang, title + " | LMN24", home.description,
+      "https://www.lmn24.com/" + locale),
+  };
 }
 
 export default async function HomePage({ params }: Props) {
