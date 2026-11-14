@@ -5,6 +5,8 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { HashtagThumbnail } from "@/components/hashtags/HashtagThumbnail";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { collectionSchema } from "@/lib/seo-schema";
 import {
   getHashtagLabels, hashtagRankingHref, parseRankingParams,
   type RankingMode, type RankingPage, type RankingParams, type RankingPeriod,
@@ -77,6 +79,10 @@ export default async function PublicHashtagsPage({ params, searchParams }: Props
 
   return (
     <main className={"container px-3 px-lg-4 " + styles.page}>
+      {Object.keys(await searchParams).length === 0 && <StructuredData data={collectionSchema({
+        locale: locale as SeoLocale, url: "https://www.lmn24.com/" + locale + "/hashtags",
+        name: labels.title, description: labels.description,
+      })} />}
       <header className={styles.intro}>
         <h1 className="display-6 fw-semibold mb-2">{labels.title}</h1>
         <p className={styles.subtitle}>{labels.description}</p>
