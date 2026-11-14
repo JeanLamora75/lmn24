@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
@@ -382,10 +383,10 @@ export function SourcesTable() {
 
       <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
         <div className="d-flex flex-wrap gap-2">
-          <Link href="/admin" className="btn btn-outline-secondary">
+          <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
             Retour à l’administration
           </Link>
-          <Link href="/admin/sources/new" className="btn btn-primary">
+          <Link href="/admin/sources/new" className="btn btn-primary"><AdminIcon name="plus-circle" className="me-2 align-middle" /> 
             Ajouter une source
           </Link>
         </div>
@@ -406,7 +407,7 @@ export function SourcesTable() {
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
           />
-          <button type="submit" className="btn btn-outline-primary">
+          <button type="submit" className="btn btn-outline-primary"><AdminIcon name="search" className="me-2 align-middle" /> 
             Rechercher
           </button>
         </form>
@@ -509,7 +510,7 @@ export function SourcesTable() {
         <div className="col-12 text-end">
           <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => {
             setFeedRange("all"); setArticleRange("all"); setMissingSocial("all"); setPage(1);
-          }}>Réinitialiser les nouveaux filtres</button>
+          }}><AdminIcon name="arrow-counterclockwise" className="me-2 align-middle" /> Réinitialiser les nouveaux filtres</button>
         </div>
       </div>
 
@@ -786,7 +787,7 @@ export function SourcesTable() {
                             href={newFeedForSourceHref(source.id)}
                             className="dropdown-item"
                             aria-label={"Ajouter un flux RSS/XML à " + source.name}
-                          >
+                          ><AdminIcon name="plus-circle" className="me-2 align-middle" /> 
                             Ajouter un flux RSS/XML
                           </Link>
 
@@ -794,7 +795,7 @@ export function SourcesTable() {
                             href={"/admin/video-feeds/new?sourceId=" + encodeURIComponent(source.id)}
                             className="dropdown-item"
                             aria-label={"Ajouter un flux vidéo YouTube à " + source.name}
-                          >
+                          ><AdminIcon name="plus-circle" className="me-2 align-middle" /> 
                             Ajouter un flux vidéo YouTube
                           </Link>
 
@@ -805,7 +806,7 @@ export function SourcesTable() {
                               "/edit"
                             }
                             className="dropdown-item"
-                          >
+                          ><AdminIcon name="pencil-square" className="me-2 align-middle" /> 
                             Modifier
                           </Link>
                           <button
@@ -816,7 +817,7 @@ export function SourcesTable() {
                               event.currentTarget.closest("details")?.removeAttribute("open");
                               setDeleteTarget(source);
                             }}
-                          >
+                          ><AdminIcon name="trash" className="me-2 align-middle" /> 
                             Supprimer
                           </button>
                         </div>
