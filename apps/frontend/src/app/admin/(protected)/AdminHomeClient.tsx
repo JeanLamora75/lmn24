@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -8,7 +9,7 @@ import { ADMIN_SECTIONS, filterAdminSections } from "./admin-home.data";
 import styles from "./admin-home.module.css";
 
 export function AdminHomeClient() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useAdminSessionFilter("home", "query", "");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const matchedSections = filterAdminSections(ADMIN_SECTIONS, query);
   const hasQuery = query.trim().length > 0;
