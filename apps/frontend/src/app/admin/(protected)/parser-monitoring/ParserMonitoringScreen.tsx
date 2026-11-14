@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Link from "next/link";
 import { WeatherMonitoringPanel } from "./WeatherMonitoringPanel";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -136,20 +137,20 @@ function Chart({ rows, metric = "runs" }: { rows: Summary["timeline"]; metric?: 
 }
 
 export function ParserMonitoringScreen() {
-  const [parser, setParser] = useState<Parser>("ALL");
-  const [period, setPeriod] = useState<Period>("24h");
-  const [status, setStatus] = useState<Status>("ALL");
-  const [search, setSearch] = useState("");
-  const [countryId, setCountryId] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [language, setLanguage] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [pageSize, setPageSize] = useState(20);
-  const [page, setPage] = useState(1);
-  const [batchPage, setBatchPage] = useState(1);
-  const [eventPage, setEventPage] = useState(1);
-  const [errorsOnly, setErrorsOnly] = useState(false);
+  const [parser, setParser] = useAdminSessionFilter<Parser>("parser-monitoring", "parser", "ALL");
+  const [period, setPeriod] = useAdminSessionFilter<Period>("parser-monitoring", "period", "24h");
+  const [status, setStatus] = useAdminSessionFilter<Status>("parser-monitoring", "status", "ALL");
+  const [search, setSearch] = useAdminSessionFilter("parser-monitoring", "search", "");
+  const [countryId, setCountryId] = useAdminSessionFilter("parser-monitoring", "countryId", "");
+  const [categoryId, setCategoryId] = useAdminSessionFilter("parser-monitoring", "categoryId", "");
+  const [language, setLanguage] = useAdminSessionFilter("parser-monitoring", "language", "");
+  const [from, setFrom] = useAdminSessionFilter("parser-monitoring", "from", "");
+  const [to, setTo] = useAdminSessionFilter("parser-monitoring", "to", "");
+  const [pageSize, setPageSize] = useAdminSessionFilter("parser-monitoring", "pageSize", 20);
+  const [page, setPage] = useAdminSessionFilter("parser-monitoring", "page", 1);
+  const [batchPage, setBatchPage] = useAdminSessionFilter("parser-monitoring", "batchPage", 1);
+  const [eventPage, setEventPage] = useAdminSessionFilter("parser-monitoring", "eventPage", 1);
+  const [errorsOnly, setErrorsOnly] = useAdminSessionFilter("parser-monitoring", "errorsOnly", false);
   const [revision, setRevision] = useState(0);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [runs, setRuns] = useState<PageData<RunRow> | null>(null);
