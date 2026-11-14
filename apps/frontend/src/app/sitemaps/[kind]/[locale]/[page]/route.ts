@@ -12,13 +12,10 @@ export async function GET(_request: Request, { params }: Params): Promise<Respon
     const result = await fetchSeoItems(kind as SeoKind, locale as SeoLocale, Number(page));
     if (result.kind !== kind || result.locale !== locale || result.page !== Number(page) ||
       !Array.isArray(result.items) || result.items.length > 1000) throw new Error("Invalid sitemap page");
+    // Article collections change when new items are imported; the entity updatedAt
+    // timestamp does NOT track these changes, so omit lastmod rather than mislead crawlers.
     const entries = result.items.filter(item => SLUG.test(item.slug) && item.slug.length <= 255)
-      .map(item => ({
-        url: dynamicUrl(kind as SeoKind, locale as SeoLocale, item.slug),
-        // Never manufacture a modification time. Use only valid persisted timestamps.
-        ...(typeof item.lastModified === "string" && !Number.isNaN(Date.parse(item.lastModified))
-          ? { lastModified: new Date(item.lastModified).toISOString() } : {}),
-      }));
+      .map(item => ({ url: dynamicUrl(kind as SeoKind, locale as SeoLocale, item.slug) }));
     if (!entries.length) return new Response("Not found", {status:404});
     return sitemapResponse(urlsXml(entries));
   } catch {
