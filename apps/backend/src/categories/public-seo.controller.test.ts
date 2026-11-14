@@ -4,22 +4,38 @@ import { DatabaseService } from "../database/database.service";
 import { PublicSeoController } from "./public-seo.controller";
 
 function setup() {
-  const category = { count: vi.fn().mockResolvedValue(1), findMany: vi.fn().mockResolvedValue([
+  const category = { findUnique: vi.fn().mockResolvedValue({id:"cat-1",isActive:true}), count: vi.fn().mockResolvedValue(1), findMany: vi.fn().mockResolvedValue([
     {slug:"international",updatedAt:new Date("2026-11-01T09:00:00Z")},
   ]) };
-  const source = { count: vi.fn().mockResolvedValue(1), findMany: vi.fn().mockResolvedValue([
+  const source = { findUnique: vi.fn().mockResolvedValue({id:"source-1",isActive:true}), count: vi.fn().mockResolvedValue(1), findMany: vi.fn().mockResolvedValue([
     {slug:"public-source",updatedAt:new Date("2026-11-01T09:00:00Z")},
   ]) };
   const hashtag = { count: vi.fn().mockResolvedValue(1), findMany: vi.fn().mockResolvedValue([
     {slug:"world",updatedAt:new Date("2026-11-01T09:00:00Z")},
   ]) };
+  const article = { groupBy: vi.fn().mockResolvedValue([{languageIsoCode2:"fr"},{languageIsoCode2:"en"}]) };
   const controller = new PublicSeoController({
-    prisma: { category, source, hashtag },
+    prisma: { category, source, hashtag, article },
   } as unknown as DatabaseService);
-  return {controller, category, source, hashtag};
+  return {controller, category, source, hashtag, article};
 }
 
-describe("SCRUM-94 SEO discovery", () => {
+describe("SCRUM-94 / SCRUM-95 SEO discovery", () => {
+  it("advertises only real active category language variants for SEO hreflang", async () => {
+    const {controller, article} = setup();
+    expect(await controller.languages("categories","international")).toEqual({ locales:["fr","en"] });
+    expect(article.groupBy).toHaveBeenCalledWith({
+      by:["languageIsoCode2"],
+      where:{ categoryId:"cat-1", source:{isActive:true} },
+    });
+  });
+  it("excludes inactive sources and invalid entities from language discovery", async () => {
+    const {controller, source, article} = setup();
+    source.findUnique.mockResolvedValueOnce({id:"source-1",isActive:false});
+    expect(await controller.languages("sources","inactive-source")).toEqual({locales:[]});
+    expect(article.groupBy).not.toHaveBeenCalled();
+    await expect(controller.languages("sources","../admin")).rejects.toBeInstanceOf(BadRequestException);
+  });
   it("counts only active categories and sources with public articles in their language", async () => {
     const {controller,category,source,hashtag} = setup();
     const result = await controller.counts();
