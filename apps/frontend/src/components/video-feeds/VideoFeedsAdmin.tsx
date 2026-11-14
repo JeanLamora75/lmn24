@@ -1,5 +1,6 @@
 "use client";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -94,6 +95,7 @@ export function VideoFeedsTable() {
     catch(e){setError(e instanceof Error?e.message:"Suppression impossible");}
   }
   return <main className="container py-4">
+      <AdminFilterResetButton section="video-feeds" />
     <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
       <div><Link href="/admin" className="btn btn-outline-secondary btn-sm mb-3">← Administration</Link><h1 className="h2">Flux vidéo YouTube</h1><p className="text-body-secondary mb-0">Gérer les chaînes YouTube associées aux sources LMN24.</p></div>
       <Link href="/admin/video-feeds/new" className="btn btn-primary">+ Ajouter un flux vidéo</Link>
