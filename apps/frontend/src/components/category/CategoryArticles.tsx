@@ -104,12 +104,13 @@ export function CategoryArticles({ initialPage, paginationPath, locale, labels }
         {blocks.map((block, index) => (
           <div className={styles.block} key={index}>
             <div className={homeStyles.articleGrid + " " + layouts[block.layout]}>
-              {block.items.map((article) => (
+              {block.items.map((article, articleIndex) => (
                 <ArticleCard
                   key={article.id}
                   article={article}
                   locale={locale}
                   layoutType={block.layout}
+                  eagerMedia={index === 0 && articleIndex === 0}
                 />
               ))}
             </div>
