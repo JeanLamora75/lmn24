@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
@@ -97,7 +98,7 @@ export default function WeatherParserScreen(){
 
   return <main className="container-fluid px-3 px-lg-4 py-4">
       <AdminFilterResetButton section="weather-parser" />
-    <div className="mb-4"><Link href="/admin" className="btn btn-outline-secondary">
+    <div className="mb-4"><Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
       Retour à l’administration
     </Link></div>
     <header className="mb-4">
@@ -126,7 +127,7 @@ export default function WeatherParserScreen(){
           <div className="col-12 col-lg-5 d-grid">
             <button type="button" className="btn btn-primary"
               disabled={loading||starting||Boolean(activeRun)||count===0}
-              onClick={()=>void start()}>
+              onClick={()=>void start()}><AdminIcon name="play-circle" className="me-2 align-middle" /> 
               {starting?"Démarrage…":activeRun?"Collecte en cours…":"Lancer le Parser Météo"}
             </button>
           </div>
@@ -148,7 +149,7 @@ export default function WeatherParserScreen(){
         <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
           <h2 className="h5 mb-0" id="weather-progress-heading">Suivi de l’exécution</h2>
           <button type="button" className="btn btn-sm btn-outline-secondary"
-            onClick={()=>void loadRuns()}>Actualiser</button>
+            onClick={()=>void loadRuns()}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser</button>
         </div>
         {!selectedRun?<p className="text-body-secondary mb-0">
           Aucune collecte météo n’a encore été lancée.
