@@ -5,6 +5,8 @@ import {hasLocale} from "next-intl";
 import {setRequestLocale} from "next-intl/server";
 import {notFound} from "next/navigation";
 import {PublicWeather} from "@/components/weather/PublicWeather";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { collectionSchema } from "@/lib/seo-schema";
 import {weatherCopy} from "@/components/weather/weather-copy";
 import {parseWeatherResponse,type WeatherResponse} from "@/components/weather/weather-data";
 import {routing} from "@/i18n/routing";
@@ -51,8 +53,11 @@ export default async function WeatherHomePage({params}:Props){
     // The page and continent switcher remain accessible if the backend is down.
     // The retry button fetches via the browser-side Next.js proxy.
   }
-  return <PublicWeather key={choice.continent+":"+choice.mode}
+  const weather=weatherCopy(locale);
+  return <><StructuredData data={collectionSchema({locale:locale as SeoLocale,
+    url:"https://www.lmn24.com/"+locale+"/weather",name:weather.title,
+    description:weather.description})}/><PublicWeather key={choice.continent+":"+choice.mode}
     locale={locale} initialData={initialData}
     initialContinent={choice.continent} initialMode={choice.mode}
-    initialSource={choice.source}/>;
+    initialSource={choice.source}/></>;
 }
