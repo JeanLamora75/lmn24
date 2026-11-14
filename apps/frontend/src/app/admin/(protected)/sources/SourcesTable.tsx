@@ -664,7 +664,7 @@ export function SourcesTable() {
                             href={websiteUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="btn btn-sm btn-outline-secondary"
+                            className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                             title="Ouvrir le site"
                             aria-label={"Ouvrir le site de " + source.name}
                           >
@@ -681,7 +681,7 @@ export function SourcesTable() {
 
                         <Link
                           href={newFeedForSourceHref(source.id)}
-                          className="btn btn-sm btn-outline-success"
+                          className="btn btn-sm btn-outline-success lmn-admin-compact-action"
                           title={"Ajouter un flux RSS/XML à " + source.name}
                           aria-label={"Ajouter un flux RSS/XML à " + source.name}
                         >
@@ -697,7 +697,7 @@ export function SourcesTable() {
 
                         <Link
                           href={"/admin/video-feeds/new?sourceId=" + encodeURIComponent(source.id)}
-                          className="btn btn-sm btn-outline-danger"
+                          className="btn btn-sm btn-outline-danger lmn-admin-compact-action"
                           title={"Ajouter un flux vidéo YouTube à " + source.name}
                           aria-label={"Ajouter un flux vidéo YouTube à " + source.name}
                         >
@@ -717,7 +717,7 @@ export function SourcesTable() {
                             encodeURIComponent(source.id) +
                             "/edit"
                           }
-                          className="btn btn-sm btn-outline-primary"
+                          className="btn btn-sm btn-outline-primary lmn-admin-compact-action"
                           title="Modifier la source"
                           aria-label={"Modifier " + source.name}
                         >
@@ -732,7 +732,7 @@ export function SourcesTable() {
                         </Link>
                         <button
                           type="button"
-                          className="btn btn-sm btn-outline-danger"
+                          className="btn btn-sm btn-outline-danger lmn-admin-compact-action"
                           title={"Supprimer la source " + source.name}
                           aria-label={"Supprimer la source " + source.name}
                           disabled={updating}
@@ -753,7 +753,7 @@ export function SourcesTable() {
                         className={"d-lg-none " + styles.mobileActions}
                       >
                         <summary
-                          className="btn btn-sm btn-outline-secondary"
+                          className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                           aria-label={"Actions pour " + source.name}
                           title="Actions"
                         >
