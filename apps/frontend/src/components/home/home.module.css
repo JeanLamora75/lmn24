@@ -120,6 +120,20 @@
   color: inherit;
 }
 
+.sourceDirectoryLink {
+  display: block;
+  padding: 0.45rem 0.85rem;
+  border-top: 1px solid var(--bs-border-color);
+  font-size: 0.78rem;
+  color: var(--bs-primary-text-emphasis);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.sourceDirectoryLink:hover,
+.sourceDirectoryLink:focus-visible {
+  text-decoration: underline;
+}
+
 .articleLink:focus-visible {
   outline: 3px solid var(--bs-primary);
   outline-offset: -3px;
