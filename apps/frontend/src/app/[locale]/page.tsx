@@ -4,6 +4,8 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { HomeSection } from "@/components/home/HomeSection";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { collectionSchema } from "@/lib/seo-schema";
 import {
   prepareHomeSections,
   type HomeSectionData,
@@ -78,6 +80,10 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <main className={"container px-3 px-lg-4 pb-5 " + styles.home}>
+      <StructuredData data={collectionSchema({ locale: locale as SeoLocale,
+        url: "https://www.lmn24.com/" + locale,
+        name: SEO_COPY[locale as SeoLocale].homeTitle,
+        description: t.description })} />
       <header className={styles.pageIntro}>
         <div className={styles.pageEyebrow}>LMN24</div>
         <h1 className={styles.pageTitle}>{t.heading}</h1>
