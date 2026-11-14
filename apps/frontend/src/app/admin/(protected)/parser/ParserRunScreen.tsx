@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
@@ -346,7 +347,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
     <main className="container-fluid px-3 px-lg-4 py-4">
       <AdminFilterResetButton section="parser" />
       <div className="mb-4">
-        <Link href="/admin" className="btn btn-outline-secondary">
+        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour à l’administration
         </Link>
       </div>
@@ -448,7 +449,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
                 className="btn btn-primary"
                 disabled={loading || running}
                 onClick={() => void launchParser()}
-              >
+              ><AdminIcon name="play-circle" className="me-2 align-middle" /> 
                 {running ? "Extraction en cours…" : "Lancer l’extraction"}
               </button>
             </div>
