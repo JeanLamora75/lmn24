@@ -81,9 +81,7 @@ function PaginationNav({
             aria-label="Page précédente"
             disabled={page === 1}
             onClick={() => onPageChange(page - 1)}
-          >
-            ‹
-          </button>
+          ><AdminIcon name="chevron-left" size={16} /></button>
         </li>
 
         {pageItems(page, totalPages).map((item) =>
@@ -123,9 +121,7 @@ function PaginationNav({
             aria-label="Page suivante"
             disabled={page === totalPages}
             onClick={() => onPageChange(page + 1)}
-          >
-            ›
-          </button>
+          ><AdminIcon name="chevron-right" size={16} /></button>
         </li>
       </ul>
     </nav>
