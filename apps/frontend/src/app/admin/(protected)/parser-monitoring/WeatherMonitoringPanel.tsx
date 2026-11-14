@@ -1,4 +1,5 @@
 "use client";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import Link from "next/link";
 import {useCallback,useEffect,useMemo,useState} from "react";
 
@@ -50,10 +51,10 @@ function Stat({label,value,hint}:{label:string;value:number|string;hint:string})
 export function WeatherMonitoringPanel({period,from,to,visible}:{
   period:"24h"|"7d"|"30d"|"custom";from:string;to:string;visible:boolean;
 }){
-  const [continent,setContinent]=useState<WeatherContinent>("ALL");
-  const [status,setStatus]=useState<WeatherStatus>("ALL");
-  const [page,setPage]=useState(1);
-  const [pageSize,setPageSize]=useState(20);
+  const [continent,setContinent]=useAdminSessionFilter<WeatherContinent>("weather-monitoring", "continent", "ALL");
+  const [status,setStatus]=useAdminSessionFilter<WeatherStatus>("weather-monitoring", "status", "ALL");
+  const [page,setPage]=useAdminSessionFilter("weather-monitoring", "page", 1);
+  const [pageSize,setPageSize]=useAdminSessionFilter("weather-monitoring", "pageSize", 20);
   const [data,setData]=useState<WeatherData|null>(null);
   const [loading,setLoading]=useState(true);
   const [error,setError]=useState("");
