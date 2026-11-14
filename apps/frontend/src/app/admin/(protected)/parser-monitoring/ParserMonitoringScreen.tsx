@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
 import { WeatherMonitoringPanel } from "./WeatherMonitoringPanel";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -241,6 +242,7 @@ export function ParserMonitoringScreen() {
   const exportUrl = apiRoot + "export?" + base + "&page=1";
 
   return <main className="container-fluid px-3 px-lg-5 py-4">
+      <AdminFilterResetButton section="parser-monitoring" />
     <div className="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
       <div>
         <h1 className="h2 mb-1">Logs et statistiques des parsers</h1>
