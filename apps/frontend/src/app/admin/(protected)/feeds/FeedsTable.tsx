@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
@@ -492,10 +493,10 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
 
       <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
         <div className="d-flex flex-wrap gap-2">
-          <Link href="/admin" className="btn btn-outline-secondary">
+          <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
             Retour à l’administration
           </Link>
-          <Link href="/admin/feeds/new" className="btn btn-primary">
+          <Link href="/admin/feeds/new" className="btn btn-primary"><AdminIcon name="plus-circle" className="me-2 align-middle" /> 
             Nouveau flux RSS/XML
           </Link>
           <button
@@ -503,7 +504,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
             className="btn btn-outline-primary"
             disabled={exporting}
             onClick={() => void exportActiveFeeds()}
-          >
+          ><AdminIcon name="download" className="me-2 align-middle" /> 
             {exporting ? "Exportation…" : "Exporter"}
           </button>
         </div>
@@ -524,7 +525,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
           />
-          <button type="submit" className="btn btn-outline-primary">
+          <button type="submit" className="btn btn-outline-primary"><AdminIcon name="search" className="me-2 align-middle" /> 
             Rechercher
           </button>
         </form>
@@ -897,7 +898,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                               "/edit"
                             }
                             className="dropdown-item"
-                          >
+                          ><AdminIcon name="pencil-square" className="me-2 align-middle" /> 
                             Modifier
                           </Link>
                           <button
@@ -908,7 +909,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                               event.currentTarget.closest("details")?.removeAttribute("open");
                               setDeleteTarget(feed);
                             }}
-                          >
+                          ><AdminIcon name="trash" className="me-2 align-middle" /> 
                             Supprimer
                           </button>
                         </div>
