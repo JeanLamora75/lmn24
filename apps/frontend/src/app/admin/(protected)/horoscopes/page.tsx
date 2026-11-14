@@ -1,4 +1,5 @@
 "use client";
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
@@ -63,7 +64,7 @@ export default function HoroscopesPage(){
     <AdminFilterResetButton section="horoscopes" />
     <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
       <div><h1 className="h3 mb-1">Gestion des horoscopes</h1><p className="text-body-secondary mb-0">Imports manuels et couverture des 12 signes dans 8 langues</p></div>
-      <Link className="btn btn-outline-secondary" href="/admin">Retour administration</Link>
+      <Link className="btn btn-outline-secondary" href="/admin"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour administration</Link>
     </div>
     <div className="row g-3 mb-4">
       {[[ "Fichiers disponibles",files.length],["Importés",imported],["Partiels",partial],["À importer",files.length-imported-partial]].map(([name,count])=>
@@ -72,11 +73,11 @@ export default function HoroscopesPage(){
     {error&&<div className="alert alert-danger" role="alert">{error}</div>}
     {message&&<div className="alert alert-success" role="status">{message}</div>}
     <div className="d-flex flex-wrap gap-2 mb-3 align-items-center">
-      <button className="btn btn-primary" disabled={busy||files.every(x=>x.count===96)} onClick={()=>void importMissing()}>Importer tous les fichiers manquants</button>
+      <button className="btn btn-primary" disabled={busy||files.every(x=>x.count===96)} onClick={()=>void importMissing()}><AdminIcon name="upload" className="me-2 align-middle" /> Importer tous les fichiers manquants</button>
       <label className="btn btn-outline-primary mb-0">Importer un JSON depuis mon ordinateur
         <input type="file" accept=".json,application/json" className="visually-hidden" disabled={busy} onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f);e.currentTarget.value="";}}/>
       </label>
-      <button className="btn btn-outline-secondary" disabled={busy} onClick={()=>void execute(refresh)}>Actualiser</button>
+      <button className="btn btn-outline-secondary" disabled={busy} onClick={()=>void execute(refresh)}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser</button>
     </div>
     <div className="card mb-4"><div className="card-header fw-semibold">Fichiers détectés</div>
       <div className="table-responsive"><table className="table table-hover align-middle mb-0">
@@ -85,8 +86,8 @@ export default function HoroscopesPage(){
         <td>{f.date}</td><td className="small">{f.fileName}</td><td>{f.count}/{f.expected}</td>
         <td><span className={"badge text-bg-"+(f.status==="IMPORTED"?"success":f.status==="ERROR"?"danger":f.status==="PARTIAL"?"warning":"secondary")}>{f.status}</span>{f.error&&<div className="small text-danger">{f.error}</div>}</td>
         <td><div className="d-flex gap-2 flex-wrap">
-          <button className="btn btn-sm btn-outline-secondary" disabled={busy} onClick={()=>void openPreview(f.fileName)}>Prévisualiser</button>
-          <button className="btn btn-sm btn-primary" disabled={busy||f.count===96} onClick={()=>void importFile(f.fileName)}>{f.count?"Compléter":"Importer"}</button>
+          <button className="btn btn-sm btn-outline-secondary" disabled={busy} onClick={()=>void openPreview(f.fileName)}><AdminIcon name="eye" className="me-2 align-middle" /> Prévisualiser</button>
+          <button className="btn btn-sm btn-primary" disabled={busy||f.count===96} onClick={()=>void importFile(f.fileName)}><AdminIcon name="upload" className="me-2 align-middle" /> {f.count?"Compléter":"Importer"}</button>
         </div></td>
       </tr>)}
       {!files.length&&<tr><td colSpan={5} className="text-center py-4 text-body-secondary">Aucun fichier détecté dans le répertoire configuré.</td></tr>}
@@ -94,7 +95,7 @@ export default function HoroscopesPage(){
     <div className="card mb-4"><div className="card-header fw-semibold">Prévisualisation</div><div className="card-body">
       <div className="d-flex flex-wrap gap-2 mb-3"><label>Signe <select className="form-select" value={sign} onChange={e=>setSign(e.target.value)}>{SIGNS.map((s,i)=><option key={s} value={s}>{LABELS[i]}</option>)}</select></label>
       <label>Langue <select className="form-select" value={lang} onChange={e=>setLang(e.target.value)}>{LANGUAGES.map(s=><option key={s}>{s}</option>)}</select></label>
-      {selected&&<button className="btn btn-outline-primary align-self-end" onClick={()=>void openPreview(selected)}>Afficher</button>}</div>
+      {selected&&<button className="btn btn-outline-primary align-self-end" onClick={()=>void openPreview(selected)}><AdminIcon name="eye" className="me-2 align-middle" /> Afficher</button>}</div>
       {!preview?<p className="text-body-secondary mb-0">Choisir un fichier puis « Prévisualiser ».</p>:<div>
         <h2 className="h5">{LABELS[SIGNS.indexOf(sign)]} — {preview.date} ({lang})</h2>
         {(["general","love","work","finance","disclaimer"] as const).map(key=><section key={key} className="mb-3"><h3 className="h6 text-capitalize">{key}</h3><p className="mb-0">{preview[key]}</p></section>)}
