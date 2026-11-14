@@ -1,0 +1,37 @@
+name: LMN24 sitemap URL HTTP audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/sitemap-url-audit.mjs
+      - .github/workflows/sitemap-url-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Validate every sitemap URL in production
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.21.0
+      - name: Recursively check sitemap indexes and URL HTTP 200
+        env:
+          SITEMAP_AUDIT_DIR: ${{ runner.temp }}/sitemap-audit
+        run: node scripts/sitemap-url-audit.mjs
+      - name: Save full URL checks, errors and summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sitemap-url-audit-results
+          path: ${{ runner.temp }}/sitemap-audit/
+          if-no-files-found: warn
+          retention-days: 30
