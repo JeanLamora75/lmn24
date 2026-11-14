@@ -10,6 +10,7 @@ import {parseWeatherResponse,type WeatherResponse} from "@/components/weather/we
 import {routing} from "@/i18n/routing";
 import {getBackendUrl} from "@/lib/admin-backend";
 import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
+import { seoSocial } from "@/lib/seo-social";
 
 export const dynamic="force-dynamic";
 type Props=Readonly<{params:Promise<{locale:string}>}>;
@@ -21,6 +22,8 @@ export async function generateMetadata({params}:Props):Promise<Metadata>{
     title:c.title,
     description:c.description,
     alternates: seoAlternates(locale as SeoLocale, "weather"),
+    ...seoSocial(locale as SeoLocale, c.title + " | LMN24", c.description,
+      "https://www.lmn24.com/" + locale + "/weather"),
   };
 }
 export default async function WeatherHomePage({params}:Props){
