@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import {
   RETENTION_MAX_DAYS, RETENTION_SETTING_KEYS, type RetentionSettingKey,
 } from "@lmn24/contracts";
@@ -184,7 +185,7 @@ export function RetentionSettings() {
             Réglage indépendant des onze durées de conservation, exprimées en jours.
           </p>
         </div>
-        <Link href="/admin" className="btn btn-outline-secondary">Retour administration</Link>
+        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour administration</Link>
       </div>
       <div className="alert alert-warning" role="note">
         <strong>Important :</strong> réduire une durée pourra provoquer une suppression irréversible
@@ -200,7 +201,7 @@ export function RetentionSettings() {
         <div className="alert alert-danger" role="alert">
           {error}
           <button type="button" className="btn btn-sm btn-outline-danger ms-2"
-            onClick={() => window.location.reload()}>Recharger les paramètres</button>
+            onClick={() => window.location.reload()}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Recharger les paramètres</button>
         </div>
       )}
       {notice && <div className="alert alert-success" role="status">{notice}</div>}
@@ -253,7 +254,7 @@ export function RetentionSettings() {
                       </div>
                       <div className="col-5 col-sm-4 col-lg-3">
                         <button className="btn btn-primary w-100" type="submit"
-                          disabled={!changed || savingKey !== null}>
+                          disabled={!changed || savingKey !== null}><AdminIcon name="floppy" className="me-2 align-middle" /> 
                           {savingKey === field.key ? "Enregistrement…" : "Enregistrer"}
                         </button>
                       </div>
