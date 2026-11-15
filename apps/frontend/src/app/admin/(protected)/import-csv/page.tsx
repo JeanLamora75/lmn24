@@ -1,10 +1,9 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
-import "@/components/admin/admin-workspace.css";
+import { AdminPageHeading } from "@/components/admin/AdminWorkspace";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ChangeEvent,
@@ -14,6 +13,7 @@ import {
 } from "react";
 
 import styles from "./import-csv.module.css";
+import "./maintenance-workspace.css";
 
 const IMPORT_TYPES = [
   { value: "sources", label: "Sources" },
@@ -97,6 +97,7 @@ export default function ImportCsvPage() {
   const [analysis, setAnalysis] = useState<AnalysisState>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [importing, setImporting] = useState(false);
+  const [confirmedImport, setConfirmedImport] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -107,6 +108,7 @@ export default function ImportCsvPage() {
   }, []);
 
   const resetAnalysis = () => {
+    setConfirmedImport(false);
     setAnalysis(null);
     setFeedback(null);
   };
@@ -168,6 +170,7 @@ export default function ImportCsvPage() {
     const target = importType === "sources" ? "sources" : "feeds";
 
     setAnalyzing(true);
+    setConfirmedImport(false);
     setAnalysis(null);
     setFeedback(null);
 
@@ -228,7 +231,7 @@ export default function ImportCsvPage() {
   };
 
   const importAnalyzedData = async () => {
-    if (!selectedFile || !analysis || importing || analyzing) {
+    if (!selectedFile || !analysis || !confirmedImport || importing || analyzing) {
       return;
     }
 
@@ -267,6 +270,8 @@ export default function ImportCsvPage() {
         imported: number;
       };
 
+      setConfirmedImport(false);
+      setAnalysis(null);
       setFeedback({
         kind: "success",
         message:
@@ -305,20 +310,13 @@ export default function ImportCsvPage() {
   return (
     <main className="container py-4 py-lg-5">
       <AdminFilterResetButton section="csv-import" />
-      <div className="mb-4">
-        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
-          Retour à l’administration
-        </Link>
-      </div>
-
-      <header className="lmn-admin-page-header">
-        <h1 className="h2 mb-1">Import CSV</h1>
-        <p className="text-body-secondary mb-0">
-          Préparez l’import de données dans LMN24 à partir d’un fichier CSV.
-        </p>
-      </header>
-
-      <div className="row mb-4">
+      <AdminPageHeading title="Import CSV" description="Analysez un fichier avant de confirmer son import dans LMN24." />
+      <ol className="lmn-maintenance-steps" aria-label="Étapes de l’import">
+        <li><strong>1.</strong> Choisir les données et le fichier</li>
+        <li><strong>2.</strong> Analyser et vérifier les résultats</li>
+        <li><strong>3.</strong> Confirmer l’import</li>
+      </ol>
+      <div className="row mb-4 lmn-admin-filter-panel">
         <div className="col-12 col-md-8 col-lg-6">
           <label className="form-label" htmlFor="csv-import-type">
             Type de données à mettre à jour
@@ -348,7 +346,7 @@ export default function ImportCsvPage() {
       </div>
 
       <section
-        className={"rounded-3 p-4 p-lg-5 " + styles.uploadPanel}
+        className={"rounded-3 p-4 p-lg-5 lmn-admin-form-surface " + styles.uploadPanel}
         aria-labelledby="csv-file-title"
       >
         <h2 className="h5 mb-3" id="csv-file-title">
@@ -471,11 +469,22 @@ export default function ImportCsvPage() {
               </dl>
             )}
 
+            <div className="alert alert-info small" role="note">
+              Cette analyse est une estimation. Le serveur revalide le fichier lors de l’import ;
+              des doublons ou changements intervenus entre-temps peuvent modifier les résultats.
+            </div>
+            <label className="d-flex align-items-start gap-2 mb-3">
+              <input className="form-check-input mt-1" type="checkbox"
+                checked={confirmedImport} disabled={importing || analyzing}
+                onChange={event => setConfirmedImport(event.target.checked)} />
+              <span>J’ai vérifié l’analyse du fichier <strong>{selectedFile?.name}</strong>
+                et je confirme son import dans la base LMN24.</span>
+            </label>
             <div className="d-flex flex-column flex-sm-row gap-2">
               <button
                 type="button"
                 className="btn btn-primary"
-                disabled={importing || analyzing}
+                disabled={importing || analyzing || !confirmedImport}
                 onClick={() => void importAnalyzedData()}
               ><AdminIcon name="upload" className="me-2 align-middle" /> 
                 {importing ? "Chargement…" : "Charger"}
