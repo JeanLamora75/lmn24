@@ -7,6 +7,7 @@ import { ParserWorkspaceHeader } from "@/components/admin/ParserWorkspace";
 import "@/components/admin/admin-workspace.css";
 import { WeatherMonitoringPanel } from "./WeatherMonitoringPanel";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { getFrenchCategoryLabel } from "@/lib/fr-category-labels";
 
 type Parser = "ALL" | "INFOS" | "VIDEOS" | "WEATHER";
 type Period = "24h" | "7d" | "30d" | "custom";
@@ -164,6 +165,30 @@ export function ParserMonitoringScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [detailError, setDetailError] = useState("");
+  const [countries, setCountries] = useState<Array<{ id: string; isoCode2: string }>>([]);
+  const [categories, setCategories] = useState<Array<{ id: string; slug: string }>>([]);
+  const [optionsError, setOptionsError] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void Promise.all([
+      fetch("/api/admin/sources/form-countries", { signal: controller.signal, cache: "no-store" }),
+      fetch("/api/admin/feeds/form-options", { signal: controller.signal, cache: "no-store" }),
+    ]).then(async ([countriesResponse, categoriesResponse]) => {
+      if (!countriesResponse.ok || !categoriesResponse.ok) throw new Error("OPTIONS_UNAVAILABLE");
+      const countriesData = (await countriesResponse.json()) as { items: Array<{ id: string; isoCode2: string }> };
+      const categoriesData = (await categoriesResponse.json()) as { categories: Array<{ id: string; slug: string }> };
+      if (!controller.signal.aborted) {
+        setCountries(countriesData.items);
+        setCategories(categoriesData.categories);
+      }
+    }).catch(() => { if (!controller.signal.aborted) setOptionsError(true); });
+    return () => controller.abort();
+  }, []);
+
+  const countryNames = useMemo(() =>
+    new Intl.DisplayNames(["fr"], { type: "region" }), []);
+
 
   const base = useMemo(() => {
     const params = new URLSearchParams({ parser, period, status,
@@ -303,16 +328,30 @@ export function ParserMonitoringScreen() {
               onChange={e=>changeFilter(setLanguage,e.target.value)}/>
           </div>}
           {parser!=="WEATHER"&&<div className="col-6 col-md-3">
-            <label htmlFor="monitor-country" className="form-label">Pays (UUID)</label>
-            <input id="monitor-country" className="form-control"
-              placeholder="Tous" value={countryId}
-              onChange={e=>changeFilter(setCountryId,e.target.value)}/>
+            <label htmlFor="monitor-country" className="form-label">Pays</label>
+            <select id="monitor-country" className="form-select" value={countryId}
+              onChange={e=>changeFilter(setCountryId,e.target.value)}>
+              <option value="">Tous les pays</option>
+              {countryId && !countries.some(item => item.id === countryId) &&
+                <option value={countryId}>Pays sélectionné (référence indisponible)</option>}
+              {countries.slice().sort((a,b)=>(countryNames.of(a.isoCode2.toUpperCase())??a.isoCode2)
+                .localeCompare(countryNames.of(b.isoCode2.toUpperCase())??b.isoCode2,"fr")).map(item =>
+                <option key={item.id} value={item.id}>
+                  {countryNames.of(item.isoCode2.toUpperCase()) ?? item.isoCode2}
+                </option>)}
+            </select>
           </div>}
           {parser!=="WEATHER"&&<div className="col-6 col-md-3">
-            <label htmlFor="monitor-category" className="form-label">Catégorie (UUID)</label>
-            <input id="monitor-category" className="form-control"
-              placeholder="Toutes" value={categoryId}
-              onChange={e=>changeFilter(setCategoryId,e.target.value)}/>
+            <label htmlFor="monitor-category" className="form-label">Catégorie</label>
+            <select id="monitor-category" className="form-select" value={categoryId}
+              onChange={e=>changeFilter(setCategoryId,e.target.value)}>
+              <option value="">Toutes les catégories</option>
+              {categoryId && !categories.some(item => item.id === categoryId) &&
+                <option value={categoryId}>Catégorie sélectionnée (référence indisponible)</option>}
+              {categories.slice().sort((a,b)=>getFrenchCategoryLabel(a.slug)
+                .localeCompare(getFrenchCategoryLabel(b.slug),"fr")).map(item =>
+                <option key={item.id} value={item.id}>{getFrenchCategoryLabel(item.slug)}</option>)}
+            </select>
           </div>}
           <div className="col-auto">
             <button type="button" className="btn btn-primary"
@@ -332,6 +371,7 @@ export function ParserMonitoringScreen() {
         </p>
       </div>
     </section>
+    {optionsError && parser!=="WEATHER" && <p className="small text-warning" role="status">Les listes Pays et Catégorie sont momentanément indisponibles. Les autres filtres restent utilisables.</p>}
     {parser!=="WEATHER"&&error && <div className="alert alert-danger" role="alert">
       {error} <button className="btn btn-sm btn-outline-danger ms-2"
         onClick={()=>setRevision(n=>n+1)}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Réessayer</button>
