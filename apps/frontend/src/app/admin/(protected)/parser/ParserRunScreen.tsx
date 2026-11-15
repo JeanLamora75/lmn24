@@ -4,6 +4,7 @@ import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { ParserWorkspaceHeader, ParserCriteriaPanel, ParserSection } from "@/components/admin/ParserWorkspace";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   useEffect,
@@ -459,7 +460,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
         </div>
         <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
           <span className="small text-body-secondary">{messages.length} événement(s) affiché(s)</span>
-          <a href="/admin/parser-monitoring" className="small">Consulter l’historique complet</a>
+          <Link href="/admin/parser-monitoring" className="small">Consulter l’historique complet</Link>
         </div>
 
           <div
