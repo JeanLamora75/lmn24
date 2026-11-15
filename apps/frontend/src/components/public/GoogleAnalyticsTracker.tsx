@@ -85,7 +85,7 @@ export function GoogleAnalyticsTracker() {
     // Consent Mode v2: set a denied default before any grant, config or tag load.
     // The local queue does not make a network request before opt-in.
     ensureGtagQueue(window);
-    window.gtag("consent", "default", {
+    window.gtag?.("consent", "default", {
       analytics_storage: "denied",
       ad_storage: "denied",
       ad_user_data: "denied",
@@ -103,10 +103,10 @@ export function GoogleAnalyticsTracker() {
   useEffect(() => {
     if (!ready || consent !== "accepted") return;
     ensureGtagQueue(window);
-    window.gtag("consent", "update", { analytics_storage: "granted" });
-    window.gtag("js", new Date());
+    window.gtag?.("consent", "update", { analytics_storage: "granted" });
+    window.gtag?.("js", new Date());
     // Page views are sent only by PageViewTracker, including client-side transitions.
-    window.gtag("config", GA4_MEASUREMENT_ID, { send_page_view: false });
+    window.gtag?.("config", GA4_MEASUREMENT_ID, { send_page_view: false });
     if (!document.querySelector('script[data-lmn24-ga4="true"]')) {
       const script = document.createElement("script");
       script.async = true;
