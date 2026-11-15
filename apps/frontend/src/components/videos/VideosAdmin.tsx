@@ -1,5 +1,6 @@
 "use client";
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import "@/components/admin/admin-workspace.css";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
@@ -118,12 +119,7 @@ export function VideosAdmin() {
               onClick={()=>void publish(video)}>{video.isPublished?"Masquer":"Publier"}</button></div></td>
         </tr>)}{list.items.length===0&&<tr><td colSpan={6} className="text-center text-body-secondary py-4">Aucune vidéo trouvée.</td></tr>}</tbody>
       </table></div>
-      <div className="card-footer d-flex align-items-center justify-content-between gap-2">
-        <span className="small">{list.pagination.total} vidéos</span><div className="d-flex align-items-center gap-2">
-          <button type="button" className="btn btn-outline-secondary btn-sm" disabled={page===1||loading} onClick={()=>setPage(v=>v-1)}>Précédent</button>
-          <span className="small">Page {list.pagination.page} / {Math.max(1,list.pagination.totalPages)}</span>
-          <button type="button" className="btn btn-outline-secondary btn-sm" disabled={page>=list.pagination.totalPages||loading} onClick={()=>setPage(v=>v+1)}>Suivant</button>
-        </div></div>
+      <div className="card-footer d-flex flex-wrap align-items-center justify-content-between gap-2"><span className="small">{list.pagination.total} vidéos</span><AdminPagination page={page} totalPages={list.pagination.totalPages} onPageChange={setPage} label="vidéos" /></div>
     </section>}
     {editing&&<div className="modal d-block" tabIndex={-1} role="dialog" aria-modal="true" aria-label="Modifier une vidéo"
       style={{background:"rgba(0,0,0,.55)"}}><div className="modal-dialog modal-dialog-centered"><div className="modal-content">
