@@ -3,6 +3,7 @@
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
+import { ParserWorkspaceHeader, ParserCriteriaPanel, ParserSection } from "@/components/admin/ParserWorkspace";
 import Link from "next/link";
 import {useCallback,useEffect,useMemo,useState} from "react";
 import {useRouter} from "next/navigation";
@@ -98,21 +99,14 @@ export default function WeatherParserScreen(){
 
   return <main className="container-fluid px-3 px-lg-4 py-4">
       <AdminFilterResetButton section="weather-parser" />
-    <div className="mb-4"><Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
-      Retour à l’administration
-    </Link></div>
-    <header className="mb-4">
-      <h1 className="h2 mb-1">Lancer le Parser Météo</h1>
-      <p className="text-body-secondary mb-0">
-        Actualisez les conditions météorologiques des villes actives depuis Open-Meteo.
-        Cette collecte est manuelle ; aucune planification automatique n’est activée.
-      </p>
-    </header>
+    <ParserWorkspaceHeader
+      title="Lancer le Parser Météo"
+      description="Actualisez les conditions météorologiques des villes actives depuis Open-Meteo. La collecte manuelle peut être ciblée par continent."
+      active="/admin/weather-parser"
+    />
     {error&&<div className="alert alert-danger" role="alert">{error}</div>}
     {message&&<div className="alert alert-info" role="status">{message}</div>}
-    <section className="card border-0 shadow-sm mb-4" aria-labelledby="weather-launch-heading">
-      <div className="card-body p-4">
-        <h2 id="weather-launch-heading" className="h5 mb-3">Critères de lancement</h2>
+    <ParserCriteriaPanel id="weather-launch-heading">
         <div className="row g-3 align-items-end">
           <div className="col-12 col-lg-7">
             <label htmlFor="weather-parser-continent" className="form-label">Continent</label>
@@ -142,15 +136,9 @@ export default function WeatherParserScreen(){
         <div className="mt-3">
           <Link href="/admin/weather-cities" className="link-primary small">Gérer les villes météo</Link>
         </div>
-      </div>
-    </section>
-    <section className="card shadow-sm mb-4" aria-labelledby="weather-progress-heading">
-      <div className="card-body p-4">
-        <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-          <h2 className="h5 mb-0" id="weather-progress-heading">Suivi de l’exécution</h2>
-          <button type="button" className="btn btn-sm btn-outline-secondary"
-            onClick={()=>void loadRuns()}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser</button>
-        </div>
+    </ParserCriteriaPanel>
+    <ParserSection id="weather-progress-heading" title="Suivi de l’exécution" actions={<button type="button" className="btn btn-sm btn-outline-secondary"
+            onClick={()=>void loadRuns()}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser</button>}>
         {!selectedRun?<p className="text-body-secondary mb-0">
           Aucune collecte météo n’a encore été lancée.
         </p>:<>
@@ -196,15 +184,8 @@ export default function WeatherParserScreen(){
           {selectedRun.status==="RUNNING"&&<p className="small text-body-secondary mt-3 mb-0"
             role="status">Mise à jour automatique de l’avancement toutes les quelques secondes.</p>}
         </>}
-      </div>
-    </section>
-    <section className="card shadow-sm mb-4" aria-labelledby="weather-history-heading">
-      <div className="card-header d-flex flex-wrap gap-2 align-items-center justify-content-between">
-        <h2 id="weather-history-heading" className="h5 mb-0">Dernières exécutions</h2>
-        <Link href="/admin/parser-monitoring" className="small">
-          Logs et statistiques des parsers
-        </Link>
-      </div>
+    </ParserSection>
+    <ParserSection id="weather-history-heading" title="Dernières exécutions" actions={<Link href="/admin/parser-monitoring" className="small">Logs et statistiques des parsers</Link>}>
       <div className="table-responsive">
         <table className="table table-hover align-middle mb-0">
           <thead><tr>
@@ -228,8 +209,7 @@ export default function WeatherParserScreen(){
             </td></tr>}
           </tbody>
         </table>
-      </div>
-    </section>
+    </ParserSection>
     {lastSuccess&&<p className="small text-body-secondary">
       Dernière extraction intégralement réussie : {fmt(lastSuccess.finishedAt??lastSuccess.startedAt)}.
     </p>}
