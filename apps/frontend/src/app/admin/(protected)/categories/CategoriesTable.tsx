@@ -4,6 +4,7 @@ import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { AdminDataPanel, AdminFilterPanel, AdminPageHeading } from "@/components/admin/AdminWorkspace";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -27,106 +28,6 @@ const PAGE_SIZES = [5, 10, 25, 50, 100] as const;
 
 function normalizedSearch(value: string): string {
   return value.trim().toLocaleLowerCase("fr");
-}
-
-function pageItems(current: number, total: number) {
-  if (total <= 7) {
-    return Array.from({ length: total }, (_, index) => index + 1);
-  }
-
-  const result: Array<number | string> = [1];
-  const start = Math.max(2, current - 1);
-  const end = Math.min(total - 1, current + 1);
-
-  if (start > 2) {
-    result.push("left-ellipsis");
-  }
-
-  for (let page = start; page <= end; page += 1) {
-    result.push(page);
-  }
-
-  if (end < total - 1) {
-    result.push("right-ellipsis");
-  }
-
-  result.push(total);
-  return result;
-}
-
-function PaginationNav({
-  page,
-  totalPages,
-  onPageChange,
-  position,
-}: {
-  page: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  position: "supérieure" | "inférieure";
-}) {
-  if (totalPages <= 1) {
-    return null;
-  }
-
-  return (
-    <nav
-      aria-label={"Pagination " + position + " des catégories"}
-      className="d-flex justify-content-center"
-    >
-      <ul className="pagination pagination-sm mb-0">
-        <li className={"page-item " + (page === 1 ? "disabled" : "")}>
-          <button
-            type="button"
-            className="page-link"
-            aria-label="Page précédente"
-            disabled={page === 1}
-            onClick={() => onPageChange(page - 1)}
-          ><AdminIcon name="chevron-left" size={16} /></button>
-        </li>
-
-        {pageItems(page, totalPages).map((item) =>
-          typeof item === "number" ? (
-            <li
-              className={
-                "page-item " + (item === page ? "active" : "")
-              }
-              key={item}
-            >
-              <button
-                type="button"
-                className="page-link"
-                aria-current={item === page ? "page" : undefined}
-                onClick={() => onPageChange(item)}
-              >
-                {item}
-              </button>
-            </li>
-          ) : (
-            <li className="page-item disabled" key={item}>
-              <span className="page-link" aria-hidden="true">
-                …
-              </span>
-            </li>
-          ),
-        )}
-
-        <li
-          className={
-            "page-item " + (page === totalPages ? "disabled" : "")
-          }
-        >
-          <button
-            type="button"
-            className="page-link"
-            aria-label="Page suivante"
-            disabled={page === totalPages}
-            onClick={() => onPageChange(page + 1)}
-          ><AdminIcon name="chevron-right" size={16} /></button>
-        </li>
-      </ul>
-    </nav>
-  );
 }
 
 export function CategoriesTable() {
@@ -424,12 +325,7 @@ export function CategoriesTable() {
       ) : null}
 
       <div className="mb-2">
-        <PaginationNav
-          page={safePage}
-          totalPages={totalPages}
-          onPageChange={setPage}
-          position="supérieure"
-        />
+        <AdminPagination page={safePage} totalPages={totalPages} onPageChange={setPage} position="supérieure" label="catégories" />
       </div>
 
       <AdminDataPanel label="Catégories d’actualités">
@@ -613,12 +509,7 @@ export function CategoriesTable() {
       </AdminDataPanel>
 
       <div className="mt-2">
-        <PaginationNav
-          page={safePage}
-          totalPages={totalPages}
-          onPageChange={setPage}
-          position="inférieure"
-        />
+        <AdminPagination page={safePage} totalPages={totalPages} onPageChange={setPage} position="inférieure" label="catégories" />
       </div>
 
       {!loading ? (
