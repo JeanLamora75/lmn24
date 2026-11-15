@@ -299,19 +299,10 @@ export function SourcesTable() {
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
       <AdminFilterResetButton section="sources" />
-      <AdminPageHeading title="Sources / Journaux" description="Gérez les sources d’information utilisées par LMN24." />
+      <AdminPageHeading title="Sources / Journaux" description="Gérez les sources d’information utilisées par LMN24." actions={<Link href="/admin/sources/new" className="btn btn-primary"><AdminIcon name="plus-circle" className="me-2 align-middle" /> Ajouter une source</Link>} />
 
       <AdminFilterPanel>
       <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
-        <div className="d-flex flex-wrap gap-2">
-          <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
-            Retour à l’administration
-          </Link>
-          <Link href="/admin/sources/new" className="btn btn-primary"><AdminIcon name="plus-circle" className="me-2 align-middle" /> 
-            Ajouter une source
-          </Link>
-        </div>
-
         <form
           className={"d-flex gap-2 ms-lg-auto " + styles.searchForm}
           role="search"
