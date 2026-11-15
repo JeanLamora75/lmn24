@@ -1,7 +1,6 @@
 "use client";
 import { AdminIcon } from "@/components/admin/AdminIcon";
-import "@/components/admin/admin-workspace.css";
-import Link from "next/link";
+import { AdminPageHeading } from "@/components/admin/AdminWorkspace";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -65,11 +64,7 @@ export function SchedulerSettings() {
     }catch(e){setError(e instanceof Error?e.message:String(e))}finally{setSaving(null)}
   }
   return <main className="container py-4 py-lg-5">
-    <div className="lmn-admin-page-header">
-      <div><h1 className="h2 mb-1">Automatisation des parsers</h1>
-      <p className="text-body-secondary mb-0">Préparer les horaires des moteurs de collecte existants.</p></div>
-      <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour administration</Link>
-    </div>
+    <AdminPageHeading title="Automatisation des parsers" description="Préparer les horaires des moteurs de collecte existants." />
     <div role="note" className="alert alert-warning"><strong>Planification automatique.</strong> Chaque parser peut être activé séparément. Les exécutions suivent un verrou global partagé avec les lancements manuels. Les changements ne sont effectifs qu&apos;après enregistrement.</div>
     {error&&<div role="alert" className="alert alert-danger">{error}</div>}
     {notice&&<div role="status" className="alert alert-success">{notice}</div>}
