@@ -4,6 +4,7 @@ import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { StatisticsWorkspaceHeader, StatisticsFilterPanel } from "./StatisticsWorkspace";
+import "@/components/admin/admin-workspace.css";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { CountryFlag } from "@/components/home/CountryFlag";
@@ -73,13 +74,13 @@ function Histogram({ items, maxItems = 10, kind }: { items: Item[]; maxItems?: n
 }
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
-  return <section className="card shadow-sm h-100" style={{ minWidth: 0 }}><div className="card-body p-4" style={{ minWidth: 0, overflowWrap: "anywhere" }}>
+  return <section className="card shadow-sm h-100 lmn-admin-form-surface" style={{ minWidth: 0 }}><div className="card-body p-4" style={{ minWidth: 0, overflowWrap: "anywhere" }}>
     <h2 className="h5 mb-4">{title}</h2>{children}
   </div></section>;
 }
 
 function Kpi({ name, value, sub, href }: { name: string; value: string; sub?: string; href?: string }) {
-  const body = <div className="card h-100 shadow-sm"><div className="card-body">
+  const body = <div className="card h-100 shadow-sm lmn-admin-form-surface"><div className="card-body">
     <p className="small text-body-secondary mb-2">{name}</p><strong className="fs-2">{value}</strong>
     {sub ? <div className="small text-body-secondary mt-1">{sub}</div> : null}
   </div></div>;
