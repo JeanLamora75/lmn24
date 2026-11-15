@@ -95,7 +95,8 @@ describe("SCRUM-27 — pagination par curseur", () => {
         },
       } as unknown as DatabaseService);
       await service.getArticles("news", "fr");
-      const where = findMany.mock.calls[0][0].where;
+      const where = findMany.mock.calls[0]?.[0]?.where;
+      expect(where).toBeDefined();
       expect(where.publishedAt).toEqual({ lte: new Date("2026-11-15T10:00:00.000Z") });
       expect(where.OR).toBeUndefined();
     } finally {
