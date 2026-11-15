@@ -5,6 +5,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useLocale } from "next-intl";
 
 import styles from "./GoogleAnalyticsTracker.module.css";
+import { ensureGtagQueue } from "./ga4-command-queue";
 
 export const GA4_MEASUREMENT_ID = "G-Z54C7T331W";
 export const ANALYTICS_CONSENT_KEY = "lmn24.analytics.consent.v1";
@@ -83,8 +84,7 @@ export function GoogleAnalyticsTracker() {
   useEffect(() => {
     // Consent Mode v2: set a denied default before any grant, config or tag load.
     // The local queue does not make a network request before opt-in.
-    window.dataLayer ??= [];
-    window.gtag ??= (...args: unknown[]) => { window.dataLayer?.push(args); };
+    ensureGtagQueue(window);
     window.gtag("consent", "default", {
       analytics_storage: "denied",
       ad_storage: "denied",
@@ -102,8 +102,7 @@ export function GoogleAnalyticsTracker() {
 
   useEffect(() => {
     if (!ready || consent !== "accepted") return;
-    window.dataLayer ??= [];
-    window.gtag ??= (...args: unknown[]) => { window.dataLayer?.push(args); };
+    ensureGtagQueue(window);
     window.gtag("consent", "update", { analytics_storage: "granted" });
     window.gtag("js", new Date());
     // Page views are sent only by PageViewTracker, including client-side transitions.
