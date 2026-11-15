@@ -3,6 +3,7 @@
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
+import { AdminDataPanel, AdminFilterPanel, AdminPageHeading } from "@/components/admin/AdminWorkspace";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -480,13 +481,9 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
       <AdminFilterResetButton section="feeds" />
-      <header className="mb-4">
-        <h1 className="h2 mb-1">Flux RSS/XML</h1>
-        <p className="text-body-secondary mb-0">
-          Gérez les flux RSS/XML utilisés par LMN24.
-        </p>
-      </header>
+      <AdminPageHeading title="Flux RSS/XML" description="Gérez les flux RSS/XML utilisés par LMN24." />
 
+      <AdminFilterPanel>
       <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
         <div className="d-flex flex-wrap gap-2">
           <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
@@ -639,6 +636,8 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
         </div>
       </div>
 
+      </AdminFilterPanel>
+
       {notice ? <div className="alert alert-success" role="status">{notice}</div> : null}
 
       {error ? (
@@ -655,6 +654,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
         />
       </div>
 
+      <AdminDataPanel label="Flux RSS/XML">
       <div className="table-responsive">
         <table className="table table-hover align-middle mb-0">
           <thead className="table-light">
@@ -918,6 +918,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
           </tbody>
         </table>
       </div>
+      </AdminDataPanel>
 
       <div className="mt-2">
         <PaginationNav
