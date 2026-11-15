@@ -3,6 +3,7 @@
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
+import { StatisticsWorkspaceHeader, StatisticsFilterPanel } from "./StatisticsWorkspace";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { CountryFlag } from "@/components/home/CountryFlag";
@@ -128,20 +129,18 @@ export function StatisticsDashboard() {
   const o = data?.overview;
   const h = data?.health;
   return <main className="container-fluid px-3 px-lg-4 py-4">
-      <nav className="d-flex gap-2 mb-3" aria-label="Sources de statistiques">
-        <span className="btn btn-primary" aria-current="page">Statistiques LMN24</span>
-        <Link href="/admin/site-statistics/google-analytics" className="btn btn-outline-secondary">Google Analytics</Link>
-        <Link href="/admin/site-statistics/search-console" className="btn btn-outline-secondary">Search Console</Link>
-      </nav>
       <AdminFilterResetButton section="site-statistics" />
-    <header className="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
-      <div><Link href="/admin" className="btn btn-outline-secondary btn-sm mb-3">← Administration</Link>
-        <h1 className="h2 mb-1">Statistiques LMN24</h1>
-        <p className="text-body-secondary mb-0">Pilotage éditorial, qualité et supervision des collectes.</p></div>
-      <div className="text-end"><button type="button" className="btn btn-primary" onClick={refresh} disabled={loading}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser</button>
-        <div className="small text-body-secondary mt-2">Actualisé : {data ? new Date(data.generatedAt).toLocaleString("fr-FR") : "—"}</div></div>
-    </header>
-    <div className="card mb-4"><div className="card-body"><div className="row g-2">
+      <StatisticsWorkspaceHeader title="Statistiques LMN24"
+        description="Pilotage éditorial, qualité et supervision des collectes."
+        active="/admin/site-statistics"
+        actions={<div className="text-end">
+          <button type="button" className="btn btn-primary" onClick={refresh} disabled={loading}>
+            <AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser
+          </button>
+          <div className="small text-body-secondary mt-2">Actualisé : {data ? new Date(data.generatedAt).toLocaleString("fr-FR") : "—"}</div>
+        </div>}
+      />
+    <StatisticsFilterPanel><div className="row g-2">
       <div className="col-6 col-md-2"><label className="form-label" htmlFor="stats-period">Période</label><select id="stats-period" className="form-select" value={period} onChange={(e) => setPeriod(e.target.value)}>
         <option value="24h">24 h</option><option value="7d">7 jours</option><option value="30d">30 jours</option><option value="90d">90 jours</option><option value="custom">Personnalisée</option>
       </select></div>
@@ -155,7 +154,7 @@ export function StatisticsDashboard() {
         <option value="">Toutes</option>{[...(filters?.languages ?? [])].sort((a, b) => languageName(a.isoCode2).localeCompare(languageName(b.isoCode2), "fr")).map((x) => <option key={x.isoCode2} value={x.isoCode2.trim()}>{languageFlagEmoji(x.isoCode2)}{languageName(x.isoCode2)} ({x.isoCode2.trim().toUpperCase()})</option>)}</select></div>
       <div className="col-6 col-md-2"><label htmlFor="stats-source" className="form-label">Source</label><select id="stats-source" className="form-select" value={sourceId} onChange={(e) => setSourceId(e.target.value)}>
         <option value="">Toutes</option>{filters?.sources.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</select></div>
-    </div></div></div>
+    </div></StatisticsFilterPanel>
     {error ? <div className="alert alert-danger" role="alert">{error} <button type="button" className="btn btn-sm btn-outline-danger ms-2" onClick={refresh}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Réessayer</button></div> : null}
     {loading ? <div className="alert alert-info" role="status">Actualisation des statistiques…</div> : null}
     {!data ? null : <>
