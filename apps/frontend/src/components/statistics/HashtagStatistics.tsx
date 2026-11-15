@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import "@/components/admin/admin-workspace.css";
 import { useCallback, useEffect, useState } from "react";
 import { HashtagThumbnail } from "@/components/hashtags/HashtagThumbnail";
 
@@ -55,7 +56,7 @@ function Summary({ name, value, detail }: {
   name: string; value: number | null; detail?: string;
 }) {
   return <div className="col-6 col-lg-4 col-xl-2">
-    <div className="card shadow-sm h-100"><div className="card-body">
+    <div className="card shadow-sm h-100 lmn-admin-form-surface"><div className="card-body">
       <div className="small text-body-secondary mb-2">{name}</div>
       <strong className="fs-3">{fmt(value)}</strong>
       {detail && <p className="small text-body-secondary mt-2 mb-0">{detail}</p>}
@@ -65,7 +66,7 @@ function Summary({ name, value, detail }: {
 function Panel({ title, children }: {
   title: string; children: React.ReactNode;
 }) {
-  return <section className="card h-100 shadow-sm" style={{ minWidth: 0 }}>
+  return <section className="card h-100 shadow-sm lmn-admin-form-surface" style={{ minWidth: 0 }}>
     <div className="card-body p-4" style={{ minWidth: 0, overflowWrap: "anywhere" }}>
       <h3 className="h5 mb-3">{title}</h3>{children}
     </div>
