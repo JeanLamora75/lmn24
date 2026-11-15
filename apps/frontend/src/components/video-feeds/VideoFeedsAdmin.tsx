@@ -1,5 +1,6 @@
 "use client";
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { useCallback, useEffect, useState } from "react";
@@ -97,11 +98,11 @@ export function VideoFeedsTable() {
   }
   return <main className="container py-4">
       <AdminFilterResetButton section="video-feeds" />
-    <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div className="lmn-admin-page-header">
       <div><Link href="/admin" className="btn btn-outline-secondary btn-sm mb-3">← Administration</Link><h1 className="h2">Flux vidéo YouTube</h1><p className="text-body-secondary mb-0">Gérer les chaînes YouTube associées aux sources LMN24.</p></div>
       <Link href="/admin/video-feeds/new" className="btn btn-primary"><AdminIcon name="plus-circle" className="me-2 align-middle" /> + Ajouter un flux vidéo</Link>
     </div>
-    <div className="card mb-3"><div className="card-body row g-3">
+    <div className="card lmn-admin-filter-panel mb-3"><div className="card-body row g-3">
       <div className="col-12 col-md-4"><label className="form-label" htmlFor="v-search">Recherche</label><input id="v-search" className="form-control" value={search} onChange={e=>{setSearch(e.target.value);setPage(1);}} placeholder="Nom du média ou identifiant de chaîne"/></div>
       <div className="col-6 col-md-2"><label className="form-label" htmlFor="v-source">Source</label><select id="v-source" className="form-select" value={sourceId} onChange={e=>{setSourceId(e.target.value);setPage(1);}}><option value="">Toutes</option>{options?.sources.map(x=><option key={x.id} value={x.id}>{x.name}</option>)}</select></div>
       <div className="col-6 col-md-2"><label className="form-label" htmlFor="v-category">Catégorie</label><select id="v-category" className="form-select" value={categoryId} onChange={e=>{setCategoryId(e.target.value);setPage(1);}}><option value="">Toutes</option>{options?.categories.map(x=><option key={x.id} value={x.id}>{x.slug}</option>)}</select></div>
@@ -110,7 +111,7 @@ export function VideoFeedsTable() {
     </div></div>
     {error&&<div className="alert alert-danger" role="alert">{error} <button className="btn btn-sm btn-outline-danger" onClick={refresh}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Réessayer</button></div>}
     {loading&&<p role="status">Chargement des flux vidéo…</p>}
-    {items&&<div className="card shadow-sm"><div className="table-responsive"><table className="table table-hover mb-0 align-middle"><thead><tr><th>Source</th><th>Chaîne</th><th>Catégorie / langue</th><th>Dernier traitement</th><th>Vidéos</th><th>Statut</th><th>Actions</th></tr></thead><tbody>
+    {items&&<div className="card shadow-sm lmn-admin-table-surface"><div className="table-responsive"><table className="table table-hover mb-0 align-middle"><thead><tr><th>Source</th><th>Chaîne</th><th>Catégorie / langue</th><th>Dernier traitement</th><th>Vidéos</th><th>Statut</th><th>Actions</th></tr></thead><tbody>
       {items.items.map(item=><tr key={item.id}><td>{item.source.name}</td><td className="text-break"><a href={"https://www.youtube.com/channel/"+encodeURIComponent(item.channelId)} target="_blank" rel="noopener noreferrer">{item.channelId}</a></td><td>{item.category.slug} / {item.languageIsoCode2.trim()}</td><td>{formatDate(item.lastRun?.startedAt)}<div className="small text-body-secondary">{item.lastRun?.status??"Jamais exécuté"}</div></td><td>{item._count.videos}</td><td><span className={"badge "+(item.isActive?"text-bg-success":"text-bg-secondary")}>{item.isActive?"Actif":"Inactif"}</span></td><td><div className="d-flex gap-2 flex-wrap"><Link className="btn btn-sm btn-outline-primary" href={"/admin/video-feeds/"+item.id+"/edit"}><AdminIcon name="pencil-square" className="me-2 align-middle" /> Modifier</Link><button type="button" className="btn btn-sm btn-outline-success" disabled={!item.isActive} onClick={()=>void collect(item)}>Collecter</button><button type="button" className="btn btn-sm btn-outline-secondary" onClick={()=>void toggle(item)}>{item.isActive?"Désactiver":"Activer"}</button><button type="button" className="btn btn-sm btn-outline-danger" onClick={()=>void remove(item)} disabled={item._count.runs>0||item._count.videos>0}><AdminIcon name="trash" className="me-2 align-middle" /> Supprimer</button></div></td></tr>)}
       {!items.items.length&&<tr><td colSpan={7} className="text-center py-4 text-body-secondary">Aucun flux vidéo trouvé.</td></tr>}
     </tbody></table></div><div className="card-footer d-flex justify-content-between align-items-center"><span className="small">{items.pagination.total} flux</span><div className="d-flex gap-2"><button type="button" className="btn btn-outline-secondary btn-sm" disabled={page===1||loading} onClick={()=>setPage(x=>x-1)}>Précédent</button><span className="small align-self-center">Page {page} / {Math.max(1,items.pagination.totalPages)}</span><button type="button" className="btn btn-outline-secondary btn-sm" disabled={page>=items.pagination.totalPages||loading} onClick={()=>setPage(x=>x+1)}>Suivant</button></div></div></div>}
@@ -169,7 +170,7 @@ export function VideoFeedForm({ id, initialSourceId = "" }: { id?: string; initi
     catch(e){setError(e instanceof Error?e.message:"Enregistrement impossible");}finally{setBusy(false);}
   }
   return <main className="container py-4" style={{maxWidth:900}}><Link href="/admin/video-feeds" className="btn btn-outline-secondary btn-sm mb-4">← Flux vidéo</Link><h1 className="h2 mb-4">{id?"Modifier un flux vidéo":"Ajouter un flux vidéo YouTube"}</h1>
-    {error&&<div className="alert alert-danger" role="alert">{error}</div>}{loading?<p>Chargement…</p>:<form onSubmit={e=>void submit(e)} className="card shadow-sm"><div className="card-body row g-3">
+    {error&&<div className="alert alert-danger" role="alert">{error}</div>}{loading?<p>Chargement…</p>:<form onSubmit={e=>void submit(e)} className="card shadow-sm lmn-admin-form-surface"><div className="card-body row g-3">
     <div className="col-12"><label htmlFor="vf-source" className="form-label">Source / Journal *</label><select id="vf-source" className="form-select" required value={sourceId} onChange={e=>setSourceId(e.target.value)}><option value="">Sélectionner une source</option>{options?.sources.map(x=><option key={x.id} value={x.id}>{x.name}</option>)}</select>{options?.sources.find(x=>x.id===sourceId)?.youtubeUrl&&<p className="form-text">Chaîne renseignée sur la source : <a href={options.sources.find(x=>x.id===sourceId)?.youtubeUrl??"#"} target="_blank" rel="noopener noreferrer">Ouvrir YouTube</a></p>}</div>
     <div className="col-md-6"><label htmlFor="vf-category" className="form-label">Catégorie *</label><select id="vf-category" className="form-select" required value={categoryId} onChange={e=>setCategoryId(e.target.value)}><option value="">Sélectionner</option>{options?.categories.map(x=><option key={x.id} value={x.id}>{categoryName(x.slug)}</option>)}</select></div>
     <div className="col-md-6"><label htmlFor="vf-language" className="form-label">Langue *</label><select id="vf-language" className="form-select" required value={languageIsoCode2} onChange={e=>setLanguage(e.target.value)}>{options?.languages.map(x=><option key={x.isoCode2} value={x.isoCode2.trim()}>{readableLanguage(x.isoCode2)}</option>)}</select></div>
