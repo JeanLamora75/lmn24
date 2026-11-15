@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 
-import { AdminIcon } from "@/components/admin/AdminIcon";
+import { AdminIcon, type AdminIconName } from "@/components/admin/AdminIcon";
 import { ADMIN_SECTIONS, normalizeAdminSearch } from "./admin-home.data";
 import styles from "./admin-shell.module.css";
 
@@ -76,7 +76,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
               <button className={styles.groupHeading} type="button" aria-expanded={expanded}
                 aria-controls={`admin-nav-group-${section.id}`}
                 onClick={() => toggleGroup(section.id)} title={section.title}>
-                <AdminIcon name={section.icon} />
+                <AdminIcon name={section.icon as AdminIconName} />
                 <span className={styles.linkLabel}>{section.title}</span>
                 <span className={styles.groupChevron}><AdminIcon name={expanded ? "chevron-left" : "chevron-right"} /></span>
               </button>
@@ -87,7 +87,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
                   return <Link key={feature.href} href={feature.href} title={feature.title}
                     aria-current={selected ? "page" : undefined}
                     className={selected ? styles.activeLink : styles.link}>
-                    <AdminIcon name={feature.icon} /><span className={styles.linkLabel}>{feature.title}</span>
+                    <AdminIcon name={feature.icon as AdminIconName} /><span className={styles.linkLabel}>{feature.title}</span>
                   </Link>;
                 })}
               </div>
