@@ -82,6 +82,10 @@ export function GoogleAnalyticsDashboard() {
         <span className="btn btn-primary" aria-current="page">Google Analytics</span>
         <Link href="/admin/site-statistics/search-console" className="btn btn-outline-secondary">Search Console</Link>
       </nav>
+      <a href="https://analytics.google.com/analytics/web/" target="_blank" rel="noopener noreferrer"
+        className="btn btn-sm btn-outline-primary mb-4" aria-label="Ouvrir Google Analytics dans un nouvel onglet">
+        Consulter les statistiques dans Google Analytics ↗
+      </a>
       <div className="d-flex gap-2 align-items-center flex-wrap mb-4">
         <label htmlFor="ga4-period" className="form-label mb-0">Période</label>
         <select id="ga4-period" className="form-select w-auto" value={period}
