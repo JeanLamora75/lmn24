@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { StatisticsWorkspaceHeader, StatisticsFilterPanel } from "./StatisticsWorkspace";
+import "@/components/admin/admin-workspace.css";
 
 type Ranked = { name: string; value: number };
 type Report = {
@@ -21,7 +22,7 @@ const number = (value: number): string => new Intl.NumberFormat("fr-FR").format(
 function Ranking({ title, items }: { title: string; items: Ranked[] }) {
   const highest = Math.max(1, ...items.map(item => item.value));
   return (
-    <section className="card shadow-sm h-100">
+    <section className="card shadow-sm h-100 lmn-admin-form-surface">
       <div className="card-body">
         <h2 className="h5 mb-3">{title}</h2>
         {items.length ? items.map(item => (
@@ -97,7 +98,7 @@ export function GoogleAnalyticsDashboard() {
             ["Pages vues", data.screenPageViews],
           ].map(([label, value]) => (
             <div className="col-12 col-md-4" key={label}>
-              <div className="card shadow-sm h-100"><div className="card-body">
+              <div className="card shadow-sm h-100 lmn-admin-form-surface"><div className="card-body">
                 <div className="text-body-secondary small">{label}</div>
                 <strong className="fs-2">{number(value as number)}</strong>
               </div></div>
