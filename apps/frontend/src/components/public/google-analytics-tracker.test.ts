@@ -10,6 +10,28 @@ describe("LMN24 public Google Analytics consent and navigation tracking", () => 
   it("uses the correct GA4 property measurement ID", () => {
     expect(tracker).toContain('GA4_MEASUREMENT_ID = "G-Z54C7T331W"');
   });
+  it("initializes a denied Consent Mode v2 default before Google tag configuration", () => {
+    const defaultCall = 'window.gtag("consent", "default", {';
+    const grantCall = 'window.gtag("consent", "update", { analytics_storage: "granted" });';
+    const configCall = 'window.gtag("config", GA4_MEASUREMENT_ID, { send_page_view: false });';
+    expect(tracker).toContain(defaultCall);
+    expect(tracker).toContain('analytics_storage: "denied"');
+    expect(tracker).toContain('ad_storage: "denied"');
+    expect(tracker).toContain('ad_user_data: "denied"');
+    expect(tracker).toContain('ad_personalization: "denied"');
+    expect(tracker.indexOf(defaultCall)).toBeLessThan(tracker.indexOf(grantCall));
+    expect(tracker.indexOf(grantCall)).toBeLessThan(tracker.indexOf(configCall));
+    expect(tracker.indexOf(configCall)).toBeLessThan(tracker.indexOf('document.createElement("script")'));
+  });
+
+  it("keeps page views gated by consent and denies analytics when permission is withdrawn", () => {
+    expect(tracker).toContain('if (!ready || consent !== "accepted") return;');
+    expect(tracker).toContain('enabled={ready && trackerReady && consent === "accepted"}');
+    expect(tracker).toContain('window.gtag?.("consent", "update", { analytics_storage: "denied" });');
+    expect(tracker).toContain("setTrackerReady(false)");
+    expect(tracker).toContain("clearAnalyticsCookies()");
+  });
+
   it("never loads the Google tag before acceptance", () => {
     expect(tracker).toContain('consent !== "accepted"');
     expect(tracker).toContain('document.createElement("script")');
