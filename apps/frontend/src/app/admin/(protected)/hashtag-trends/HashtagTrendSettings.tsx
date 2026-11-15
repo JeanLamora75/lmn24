@@ -1,7 +1,7 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
-import "@/components/admin/admin-workspace.css";
+import { AdminPageHeading } from "@/components/admin/AdminWorkspace";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -94,13 +94,7 @@ export function HashtagTrendSettings() {
 
   return (
     <main className="container py-4 py-lg-5">
-      <div className="lmn-admin-page-header">
-        <div>
-          <h1 className="h2 mb-1">Paramètres des tendances</h1>
-          <p className="text-body-secondary mb-0">Détection des sujets en forte progression dans l’actualité mondiale.</p>
-        </div>
-        <Link className="btn btn-outline-secondary" href="/admin"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour administration</Link>
-      </div>
+      <AdminPageHeading title="Paramètres des tendances" description="Détection des sujets en forte progression dans l’actualité mondiale." />
       {error && <div className="alert alert-danger" role="alert">{error}</div>}
       {success && <div className="alert alert-success" role="status">{success}</div>}
       <form onSubmit={(event) => void submit(event)} className="card shadow-sm p-4 lmn-admin-form-surface" style={{ maxWidth: 760 }}>
