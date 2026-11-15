@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AdminIcon, type AdminIconName } from "@/components/admin/AdminIcon";
 import { ADMIN_SECTIONS, normalizeAdminSearch } from "./admin-home.data";
 import styles from "./admin-shell.module.css";
+import "./admin-accessibility.css";
 
 const STORAGE_KEY = "lmn24-admin-sidebar-collapsed";
 
@@ -90,7 +91,8 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     previous.includes(id) ? previous.filter(value => value !== id) : [...previous, id]);
 
   return (
-    <div className={styles.shell}>
+    <div className={styles.shell + " lmn24-admin-shell"}>
+      <a className="lmn-admin-skip-link" href="#lmn24-admin-main">Aller au contenu principal</a>
       {mobileOpen && <button type="button" className={styles.scrim}
         aria-label="Fermer le menu d’administration" onClick={() => setMobileOpen(false)} />}
       <aside ref={sidebarRef} id="lmn24-admin-navigation" className={[
@@ -169,7 +171,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
             <AdminIcon name="box-arrow-up-right" /> <span>Site public</span>
           </Link>
         </header>
-        <div className={styles.pageContent}>{children}</div>
+        <div id="lmn24-admin-main" tabIndex={-1} className={styles.pageContent}>{children}</div>
       </div>
     </div>
   );
