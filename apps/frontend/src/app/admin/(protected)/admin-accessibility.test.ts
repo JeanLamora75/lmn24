@@ -24,6 +24,7 @@ describe("lot 6 — accessible administration shell", () => {
     expect(shell).toContain('first.focus()');
     expect(shell).toContain('toggleRef.current?.focus()');
     expect(shell).toContain('document.body.style.overflow = "hidden"');
+    expect(shell).toContain('window.matchMedia("(max-width: 991px)")');
   });
   it("preserves navigation names when icons only are visible", () => {
     expect(shell).toContain('aria-label={section.title}');
