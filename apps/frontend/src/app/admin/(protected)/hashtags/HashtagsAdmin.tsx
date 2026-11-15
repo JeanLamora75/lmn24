@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
@@ -113,7 +114,7 @@ export function HashtagsAdmin() {
   return (
     <main className="container py-4 py-lg-5">
       <AdminFilterResetButton section="hashtags" />
-      <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+      <div className="lmn-admin-page-header">
         <div>
           <h1 className="h2 mb-1">Hashtags</h1>
           <p className="text-body-secondary mb-0">Gérer les sujets et leurs alias multilingues.</p>
@@ -123,7 +124,7 @@ export function HashtagsAdmin() {
           <Link className="btn btn-primary" href="/admin/hashtags/new"><AdminIcon name="plus-circle" className="me-2 align-middle" /> Ajouter un hashtag</Link>
         </div>
       </div>
-      <form className="row g-2 mb-3" onSubmit={submit}>
+      <form className="row g-2 mb-3 lmn-admin-filter-panel" onSubmit={submit}>
         <div className="col-md-6">
           <label className="visually-hidden" htmlFor="hashtag-search">Rechercher</label>
           <input className="form-control" id="hashtag-search" value={searchInput}
@@ -155,7 +156,7 @@ export function HashtagsAdmin() {
           </select>
         </label>
       </div>
-      <div className="table-responsive">
+      <div className="table-responsive lmn-admin-table-surface">
         <table className="table table-hover align-middle">
           <thead className="table-light"><tr>
             <th>Nom</th><th>Alias</th><th>Statut</th><th>Actions</th>
