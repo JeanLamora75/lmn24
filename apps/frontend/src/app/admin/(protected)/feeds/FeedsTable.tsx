@@ -374,17 +374,11 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
       <AdminFilterResetButton section="feeds" />
-      <AdminPageHeading title="Flux RSS/XML" description="Gérez les flux RSS/XML utilisés par LMN24." />
+      <AdminPageHeading title="Flux RSS/XML" description="Gérez les flux RSS/XML utilisés par LMN24." actions={<Link href="/admin/feeds/new" className="btn btn-primary"><AdminIcon name="plus-circle" className="me-2 align-middle" /> Nouveau flux RSS/XML</Link>} />
 
       <AdminFilterPanel>
       <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
         <div className="d-flex flex-wrap gap-2">
-          <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
-            Retour à l’administration
-          </Link>
-          <Link href="/admin/feeds/new" className="btn btn-primary"><AdminIcon name="plus-circle" className="me-2 align-middle" /> 
-            Nouveau flux RSS/XML
-          </Link>
           <button
             type="button"
             className="btn btn-outline-primary"
