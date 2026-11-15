@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -463,7 +464,7 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
         </Link>
       </div>
 
-      <header className="mb-4">
+      <header className="lmn-admin-page-header">
         <h1 className="h2 mb-1">
           {mode === "create"
             ? "Ajouter un flux RSS/XML"
@@ -488,7 +489,7 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
       <form onSubmit={submit} noValidate>
         <div className="row g-4">
           <div className="col-12 col-lg-8">
-            <div className="card h-100 border-0 shadow-sm">
+            <div className="card h-100 border-0 shadow-sm lmn-admin-form-surface">
               <div className="card-body p-4">
                 <div className="mb-3">
                   <label className="form-label" htmlFor="feed-source">
@@ -647,7 +648,7 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
           </div>
 
           <div className="col-12 col-lg-4">
-            <div className="card h-100 border-0 shadow-sm">
+            <div className="card h-100 border-0 shadow-sm lmn-admin-form-surface">
               <div className="card-body p-4">
                 <h2 className="h5 mb-3">Consultation</h2>
 
