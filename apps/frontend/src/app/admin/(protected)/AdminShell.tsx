@@ -71,6 +71,15 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     };
   }, [mobileOpen]);
 
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 991px)");
+    const onViewportChange = () => {
+      if (!media.matches) setMobileOpen(false);
+    };
+    media.addEventListener("change", onViewportChange);
+    return () => media.removeEventListener("change", onViewportChange);
+  }, []);
+
   const setSidebarCollapsed = (next: boolean) => {
     setCollapsed(next);
     try { window.localStorage.setItem(STORAGE_KEY, String(next)); } catch { /* storage unavailable */ }
