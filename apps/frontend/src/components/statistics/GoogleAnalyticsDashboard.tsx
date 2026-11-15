@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import { StatisticsWorkspaceHeader, StatisticsFilterPanel } from "./StatisticsWorkspace";
 
 type Ranked = { name: string; value: number };
 type Report = {
@@ -70,23 +70,12 @@ export function GoogleAnalyticsDashboard() {
 
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
-      <header className="mb-4">
-        <Link href="/admin" className="btn btn-sm btn-outline-secondary mb-3">
-          <AdminIcon name="arrow-left" className="me-2" /> Administration
-        </Link>
-        <h1 className="h2">Statistiques du site</h1>
-        <p className="text-body-secondary">Audience Google Analytics 4, séparée des statistiques éditoriales LMN24.</p>
-      </header>
-      <nav className="d-flex gap-2 flex-wrap mb-4" aria-label="Sources de statistiques">
-        <Link href="/admin/site-statistics" className="btn btn-outline-secondary">Statistiques LMN24</Link>
-        <span className="btn btn-primary" aria-current="page">Google Analytics</span>
-        <Link href="/admin/site-statistics/search-console" className="btn btn-outline-secondary">Search Console</Link>
-      </nav>
-      <a href="https://analytics.google.com/analytics/web/" target="_blank" rel="noopener noreferrer"
+      <StatisticsWorkspaceHeader title="Google Analytics" description="Audience Google Analytics 4, séparée des statistiques éditoriales LMN24." active="/admin/site-statistics/google-analytics" />
+            <a href="https://analytics.google.com/analytics/web/" target="_blank" rel="noopener noreferrer"
         className="btn btn-sm btn-outline-primary mb-4" aria-label="Ouvrir Google Analytics dans un nouvel onglet">
         Consulter les statistiques dans Google Analytics ↗
       </a>
-      <div className="d-flex gap-2 align-items-center flex-wrap mb-4">
+      <StatisticsFilterPanel><div className="d-flex gap-2 align-items-center flex-wrap">
         <label htmlFor="ga4-period" className="form-label mb-0">Période</label>
         <select id="ga4-period" className="form-select w-auto" value={period}
           onChange={event => setPeriod(event.target.value === "30d" ? "30d" : "7d")}>
@@ -96,7 +85,7 @@ export function GoogleAnalyticsDashboard() {
         <button type="button" className="btn btn-outline-secondary" onClick={() => setRefresh(x => x + 1)} disabled={loading}>
           <AdminIcon name="arrow-clockwise" className="me-2" /> Actualiser
         </button>
-      </div>
+      </div></StatisticsFilterPanel>
       {error ? <div className="alert alert-warning" role="alert">{error}</div> : null}
       {loading ? <p role="status">Chargement des données Google Analytics…</p> : null}
       {data ? <>
