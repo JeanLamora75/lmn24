@@ -1,11 +1,10 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
-import "@/components/admin/admin-workspace.css";
+import { AdminPageHeading } from "@/components/admin/AdminWorkspace";
 import {
   RETENTION_MAX_DAYS, RETENTION_SETTING_KEYS, type RetentionSettingKey,
 } from "@lmn24/contracts";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 
@@ -179,15 +178,7 @@ export function RetentionSettings() {
 
   return (
     <main className="container py-4 py-lg-5">
-      <div className="lmn-admin-page-header">
-        <div>
-          <h1 className="h2 mb-1">Conservation des données</h1>
-          <p className="text-body-secondary mb-0">
-            Réglage indépendant des onze durées de conservation, exprimées en jours.
-          </p>
-        </div>
-        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour administration</Link>
-      </div>
+      <AdminPageHeading title="Conservation des données" description="Réglage indépendant des onze durées de conservation, exprimées en jours." />
       <div className="alert alert-warning" role="note">
         <strong>Important :</strong> réduire une durée pourra provoquer une suppression irréversible
         lors d’un prochain cycle de purge. Augmenter une durée ne restaure jamais les données
