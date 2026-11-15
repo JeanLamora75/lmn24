@@ -36,3 +36,20 @@
 @media(max-width:991px){.sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);width:min(300px,85vw);transition:transform .2s ease}.sidebar.mobileOpen{transform:translateX(0)}.sidebar.collapsed.mobileOpen{width:min(300px,85vw);flex-basis:auto}.sidebar.collapsed.mobileOpen .brand{height:76px;flex-direction:row;padding:14px 16px}.sidebar.collapsed.mobileOpen .brandText,.sidebar.collapsed.mobileOpen .linkLabel,.sidebar.collapsed.mobileOpen .groupChevron,.sidebar.collapsed.mobileOpen .search{display:flex}.sidebar.collapsed.mobileOpen .groupItems{padding-left:12px}.sidebar.collapsed.mobileOpen .link,.sidebar.collapsed.mobileOpen .activeLink,.sidebar.collapsed.mobileOpen .groupHeading{justify-content:flex-start;padding:9px 12px}.sidebar.collapsed.mobileOpen .activeLink{padding-left:9px}.sidebar.collapsed.mobileOpen .navigation{padding:16px 10px}.sidebar.collapsed.mobileOpen .group{border:0;padding:0}.mobileToggle{display:grid;flex:none}.topbar{justify-content:flex-start;padding:0 14px}.publicLink{margin-left:auto}.scrim{display:block;position:fixed;inset:0;z-index:1030;border:0;background:rgba(8,20,37,.55)}}
 @media(max-width:575px){.topbar{height:56px}.publicLink span{display:none}.breadcrumb{gap:6px}.pageContent :global(main.container),.pageContent :global(main.container-fluid){padding-left:14px!important;padding-right:14px!important}}
 @media(prefers-reduced-motion:reduce){.sidebar{transition:none}}
+
+/* Lot 6: mobile access, focus and screen-reader safety */
+.mobileClose{display:none}
+@media(max-width:991px){
+  .sidebar{visibility:hidden;pointer-events:none}
+  .sidebar.mobileOpen{visibility:visible;pointer-events:auto}
+  .mobileClose{display:grid;place-items:center;order:3;flex:none;border:1px solid #566780;border-radius:8px;background:transparent;color:#fff;width:44px;height:44px}
+  .mobileClose:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}
+  .collapseButton{display:none}
+  .sidebar.collapsed.mobileOpen .brand{flex-direction:row}
+  .sidebar.collapsed.mobileOpen .mobileClose{display:grid}
+  .sidebar.collapsed.mobileOpen .search{display:block}
+  .sidebar.collapsed.mobileOpen .groupChevron{display:block}
+}
+.topbar .mobileToggle{min-width:44px;min-height:44px}
+.brandLink:focus-visible,.breadcrumb a:focus-visible,.publicLink:focus-visible{outline:3px solid #93c5fd;outline-offset:2px;border-radius:4px}
+@media(prefers-reduced-motion:reduce){.sidebar,.navLink{transition:none}}
