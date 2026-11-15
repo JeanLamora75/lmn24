@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
@@ -310,7 +311,7 @@ export default function ImportCsvPage() {
         </Link>
       </div>
 
-      <header className="mb-4">
+      <header className="lmn-admin-page-header">
         <h1 className="h2 mb-1">Import CSV</h1>
         <p className="text-body-secondary mb-0">
           Préparez l’import de données dans LMN24 à partir d’un fichier CSV.
@@ -416,7 +417,7 @@ export default function ImportCsvPage() {
 
       {analysis ? (
         <section
-          className="card border-0 shadow-sm mt-4"
+          className="card border-0 shadow-sm mt-4 lmn-admin-form-surface"
           aria-labelledby="csv-import-summary-title"
         >
           <div className="card-body p-4">
