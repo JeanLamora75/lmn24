@@ -30,12 +30,13 @@ describe("SCRUM-33 — liste des sources", () => {
 
   it("ajuste la pagination à la largeur disponible", () => {
     expect(ui).not.toContain("ResizeObserver");
-    expect(ui).toContain("pageItems(pagination.page, pagination.totalPages");
-    expect(ui).toContain("styles.paginationNav");
-    expect(ui).toContain("current - 10");
-    expect(ui).toContain("total - visibleCount + 1");
-    expect(ui).toContain("Math.min(21, total)");
-    expect(ui).toContain('aria-label="Première page"');
-    expect(ui).toContain('aria-label="Dernière page"');
+    expect(ui).toContain("<AdminPagination");
+    expect(ui).toContain('label="sources"');
+    const shared = readFileSync(new URL("../../../../components/admin/AdminPagination.tsx", import.meta.url), "utf8");
+    const styles = readFileSync(new URL("../../../../components/admin/admin-workspace.css", import.meta.url), "utf8");
+    expect(shared).toContain('aria-label="Première page"');
+    expect(shared).toContain('aria-label="Dernière page"');
+    expect(shared).toContain('aria-current={item === current ? "page" : undefined}');
+    expect(styles).toContain(".lmn-admin-pagination{width:100%;overflow-x:auto");
   });
 });
