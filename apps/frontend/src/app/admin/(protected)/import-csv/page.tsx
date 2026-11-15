@@ -2,6 +2,7 @@
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { AdminPageHeading } from "@/components/admin/AdminWorkspace";
+import { MaintenanceNav } from "@/components/admin/MaintenanceNav";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { useRouter } from "next/navigation";
@@ -311,6 +312,7 @@ export default function ImportCsvPage() {
     <main className="container py-4 py-lg-5">
       <AdminFilterResetButton section="csv-import" />
       <AdminPageHeading title="Import CSV" description="Analysez un fichier avant de confirmer son import dans LMN24." />
+      <MaintenanceNav active="/admin/import-csv" />
       <ol className="lmn-maintenance-steps" aria-label="Étapes de l’import">
         <li><strong>1.</strong> Choisir les données et le fichier</li>
         <li><strong>2.</strong> Analyser et vérifier les résultats</li>
