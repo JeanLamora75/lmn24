@@ -8,6 +8,7 @@ import "@/components/admin/admin-workspace.css";
 import { WeatherMonitoringPanel } from "./WeatherMonitoringPanel";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getFrenchCategoryLabel } from "@/lib/fr-category-labels";
+import { parserStatusBadge, parserStatusLabel } from "@/components/admin/parser-status";
 
 type Parser = "ALL" | "INFOS" | "VIDEOS" | "WEATHER";
 type Period = "24h" | "7d" | "30d" | "custom";
@@ -312,7 +313,7 @@ export function ParserMonitoringScreen() {
               onChange={e=>changeFilter(setStatus,e.target.value as Status)}>
               {(["ALL","SUCCESS","ERROR","RUNNING","INTERRUPTED"] as const)
                 .map(value=><option value={value} key={value}>
-                  {value === "ALL" ? "Tous" : value}</option>)}
+                  {parserStatusLabel(value)}</option>)}
             </select>
           </div>}
           {parser!=="WEATHER"&&<div className="col-12 col-md-6 col-xl-3">
@@ -446,9 +447,7 @@ export function ParserMonitoringScreen() {
               <strong>{row.source}</strong><div className="small text-body-secondary">
                 {row.feedUrl}</div>
             </td>
-            <td><span className={"badge "+(row.status==="SUCCESS"
-              ?"text-bg-success":row.status==="ERROR"?"text-bg-danger"
-                :"text-bg-secondary")}>{row.status}</span></td>
+            <td><span className={"badge "+parserStatusBadge(row.status)}>{parserStatusLabel(row.status)}</span></td>
             <td>{duration(row.durationMs)}</td><td>{fmt(row.itemsFound)}</td>
             <td>{fmt(row.imported)}</td><td>{fmt(row.skipped)}</td>
             <td><button type="button" className="btn btn-outline-primary btn-sm"
@@ -482,7 +481,7 @@ export function ParserMonitoringScreen() {
           <th>Importés</th><th>Actions</th></tr></thead>
         <tbody>{batches.rows.map(row=><tr key={row.id}>
           <td>{date(row.startedAt)}</td><td>{row.parserType}</td><td>{row.trigger}</td>
-          <td>{row.status}</td><td>{fmt(row.processedFeeds)}/{fmt(row.totalFeeds)}</td>
+          <td><span className={"badge "+parserStatusBadge(row.status)}>{parserStatusLabel(row.status)}</span></td><td>{fmt(row.processedFeeds)}/{fmt(row.totalFeeds)}</td>
           <td>{fmt(row.successfulFeeds)}</td><td>{fmt(row.failedFeeds)}</td>
           <td>{fmt(row.itemsImported)}</td>
           <td><button className="btn btn-sm btn-outline-primary" type="button"
@@ -537,7 +536,7 @@ export function ParserMonitoringScreen() {
           <dt className="col-sm-3">Fin</dt><dd className="col-sm-9">
             {date(selected.data.finishedAt)}</dd>
           <dt className="col-sm-3">Statut</dt><dd className="col-sm-9">
-            {selected.data.status}</dd>
+            {parserStatusLabel(selected.data.status)}</dd>
         </dl>
         {selected.kind==="run" && <>
           <p><strong>Flux :</strong> <span className="text-break">
