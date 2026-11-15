@@ -38,6 +38,8 @@ describe("SCRUM-27 — pagination par curseur", () => {
     const findMany = vi.fn().mockImplementation(async ({ where, take }) => {
       expect(where.categoryId).toBe(categoryId);
       expect(where.languageIsoCode2).toBe("fr");
+      expect(where.publishedAt.lte).toBeInstanceOf(Date);
+      expect(where.publishedAt.lte.getTime()).toBeLessThanOrEqual(Date.now());
       const position = where.OR?.[0]?.publishedAt?.lt as Date | undefined;
       const rows = position
         ? fixture.filter((article) =>
@@ -77,6 +79,28 @@ describe("SCRUM-27 — pagination par curseur", () => {
     expect(findMany.mock.calls[0]?.[0]).toMatchObject({
       select: { source: { select: { country: { select: { isoCode2: true } } } } },
     });
+  });
+
+  it("exclut les publications futures, même le jour courant, sans exclure les anciennes", async () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(new Date("2026-11-15T10:00:00.000Z"));
+      const findMany = vi.fn().mockResolvedValue([]);
+      const service = new PublicCategoryService({
+        prisma: {
+          category: { findUnique: vi.fn().mockResolvedValue({
+            id: categoryId, slug: "news", isActive: true, themeColor: "#2563EB",
+          }) },
+          article: { findMany },
+        },
+      } as unknown as DatabaseService);
+      await service.getArticles("news", "fr");
+      const where = findMany.mock.calls[0][0].where;
+      expect(where.publishedAt).toEqual({ lte: new Date("2026-11-15T10:00:00.000Z") });
+      expect(where.OR).toBeUndefined();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("distingue une catégorie inactive d'une catégorie active mais vide", async () => {
