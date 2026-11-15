@@ -1,0 +1,21 @@
+/* LMN24 Admin – shared workspace patterns (Lot 2). */
+.lmn-admin-page-header{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #e2e8f0}
+.lmn-admin-page-header h1{font-size:1.65rem;line-height:1.25;font-weight:700;letter-spacing:-.02em;color:#17263d}
+.lmn-admin-page-header p{max-width:66ch;color:#64748b!important}
+.lmn-admin-filter-panel{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:1.125rem 1.25rem;margin-bottom:1.5rem;box-shadow:0 2px 12px rgba(19,40,73,.035);min-width:0}
+.lmn-admin-filter-heading{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid #edf0f5;font-size:.95rem;font-weight:700;color:#243550}
+.lmn-admin-filter-panel .form-label{font-size:.825rem;font-weight:600;color:#475569;margin-bottom:.4rem}
+.lmn-admin-filter-panel .row:last-child{margin-bottom:0!important}
+.lmn-admin-table-surface{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(19,40,73,.035)}
+.lmn-admin-table-surface .table{margin-bottom:0}
+.lmn-admin-table-surface .table>:not(caption)>*>*{padding:.85rem .9rem;border-bottom-color:#edf0f5;vertical-align:middle}
+.lmn-admin-table-surface .table thead th{background:#f7f9fc;color:#475569;font-size:.77rem;font-weight:700;white-space:nowrap;border-bottom:1px solid #e2e8f0}
+.lmn-admin-table-surface .table tbody tr:hover{background:#f8faff}
+.lmn-admin-form-surface{background:#fff;border:1px solid #e2e8f0!important;border-radius:14px!important;box-shadow:0 2px 12px rgba(19,40,73,.035)!important}
+.lmn-admin-form-surface .card-body{padding:1.5rem!important}
+.lmn-admin-form-surface .form-label{font-weight:600;font-size:.86rem;color:#334155}
+.lmn-admin-form-surface .form-text{color:#64748b}
+.lmn-admin-form-surface :is(input,select,textarea):focus,.lmn-admin-filter-panel :is(input,select,textarea):focus{border-color:#2563eb;box-shadow:0 0 0 .2rem rgba(37,99,235,.13)}
+.lmn-admin-form-surface :is(input,select,textarea):focus-visible,.lmn-admin-filter-panel :is(input,select,textarea):focus-visible{outline:2px solid transparent}
+@media(max-width:767.98px){.lmn-admin-filter-panel{padding:1rem}.lmn-admin-page-header h1{font-size:1.4rem}.lmn-admin-form-surface .card-body{padding:1rem!important}}
+@media(prefers-reduced-motion:reduce){.lmn-admin-table-surface *{scroll-behavior:auto}}
