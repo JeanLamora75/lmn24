@@ -11,6 +11,8 @@ export type GtagQueueTarget = {
 export function ensureGtagQueue(target: GtagQueueTarget): void {
   target.dataLayer ??= [];
   target.gtag ??= function gtag() {
+    // Google gtag.js expects the native Arguments object, not a rest-parameter array.
+    // eslint-disable-next-line prefer-rest-params
     target.dataLayer?.push(arguments);
   };
 }
