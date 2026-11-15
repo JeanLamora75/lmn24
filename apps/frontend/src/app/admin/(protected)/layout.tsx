@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { getAdminSession } from "@/lib/admin-auth";
+import { AdminShell } from "./AdminShell";
 
 type Props = Readonly<{
   children: ReactNode;
@@ -14,5 +15,5 @@ export default async function ProtectedAdminLayout({ children }: Props) {
     redirect("/admin/login");
   }
 
-  return children;
+  return <AdminShell>{children}</AdminShell>;
 }
