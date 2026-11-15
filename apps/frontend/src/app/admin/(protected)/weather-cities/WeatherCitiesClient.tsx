@@ -1,5 +1,6 @@
 "use client";
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
@@ -132,7 +133,7 @@ export function WeatherCitiesClient() {
 
  return <main className="container-fluid px-3 px-lg-4 py-4">
       <AdminFilterResetButton section="weather-cities" />
-   <header className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+   <header className="lmn-admin-page-header">
      <div>
        <h1 className="h2 mb-1">Villes météo</h1>
        <p className="text-body-secondary mb-0">Gérez les villes suivies par la météo mondiale LMN24.</p>
@@ -147,7 +148,7 @@ export function WeatherCitiesClient() {
    </header>
    {error&&<div className="alert alert-danger" role="alert">{error}</div>}
    {success&&<div className="alert alert-success" role="status">{success}</div>}
-   {editor!==false&&<section className="card shadow-sm mb-4" aria-label="Formulaire de ville météo">
+   {editor!==false&&<section className="card shadow-sm mb-4 lmn-admin-form-surface" aria-label="Formulaire de ville météo">
      <div className="card-header fw-semibold">{editor?"Modifier la ville":"Ajouter une ville"}</div>
      <form className="card-body" onSubmit={submit}>
        <div className="row g-3">
@@ -241,7 +242,7 @@ export function WeatherCitiesClient() {
      </div>
    </section>}
 
-   <div className="row g-3 align-items-end mb-3">
+   <div className="row g-3 align-items-end mb-3 lmn-admin-filter-panel">
      <div className="col-12 col-lg-5">
        <label className="form-label" htmlFor="weather-search">Rechercher une ville</label>
        <input id="weather-search" className="form-control" type="search" value={search}
@@ -279,7 +280,7 @@ export function WeatherCitiesClient() {
      <button className="btn btn-outline-secondary btn-sm" type="button" disabled={busy}
        onClick={()=>void run(load,"Liste actualisée.")}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser</button>
    </div>
-   <div className="card shadow-sm">
+   <div className="card shadow-sm lmn-admin-table-surface">
      <div className="table-responsive">
        <table className="table table-hover align-middle mb-0">
          <thead><tr>
