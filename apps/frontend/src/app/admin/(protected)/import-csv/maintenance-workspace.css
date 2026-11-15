@@ -1,0 +1,11 @@
+/* Common maintenance workflow presentation. No modifications to server-side safety rules. */
+.lmn-maintenance-steps{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;padding:0;margin:0 0 1.5rem}
+.lmn-maintenance-steps li{display:flex;align-items:center;gap:.65rem;padding:.9rem 1rem;border:1px solid #dbe3ee;background:#fff;border-radius:12px;font-size:.85rem;color:#475569}
+.lmn-maintenance-steps strong{display:grid;place-items:center;flex:0 0 28px;height:28px;border-radius:50%;background:#e8f0ff;color:#1d4ed8}
+.lmn-maintenance-danger{border-left:4px solid #dc3545!important}
+.lmn-maintenance-danger .card-header{background:#fff7f7;border-bottom:1px solid #f4c6c6}
+.lmn-maintenance-risk-choice{transition:border-color .15s ease,background-color .15s ease}
+.lmn-maintenance-risk-choice:has(input:checked){border-color:#2563eb!important;background:#eff6ff!important}
+.lmn-maintenance-risk-choice:focus-within{outline:2px solid #93c5fd;outline-offset:2px}
+@media(max-width:767px){.lmn-maintenance-steps{grid-template-columns:1fr}.lmn-maintenance-steps li{padding:.65rem .8rem}}
+@media(prefers-reduced-motion:reduce){.lmn-maintenance-risk-choice{transition:none}}
