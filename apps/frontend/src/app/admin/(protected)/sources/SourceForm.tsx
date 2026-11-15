@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -691,7 +692,7 @@ export function SourceForm({ mode, sourceId }: Props) {
         </Link>
       </div>
 
-      <header className="mb-4">
+      <header className="lmn-admin-page-header">
         <h1 className="h2 mb-1">
           {mode === "create"
             ? "Ajouter une source"
@@ -711,7 +712,7 @@ export function SourceForm({ mode, sourceId }: Props) {
       <form onSubmit={submit} noValidate>
         <div className="row g-4">
           <div className="col-12 col-lg-8">
-            <div className="card h-100 border-0 shadow-sm">
+            <div className="card h-100 border-0 shadow-sm lmn-admin-form-surface">
               <div className="card-body p-4">
                 <div className="mb-3">
                   <label className="form-label" htmlFor="source-name">
@@ -839,7 +840,7 @@ export function SourceForm({ mode, sourceId }: Props) {
           </div>
 
           <div className="col-12 col-lg-4">
-            <div className="card h-100 border-0 shadow-sm">
+            <div className="card h-100 border-0 shadow-sm lmn-admin-form-surface">
               <div className="card-body p-4">
                 <h2 className="h5 mb-3">Image du site</h2>
 
@@ -934,7 +935,7 @@ export function SourceForm({ mode, sourceId }: Props) {
           </div>
         </div>
 
-        <section className="card border-0 shadow-sm mt-4" aria-labelledby="source-profile-heading">
+        <section className="card border-0 shadow-sm mt-4 lmn-admin-form-surface" aria-labelledby="source-profile-heading">
           <div className="card-body p-4">
             <h2 className="h5 mb-2" id="source-profile-heading">
               Présentation et réseaux sociaux
