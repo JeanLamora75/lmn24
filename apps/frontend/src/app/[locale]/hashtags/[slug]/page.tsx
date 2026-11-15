@@ -6,6 +6,8 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { CategoryArticles } from "@/components/category/CategoryArticles";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { collectionSchema, pageBreadcrumbs } from "@/lib/seo-schema";
 import type { HomeArticle } from "@/components/home/home-data";
 import categoryStyles from "@/components/category/category.module.css";
 import { HashtagThumbnail } from "@/components/hashtags/HashtagThumbnail";
@@ -13,6 +15,8 @@ import { getHashtagLabels } from "@/components/hashtags/hashtag-ranking-data";
 import styles from "@/components/hashtags/hashtags.module.css";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
+import { seoAlternates, seoUnavailable, type SeoLocale } from "@/lib/seo-metadata";
+import { SEO_COPY, seoSocial, cleanSeoText } from "@/lib/seo-social";
 
 export const dynamic = "force-dynamic";
 type Props = Readonly<{ params: Promise<{ locale: string; slug: string }> }>;
@@ -59,10 +63,18 @@ async function loadFirstArticles(slug: string): Promise<PublicHashtagPage | "not
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!hasLocale(routing.locales, locale) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
-    return { title: "Hashtags | LMN24" };
+    return seoUnavailable;
   }
   const subject = await loadHashtag(slug);
-  return { title: subject?.name ?? "Hashtags" };
+  if (!subject) return seoUnavailable;
+  const lang = locale as SeoLocale;
+  const name = cleanSeoText(subject.name, 90);
+  if (!name) return seoUnavailable;
+  const title = name + " — " + SEO_COPY[lang].hashtag;
+  const description = SEO_COPY[lang].hashtagDescription(name);
+  const url = "https://www.lmn24.com/" + locale + "/hashtags/" + slug;
+  return { title, description, alternates: seoAlternates(lang, "hashtags", slug),
+    ...seoSocial(lang, title + " | LMN24", description, url) };
 }
 
 export default async function PublicHashtagDetail({ params }: Props) {
@@ -85,6 +97,13 @@ export default async function PublicHashtagDetail({ params }: Props) {
   const accent = { "--category-accent": "#0D6EFD" } as CSSProperties;
   return (
     <main className={"container px-3 px-lg-4 " + categoryStyles.page} style={accent}>
+      <StructuredData data={collectionSchema({locale:locale as SeoLocale,
+        url:"https://www.lmn24.com/"+locale+"/hashtags/"+slug,
+        name:subject.name,
+        description:SEO_COPY[locale as SeoLocale].hashtagDescription(subject.name),
+        breadcrumbs:pageBreadcrumbs(locale as SeoLocale,labels.title,"hashtags",
+          {title:subject.name,slug}),
+      })}/>
       <nav aria-label={labels.back} className="mt-4 mb-3">
         <Link href={"/" + locale + "/hashtags"} className="text-decoration-none">
           ← {labels.back}

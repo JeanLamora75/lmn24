@@ -4,6 +4,10 @@ import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
+import { seoSocial } from "@/lib/seo-social";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { collectionSchema } from "@/lib/seo-schema";
 
 type Locale = "fr"|"en"|"de"|"es"|"pt"|"it"|"ru"|"nl";
 const SIGNS = [
@@ -27,7 +31,9 @@ const COPY: Record<Locale,{title:string;subtitle:string;choose:string;signs:stri
 type Props={params:Promise<{locale:string}>};
 export async function generateMetadata({params}:Props):Promise<Metadata>{
  const {locale}=await params;const c=COPY[locale as Locale]??COPY.fr;
- return {title:c.title,description:c.subtitle,alternates:{canonical:`/${locale}/horoscope`,languages:Object.fromEntries(routing.locales.map(l=>[l,`/${l}/horoscope`]))}};
+ return {title:c.title,description:c.subtitle,alternates:seoAlternates(locale as SeoLocale,"horoscope"),
+  ...seoSocial(locale as SeoLocale,c.title+" | LMN24",c.subtitle,
+    "https://www.lmn24.com/"+locale+"/horoscope")};
 }
 export default async function HoroscopeIndex({params}:Props){
  const {locale}=await params;
@@ -35,6 +41,9 @@ export default async function HoroscopeIndex({params}:Props){
  setRequestLocale(locale);
  const copy=COPY[locale as Locale];
  return <main className="container py-4 py-lg-5">
+   <StructuredData data={collectionSchema({locale:locale as SeoLocale,
+     url:"https://www.lmn24.com/"+locale+"/horoscope",name:copy.title,
+     description:copy.subtitle})}/>
    <header className="text-center mb-4 mb-lg-5"><h1 className="display-5 fw-bold">{copy.title}</h1>
      <p className="lead text-body-secondary">{copy.subtitle}</p></header>
    <div className="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-3 g-lg-4">

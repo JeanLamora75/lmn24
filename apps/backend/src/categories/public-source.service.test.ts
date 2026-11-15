@@ -51,7 +51,7 @@ describe("SCRUM-32 — API publique d'une source", () => {
     expect(result.hasMore).toBe(true);
     expect(result.nextCursor).toBeTruthy();
     expect(findMany.mock.calls[0]?.[0]).toMatchObject({
-      where: { sourceId, languageIsoCode2: "fr" },
+      where: { sourceId, languageIsoCode2: "fr", publishedAt: { lte: expect.any(Date) } },
       take: 20,
       orderBy: [{ publishedAt: "desc" }, { id: "desc" }],
       select: {
@@ -90,6 +90,28 @@ describe("SCRUM-32 — API publique d'une source", () => {
     expect(findMany).toHaveBeenCalledTimes(4);
     await expect(service.getArticles("le-monde", "nl", "not a cursor"))
       .rejects.toThrow(BadRequestException);
+  });
+
+  it("limite les articles à l'instant présent, y compris en pagination", async () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(new Date("2026-11-15T10:00:00.000Z"));
+      const findMany = vi.fn().mockResolvedValue(fixture.slice(0, 2));
+      const service = new PublicSourceService({
+        prisma: {
+          source: { findUnique: vi.fn().mockResolvedValue(baseSource) },
+          article: { findMany },
+        },
+      } as unknown as DatabaseService);
+      const first = await service.getArticles("le-monde", "fr", undefined, 1);
+      await service.getArticles("le-monde", "fr", first.nextCursor ?? undefined, 1);
+      for (const call of findMany.mock.calls) {
+        expect(call[0].where.publishedAt).toEqual({ lte: new Date("2026-11-15T10:00:00.000Z") });
+      }
+      expect(findMany.mock.calls[1]?.[0]?.where.OR).toBeDefined();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("renvoie 404 pour une source absente ou inactive", async () => {

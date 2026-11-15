@@ -1,5 +1,8 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -87,7 +90,7 @@ export default function ImportCsvPage() {
   const router = useRouter();
   const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [importType, setImportType] = useState("");
+  const [importType, setImportType] = useAdminSessionFilter("csv-import", "importType", "");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [analysis, setAnalysis] = useState<AnalysisState>(null);
@@ -300,8 +303,9 @@ export default function ImportCsvPage() {
 
   return (
     <main className="container py-4 py-lg-5">
+      <AdminFilterResetButton section="csv-import" />
       <div className="mb-4">
-        <Link href="/admin" className="btn btn-outline-secondary">
+        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour à l’administration
         </Link>
       </div>
@@ -370,7 +374,7 @@ export default function ImportCsvPage() {
             className="btn btn-primary"
             disabled={analyzing || importing}
             onClick={() => void analyzeFile()}
-          >
+          ><AdminIcon name="upload" className="me-2 align-middle" /> 
             {analyzing ? "Analyse…" : "Charger le fichier"}
           </button>
         </div>
@@ -472,7 +476,7 @@ export default function ImportCsvPage() {
                 className="btn btn-primary"
                 disabled={importing || analyzing}
                 onClick={() => void importAnalyzedData()}
-              >
+              ><AdminIcon name="upload" className="me-2 align-middle" /> 
                 {importing ? "Chargement…" : "Charger"}
               </button>
 
@@ -481,7 +485,7 @@ export default function ImportCsvPage() {
                 className="btn btn-outline-secondary"
                 disabled={importing}
                 onClick={() => window.location.reload()}
-              >
+              ><AdminIcon name="x-circle" className="me-2 align-middle" /> 
                 Annuler
               </button>
             </div>

@@ -1,5 +1,8 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -132,9 +135,7 @@ function PaginationNav({
             aria-label="Page précédente"
             disabled={pagination.page === 1}
             onClick={() => onPageChange(pagination.page - 1)}
-          >
-            ‹
-          </button>
+          ><AdminIcon name="chevron-left" size={16} /></button>
         </li>
 
         {pageItems(pagination.page, pagination.totalPages).map((item) =>
@@ -180,9 +181,7 @@ function PaginationNav({
             aria-label="Page suivante"
             disabled={pagination.page === pagination.totalPages}
             onClick={() => onPageChange(pagination.page + 1)}
-          >
-            ›
-          </button>
+          ><AdminIcon name="chevron-right" size={16} /></button>
         </li>
       </ul>
     </nav>
@@ -207,15 +206,15 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
     totalPages: 0,
   });
 
-  const [searchInput, setSearchInput] = useState(initialSourceName);
-  const [search, setSearch] = useState("");
-  const [sourceId, setSourceId] = useState(initialSourceId);
-  const [categoryId, setCategoryId] = useState("");
-  const [language, setLanguage] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("all");
-  const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useAdminSessionFilter("feeds", "searchInput", initialSourceName);
+  const [search, setSearch] = useAdminSessionFilter("feeds", "search", "");
+  const [sourceId, setSourceId] = useAdminSessionFilter("feeds", "sourceId", initialSourceId);
+  const [categoryId, setCategoryId] = useAdminSessionFilter("feeds", "categoryId", "");
+  const [language, setLanguage] = useAdminSessionFilter("feeds", "language", "");
+  const [status, setStatus] = useAdminSessionFilter<StatusFilter>("feeds", "status", "all");
+  const [page, setPage] = useAdminSessionFilter("feeds", "page", 1);
   const [pageSize, setPageSize] =
-    useState<(typeof PAGE_SIZES)[number]>(10);
+    useAdminSessionFilter<(typeof PAGE_SIZES)[number]>("feeds", "pageSize", 10);
   const [reloadKey, setReloadKey] = useState(0);
 
   const [loading, setLoading] = useState(true);
@@ -480,6 +479,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
 
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
+      <AdminFilterResetButton section="feeds" />
       <header className="mb-4">
         <h1 className="h2 mb-1">Flux RSS/XML</h1>
         <p className="text-body-secondary mb-0">
@@ -489,10 +489,10 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
 
       <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
         <div className="d-flex flex-wrap gap-2">
-          <Link href="/admin" className="btn btn-outline-secondary">
+          <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
             Retour à l’administration
           </Link>
-          <Link href="/admin/feeds/new" className="btn btn-primary">
+          <Link href="/admin/feeds/new" className="btn btn-primary"><AdminIcon name="plus-circle" className="me-2 align-middle" /> 
             Nouveau flux RSS/XML
           </Link>
           <button
@@ -500,7 +500,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
             className="btn btn-outline-primary"
             disabled={exporting}
             onClick={() => void exportActiveFeeds()}
-          >
+          ><AdminIcon name="download" className="me-2 align-middle" /> 
             {exporting ? "Exportation…" : "Exporter"}
           </button>
         </div>
@@ -521,7 +521,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
           />
-          <button type="submit" className="btn btn-outline-primary">
+          <button type="submit" className="btn btn-outline-primary"><AdminIcon name="search" className="me-2 align-middle" /> 
             Rechercher
           </button>
         </form>
@@ -799,7 +799,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                             href={feedUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="btn btn-sm btn-outline-secondary"
+                            className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                             title="Ouvrir le flux"
                             aria-label={"Ouvrir le flux " + label}
                           >
@@ -820,7 +820,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                             encodeURIComponent(feed.id) +
                             "/edit"
                           }
-                          className="btn btn-sm btn-outline-primary"
+                          className="btn btn-sm btn-outline-primary lmn-admin-compact-action"
                           title="Modifier le flux"
                           aria-label={"Modifier le flux " + label}
                         >
@@ -835,7 +835,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                         </Link>
                         <button
                           type="button"
-                          className="btn btn-sm btn-outline-danger"
+                          className="btn btn-sm btn-outline-danger lmn-admin-compact-action"
                           title={"Supprimer le flux " + label}
                           aria-label={"Supprimer le flux " + label}
                           disabled={updating}
@@ -856,7 +856,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                         className={"d-lg-none " + styles.mobileActions}
                       >
                         <summary
-                          className="btn btn-sm btn-outline-secondary"
+                          className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                           aria-label={"Actions pour le flux " + label}
                           title="Actions"
                         >
@@ -894,7 +894,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                               "/edit"
                             }
                             className="dropdown-item"
-                          >
+                          ><AdminIcon name="pencil-square" className="me-2 align-middle" /> 
                             Modifier
                           </Link>
                           <button
@@ -905,7 +905,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
                               event.currentTarget.closest("details")?.removeAttribute("open");
                               setDeleteTarget(feed);
                             }}
-                          >
+                          ><AdminIcon name="trash" className="me-2 align-middle" /> 
                             Supprimer
                           </button>
                         </div>

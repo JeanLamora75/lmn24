@@ -12,7 +12,7 @@ export type HomeArticle = {
   imageUrl: string | null;
   articleUrl: string;
   publishedAt: string;
-  source: { name: string; logoUrl: string | null; countryIsoCode2: string | null };
+  source: { name: string; slug?: string; logoUrl: string | null; countryIsoCode2: string | null };
 };
 
 export type HomeSectionData = {
@@ -31,6 +31,12 @@ export type HomeSectionData = {
 export function localizedCategoryHref(locale: string, slug: string): string {
   return "/" + encodeURIComponent(locale) +
     "/category/" + encodeURIComponent(slug);
+}
+
+export function localizedSourceHref(locale: string, slug: string | undefined): string | null {
+  if (!/^(?:fr|en|de|es|pt|it|ru|nl)$/.test(locale) ||
+      !slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null;
+  return "/" + locale + "/source/" + encodeURIComponent(slug);
 }
 
 export function safeExternalUrl(value: string | null): string | null {

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { DEFAULT_CATEGORY_HOME_COLOR } from "@lmn24/contracts";
 import { hasLocale } from "next-intl";
@@ -5,11 +6,17 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { CategoryArticles } from "@/components/category/CategoryArticles";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { PublicBreadcrumbs } from "@/components/seo/PublicBreadcrumbs";
+import { collectionSchema } from "@/lib/seo-schema";
 import type { CategoryPageResponse } from "@/components/category/category-page-data";
 import styles from "@/components/category/category.module.css";
 import { localizedCategoryHref } from "@/components/home/home-data";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
+import { getSeoAvailableLocales } from "@/lib/seo-availability";
+import { seoAlternates, seoUnavailable, type SeoLocale } from "@/lib/seo-metadata";
+import { seoSocial, SEO_COPY, cleanSeoText } from "@/lib/seo-social";
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +63,27 @@ async function loadFirstPage(
   }
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, slug } = await params;
+  if (!hasLocale(routing.locales, locale) ||
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 255) {
+    return seoUnavailable;
+  }
+  const available = await getSeoAvailableLocales("categories", slug);
+  // Missing or empty language variants must never be treated as equivalents.
+  if (!available?.includes(locale as SeoLocale)) return seoUnavailable;
+  const lang = locale as SeoLocale;
+  const messages = await getMessages({ locale });
+  const categoryNames = messages.categories as Record<string, string>;
+  const label = cleanSeoText(categoryNames[slug] ?? slug.replace(/-/g, " "), 90) ?? slug;
+  const title = label + " — " + SEO_COPY[lang].category;
+  const description = SEO_COPY[lang].categoryDescription(label);
+  const url = "https://www.lmn24.com/" + locale + "/category/" + slug;
+  return { title, description,
+    alternates: seoAlternates(lang, "category", slug, available),
+    ...seoSocial(lang, title + " | LMN24", description, url) };
+}
+
 export default async function CategoryPage({ params }: Props) {
   const { locale, slug } = await params;
   if (
@@ -78,6 +106,15 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <main className={"container px-3 px-lg-4 " + styles.page} style={sectionStyle}>
+      {page && <StructuredData data={collectionSchema({locale:locale as SeoLocale,
+        url:"https://www.lmn24.com/"+locale+"/category/"+slug,name:label,
+        description:SEO_COPY[locale as SeoLocale].categoryDescription(label),
+        breadcrumbs:[{name:"LMN24",url:"https://www.lmn24.com/"+locale},
+          {name:label,url:"https://www.lmn24.com/"+locale+"/category/"+slug}],
+      })}/>}
+      <PublicBreadcrumbs label={t.articles} items={[
+        { label: "LMN24", href: "/" + locale }, { label },
+      ]} />
       <header className={styles.heading}>
         <h1 className={styles.title}>{label}</h1>
       </header>

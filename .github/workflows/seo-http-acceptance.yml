@@ -1,0 +1,30 @@
+name: SEO post-deployment acceptance
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  production-seo:
+    name: Verify live production SEO routes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.21.0
+      - name: Validate production SEO HTML and XML (read-only)
+        run: node scripts/seo-http-acceptance.mjs | tee "$RUNNER_TEMP/seo-http-acceptance.json"
+      - name: Preserve evidence even when validation fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-post-deploy-acceptance
+          path: ${{ runner.temp }}/seo-http-acceptance.json
+          if-no-files-found: warn
+          retention-days: 30

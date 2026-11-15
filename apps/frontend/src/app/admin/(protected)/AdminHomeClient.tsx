@@ -1,5 +1,8 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -8,7 +11,7 @@ import { ADMIN_SECTIONS, filterAdminSections } from "./admin-home.data";
 import styles from "./admin-home.module.css";
 
 export function AdminHomeClient() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useAdminSessionFilter("home", "query", "");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const matchedSections = filterAdminSections(ADMIN_SECTIONS, query);
   const hasQuery = query.trim().length > 0;
@@ -17,6 +20,7 @@ export function AdminHomeClient() {
 
   return (
     <main className="container-fluid px-3 px-lg-5 py-4 py-lg-5">
+      <AdminFilterResetButton section="home" />
       <header className={styles.pageHeader}>
         <h1 className="display-6 fw-semibold mb-2">Administration LMN24</h1>
         <p className="text-body-secondary mb-0">
@@ -45,7 +49,7 @@ export function AdminHomeClient() {
               className="btn btn-outline-secondary"
               onClick={() => setQuery("")}
               aria-label="Effacer la recherche"
-            >
+            ><AdminIcon name="arrow-counterclockwise" className="me-2 align-middle" /> 
               Effacer
             </button>
           )}
@@ -64,7 +68,7 @@ export function AdminHomeClient() {
             <p className="text-body-secondary mb-3">
               Essayez un autre mot-clé ou réaffichez toutes les fonctionnalités.
             </p>
-            <button type="button" className="btn btn-primary" onClick={() => setQuery("")}>
+            <button type="button" className="btn btn-primary" onClick={() => setQuery("")}><AdminIcon name="arrow-counterclockwise" className="me-2 align-middle" /> 
               Réinitialiser la recherche
             </button>
           </section>

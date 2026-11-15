@@ -1,4 +1,5 @@
 "use client";
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -66,7 +67,7 @@ export function SchedulerSettings() {
     <div className="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
       <div><h1 className="h2 mb-1">Automatisation des parsers</h1>
       <p className="text-body-secondary mb-0">Préparer les horaires des moteurs de collecte existants.</p></div>
-      <Link href="/admin" className="btn btn-outline-secondary">Retour administration</Link>
+      <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour administration</Link>
     </div>
     <div role="note" className="alert alert-warning"><strong>Planification automatique.</strong> Chaque parser peut être activé séparément. Les exécutions suivent un verrou global partagé avec les lancements manuels. Les changements ne sont effectifs qu&apos;après enregistrement.</div>
     {error&&<div role="alert" className="alert alert-danger">{error}</div>}
@@ -101,7 +102,7 @@ export function SchedulerSettings() {
             {row.isEnabled ? "Planification activée. Prochaine échéance : " + (row.nextDueAt ? new Date(row.nextDueAt).toLocaleString("fr-FR") : "initialisation en cours") : "Aucune exécution automatique planifiée."}
           </p>
           <button className="btn btn-primary" type="button" disabled={saving!==null}
-            onClick={()=>void save(row)}>{saving===type?"Enregistrement…":"Enregistrer les paramètres"}</button>
+            onClick={()=>void save(row)}><AdminIcon name="floppy" className="me-2 align-middle" /> {saving===type?"Enregistrement…":"Enregistrer les paramètres"}</button>
         </div>
       </section></div>
     })}

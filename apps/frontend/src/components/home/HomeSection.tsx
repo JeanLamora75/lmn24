@@ -8,6 +8,7 @@ import { HomeArticleMedia } from "./HomeArticleMedia";
 import { HomeCarousel } from "./HomeCarousel";
 import {
   localizedCategoryHref,
+  localizedSourceHref,
   safeExternalUrl,
   type HomeArticle,
   type HomeSectionData,
@@ -33,16 +34,19 @@ type Props = {
   moreNewsLabel: string;
   previousLabel: string;
   nextLabel: string;
+  aboveFold?: boolean;
 };
 
 export function ArticleCard({
   article,
   locale,
   layoutType,
+  eagerMedia = false,
 }: {
   article: HomeArticle;
   locale: string;
   layoutType: CategoryHomeLayout;
+  eagerMedia?: boolean;
 }) {
   const href = safeExternalUrl(article.articleUrl);
   const pubDate = new Date(article.publishedAt);
@@ -58,6 +62,7 @@ export function ArticleCard({
       }).format(pubDate)
     : null;
   const compact = layoutType === "HEADLINES" || layoutType === "COMPACT";
+  const sourceHref = localizedSourceHref(locale, article.source.slug);
 
   const content = (
     <>
@@ -65,6 +70,7 @@ export function ArticleCard({
         <HomeArticleMedia
           imageUrl={article.imageUrl}
           logoUrl={article.source.logoUrl}
+          eager={eagerMedia}
         />
       )}
       <div className={styles.articleBody}>
@@ -102,6 +108,11 @@ export function ArticleCard({
       ) : (
         <div className={styles.articleLink}>{content}</div>
       )}
+      {sourceHref && (
+        <Link href={sourceHref} className={styles.sourceDirectoryLink}>
+          {article.source.name}
+        </Link>
+      )}
     </article>
   );
 }
@@ -114,18 +125,20 @@ export function HomeSection({
   moreNewsLabel,
   previousLabel,
   nextLabel,
+  aboveFold = false,
 }: Props) {
   const sectionStyle = {
     "--category-accent": section.themeColor,
   } as CSSProperties;
   const categoryHref = localizedCategoryHref(locale, section.slug);
 
-  const articles = section.articles.map((article) => (
+  const articles = section.articles.map((article, index) => (
     <ArticleCard
       key={article.id}
       article={article}
       locale={locale}
       layoutType={section.layoutType}
+      eagerMedia={aboveFold && index === 0}
     />
   ));
 

@@ -5,6 +5,8 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { HashtagThumbnail } from "@/components/hashtags/HashtagThumbnail";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { collectionSchema } from "@/lib/seo-schema";
 import {
   getHashtagLabels, hashtagRankingHref, parseRankingParams,
   type RankingMode, type RankingPage, type RankingParams, type RankingPeriod,
@@ -12,6 +14,8 @@ import {
 import styles from "@/components/hashtags/hashtags.module.css";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
+import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
+import { seoSocial } from "@/lib/seo-social";
 
 export const dynamic = "force-dynamic";
 const PAGE_SIZE = 20;
@@ -47,10 +51,18 @@ function formattedDate(iso: string | null | undefined, locale: string): string {
   }).format(new Date(iso)) + " UTC";
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
   const labels = getHashtagLabels(locale);
-  return { title: labels.title, description: labels.description };
+  const filters = await searchParams;
+  // Filtered and paginated rankings are volatile: keep only the base landing indexed.
+  const filtered = Object.keys(filters).length > 0;
+  return { title: labels.title, description: labels.description,
+    ...(filtered ? { robots: { index: false, follow: true } } : {}),
+    alternates: seoAlternates(locale as SeoLocale, "hashtags"),
+    ...seoSocial(locale as SeoLocale, labels.title + " | LMN24", labels.description,
+      "https://www.lmn24.com/" + locale + "/hashtags"),
+  };
 }
 
 export default async function PublicHashtagsPage({ params, searchParams }: Props) {
@@ -67,6 +79,10 @@ export default async function PublicHashtagsPage({ params, searchParams }: Props
 
   return (
     <main className={"container px-3 px-lg-4 " + styles.page}>
+      {Object.keys(await searchParams).length === 0 && <StructuredData data={collectionSchema({
+        locale: locale as SeoLocale, url: "https://www.lmn24.com/" + locale + "/hashtags",
+        name: labels.title, description: labels.description,
+      })} />}
       <header className={styles.intro}>
         <h1 className="display-6 fw-semibold mb-2">{labels.title}</h1>
         <p className={styles.subtitle}>{labels.description}</p>

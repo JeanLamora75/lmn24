@@ -1,5 +1,8 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
 import { WeatherMonitoringPanel } from "./WeatherMonitoringPanel";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -136,20 +139,20 @@ function Chart({ rows, metric = "runs" }: { rows: Summary["timeline"]; metric?: 
 }
 
 export function ParserMonitoringScreen() {
-  const [parser, setParser] = useState<Parser>("ALL");
-  const [period, setPeriod] = useState<Period>("24h");
-  const [status, setStatus] = useState<Status>("ALL");
-  const [search, setSearch] = useState("");
-  const [countryId, setCountryId] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [language, setLanguage] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [pageSize, setPageSize] = useState(20);
-  const [page, setPage] = useState(1);
-  const [batchPage, setBatchPage] = useState(1);
-  const [eventPage, setEventPage] = useState(1);
-  const [errorsOnly, setErrorsOnly] = useState(false);
+  const [parser, setParser] = useAdminSessionFilter<Parser>("parser-monitoring", "parser", "ALL");
+  const [period, setPeriod] = useAdminSessionFilter<Period>("parser-monitoring", "period", "24h");
+  const [status, setStatus] = useAdminSessionFilter<Status>("parser-monitoring", "status", "ALL");
+  const [search, setSearch] = useAdminSessionFilter("parser-monitoring", "search", "");
+  const [countryId, setCountryId] = useAdminSessionFilter("parser-monitoring", "countryId", "");
+  const [categoryId, setCategoryId] = useAdminSessionFilter("parser-monitoring", "categoryId", "");
+  const [language, setLanguage] = useAdminSessionFilter("parser-monitoring", "language", "");
+  const [from, setFrom] = useAdminSessionFilter("parser-monitoring", "from", "");
+  const [to, setTo] = useAdminSessionFilter("parser-monitoring", "to", "");
+  const [pageSize, setPageSize] = useAdminSessionFilter("parser-monitoring", "pageSize", 20);
+  const [page, setPage] = useAdminSessionFilter("parser-monitoring", "page", 1);
+  const [batchPage, setBatchPage] = useAdminSessionFilter("parser-monitoring", "batchPage", 1);
+  const [eventPage, setEventPage] = useAdminSessionFilter("parser-monitoring", "eventPage", 1);
+  const [errorsOnly, setErrorsOnly] = useAdminSessionFilter("parser-monitoring", "errorsOnly", false);
   const [revision, setRevision] = useState(0);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [runs, setRuns] = useState<PageData<RunRow> | null>(null);
@@ -240,6 +243,7 @@ export function ParserMonitoringScreen() {
   const exportUrl = apiRoot + "export?" + base + "&page=1";
 
   return <main className="container-fluid px-3 px-lg-5 py-4">
+      <AdminFilterResetButton section="parser-monitoring" />
     <div className="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
       <div>
         <h1 className="h2 mb-1">Logs et statistiques des parsers</h1>
@@ -251,7 +255,7 @@ export function ParserMonitoringScreen() {
         <Link href="/admin/parser" className="btn btn-outline-primary btn-sm">Parser Infos</Link>
         <Link href="/admin/video-parser" className="btn btn-outline-primary btn-sm">Parser Vidéos</Link>
         <Link href="/admin/weather-parser" className="btn btn-outline-primary btn-sm">Parser Météo</Link>
-        <Link href="/admin" className="btn btn-outline-secondary btn-sm">Retour admin</Link>
+        <Link href="/admin" className="btn btn-outline-secondary btn-sm"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour admin</Link>
       </div>
     </div>
     <section className="card mb-4 shadow-sm" aria-label="Filtres de supervision">
@@ -320,7 +324,7 @@ export function ParserMonitoringScreen() {
           </div>}
           <div className="col-auto">
             <button type="button" className="btn btn-primary"
-              disabled={loading} onClick={()=>setRevision(n=>n+1)}>
+              disabled={loading} onClick={()=>setRevision(n=>n+1)}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> 
               {loading?"Chargement…":"Actualiser"}
             </button>
           </div>
@@ -338,7 +342,7 @@ export function ParserMonitoringScreen() {
     </section>
     {parser!=="WEATHER"&&error && <div className="alert alert-danger" role="alert">
       {error} <button className="btn btn-sm btn-outline-danger ms-2"
-        onClick={()=>setRevision(n=>n+1)}>Réessayer</button>
+        onClick={()=>setRevision(n=>n+1)}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Réessayer</button>
     </div>}
     <WeatherMonitoringPanel period={period} from={from} to={to}
       visible={parser==="ALL"||parser==="WEATHER"}/>
@@ -416,7 +420,7 @@ export function ParserMonitoringScreen() {
             <td>{duration(row.durationMs)}</td><td>{fmt(row.itemsFound)}</td>
             <td>{fmt(row.imported)}</td><td>{fmt(row.skipped)}</td>
             <td><button type="button" className="btn btn-outline-primary btn-sm"
-              onClick={()=>openRun(row)}>Détails</button></td>
+              onClick={()=>openRun(row)}><AdminIcon name="eye" className="me-2 align-middle" /> Détails</button></td>
           </tr>)}</tbody>
         </table>
       </div>}

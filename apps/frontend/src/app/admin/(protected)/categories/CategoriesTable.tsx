@@ -1,5 +1,8 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -78,9 +81,7 @@ function PaginationNav({
             aria-label="Page précédente"
             disabled={page === 1}
             onClick={() => onPageChange(page - 1)}
-          >
-            ‹
-          </button>
+          ><AdminIcon name="chevron-left" size={16} /></button>
         </li>
 
         {pageItems(page, totalPages).map((item) =>
@@ -120,9 +121,7 @@ function PaginationNav({
             aria-label="Page suivante"
             disabled={page === totalPages}
             onClick={() => onPageChange(page + 1)}
-          >
-            ›
-          </button>
+          ><AdminIcon name="chevron-right" size={16} /></button>
         </li>
       </ul>
     </nav>
@@ -135,12 +134,12 @@ export function CategoriesTable() {
   const wasOrganizingRef = useRef(false);
 
   const [items, setItems] = useState<CategoryItem[]>([]);
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("all");
-  const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useAdminSessionFilter("categories", "searchInput", "");
+  const [search, setSearch] = useAdminSessionFilter("categories", "search", "");
+  const [status, setStatus] = useAdminSessionFilter<StatusFilter>("categories", "status", "all");
+  const [page, setPage] = useAdminSessionFilter("categories", "page", 1);
   const [pageSize, setPageSize] =
-    useState<(typeof PAGE_SIZES)[number]>(10);
+    useAdminSessionFilter<(typeof PAGE_SIZES)[number]>("categories", "pageSize", 10);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -304,6 +303,7 @@ export function CategoriesTable() {
 
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
+      <AdminFilterResetButton section="categories" />
       <header className="mb-4">
         <h1 className="h2 mb-1">Catégories</h1>
         <p className="text-body-secondary mb-0">
@@ -312,7 +312,7 @@ export function CategoriesTable() {
       </header>
 
       <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
-        <Link href="/admin" className="btn btn-outline-secondary">
+        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour à l’administration
         </Link>
 
@@ -347,7 +347,7 @@ export function CategoriesTable() {
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
           />
-          <button type="submit" className="btn btn-outline-primary">
+          <button type="submit" className="btn btn-outline-primary"><AdminIcon name="search" className="me-2 align-middle" /> 
             Rechercher
           </button>
         </form>
@@ -534,7 +534,7 @@ export function CategoriesTable() {
                           href={publicUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn btn-sm btn-outline-secondary"
+                          className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                           title="Ouvrir la page"
                           aria-label={"Ouvrir la page " + label}
                         >
@@ -550,7 +550,7 @@ export function CategoriesTable() {
 
                         <Link
                           href={editUrl}
-                          className="btn btn-sm btn-outline-primary"
+                          className="btn btn-sm btn-outline-primary lmn-admin-compact-action"
                           title="Modifier la catégorie"
                           aria-label={"Modifier " + label}
                         >
@@ -569,7 +569,7 @@ export function CategoriesTable() {
                         className={"d-lg-none " + styles.mobileActions}
                       >
                         <summary
-                          className="btn btn-sm btn-outline-secondary"
+                          className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                           aria-label={"Actions pour " + label}
                           title="Actions"
                         >
@@ -597,7 +597,7 @@ export function CategoriesTable() {
                             Ouvrir la page
                           </a>
 
-                          <Link href={editUrl} className="dropdown-item">
+                          <Link href={editUrl} className="dropdown-item"><AdminIcon name="pencil-square" className="me-2 align-middle" /> 
                             Modifier
                           </Link>
                         </div>

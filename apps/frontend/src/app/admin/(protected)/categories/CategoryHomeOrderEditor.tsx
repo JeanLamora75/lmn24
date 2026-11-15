@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useEffect, useRef, useState, type DragEvent } from "react";
 
 import { getFrenchCategoryLabel } from "@/lib/fr-category-labels";
@@ -210,7 +211,7 @@ export function CategoryHomeOrderEditor({
                 className="btn btn-outline-danger btn-sm ms-2"
                 disabled={busy}
                 onClick={() => void reloadLatest()}
-              >
+              ><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> 
                 Recharger le classement
               </button>
             )}
@@ -295,7 +296,7 @@ export function CategoryHomeOrderEditor({
             className="btn btn-outline-secondary"
             disabled={busy}
             onClick={onCancel}
-          >
+          ><AdminIcon name="x-circle" className="me-2 align-middle" /> 
             Annuler
           </button>
           <button
@@ -303,7 +304,7 @@ export function CategoryHomeOrderEditor({
             className="btn btn-primary"
             disabled={busy || !changed}
             onClick={() => void save()}
-          >
+          ><AdminIcon name="floppy" className="me-2 align-middle" /> 
             {saving ? "Enregistrement…" : "Enregistrer l’ordre"}
           </button>
         </div>

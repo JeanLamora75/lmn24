@@ -1,11 +1,13 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { clearAdminSessionFilters } from "@/lib/admin-session-filters";
 import styles from "./login.module.css";
 
 const loginSchema = z.object({
@@ -113,6 +115,7 @@ export function AdminLoginForm() {
         return;
       }
 
+      clearAdminSessionFilters();
       router.replace("/admin");
       router.refresh();
     } catch {
@@ -217,7 +220,7 @@ export function AdminLoginForm() {
               type="submit"
               className="btn btn-primary w-100"
               disabled={isSubmitting}
-            >
+            ><AdminIcon name="check-circle" className="me-2 align-middle" /> 
               {isSubmitting ? (
                 <>
                   <span

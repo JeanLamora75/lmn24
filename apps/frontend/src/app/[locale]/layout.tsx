@@ -8,10 +8,15 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { PublicFooter } from "@/components/public/PublicFooter";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { siteSchema } from "@/lib/seo-schema";
+import type { SeoLocale } from "@/lib/seo-metadata";
+import { GoogleAnalyticsTracker } from "@/components/public/GoogleAnalyticsTracker";
 import { PublicHeader } from "@/components/public/PublicHeader";
 import { routing, type AppLocale } from "@/i18n/routing";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.lmn24.com"),
   title: { default: "LMN24", template: "%s | LMN24" },
   description: "Agrégateur multilingue d'actualités internationales.",
   icons: { icon: [{ url: "/logo_lmn24.png", type: "image/png", sizes: "192x192" }], shortcut: "/logo_lmn24.png", apple: "/logo_lmn24.png" },
@@ -38,10 +43,12 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html lang={locale}>
       <body className="d-flex min-vh-100 flex-column">
+        <StructuredData data={siteSchema(locale as SeoLocale)} />
         <NextIntlClientProvider>
           <PublicHeader />
           <div className="flex-grow-1">{children}</div>
           <PublicFooter />
+          <GoogleAnalyticsTracker />
         </NextIntlClientProvider>
       </body>
     </html>

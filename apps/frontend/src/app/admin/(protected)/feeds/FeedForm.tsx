@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -116,6 +117,8 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
   });
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [pageError, setPageError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [addAnother, setAddAnother] = useState(true);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -287,6 +290,7 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
 
     setSaving(true);
     setPageError("");
+    setSuccessMessage("");
 
     try {
       const endpoint =
@@ -322,8 +326,16 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
         );
       }
 
-      router.push("/admin/feeds");
-      router.refresh();
+      if (mode === "create" && addAnother) {
+        // Preserve only the selected source to make successive feed creation fast.
+        // Every other field returns to its default, preventing an accidental duplicate.
+        setValues({ ...EMPTY_FEED, sourceId: values.sourceId });
+        setFieldErrors({});
+        setSuccessMessage("Flux RSS/XML enregistré. Vous pouvez ajouter un nouveau flux pour cette source.");
+      } else {
+        router.push("/admin/feeds");
+        router.refresh();
+      }
     } catch (error) {
       if (error instanceof Error) {
         setPageError(error.message);
@@ -440,13 +452,13 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
   return (
     <main className="container py-4 py-lg-5">
       <div className="d-flex flex-wrap gap-2 mb-4">
-        <Link href="/admin" className="btn btn-outline-secondary">
+        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour à l’administration
         </Link>
         <Link
           href="/admin/feeds"
           className="btn btn-outline-secondary"
-        >
+        ><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour aux flux RSS/XML
         </Link>
       </div>
@@ -465,6 +477,11 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
       {pageError ? (
         <div className="alert alert-danger" role="alert">
           {pageError}
+        </div>
+      ) : null}
+      {successMessage ? (
+        <div className="alert alert-success" role="status">
+          {successMessage}
         </div>
       ) : null}
 
@@ -593,22 +610,37 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
                   ) : null}
                 </div>
 
-                <div className="form-check form-switch">
-                  <input
-                    id="feed-active"
-                    type="checkbox"
-                    className="form-check-input"
-                    checked={values.isActive}
-                    onChange={(event) =>
-                      updateValue("isActive", event.target.checked)
-                    }
-                  />
-                  <label
-                    className="form-check-label"
-                    htmlFor="feed-active"
-                  >
-                    Flux actif
-                  </label>
+                <div className="d-flex flex-wrap align-items-center gap-4">
+                  <div className="form-check form-switch mb-0">
+                    <input
+                      id="feed-active"
+                      type="checkbox"
+                      className="form-check-input"
+                      checked={values.isActive}
+                      onChange={(event) =>
+                        updateValue("isActive", event.target.checked)
+                      }
+                    />
+                    <label className="form-check-label" htmlFor="feed-active">
+                      Flux actif
+                    </label>
+                  </div>
+                  {mode === "create" ? (
+                    <div className="form-check form-switch mb-0">
+                      <input
+                        id="feed-add-another"
+                        type="checkbox"
+                        role="switch"
+                        className="form-check-input"
+                        checked={addAnother}
+                        disabled={saving}
+                        onChange={(event) => setAddAnother(event.target.checked)}
+                      />
+                      <label className="form-check-label" htmlFor="feed-add-another">
+                        Ajouter Nouveau
+                      </label>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -634,7 +666,7 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
                       type="button"
                       className="btn btn-outline-primary"
                       disabled
-                    >
+                    ><AdminIcon name="eye" className="me-2 align-middle" /> 
                       Consulter le site
                     </button>
                   )}
@@ -653,7 +685,7 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
                       type="button"
                       className="btn btn-outline-primary"
                       disabled
-                    >
+                    ><AdminIcon name="eye" className="me-2 align-middle" /> 
                       Voir le flux
                     </button>
                   )}
@@ -668,7 +700,7 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
             type="submit"
             className="btn btn-primary"
             disabled={saving || deleting || loadingDeleteImpact}
-          >
+          ><AdminIcon name="floppy" className="me-2 align-middle" /> 
             {saving ? "Enregistrement…" : "Enregistrer"}
           </button>
 
@@ -676,7 +708,7 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
             href="/admin/feeds"
             className="btn btn-outline-secondary"
             aria-disabled={saving || deleting}
-          >
+          ><AdminIcon name="x-circle" className="me-2 align-middle" /> 
             Annuler
           </Link>
 
@@ -686,7 +718,7 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
               className="btn btn-outline-danger ms-sm-auto"
               disabled={saving || deleting || loadingDeleteImpact}
               onClick={() => void openDeleteDialog()}
-            >
+            ><AdminIcon name="trash" className="me-2 align-middle" /> 
               {loadingDeleteImpact
                 ? "Préparation…"
                 : "Supprimer"}
@@ -734,7 +766,7 @@ export function FeedForm({ mode, feedId, initialSourceId }: Props) {
                     className="btn btn-outline-secondary"
                     disabled={deleting}
                     onClick={() => setDeleteDialogOpen(false)}
-                  >
+                  ><AdminIcon name="x-circle" className="me-2 align-middle" /> 
                     Annuler
                   </button>
                   <button

@@ -1,5 +1,8 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -110,7 +113,7 @@ function PaginationNav({
       <ul className={"pagination pagination-sm mb-0 " + styles.paginationList}>
         <li className={"page-item " + (pagination.page === 1 ? "disabled" : "")}>
           <button type="button" className="page-link" aria-label="Première page"
-            disabled={pagination.page === 1} onClick={() => onPageChange(1)}>«</button>
+            disabled={pagination.page === 1} onClick={() => onPageChange(1)}><AdminIcon name="chevron-double-left" size={16} /></button>
         </li>
         <li className={"page-item " + (pagination.page === 1 ? "disabled" : "")}>
           <button
@@ -119,9 +122,7 @@ function PaginationNav({
             aria-label="Page précédente"
             disabled={pagination.page === 1}
             onClick={() => onPageChange(pagination.page - 1)}
-          >
-            ‹
-          </button>
+          ><AdminIcon name="chevron-left" size={16} /></button>
         </li>
 
         {pageItems(pagination.page, pagination.totalPages).map((item) => (
@@ -144,14 +145,12 @@ function PaginationNav({
             aria-label="Page suivante"
             disabled={pagination.page === pagination.totalPages}
             onClick={() => onPageChange(pagination.page + 1)}
-          >
-            ›
-          </button>
+          ><AdminIcon name="chevron-right" size={16} /></button>
         </li>
         <li className={"page-item " + (pagination.page === pagination.totalPages ? "disabled" : "")}>
           <button type="button" className="page-link" aria-label="Dernière page"
             disabled={pagination.page === pagination.totalPages}
-            onClick={() => onPageChange(pagination.totalPages)}>»</button>
+            onClick={() => onPageChange(pagination.totalPages)}><AdminIcon name="chevron-double-right" size={16} /></button>
         </li>
       </ul>
     </nav>
@@ -170,16 +169,16 @@ export function SourcesTable() {
     totalPages: 0,
   });
 
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
-  const [countryId, setCountryId] = useState("");
-  const [status, setStatus] = useState<"all" | "active" | "inactive">("all");
-  const [page, setPage] = useState(1);
-  const [feedRange, setFeedRange] = useState("all");
-  const [articleRange, setArticleRange] = useState("all");
-  const [missingSocial, setMissingSocial] = useState("all");
+  const [searchInput, setSearchInput] = useAdminSessionFilter("sources", "searchInput", "");
+  const [search, setSearch] = useAdminSessionFilter("sources", "search", "");
+  const [countryId, setCountryId] = useAdminSessionFilter("sources", "countryId", "");
+  const [status, setStatus] = useAdminSessionFilter<"all" | "active" | "inactive">("sources", "status", "all");
+  const [page, setPage] = useAdminSessionFilter("sources", "page", 1);
+  const [feedRange, setFeedRange] = useAdminSessionFilter("sources", "feedRange", "all");
+  const [articleRange, setArticleRange] = useAdminSessionFilter("sources", "articleRange", "all");
+  const [missingSocial, setMissingSocial] = useAdminSessionFilter("sources", "missingSocial", "all");
   const [pageSize, setPageSize] =
-    useState<(typeof PAGE_SIZES)[number]>(10);
+    useAdminSessionFilter<(typeof PAGE_SIZES)[number]>("sources", "pageSize", 10);
   const [reloadKey, setReloadKey] = useState(0);
 
   const [loading, setLoading] = useState(true);
@@ -370,6 +369,7 @@ export function SourcesTable() {
 
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
+      <AdminFilterResetButton section="sources" />
       <header className="mb-4">
         <h1 className="h2 mb-1">Sources / Journaux</h1>
         <p className="text-body-secondary mb-0">
@@ -379,10 +379,10 @@ export function SourcesTable() {
 
       <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
         <div className="d-flex flex-wrap gap-2">
-          <Link href="/admin" className="btn btn-outline-secondary">
+          <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
             Retour à l’administration
           </Link>
-          <Link href="/admin/sources/new" className="btn btn-primary">
+          <Link href="/admin/sources/new" className="btn btn-primary"><AdminIcon name="plus-circle" className="me-2 align-middle" /> 
             Ajouter une source
           </Link>
         </div>
@@ -403,7 +403,7 @@ export function SourcesTable() {
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
           />
-          <button type="submit" className="btn btn-outline-primary">
+          <button type="submit" className="btn btn-outline-primary"><AdminIcon name="search" className="me-2 align-middle" /> 
             Rechercher
           </button>
         </form>
@@ -506,7 +506,7 @@ export function SourcesTable() {
         <div className="col-12 text-end">
           <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => {
             setFeedRange("all"); setArticleRange("all"); setMissingSocial("all"); setPage(1);
-          }}>Réinitialiser les nouveaux filtres</button>
+          }}><AdminIcon name="arrow-counterclockwise" className="me-2 align-middle" /> Réinitialiser les nouveaux filtres</button>
         </div>
       </div>
 
@@ -660,7 +660,7 @@ export function SourcesTable() {
                             href={websiteUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="btn btn-sm btn-outline-secondary"
+                            className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                             title="Ouvrir le site"
                             aria-label={"Ouvrir le site de " + source.name}
                           >
@@ -677,7 +677,7 @@ export function SourcesTable() {
 
                         <Link
                           href={newFeedForSourceHref(source.id)}
-                          className="btn btn-sm btn-outline-success"
+                          className="btn btn-sm btn-outline-success lmn-admin-compact-action"
                           title={"Ajouter un flux RSS/XML à " + source.name}
                           aria-label={"Ajouter un flux RSS/XML à " + source.name}
                         >
@@ -693,7 +693,7 @@ export function SourcesTable() {
 
                         <Link
                           href={"/admin/video-feeds/new?sourceId=" + encodeURIComponent(source.id)}
-                          className="btn btn-sm btn-outline-danger"
+                          className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                           title={"Ajouter un flux vidéo YouTube à " + source.name}
                           aria-label={"Ajouter un flux vidéo YouTube à " + source.name}
                         >
@@ -713,7 +713,7 @@ export function SourcesTable() {
                             encodeURIComponent(source.id) +
                             "/edit"
                           }
-                          className="btn btn-sm btn-outline-primary"
+                          className="btn btn-sm btn-outline-primary lmn-admin-compact-action"
                           title="Modifier la source"
                           aria-label={"Modifier " + source.name}
                         >
@@ -728,7 +728,7 @@ export function SourcesTable() {
                         </Link>
                         <button
                           type="button"
-                          className="btn btn-sm btn-outline-danger"
+                          className="btn btn-sm btn-outline-danger lmn-admin-compact-action"
                           title={"Supprimer la source " + source.name}
                           aria-label={"Supprimer la source " + source.name}
                           disabled={updating}
@@ -749,7 +749,7 @@ export function SourcesTable() {
                         className={"d-lg-none " + styles.mobileActions}
                       >
                         <summary
-                          className="btn btn-sm btn-outline-secondary"
+                          className="btn btn-sm btn-outline-secondary lmn-admin-compact-action"
                           aria-label={"Actions pour " + source.name}
                           title="Actions"
                         >
@@ -783,7 +783,7 @@ export function SourcesTable() {
                             href={newFeedForSourceHref(source.id)}
                             className="dropdown-item"
                             aria-label={"Ajouter un flux RSS/XML à " + source.name}
-                          >
+                          ><AdminIcon name="plus-circle" className="me-2 align-middle" /> 
                             Ajouter un flux RSS/XML
                           </Link>
 
@@ -791,7 +791,7 @@ export function SourcesTable() {
                             href={"/admin/video-feeds/new?sourceId=" + encodeURIComponent(source.id)}
                             className="dropdown-item"
                             aria-label={"Ajouter un flux vidéo YouTube à " + source.name}
-                          >
+                          ><AdminIcon name="plus-circle" className="me-2 align-middle" /> 
                             Ajouter un flux vidéo YouTube
                           </Link>
 
@@ -802,7 +802,7 @@ export function SourcesTable() {
                               "/edit"
                             }
                             className="dropdown-item"
-                          >
+                          ><AdminIcon name="pencil-square" className="me-2 align-middle" /> 
                             Modifier
                           </Link>
                           <button
@@ -813,7 +813,7 @@ export function SourcesTable() {
                               event.currentTarget.closest("details")?.removeAttribute("open");
                               setDeleteTarget(source);
                             }}
-                          >
+                          ><AdminIcon name="trash" className="me-2 align-middle" /> 
                             Supprimer
                           </button>
                         </div>

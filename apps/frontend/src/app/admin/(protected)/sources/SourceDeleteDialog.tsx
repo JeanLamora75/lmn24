@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -131,13 +132,13 @@ export function SourceDeleteDialog({ source, onClose, onDeleted }: Props) {
             className="btn btn-outline-secondary"
             disabled={deleting}
             onClick={() => dialogRef.current?.close()}
-          >Annuler</button>
+          ><AdminIcon name="x-circle" className="me-2 align-middle" /> Annuler</button>
           <button
             type="button"
             className="btn btn-danger"
             disabled={loading || !impact || deleting || impact.activeRuns > 0}
             onClick={() => void confirmDelete()}
-          >{deleting ? "Suppression…" : "Supprimer définitivement"}</button>
+          ><AdminIcon name="trash" className="me-2 align-middle" /> {deleting ? "Suppression…" : "Supprimer définitivement"}</button>
         </div>
       </div>
     </dialog>

@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { HomeSection } from "@/components/home/HomeSection";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { collectionSchema } from "@/lib/seo-schema";
 import {
   prepareHomeSections,
   type HomeSectionData,
@@ -10,6 +13,8 @@ import {
 import styles from "@/components/home/home.module.css";
 import { routing } from "@/i18n/routing";
 import { getBackendUrl } from "@/lib/admin-backend";
+import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
+import { seoSocial, SEO_COPY } from "@/lib/seo-social";
 
 // Une recharge affiche les changements publiés et la configuration la plus récente.
 export const dynamic = "force-dynamic";
@@ -41,6 +46,20 @@ async function loadHome(locale: string): Promise<HomeSectionData[]> {
   return prepareHomeSections(payload.items);
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return { robots: { index: false } };
+  const lang = locale as SeoLocale;
+  const messages = await getMessages({ locale });
+  const home = messages.home as HomeTranslations;
+  const title = SEO_COPY[lang].homeTitle;
+  return { title, description: home.description,
+    alternates: seoAlternates(lang),
+    ...seoSocial(lang, title + " | LMN24", home.description,
+      "https://www.lmn24.com/" + locale),
+  };
+}
+
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
@@ -61,6 +80,10 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <main className={"container px-3 px-lg-4 pb-5 " + styles.home}>
+      <StructuredData data={collectionSchema({ locale: locale as SeoLocale,
+        url: "https://www.lmn24.com/" + locale,
+        name: SEO_COPY[locale as SeoLocale].homeTitle,
+        description: t.description })} />
       <header className={styles.pageIntro}>
         <div className={styles.pageEyebrow}>LMN24</div>
         <h1 className={styles.pageTitle}>{t.heading}</h1>
@@ -74,7 +97,7 @@ export default async function HomePage({ params }: Props) {
       ) : sections.length === 0 ? (
         <p role="status" className={styles.emptyMessage}>{t.empty}</p>
       ) : (
-        sections.map((section) => {
+        sections.map((section, index) => {
           const label = labels[section.slug] ??
             section.slug.replace(/-/g, " ");
           return (
@@ -87,6 +110,7 @@ export default async function HomePage({ params }: Props) {
               moreNewsLabel={t.moreNews}
               previousLabel={t.previous}
               nextLabel={t.next}
+              aboveFold={index === 0}
             />
           );
         })

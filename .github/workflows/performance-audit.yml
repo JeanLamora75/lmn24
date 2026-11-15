@@ -1,0 +1,45 @@
+name: LMN24 performance audit (lab)
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_path:
+        description: "Existing public source page path, e.g. /fr/source/<slug> (optional)"
+        required: false
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - scripts/performance-audit.mjs
+      - .github/workflows/performance-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24.21.0"
+      - name: Install pinned major Lighthouse in isolated runner directory
+        run: npm install --prefix "$RUNNER_TEMP/lmn24-lighthouse" --no-save --no-audit --no-fund lighthouse@12
+      - name: Measure live pages (laboratory; no consent accepted)
+        env:
+          LMN24_PERF_SOURCE_PATH: ${{ inputs.source_path }}
+          LMN24_PERF_OUT: ${{ runner.temp }}/lmn24-performance
+          LMN24_LIGHTHOUSE_BIN: ${{ runner.temp }}/lmn24-lighthouse/node_modules/.bin/lighthouse
+        run: node scripts/performance-audit.mjs
+      - name: Attach results even when measurements fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lmn24-performance-lighthouse
+          path: ${{ runner.temp }}/lmn24-performance/
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,5 +1,8 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -97,9 +100,9 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [languages, setLanguages] = useState<LanguageItem[]>([]);
 
-  const [countryIsoCode2, setCountryIsoCode2] = useState("");
-  const [languageIsoCode2, setLanguageIsoCode2] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+  const [countryIsoCode2, setCountryIsoCode2] = useAdminSessionFilter("parser", "countryIsoCode2", "");
+  const [languageIsoCode2, setLanguageIsoCode2] = useAdminSessionFilter("parser", "languageIsoCode2", "");
+  const [categoryId, setCategoryId] = useAdminSessionFilter("parser", "categoryId", "");
 
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
@@ -342,8 +345,9 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
 
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
+      <AdminFilterResetButton section="parser" />
       <div className="mb-4">
-        <Link href="/admin" className="btn btn-outline-secondary">
+        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour à l’administration
         </Link>
       </div>
@@ -445,7 +449,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
                 className="btn btn-primary"
                 disabled={loading || running}
                 onClick={() => void launchParser()}
-              >
+              ><AdminIcon name="play-circle" className="me-2 align-middle" /> 
                 {running ? "Extraction en cours…" : "Lancer l’extraction"}
               </button>
             </div>

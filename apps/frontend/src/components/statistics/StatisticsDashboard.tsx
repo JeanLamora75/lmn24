@@ -1,5 +1,8 @@
 "use client";
 
+import { AdminIcon } from "@/components/admin/AdminIcon";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { CountryFlag } from "@/components/home/CountryFlag";
@@ -83,13 +86,13 @@ function Kpi({ name, value, sub, href }: { name: string; value: string; sub?: st
 }
 
 export function StatisticsDashboard() {
-  const [period, setPeriod] = useState("7d");
-  const [countryId, setCountryId] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [language, setLanguage] = useState("");
-  const [sourceId, setSourceId] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const [period, setPeriod] = useAdminSessionFilter("site-statistics", "period", "7d");
+  const [countryId, setCountryId] = useAdminSessionFilter("site-statistics", "countryId", "");
+  const [categoryId, setCategoryId] = useAdminSessionFilter("site-statistics", "categoryId", "");
+  const [language, setLanguage] = useAdminSessionFilter("site-statistics", "language", "");
+  const [sourceId, setSourceId] = useAdminSessionFilter("site-statistics", "sourceId", "");
+  const [from, setFrom] = useAdminSessionFilter("site-statistics", "from", "");
+  const [to, setTo] = useAdminSessionFilter("site-statistics", "to", "");
   const [revision, setRevision] = useState(0);
   const [data, setData] = useState<Dashboard | null>(null);
   const [loading, setLoading] = useState(true);
@@ -125,11 +128,17 @@ export function StatisticsDashboard() {
   const o = data?.overview;
   const h = data?.health;
   return <main className="container-fluid px-3 px-lg-4 py-4">
+      <nav className="d-flex gap-2 mb-3" aria-label="Sources de statistiques">
+        <span className="btn btn-primary" aria-current="page">Statistiques LMN24</span>
+        <Link href="/admin/site-statistics/google-analytics" className="btn btn-outline-secondary">Google Analytics</Link>
+        <Link href="/admin/site-statistics/search-console" className="btn btn-outline-secondary">Search Console</Link>
+      </nav>
+      <AdminFilterResetButton section="site-statistics" />
     <header className="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
       <div><Link href="/admin" className="btn btn-outline-secondary btn-sm mb-3">← Administration</Link>
         <h1 className="h2 mb-1">Statistiques LMN24</h1>
         <p className="text-body-secondary mb-0">Pilotage éditorial, qualité et supervision des collectes.</p></div>
-      <div className="text-end"><button type="button" className="btn btn-primary" onClick={refresh} disabled={loading}>Actualiser</button>
+      <div className="text-end"><button type="button" className="btn btn-primary" onClick={refresh} disabled={loading}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser</button>
         <div className="small text-body-secondary mt-2">Actualisé : {data ? new Date(data.generatedAt).toLocaleString("fr-FR") : "—"}</div></div>
     </header>
     <div className="card mb-4"><div className="card-body"><div className="row g-2">
@@ -147,7 +156,7 @@ export function StatisticsDashboard() {
       <div className="col-6 col-md-2"><label htmlFor="stats-source" className="form-label">Source</label><select id="stats-source" className="form-select" value={sourceId} onChange={(e) => setSourceId(e.target.value)}>
         <option value="">Toutes</option>{filters?.sources.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</select></div>
     </div></div></div>
-    {error ? <div className="alert alert-danger" role="alert">{error} <button type="button" className="btn btn-sm btn-outline-danger ms-2" onClick={refresh}>Réessayer</button></div> : null}
+    {error ? <div className="alert alert-danger" role="alert">{error} <button type="button" className="btn btn-sm btn-outline-danger ms-2" onClick={refresh}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Réessayer</button></div> : null}
     {loading ? <div className="alert alert-info" role="status">Actualisation des statistiques…</div> : null}
     {!data ? null : <>
       <h2 className="h4 mb-3">Vue d’ensemble</h2>

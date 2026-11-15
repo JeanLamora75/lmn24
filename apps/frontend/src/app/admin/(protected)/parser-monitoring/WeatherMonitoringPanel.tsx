@@ -1,4 +1,7 @@
 "use client";
+import { AdminIcon } from "@/components/admin/AdminIcon";
+import { useAdminSessionFilter } from "@/lib/admin-session-filters";
+import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import Link from "next/link";
 import {useCallback,useEffect,useMemo,useState} from "react";
 
@@ -50,10 +53,10 @@ function Stat({label,value,hint}:{label:string;value:number|string;hint:string})
 export function WeatherMonitoringPanel({period,from,to,visible}:{
   period:"24h"|"7d"|"30d"|"custom";from:string;to:string;visible:boolean;
 }){
-  const [continent,setContinent]=useState<WeatherContinent>("ALL");
-  const [status,setStatus]=useState<WeatherStatus>("ALL");
-  const [page,setPage]=useState(1);
-  const [pageSize,setPageSize]=useState(20);
+  const [continent,setContinent]=useAdminSessionFilter<WeatherContinent>("weather-monitoring", "continent", "ALL");
+  const [status,setStatus]=useAdminSessionFilter<WeatherStatus>("weather-monitoring", "status", "ALL");
+  const [page,setPage]=useAdminSessionFilter("weather-monitoring", "page", 1);
+  const [pageSize,setPageSize]=useAdminSessionFilter("weather-monitoring", "pageSize", 20);
   const [data,setData]=useState<WeatherData|null>(null);
   const [loading,setLoading]=useState(true);
   const [error,setError]=useState("");
@@ -97,6 +100,7 @@ export function WeatherMonitoringPanel({period,from,to,visible}:{
   },[visible]);
   if(!visible)return null;
   return <section className="card shadow-sm mb-4" aria-labelledby="weather-monitor-title">
+    <AdminFilterResetButton section="weather-monitoring" />
     <div className="card-body p-4">
       <div className="d-flex justify-content-between flex-wrap align-items-center gap-2 mb-3">
         <div>
@@ -105,7 +109,7 @@ export function WeatherMonitoringPanel({period,from,to,visible}:{
             Villes traitées, relevés récents et exécutions météo — distincts des flux Infos/Vidéos.
           </p>
         </div>
-        <Link href="/admin/weather-parser" className="btn btn-sm btn-outline-primary">
+        <Link href="/admin/weather-parser" className="btn btn-sm btn-outline-primary"><AdminIcon name="play-circle" className="me-2 align-middle" /> 
           Lancer le Parser Météo
         </Link>
       </div>
@@ -128,7 +132,7 @@ export function WeatherMonitoringPanel({period,from,to,visible}:{
         </div>
         <div className="col-12 col-xl-4">
           <button className="btn btn-outline-secondary w-100" type="button"
-            disabled={loading} onClick={()=>setRevision(v=>v+1)}>Actualiser les données météo</button>
+            disabled={loading} onClick={()=>setRevision(v=>v+1)}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser les données météo</button>
         </div>
       </div>
       {!validDates&&<p className="text-body-secondary">
@@ -193,7 +197,7 @@ export function WeatherMonitoringPanel({period,from,to,visible}:{
               <td>{formatDuration(run.finishedAt?
                 new Date(run.finishedAt).getTime()-new Date(run.startedAt).getTime():null)}</td>
               <td><button className="btn btn-sm btn-outline-primary" type="button"
-                onClick={()=>setSelected(run)}>Détails</button></td>
+                onClick={()=>setSelected(run)}><AdminIcon name="eye" className="me-2 align-middle" /> Détails</button></td>
             </tr>)}</tbody>
           </table></div>}
         <div className="d-flex gap-2 justify-content-end mb-3">
