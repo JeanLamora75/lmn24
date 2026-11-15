@@ -206,15 +206,7 @@ export function CategoriesTable() {
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
       <AdminFilterResetButton section="categories" />
-      <AdminPageHeading title="Catégories" description="Gérez les catégories d’actualités utilisées par LMN24." />
-
-      <AdminFilterPanel>
-      <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
-        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
-          Retour à l’administration
-        </Link>
-
-        <button
+      <AdminPageHeading title="Catégories" description="Gérez les catégories d’actualités utilisées par LMN24." actions={<button
           type="button"
           ref={organizeButtonRef}
           className="btn btn-outline-primary"
@@ -227,7 +219,12 @@ export function CategoriesTable() {
           }}
         >
           Organiser l’accueil
-        </button>
+        </button>} />
+
+      <AdminFilterPanel>
+      <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
+
+        
 
         <form
           className={"d-flex gap-2 ms-lg-auto " + styles.searchForm}
