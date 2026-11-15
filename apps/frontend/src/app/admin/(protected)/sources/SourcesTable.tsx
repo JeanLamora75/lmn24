@@ -4,6 +4,7 @@ import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { AdminDataPanel, AdminFilterPanel, AdminPageHeading } from "@/components/admin/AdminWorkspace";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -78,85 +79,12 @@ function safeWebsiteUrl(value: string): string | null {
   }
 }
 
-function pageItems(current: number, total: number): number[] {
-  // Keep a 21-page sliding window. At the beginning/end, fill the
-  // available places from the other side rather than hiding nearby pages.
-  const visibleCount = Math.min(21, total);
-  const first = Math.max(1, Math.min(current - 10, total - visibleCount + 1));
-  return Array.from({ length: visibleCount }, (_, index) => first + index);
-}
-
 const socialNetworks = [
   { key: "xUrl", label: "X", icon: "/social-icons/x.svg" },
   { key: "facebookUrl", label: "Facebook", icon: "/social-icons/facebook.svg" },
   { key: "instagramUrl", label: "Instagram", icon: "/social-icons/instagram.svg" },
   { key: "youtubeUrl", label: "YouTube", icon: "/social-icons/youtube.svg" },
 ] as const;
-
-function PaginationNav({
-  pagination,
-  onPageChange,
-  position,
-}: {
-  pagination: Pagination;
-  onPageChange: (page: number) => void;
-  position: "supérieure" | "inférieure";
-}) {
-  if (pagination.totalPages <= 1) {
-    return null;
-  }
-
-  return (
-    <nav
-      aria-label={"Pagination " + position + " des sources"}
-      className={styles.paginationNav}
-    >
-      <ul className={"pagination pagination-sm mb-0 " + styles.paginationList}>
-        <li className={"page-item " + (pagination.page === 1 ? "disabled" : "")}>
-          <button type="button" className="page-link" aria-label="Première page"
-            disabled={pagination.page === 1} onClick={() => onPageChange(1)}><AdminIcon name="chevron-double-left" size={16} /></button>
-        </li>
-        <li className={"page-item " + (pagination.page === 1 ? "disabled" : "")}>
-          <button
-            type="button"
-            className="page-link"
-            aria-label="Page précédente"
-            disabled={pagination.page === 1}
-            onClick={() => onPageChange(pagination.page - 1)}
-          ><AdminIcon name="chevron-left" size={16} /></button>
-        </li>
-
-        {pageItems(pagination.page, pagination.totalPages).map((item) => (
-          <li className={"page-item " + (item === pagination.page ? "active" : "")} key={item}>
-            <button type="button" className="page-link"
-              aria-current={item === pagination.page ? "page" : undefined}
-              onClick={() => onPageChange(item)}>{item}</button>
-          </li>
-        ))}
-
-        <li
-          className={
-            "page-item " +
-            (pagination.page === pagination.totalPages ? "disabled" : "")
-          }
-        >
-          <button
-            type="button"
-            className="page-link"
-            aria-label="Page suivante"
-            disabled={pagination.page === pagination.totalPages}
-            onClick={() => onPageChange(pagination.page + 1)}
-          ><AdminIcon name="chevron-right" size={16} /></button>
-        </li>
-        <li className={"page-item " + (pagination.page === pagination.totalPages ? "disabled" : "")}>
-          <button type="button" className="page-link" aria-label="Dernière page"
-            disabled={pagination.page === pagination.totalPages}
-            onClick={() => onPageChange(pagination.totalPages)}><AdminIcon name="chevron-double-right" size={16} /></button>
-        </li>
-      </ul>
-    </nav>
-  );
-}
 
 export function SourcesTable() {
   const router = useRouter();
@@ -518,11 +446,7 @@ export function SourcesTable() {
       ) : null}
 
       <div className="mb-2">
-        <PaginationNav
-          pagination={pagination}
-          onPageChange={setPage}
-          position="supérieure"
-        />
+        <AdminPagination page={pagination.page} totalPages={pagination.totalPages} onPageChange={setPage} position="supérieure" label="sources" />
       </div>
 
       <AdminDataPanel label="Sources et journaux">
@@ -829,11 +753,7 @@ export function SourcesTable() {
       </AdminDataPanel>
 
       <div className="mt-2">
-        <PaginationNav
-          pagination={pagination}
-          onPageChange={setPage}
-          position="inférieure"
-        />
+        <AdminPagination page={pagination.page} totalPages={pagination.totalPages} onPageChange={setPage} position="inférieure" label="sources" />
       </div>
 
       {deleteTarget && (
