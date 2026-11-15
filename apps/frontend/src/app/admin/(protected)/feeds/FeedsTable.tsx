@@ -4,6 +4,7 @@ import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { AdminDataPanel, AdminFilterPanel, AdminPageHeading } from "@/components/admin/AdminWorkspace";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -79,114 +80,6 @@ function safeFeedUrl(value: string): string | null {
   } catch {
     return null;
   }
-}
-
-function pageItems(current: number, total: number) {
-  if (total <= 7) {
-    return Array.from({ length: total }, (_, index) => index + 1);
-  }
-
-  const result: Array<number | string> = [1];
-  const start = Math.max(2, current - 1);
-  const end = Math.min(total - 1, current + 1);
-
-  if (start > 2) {
-    result.push("left-ellipsis");
-  }
-
-  for (let page = start; page <= end; page += 1) {
-    result.push(page);
-  }
-
-  if (end < total - 1) {
-    result.push("right-ellipsis");
-  }
-
-  result.push(total);
-  return result;
-}
-
-function PaginationNav({
-  pagination,
-  onPageChange,
-  position,
-}: {
-  pagination: Pagination;
-  onPageChange: (page: number) => void;
-  position: "supérieure" | "inférieure";
-}) {
-  if (pagination.totalPages <= 1) {
-    return null;
-  }
-
-  return (
-    <nav
-      aria-label={"Pagination " + position + " des flux RSS/XML"}
-      className="d-flex justify-content-center"
-    >
-      <ul className="pagination pagination-sm mb-0">
-        <li
-          className={
-            "page-item " + (pagination.page === 1 ? "disabled" : "")
-          }
-        >
-          <button
-            type="button"
-            className="page-link"
-            aria-label="Page précédente"
-            disabled={pagination.page === 1}
-            onClick={() => onPageChange(pagination.page - 1)}
-          ><AdminIcon name="chevron-left" size={16} /></button>
-        </li>
-
-        {pageItems(pagination.page, pagination.totalPages).map((item) =>
-          typeof item === "number" ? (
-            <li
-              className={
-                "page-item " +
-                (item === pagination.page ? "active" : "")
-              }
-              key={item}
-            >
-              <button
-                type="button"
-                className="page-link"
-                aria-current={
-                  item === pagination.page ? "page" : undefined
-                }
-                onClick={() => onPageChange(item)}
-              >
-                {item}
-              </button>
-            </li>
-          ) : (
-            <li className="page-item disabled" key={item}>
-              <span className="page-link" aria-hidden="true">
-                …
-              </span>
-            </li>
-          ),
-        )}
-
-        <li
-          className={
-            "page-item " +
-            (pagination.page === pagination.totalPages
-              ? "disabled"
-              : "")
-          }
-        >
-          <button
-            type="button"
-            className="page-link"
-            aria-label="Page suivante"
-            disabled={pagination.page === pagination.totalPages}
-            onClick={() => onPageChange(pagination.page + 1)}
-          ><AdminIcon name="chevron-right" size={16} /></button>
-        </li>
-      </ul>
-    </nav>
-  );
 }
 
 type Props = {
@@ -647,11 +540,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
       ) : null}
 
       <div className="mb-2">
-        <PaginationNav
-          pagination={pagination}
-          onPageChange={setPage}
-          position="supérieure"
-        />
+        <AdminPagination page={pagination.page} totalPages={pagination.totalPages} onPageChange={setPage} position="supérieure" label="flux RSS/XML" />
       </div>
 
       <AdminDataPanel label="Flux RSS/XML">
@@ -921,11 +810,7 @@ export function FeedsTable({ initialSourceId = "", initialSourceName = "" }: Pro
       </AdminDataPanel>
 
       <div className="mt-2">
-        <PaginationNav
-          pagination={pagination}
-          onPageChange={setPage}
-          position="inférieure"
-        />
+        <AdminPagination page={pagination.page} totalPages={pagination.totalPages} onPageChange={setPage} position="inférieure" label="flux RSS/XML" />
       </div>
 
       {deleteTarget && (
