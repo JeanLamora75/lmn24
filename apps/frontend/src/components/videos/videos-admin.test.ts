@@ -4,8 +4,10 @@ const ui = readFileSync(new URL("./VideosAdmin.tsx", import.meta.url), "utf8");
 const service = readFileSync(new URL("../../../../backend/src/videos/videos.service.ts", import.meta.url), "utf8");
 describe("SCRUM-42 video administration", () => {
   it("supports editorial filtering and pagination", () => {
-    for (const word of ["Recherche", "Source", "Catégorie", "Langue", "Publication", "Précédent", "Suivant"])
+    for (const word of ["Recherche", "Source", "Catégorie", "Langue", "Publication"])
       expect(ui).toContain(word);
+    expect(ui).toContain("<AdminPagination");
+    expect(ui).toContain('label="vidéos"');
   });
   it("supports publication and editorial reclassification", () => {
     for (const word of ["isPublished", "categoryId", "languageIsoCode2", "Masquer", "Publier"])
