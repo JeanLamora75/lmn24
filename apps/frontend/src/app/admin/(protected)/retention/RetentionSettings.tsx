@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import {
   RETENTION_MAX_DAYS, RETENTION_SETTING_KEYS, type RetentionSettingKey,
 } from "@lmn24/contracts";
@@ -178,7 +179,7 @@ export function RetentionSettings() {
 
   return (
     <main className="container py-4 py-lg-5">
-      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+      <div className="lmn-admin-page-header">
         <div>
           <h1 className="h2 mb-1">Conservation des données</h1>
           <p className="text-body-secondary mb-0">
@@ -214,7 +215,7 @@ export function RetentionSettings() {
         </div>
       )}
       {saved && GROUPS.map((group) => (
-        <section className="card shadow-sm mb-4" aria-label={group.heading} key={group.heading}>
+        <section className="card shadow-sm mb-4 lmn-admin-form-surface" aria-label={group.heading} key={group.heading}>
           <div className="card-body p-4">
             <h2 className="h5 mb-1">{group.heading}</h2>
             <p className="text-body-secondary small mb-3">{group.hint}</p>
