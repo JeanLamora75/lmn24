@@ -81,6 +81,16 @@ export function GoogleAnalyticsTracker() {
   const scriptRef = useRef<HTMLScriptElement | null>(null);
 
   useEffect(() => {
+    // Consent Mode v2: set a denied default before any grant, config or tag load.
+    // The local queue does not make a network request before opt-in.
+    window.dataLayer ??= [];
+    window.gtag ??= (...args: unknown[]) => { window.dataLayer?.push(args); };
+    window.gtag("consent", "default", {
+      analytics_storage: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
+    });
     // Storage is browser-only; no Google script is requested before opt-in.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setConsent(readConsent());
