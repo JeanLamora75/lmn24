@@ -19,3 +19,11 @@
 .lmn-admin-form-surface :is(input,select,textarea):focus-visible,.lmn-admin-filter-panel :is(input,select,textarea):focus-visible{outline:2px solid transparent}
 @media(max-width:767.98px){.lmn-admin-filter-panel{padding:1rem}.lmn-admin-page-header h1{font-size:1.4rem}.lmn-admin-form-surface .card-body{padding:1rem!important}}
 @media(prefers-reduced-motion:reduce){.lmn-admin-table-surface *{scroll-behavior:auto}}
+
+/* Compact, consistent pagination for large datasets. */
+.lmn-admin-pagination{width:100%;overflow-x:auto;padding:.35rem 0}
+.lmn-admin-pagination .pagination{display:flex;justify-content:center;align-items:center;gap:.2rem;min-width:max-content}
+.lmn-admin-pagination .page-link{border-radius:7px!important;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;color:#334155;background:#fff;border:1px solid #dbe3ee}
+.lmn-admin-pagination .active .page-link{background:#2563eb;border-color:#2563eb;color:#fff}
+.lmn-admin-pagination .page-link:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}
+.lmn-admin-pagination .disabled .page-link{color:#94a3b8;background:#f8fafc}
