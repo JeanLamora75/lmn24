@@ -18,9 +18,11 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
   const [openGroups, setOpenGroups] = useState<string[]>(ADMIN_SECTIONS.map(section => section.id));
 
   useEffect(() => {
-    try { setCollapsed(window.localStorage.getItem(STORAGE_KEY) === "true"); } catch { /* storage unavailable */ }
+    const frame = window.requestAnimationFrame(() => {
+      try { setCollapsed(window.localStorage.getItem(STORAGE_KEY) === "true"); } catch { /* storage unavailable */ }
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, []);
-  useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   const setSidebarCollapsed = (next: boolean) => {
     setCollapsed(next);
@@ -49,7 +51,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
         styles.sidebar, collapsed ? styles.collapsed : "", mobileOpen ? styles.mobileOpen : "",
       ].join(" ")}>
         <div className={styles.brand}>
-          <Link href="/admin" className={styles.brandLink} aria-label="LMN24 — Accueil administration">
+          <Link href="/admin" onClick={() => setMobileOpen(false)} className={styles.brandLink} aria-label="LMN24 — Accueil administration">
             <span className={styles.brandMark}>L</span>
             <span className={styles.brandText}><strong>LMN24</strong><small>Administration</small></span>
           </Link>
@@ -61,7 +63,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
           </button>
         </div>
         <nav className={styles.navigation} aria-label="Navigation de l’administration">
-          <Link href="/admin" aria-current={isHome ? "page" : undefined}
+          <Link href="/admin" onClick={() => setMobileOpen(false)} aria-current={isHome ? "page" : undefined}
             className={isHome ? styles.activeLink : styles.link} title="Accueil">
             <AdminIcon name="bar-chart" /><span className={styles.linkLabel}>Vue d’ensemble</span>
           </Link>
@@ -84,7 +86,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
                 hidden={!expanded && !collapsed}>
                 {section.features.map(feature => {
                   const selected = pathname === feature.href || pathname.startsWith(feature.href + "/");
-                  return <Link key={feature.href} href={feature.href} title={feature.title}
+                  return <Link key={feature.href} href={feature.href} onClick={() => setMobileOpen(false)} title={feature.title}
                     aria-current={selected ? "page" : undefined}
                     className={selected ? styles.activeLink : styles.link}>
                     <AdminIcon name={feature.icon as AdminIconName} /><span className={styles.linkLabel}>{feature.title}</span>
