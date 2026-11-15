@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { StatisticsWorkspaceHeader, StatisticsFilterPanel } from "./StatisticsWorkspace";
+import "@/components/admin/admin-workspace.css";
 
 type Row = {page:string;clicks:number;impressions:number;ctr:number;position:number};
 type Sitemap = {path:string;lastSubmitted:string|null;lastDownloaded:string|null;isPending:boolean;
@@ -70,13 +71,13 @@ export function SearchConsoleDashboard() {
           ["CTR moyen",(data.averageCtr*100).toFixed(1)+" %"],
           ["Position moyenne",data.averagePosition===null?"—":number(data.averagePosition)],
         ].map(([label,value])=><div className="col-6 col-xl-3" key={label}>
-          <div className="card h-100 shadow-sm"><div className="card-body">
+          <div className="card h-100 shadow-sm lmn-admin-form-surface"><div className="card-body">
             <p className="text-body-secondary small mb-1">{label}</p>
             <strong className="fs-4">{value}</strong>
           </div></div>
         </div>)}
       </div>
-      <div className="card shadow-sm mb-4"><div className="card-body">
+      <div className="card shadow-sm mb-4 lmn-admin-form-surface"><div className="card-body">
         <h2 className="h5">Sitemap</h2>
         {data.sitemapStatus==="unavailable"?<p className="text-warning">État du sitemap indisponible dans l&apos;API.</p>:
         data.sitemapStatus==="missing"?<p className="text-warning">Aucun sitemap LMN24 soumis ou retrouvé sur cette propriété. Soumettre le sitemap depuis Google Search Console.</p>:
@@ -90,7 +91,7 @@ export function SearchConsoleDashboard() {
         </dl>:null}
         <p className="small text-body-secondary mt-3 mb-0">Une soumission ne garantit pas l&apos;indexation. Les chiffres de sitemap peuvent être incomplets ou différés.</p>
       </div></div>
-      <div className="card shadow-sm"><div className="card-body">
+      <div className="card shadow-sm lmn-admin-form-surface"><div className="card-body">
         <h2 className="h5">Pages recevant des impressions</h2>
         {data.rows.length===0?<p>Aucune page dans les données disponibles pour cette période.</p>:
         <div className="table-responsive"><table className="table table-striped align-middle">
