@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -263,7 +264,7 @@ export function CategoryAppearanceForm({ categoryId }: Props) {
         </Link>
       </div>
 
-      <header className="mb-4">
+      <header className="lmn-admin-page-header">
         <h1 className="h2 mb-1">Configurer une catégorie</h1>
         <p className="text-body-secondary mb-0">
           Personnalisez uniquement son apparence sur la page d’accueil.
@@ -280,7 +281,7 @@ export function CategoryAppearanceForm({ categoryId }: Props) {
         <div className="alert alert-success" role="status">{success}</div>
       )}
 
-      <div className="card border-0 shadow-sm mb-4">
+      <div className="card border-0 shadow-sm mb-4 lmn-admin-form-surface">
         <div className="card-body p-3 p-md-4 d-flex flex-wrap gap-3 justify-content-between align-items-center">
           <div>
             <p className="text-body-secondary small mb-1">Catégorie</p>
@@ -303,7 +304,7 @@ export function CategoryAppearanceForm({ categoryId }: Props) {
       <form onSubmit={(event) => void submit(event)} noValidate>
         <div className="row g-4 align-items-start">
           <div className="col-12 col-xl-5">
-            <div className="card border-0 shadow-sm">
+            <div className="card border-0 shadow-sm lmn-admin-form-surface">
               <div className="card-body p-3 p-md-4">
                 <h2 className="h4 mb-3">Présentation de l’accueil</h2>
 
