@@ -79,6 +79,7 @@ export class PublicCategoryService {
       where: {
         categoryId: category.id,
         languageIsoCode2: locale,
+        publishedAt: { lte: new Date() },
         source: { isActive: true },
         ...(cursor
           ? {
