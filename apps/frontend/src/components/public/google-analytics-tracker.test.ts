@@ -11,9 +11,9 @@ describe("LMN24 public Google Analytics consent and navigation tracking", () => 
     expect(tracker).toContain('GA4_MEASUREMENT_ID = "G-Z54C7T331W"');
   });
   it("initializes a denied Consent Mode v2 default before Google tag configuration", () => {
-    const defaultCall = 'window.gtag("consent", "default", {';
-    const grantCall = 'window.gtag("consent", "update", { analytics_storage: "granted" });';
-    const configCall = 'window.gtag("config", GA4_MEASUREMENT_ID, { send_page_view: false });';
+    const defaultCall = 'window.gtag?.("consent", "default", {';
+    const grantCall = 'window.gtag?.("consent", "update", { analytics_storage: "granted" });';
+    const configCall = 'window.gtag?.("config", GA4_MEASUREMENT_ID, { send_page_view: false });';
     expect(tracker).toContain(defaultCall);
     expect(tracker).toContain('analytics_storage: "denied"');
     expect(tracker).toContain('ad_storage: "denied"');
