@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.lmn24.com"),
   title: { default: "LMN24", template: "%s | LMN24" },
   description: "Agrégateur multilingue d'actualités internationales.",
-  icons: { icon: [{ url: "/logo_lmn24.png", type: "image/png", sizes: "192x192" }], shortcut: "/logo_lmn24.png", apple: "/logo_lmn24.png" },
+  icons: { icon: [{ url: "/favicon.ico", type: "image/x-icon", sizes: "any" }], shortcut: "/favicon.ico", apple: "/logo_lmn24.png" },
 };
 
 export function generateStaticParams() {
