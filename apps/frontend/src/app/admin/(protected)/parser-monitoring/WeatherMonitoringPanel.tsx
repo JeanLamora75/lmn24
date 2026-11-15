@@ -2,6 +2,7 @@
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
+import "@/components/admin/admin-workspace.css";
 import Link from "next/link";
 import {useCallback,useEffect,useMemo,useState} from "react";
 
@@ -99,7 +100,7 @@ export function WeatherMonitoringPanel({period,from,to,visible}:{
     return ()=>window.clearInterval(interval);
   },[visible]);
   if(!visible)return null;
-  return <section className="card shadow-sm mb-4" aria-labelledby="weather-monitor-title">
+  return <section className="card shadow-sm mb-4 lmn-admin-form-surface" aria-labelledby="weather-monitor-title">
     <AdminFilterResetButton section="weather-monitoring" />
     <div className="card-body p-4">
       <div className="d-flex justify-content-between flex-wrap align-items-center gap-2 mb-3">
@@ -113,7 +114,7 @@ export function WeatherMonitoringPanel({period,from,to,visible}:{
           Lancer le Parser Météo
         </Link>
       </div>
-      <div className="row g-3 align-items-end mb-3">
+      <div className="row g-3 align-items-end mb-3 lmn-admin-filter-panel">
         <div className="col-12 col-sm-6 col-xl-4">
           <label className="form-label" htmlFor="weather-monitor-continent">Continent météo</label>
           <select className="form-select" id="weather-monitor-continent" value={continent}
@@ -180,7 +181,7 @@ export function WeatherMonitoringPanel({period,from,to,visible}:{
           </label>
         </div>
         {data.rows.length===0?<p className="text-body-secondary">Aucune exécution météo dans cette sélection.</p>
-          :<div className="table-responsive"><table className="table table-sm table-hover align-middle">
+          :<div className="table-responsive lmn-admin-table-surface"><table className="table table-sm table-hover align-middle">
             <thead><tr><th>Début</th><th>Continent</th><th>Origine</th>
               <th>État</th><th>Villes traitées</th><th>Réussies</th>
               <th>Échecs</th><th>Durée</th><th>Action</th></tr></thead>
