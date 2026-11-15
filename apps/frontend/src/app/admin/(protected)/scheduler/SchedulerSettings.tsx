@@ -1,5 +1,6 @@
 "use client";
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -64,7 +65,7 @@ export function SchedulerSettings() {
     }catch(e){setError(e instanceof Error?e.message:String(e))}finally{setSaving(null)}
   }
   return <main className="container py-4 py-lg-5">
-    <div className="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
+    <div className="lmn-admin-page-header">
       <div><h1 className="h2 mb-1">Automatisation des parsers</h1>
       <p className="text-body-secondary mb-0">Préparer les horaires des moteurs de collecte existants.</p></div>
       <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour administration</Link>
@@ -78,7 +79,7 @@ export function SchedulerSettings() {
       const row=rows.find(x=>x.parserType===type);
       if(!row)return null;
       const daily=type==="HOROSCOPE_IMPORT";
-      return <div className="col-12 col-lg-6" key={type}><section className="card h-100 shadow-sm">
+      return <div className="col-12 col-lg-6" key={type}><section className="card h-100 shadow-sm lmn-admin-form-surface">
         <div className="card-body">
           <div className="d-flex justify-content-between gap-2">
             <h2 className="h5">{names[type]}</h2>
