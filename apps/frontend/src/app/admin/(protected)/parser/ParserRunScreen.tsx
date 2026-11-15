@@ -449,7 +449,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
           </div>
       </ParserCriteriaPanel>
 
-      <ParserSection id="parser-information-title" title="Journal de l’extraction" className={styles.informationPanel}>
+      <ParserSection id="parser-information-title" title="Journal de l’extraction" className={styles.informationPanel ?? ""}>
         <div className={"alert " + (outcome==="success"?"alert-success":outcome==="error"?"alert-danger":outcome==="running"?"alert-info":"alert-secondary")}
           role="status" aria-live="polite">
           {outcome==="running"?"Extraction en cours : les événements s’ajoutent au journal."
