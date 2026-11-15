@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import { StatisticsWorkspaceHeader, StatisticsFilterPanel } from "./StatisticsWorkspace";
 
 type Row = {page:string;clicks:number;impressions:number;ctr:number;position:number};
 type Sitemap = {path:string;lastSubmitted:string|null;lastDownloaded:string|null;isPending:boolean;
@@ -41,23 +41,12 @@ export function SearchConsoleDashboard() {
     return ()=>abort.abort();
   },[period,refresh]);
   return <main className="container-fluid px-3 px-lg-4 py-4">
-    <header className="mb-4">
-      <Link href="/admin" className="btn btn-sm btn-outline-secondary mb-3">
-        <AdminIcon name="arrow-left" className="me-2"/> Administration
-      </Link>
-      <h1 className="h2">Google Search Console</h1>
-      <p className="text-body-secondary">Performances de recherche et état du sitemap de LMN24. Ce rapport est distinct de Google Analytics.</p>
-    </header>
-    <nav className="d-flex gap-2 flex-wrap mb-4" aria-label="Sources de statistiques">
-      <Link href="/admin/site-statistics" className="btn btn-outline-secondary">Statistiques LMN24</Link>
-      <Link href="/admin/site-statistics/google-analytics" className="btn btn-outline-secondary">Google Analytics</Link>
-      <span className="btn btn-primary" aria-current="page">Search Console</span>
-    </nav>
-    <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer"
+    <StatisticsWorkspaceHeader title="Google Search Console" description="Performances de recherche et état du sitemap de LMN24, distincts de Google Analytics." active="/admin/site-statistics/search-console" />
+          <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer"
       className="btn btn-sm btn-outline-primary mb-4" aria-label="Ouvrir Google Search Console dans un nouvel onglet">
       Consulter les statistiques dans Google Search Console ↗
     </a>
-    <div className="d-flex align-items-center gap-2 mb-4">
+    <StatisticsFilterPanel><div className="d-flex align-items-center gap-2 flex-wrap">
       <label htmlFor="gsc-period" className="mb-0">Période</label>
       <select id="gsc-period" className="form-select w-auto" value={period}
         onChange={e=>setPeriod(e.target.value==="7d"?"7d":"30d")}>
@@ -67,7 +56,7 @@ export function SearchConsoleDashboard() {
         onClick={()=>setRefresh(x=>x+1)}>
         <AdminIcon name="arrow-clockwise" className="me-2"/>Actualiser
       </button>
-    </div>
+    </div></StatisticsFilterPanel>
     {loading?<p role="status">Lecture des données Search Console…</p>:null}
     {error?<div className="alert alert-warning" role="alert">{error}
       <p className="mb-0 mt-2">L&apos;accès à Search Console doit être autorisé explicitement pour la propriété concernée.</p>
