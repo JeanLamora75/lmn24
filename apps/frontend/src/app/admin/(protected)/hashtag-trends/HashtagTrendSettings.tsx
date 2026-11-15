@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -93,7 +94,7 @@ export function HashtagTrendSettings() {
 
   return (
     <main className="container py-4 py-lg-5">
-      <div className="d-flex justify-content-between flex-wrap align-items-center gap-3 mb-4">
+      <div className="lmn-admin-page-header">
         <div>
           <h1 className="h2 mb-1">Paramètres des tendances</h1>
           <p className="text-body-secondary mb-0">Détection des sujets en forte progression dans l’actualité mondiale.</p>
@@ -102,7 +103,7 @@ export function HashtagTrendSettings() {
       </div>
       {error && <div className="alert alert-danger" role="alert">{error}</div>}
       {success && <div className="alert alert-success" role="status">{success}</div>}
-      <form onSubmit={(event) => void submit(event)} className="card shadow-sm p-4" style={{ maxWidth: 760 }}>
+      <form onSubmit={(event) => void submit(event)} className="card shadow-sm p-4 lmn-admin-form-surface" style={{ maxWidth: 760 }}>
         {loading ? <p>Chargement des paramètres…</p> : FIELDS.map((field) => (
           <div className="mb-4" key={field.key}>
             <label htmlFor={field.key} className="form-label fw-semibold">{field.label}</label>
