@@ -1,0 +1,27 @@
+/* Lot 6: accessible defaults scoped to the authenticated admin shell. */
+.lmn24-admin-shell{min-width:0}
+.lmn-admin-skip-link{position:fixed;left:1rem;top:-100px;z-index:2000;padding:.75rem 1.25rem;border-radius:8px;background:#fff;color:#17263d;box-shadow:0 0 0 3px #2563eb;text-decoration:none;font-weight:700}
+.lmn-admin-skip-link:focus{top:1rem}
+.lmn24-admin-shell :is(button,a,input,select,textarea,[tabindex]):focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+.lmn24-admin-shell :is(.btn,.page-link):focus-visible{outline:3px solid #2563eb;outline-offset:2px;box-shadow:none}
+.lmn24-admin-shell :is(.text-body-secondary,.form-text){color:#526278!important}
+.lmn24-admin-shell .table-responsive{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.lmn24-admin-shell :is(.table-responsive,.lmn-admin-table-surface){scrollbar-width:thin}
+.lmn24-admin-shell :is(.table,.table-responsive){min-width:0}
+.lmn24-admin-shell .table th,.lmn24-admin-shell .table td{overflow-wrap:anywhere}
+.lmn24-admin-shell :is(.form-control,.form-select){min-height:40px}
+.lmn24-admin-shell .form-check-input{width:1.1em;height:1.1em;cursor:pointer}
+.lmn24-admin-shell .form-check-label{cursor:pointer}
+.lmn24-admin-shell :is(.alert,.card,.lmn-admin-filter-panel,.lmn-admin-form-surface){min-width:0;overflow-wrap:anywhere}
+.lmn24-admin-shell pre{white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%;overflow-x:auto}
+.lmn24-admin-shell :is(.modal,.modal-dialog){max-width:100%}
+@media(max-width:767.98px){
+  .lmn24-admin-shell :is(.btn,.page-link){min-height:40px}
+  .lmn24-admin-shell :is(.card-body,.lmn-admin-filter-panel){min-width:0}
+  .lmn24-admin-shell :is(.row,.d-flex){min-width:0}
+  .lmn24-admin-shell :is(.text-break,code){overflow-wrap:anywhere}
+  .lmn24-admin-shell .modal-dialog{margin:.5rem;max-width:calc(100% - 1rem)}
+}
+@media(prefers-reduced-motion:reduce){
+  .lmn24-admin-shell *, .lmn24-admin-shell *::before,.lmn24-admin-shell *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
