@@ -53,6 +53,10 @@ export function SearchConsoleDashboard() {
       <Link href="/admin/site-statistics/google-analytics" className="btn btn-outline-secondary">Google Analytics</Link>
       <span className="btn btn-primary" aria-current="page">Search Console</span>
     </nav>
+    <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer"
+      className="btn btn-sm btn-outline-primary mb-4" aria-label="Ouvrir Google Search Console dans un nouvel onglet">
+      Consulter les statistiques dans Google Search Console ↗
+    </a>
     <div className="d-flex align-items-center gap-2 mb-4">
       <label htmlFor="gsc-period" className="mb-0">Période</label>
       <select id="gsc-period" className="form-select w-auto" value={period}
