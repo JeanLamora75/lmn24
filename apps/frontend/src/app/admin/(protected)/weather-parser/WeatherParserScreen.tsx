@@ -209,6 +209,7 @@ export default function WeatherParserScreen(){
             </td></tr>}
           </tbody>
         </table>
+      </div>
     </ParserSection>
     {lastSuccess&&<p className="small text-body-secondary">
       Dernière extraction intégralement réussie : {fmt(lastSuccess.finishedAt??lastSuccess.startedAt)}.
