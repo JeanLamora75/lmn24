@@ -15,6 +15,9 @@ export function AdminPagination({
   if (totalPages <= 1) return null;
   const current = Math.min(totalPages, Math.max(1, page));
   const pages: Array<number | "left" | "right"> = [];
+  if (totalPages <= 7) {
+    for (let n = 1; n <= totalPages; n += 1) pages.push(n);
+  } else {
   const first = Math.max(2, current - 1);
   const last = Math.min(totalPages - 1, current + 1);
   pages.push(1);
@@ -22,6 +25,7 @@ export function AdminPagination({
   for (let n = first; n <= last; n += 1) pages.push(n);
   if (last < totalPages - 1) pages.push("right");
   if (totalPages > 1) pages.push(totalPages);
+  }
   const move = (target: number) => onPageChange(Math.max(1, Math.min(totalPages, target)));
   return (
     <nav aria-label={`Pagination ${position} des ${label}`}
