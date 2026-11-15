@@ -1,5 +1,6 @@
 "use client";
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import "@/components/admin/admin-workspace.css";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
@@ -315,13 +316,6 @@ export function WeatherCitiesClient() {
        </table>
      </div>
    </div>
-   <nav className="d-flex justify-content-center align-items-center gap-3 mt-3"
-     aria-label="Pagination des villes météo">
-     <button className="btn btn-outline-secondary btn-sm" type="button"
-       disabled={safePage<=1} onClick={()=>setPage(safePage-1)}>Précédent</button>
-     <span className="small">Page {safePage} sur {pages}</span>
-     <button className="btn btn-outline-secondary btn-sm" type="button"
-       disabled={safePage>=pages} onClick={()=>setPage(safePage+1)}>Suivant</button>
-   </nav>
+   <AdminPagination page={safePage} totalPages={pages} onPageChange={setPage} label="villes météo" />
  </main>;
 }
