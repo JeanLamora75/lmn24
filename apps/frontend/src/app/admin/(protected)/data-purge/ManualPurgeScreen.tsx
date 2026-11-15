@@ -3,7 +3,8 @@
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
-import Link from "next/link";
+import { AdminPageHeading } from "@/components/admin/AdminWorkspace";
+import "../import-csv/maintenance-workspace.css";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -147,15 +148,13 @@ export function ManualPurgeScreen() {
   return (
     <main className="container py-4 py-lg-5">
       <AdminFilterResetButton section="data-purge" />
-      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
-        <div>
-          <h1 className="h2 mb-1">Purge manuelle des données</h1>
-          <p className="text-body-secondary mb-0">
-            Choisir une seule table et une seule opération à la fois.
-          </p>
-        </div>
-        <Link className="btn btn-outline-secondary" href="/admin"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour administration</Link>
-      </div>
+      <AdminPageHeading title="Purge manuelle des données"
+        description="Sélectionnez une table, prévisualisez l’impact, puis confirmez explicitement toute suppression." />
+      <ol className="lmn-maintenance-steps" aria-label="Étapes de la purge">
+        <li><strong>1.</strong> Choisir la table et le mode</li>
+        <li><strong>2.</strong> Vérifier la prévisualisation</li>
+        <li><strong>3.</strong> Confirmer et suivre le résultat</li>
+      </ol>
       <div className="alert alert-danger" role="note">
         <strong>Action irréversible.</strong> Sauvegardez votre base avant une purge.
         Les villes météo (weather_city), tables de référence, utilisateurs, sources, paramètres et flux ne sont jamais proposés.
@@ -164,13 +163,13 @@ export function ManualPurgeScreen() {
       {error && <div className="alert alert-danger" role="alert">{error}</div>}
       {notice && <div className="alert alert-success" role="status">{notice}</div>}
 
-      <section className="card shadow-sm mb-4" aria-label="Choix de la table">
+      <section className="card shadow-sm mb-4 lmn-admin-form-surface" aria-label="Choix de la table">
         <div className="card-body p-4">
           <h2 className="h5">1. Sélectionnez la table</h2>
           <div className="row g-2">
             {TABLES.map(item => (
               <div key={item.key} className="col-12">
-                <label className={"d-block p-3 rounded border " +
+                <label className={"d-block p-3 rounded border lmn-maintenance-risk-choice " +
                   (item.key === table ? "border-primary bg-body-tertiary" : "")}
                   style={{ cursor: "pointer" }}>
                   <input type="radio" name="purge-table" value={item.key}
@@ -211,9 +210,13 @@ export function ManualPurgeScreen() {
       </section>
 
       {preview && (
-        <section className="card border-warning shadow-sm mb-4" aria-label="Confirmation de purge">
+        <section className="card shadow-sm mb-4 lmn-admin-form-surface lmn-maintenance-danger" aria-label="Confirmation de purge">
           <div className="card-body p-4">
             <h2 className="h5">3. Vérifiez et confirmez</h2>
+            <p className="small text-danger fw-semibold" role="note">
+              Cette prévisualisation ne supprime rien. La confirmation ci-dessous déclenche
+              une opération qui ne pourra pas être annulée.
+            </p>
             <dl className="row mb-3">
               <dt className="col-sm-4">Table</dt><dd className="col-sm-8"><code>{preview.table}</code></dd>
               <dt className="col-sm-4">Type de purge</dt><dd className="col-sm-8">
@@ -255,18 +258,18 @@ export function ManualPurgeScreen() {
                   {launching ? "Démarrage…" : "Confirmer la suppression"}
                 </button>
                 <button type="button" className="btn btn-outline-secondary ms-2"
-                  onClick={() => setPreview(null)}><AdminIcon name="x-circle" className="me-2 align-middle" /> Annuler</button>
+                  onClick={() => { setPreview(null); setTyped(""); setConfirm(false); }}><AdminIcon name="x-circle" className="me-2 align-middle" /> Annuler</button>
               </>
             )}
             <p className="form-text mt-3 mb-0">
-              La confirmation expire au bout de trois minutes. Une nouvelle prévisualisation
+              Ce résultat est valable trois minutes. Une nouvelle prévisualisation
               est obligatoire si les données ont changé.
             </p>
           </div>
         </section>
       )}
 
-      <section className="card shadow-sm" aria-label="Suivi des purges">
+      <section className="card shadow-sm lmn-admin-form-surface" aria-label="Suivi des purges">
         <div className="card-body p-4">
           <div className="d-flex align-items-center justify-content-between gap-2">
             <h2 className="h5 mb-0">Exécutions récentes</h2>
@@ -288,7 +291,7 @@ export function ManualPurgeScreen() {
                       <td>
                         <span className={"badge " + (job.status === "COMPLETED" ? "text-bg-success"
                           : job.status === "ERROR" ? "text-bg-danger" : "text-bg-info")}>
-                          {job.status}
+                          {job.status === "COMPLETED" ? "Terminée" : job.status === "ERROR" ? "Erreur" : job.status === "PENDING" ? "En attente" : "En cours"}
                         </span>
                         {job.message && <div className="small text-danger">{job.message}</div>}
                       </td>
