@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { ADMIN_SECTIONS, normalizeAdminSearch } from "./admin-home.data";
@@ -10,7 +10,7 @@ import styles from "./admin-shell.module.css";
 
 const STORAGE_KEY = "lmn24-admin-sidebar-collapsed";
 
-export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>) {
+export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -63,7 +63,7 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
         <nav className={styles.navigation} aria-label="Navigation de l’administration">
           <Link href="/admin" aria-current={isHome ? "page" : undefined}
             className={isHome ? styles.activeLink : styles.link} title="Accueil">
-            <AdminIcon name="house-door" /><span className={styles.linkLabel}>Vue d’ensemble</span>
+            <AdminIcon name="bar-chart" /><span className={styles.linkLabel}>Vue d’ensemble</span>
           </Link>
           <div className={styles.search}>
             <label htmlFor="admin-navigation-search" className={styles.visuallyHidden}>Rechercher dans la navigation</label>
@@ -78,7 +78,7 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
                 onClick={() => toggleGroup(section.id)} title={section.title}>
                 <AdminIcon name={section.icon} />
                 <span className={styles.linkLabel}>{section.title}</span>
-                <span className={styles.groupChevron}><AdminIcon name={expanded ? "chevron-up" : "chevron-down"} /></span>
+                <span className={styles.groupChevron}><AdminIcon name={expanded ? "chevron-left" : "chevron-right"} /></span>
               </button>
               <div id={`admin-nav-group-${section.id}`} className={styles.groupItems}
                 hidden={!expanded && !collapsed}>
@@ -106,7 +106,7 @@ export function AdminShell({ children }: Readonly<{ children: React.ReactNode }>
           <button className={styles.mobileToggle} type="button"
             aria-label="Ouvrir le menu d’administration" aria-controls="lmn24-admin-navigation"
             aria-expanded={mobileOpen} onClick={() => setMobileOpen(!mobileOpen)}>
-            <AdminIcon name="list" />
+            <AdminIcon name="list-ul" />
           </button>
           <div className={styles.breadcrumb}>
             <Link href="/admin">Administration</Link>
