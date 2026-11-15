@@ -2,6 +2,7 @@
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { AdminPageHeading } from "@/components/admin/AdminWorkspace";
+import { MaintenanceNav } from "@/components/admin/MaintenanceNav";
 import {
   RETENTION_MAX_DAYS, RETENTION_SETTING_KEYS, type RetentionSettingKey,
 } from "@lmn24/contracts";
@@ -179,6 +180,7 @@ export function RetentionSettings() {
   return (
     <main className="container py-4 py-lg-5">
       <AdminPageHeading title="Conservation des données" description="Réglage indépendant des onze durées de conservation, exprimées en jours." />
+      <MaintenanceNav active="/admin/retention" />
       <div className="alert alert-warning" role="note">
         <strong>Important :</strong> réduire une durée pourra provoquer une suppression irréversible
         lors d’un prochain cycle de purge. Augmenter une durée ne restaure jamais les données
