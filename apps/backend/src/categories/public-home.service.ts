@@ -132,8 +132,7 @@ export class PublicHomeService {
         WHERE a.category_id = c.id
           AND s.is_active = TRUE
           AND a.language_iso_code2 = CAST(${locale} AS CHAR(2))
-          AND (a.published_at AT TIME ZONE 'Europe/Paris')::date
-              <= (CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Paris')::date
+          AND a.published_at <= CURRENT_TIMESTAMP
           AND a.article_url ~* '^https?://[^[:space:]]+$'
         ORDER BY a.published_at DESC, a.id DESC
         LIMIT CASE c.layout_type::text
