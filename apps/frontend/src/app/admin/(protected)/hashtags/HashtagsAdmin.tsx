@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import "@/components/admin/admin-workspace.css";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
@@ -207,16 +208,7 @@ export function HashtagsAdmin() {
           </tbody>
         </table>
       </div>
-      {pagination.totalPages > 1 && (
-        <nav aria-label="Pagination des hashtags" className="d-flex justify-content-center align-items-center gap-3">
-          <button className="btn btn-sm btn-outline-secondary" type="button"
-            disabled={pagination.page <= 1} onClick={() => setPage((v) => v - 1)}>Précédent</button>
-          <span className="small">Page {pagination.page} / {pagination.totalPages}</span>
-          <button className="btn btn-sm btn-outline-secondary" type="button"
-            disabled={pagination.page >= pagination.totalPages}
-            onClick={() => setPage((v) => v + 1)}>Suivant</button>
-        </nav>
-      )}
+      <AdminPagination page={pagination.page} totalPages={pagination.totalPages} onPageChange={setPage} label="hashtags" />
     </main>
   );
 }
