@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { AdminIcon, type AdminIconName } from "@/components/admin/AdminIcon";
 import { ADMIN_SECTIONS, normalizeAdminSearch } from "./admin-home.data";
@@ -15,6 +15,9 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const sidebarRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const lastMobileOpen = useRef(false);
   const [openGroups, setOpenGroups] = useState<string[]>(ADMIN_SECTIONS.map(section => section.id));
 
   useEffect(() => {
@@ -23,6 +26,49 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     });
     return () => window.cancelAnimationFrame(frame);
   }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) {
+      if (lastMobileOpen.current) toggleRef.current?.focus();
+      lastMobileOpen.current = false;
+      return;
+    }
+    lastMobileOpen.current = true;
+    const oldOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const frame = window.requestAnimationFrame(() => {
+      sidebarRef.current?.querySelector<HTMLButtonElement>("[data-admin-close]")?.focus();
+    });
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setMobileOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const sidebar = sidebarRef.current;
+      if (!sidebar) return;
+      const items = Array.from(sidebar.querySelectorAll<HTMLElement>(
+        'a[href],button:not([disabled]),input:not([disabled])',
+      )).filter(item => item.getClientRects().length > 0);
+      if (!items.length) return;
+      const first = items[0]!;
+      const last = items[items.length - 1]!;
+      if (event.shiftKey && (document.activeElement === first || !sidebar.contains(document.activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !sidebar.contains(document.activeElement))) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      document.body.style.overflow = oldOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [mobileOpen]);
 
   const setSidebarCollapsed = (next: boolean) => {
     setCollapsed(next);
@@ -47,10 +93,14 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     <div className={styles.shell}>
       {mobileOpen && <button type="button" className={styles.scrim}
         aria-label="Fermer le menu d’administration" onClick={() => setMobileOpen(false)} />}
-      <aside id="lmn24-admin-navigation" className={[
+      <aside ref={sidebarRef} id="lmn24-admin-navigation" className={[
         styles.sidebar, collapsed ? styles.collapsed : "", mobileOpen ? styles.mobileOpen : "",
       ].join(" ")}>
         <div className={styles.brand}>
+          <button data-admin-close type="button" className={styles.mobileClose}
+            aria-label="Fermer la navigation" onClick={() => setMobileOpen(false)}>
+            <AdminIcon name="x-circle" />
+          </button>
           <Link href="/admin" onClick={() => setMobileOpen(false)} className={styles.brandLink} aria-label="LMN24 — Accueil administration">
             <span className={styles.brandMark}>L</span>
             <span className={styles.brandText}><strong>LMN24</strong><small>Administration</small></span>
@@ -63,7 +113,7 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
           </button>
         </div>
         <nav className={styles.navigation} aria-label="Navigation de l’administration">
-          <Link href="/admin" onClick={() => setMobileOpen(false)} aria-current={isHome ? "page" : undefined}
+          <Link href="/admin" onClick={() => setMobileOpen(false)} aria-label="Vue d’ensemble" aria-current={isHome ? "page" : undefined}
             className={isHome ? styles.activeLink : styles.link} title="Accueil">
             <AdminIcon name="bar-chart" /><span className={styles.linkLabel}>Vue d’ensemble</span>
           </Link>
@@ -75,7 +125,8 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
           {filtered.map(section => {
             const expanded = query.trim() !== "" || openGroups.includes(section.id);
             return <div key={section.id} className={styles.group}>
-              <button className={styles.groupHeading} type="button" aria-expanded={expanded}
+              <button className={styles.groupHeading} type="button" aria-expanded={collapsed && !mobileOpen ? true : expanded}
+                aria-label={section.title}
                 aria-controls={`admin-nav-group-${section.id}`}
                 onClick={() => toggleGroup(section.id)} title={section.title}>
                 <AdminIcon name={section.icon as AdminIconName} />
@@ -83,10 +134,10 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
                 <span className={styles.groupChevron}><AdminIcon name={expanded ? "chevron-left" : "chevron-right"} /></span>
               </button>
               <div id={`admin-nav-group-${section.id}`} className={styles.groupItems}
-                hidden={!expanded && !collapsed}>
+                hidden={!expanded && (!collapsed || mobileOpen)}>
                 {section.features.map(feature => {
                   const selected = pathname === feature.href || pathname.startsWith(feature.href + "/");
-                  return <Link key={feature.href} href={feature.href} onClick={() => setMobileOpen(false)} title={feature.title}
+                  return <Link key={feature.href} href={feature.href} onClick={() => setMobileOpen(false)} title={feature.title} aria-label={feature.title}
                     aria-current={selected ? "page" : undefined}
                     className={selected ? styles.activeLink : styles.link}>
                     <AdminIcon name={feature.icon as AdminIconName} /><span className={styles.linkLabel}>{feature.title}</span>
@@ -105,8 +156,8 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
       </aside>
       <div className={styles.workspace}>
         <header className={styles.topbar}>
-          <button className={styles.mobileToggle} type="button"
-            aria-label="Ouvrir le menu d’administration" aria-controls="lmn24-admin-navigation"
+          <button ref={toggleRef} className={styles.mobileToggle} type="button"
+            aria-label={mobileOpen ? "Fermer le menu d’administration" : "Ouvrir le menu d’administration"} aria-controls="lmn24-admin-navigation"
             aria-expanded={mobileOpen} onClick={() => setMobileOpen(!mobileOpen)}>
             <AdminIcon name="list-ul" />
           </button>
