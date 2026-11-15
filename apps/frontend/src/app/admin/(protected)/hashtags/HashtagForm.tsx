@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -263,11 +264,11 @@ export function HashtagForm({ mode, hashtagId }: Props) {
 
   return (
     <main className="container py-4 py-lg-5">
-      <div className="d-flex justify-content-between align-items-center gap-2 mb-4">
+      <div className="lmn-admin-page-header">
         <h1 className="h2 mb-0">{mode === "create" ? "Ajouter un hashtag" : "Modifier un hashtag"}</h1>
         <Link className="btn btn-outline-secondary" href="/admin/hashtags">Retour aux hashtags</Link>
       </div>
-      <form className="card shadow-sm p-4" onSubmit={(event) => void save(event)}>
+      <form className="card shadow-sm p-4 lmn-admin-form-surface" onSubmit={(event) => void save(event)}>
         {error && <div role="alert" className="alert alert-danger">{error}</div>}
         {notice && <div role="status" className="alert alert-success">{notice}</div>}
         <div className="row g-3">
