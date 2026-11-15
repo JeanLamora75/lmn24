@@ -4,6 +4,7 @@ import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { AdminPageHeading } from "@/components/admin/AdminWorkspace";
+import { MaintenanceNav } from "@/components/admin/MaintenanceNav";
 import "../import-csv/maintenance-workspace.css";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -150,6 +151,7 @@ export function ManualPurgeScreen() {
       <AdminFilterResetButton section="data-purge" />
       <AdminPageHeading title="Purge manuelle des données"
         description="Sélectionnez une table, prévisualisez l’impact, puis confirmez explicitement toute suppression." />
+      <MaintenanceNav active="/admin/data-purge" />
       <ol className="lmn-maintenance-steps" aria-label="Étapes de la purge">
         <li><strong>1.</strong> Choisir la table et le mode</li>
         <li><strong>2.</strong> Vérifier la prévisualisation</li>
