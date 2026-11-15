@@ -3,6 +3,7 @@
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
+import { AdminDataPanel, AdminFilterPanel, AdminPageHeading } from "@/components/admin/AdminWorkspace";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -304,13 +305,9 @@ export function CategoriesTable() {
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
       <AdminFilterResetButton section="categories" />
-      <header className="mb-4">
-        <h1 className="h2 mb-1">Catégories</h1>
-        <p className="text-body-secondary mb-0">
-          Gérez les catégories d’actualités utilisées par LMN24.
-        </p>
-      </header>
+      <AdminPageHeading title="Catégories" description="Gérez les catégories d’actualités utilisées par LMN24." />
 
+      <AdminFilterPanel>
       <div className="d-flex flex-column flex-lg-row gap-2 align-items-lg-center mb-3">
         <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
           Retour à l’administration
@@ -412,6 +409,8 @@ export function CategoriesTable() {
         </div>
       </div>
 
+      </AdminFilterPanel>
+
       {error ? (
         <div className="alert alert-danger" role="alert">
           {error}
@@ -433,6 +432,7 @@ export function CategoriesTable() {
         />
       </div>
 
+      <AdminDataPanel label="Catégories d’actualités">
       <div className="table-responsive">
         <table className="table table-hover align-middle mb-0">
           <thead className="table-light">
@@ -610,6 +610,7 @@ export function CategoriesTable() {
           </tbody>
         </table>
       </div>
+      </AdminDataPanel>
 
       <div className="mt-2">
         <PaginationNav
