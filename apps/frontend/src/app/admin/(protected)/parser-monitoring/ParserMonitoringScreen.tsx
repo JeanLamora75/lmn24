@@ -9,6 +9,7 @@ import { WeatherMonitoringPanel } from "./WeatherMonitoringPanel";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getFrenchCategoryLabel } from "@/lib/fr-category-labels";
 import { parserStatusBadge, parserStatusLabel } from "@/components/admin/parser-status";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 
 type Parser = "ALL" | "INFOS" | "VIDEOS" | "WEATHER";
 type Period = "24h" | "7d" | "30d" | "custom";
@@ -457,15 +458,7 @@ export function ParserMonitoringScreen() {
       </div>}
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-2">
         <small>{fmt(runs?.pagination.total??0)} exécutions de flux</small>
-        <div className="btn-group">
-          <button className="btn btn-outline-secondary btn-sm" disabled={page<=1}
-            onClick={()=>setPage(v=>v-1)}>Précédent</button>
-          <span className="btn btn-outline-secondary btn-sm disabled">
-            {page} / {Math.max(1,runs?.pagination.totalPages??1)}</span>
-          <button className="btn btn-outline-secondary btn-sm"
-            disabled={page>=(runs?.pagination.totalPages??1)}
-            onClick={()=>setPage(v=>v+1)}>Suivant</button>
-        </div>
+        <AdminPagination page={page} totalPages={runs?.pagination.totalPages??1} onPageChange={setPage} label="exécutions de flux" />
       </div>
     </div></section>
     <section className="card lmn-admin-table-surface shadow-sm mb-4"><div className="card-body">
@@ -488,15 +481,7 @@ export function ParserMonitoringScreen() {
             onClick={()=>openBatch(row)}>Journal</button></td>
         </tr>)}</tbody>
       </table></div>}
-      <div className="d-flex gap-2 justify-content-end">
-        <button type="button" className="btn btn-sm btn-outline-secondary"
-          disabled={batchPage<=1} onClick={()=>setBatchPage(n=>n-1)}>Précédent</button>
-        <span className="small align-self-center">
-          {batchPage}/{Math.max(1,batches?.pagination.totalPages??1)}</span>
-        <button type="button" className="btn btn-sm btn-outline-secondary"
-          disabled={batchPage>=(batches?.pagination.totalPages??1)}
-          onClick={()=>setBatchPage(n=>n+1)}>Suivant</button>
-      </div>
+      <AdminPagination page={batchPage} totalPages={batches?.pagination.totalPages??1} onPageChange={setBatchPage} label="lancements globaux" />
     </div></section>
     <section className="card lmn-admin-table-surface shadow-sm mb-4"><div className="card-body">
       <h2 className="h5">Alertes et anomalies</h2>
@@ -569,15 +554,7 @@ export function ParserMonitoringScreen() {
                   <td>{item.level}</td><td>{item.eventType}</td>
                   <td style={{overflowWrap:"anywhere"}}>{item.message}</td></tr>)}
               </tbody></table></div>}
-          <div className="d-flex gap-2 justify-content-end">
-            <button className="btn btn-sm btn-outline-secondary"
-              disabled={eventPage<=1} onClick={()=>setEventPage(n=>n-1)}>Précédent</button>
-            <span className="small align-self-center">{eventPage} /
-              {Math.max(1,events?.pagination.totalPages??1)}</span>
-            <button className="btn btn-sm btn-outline-secondary"
-              disabled={eventPage>=(events?.pagination.totalPages??1)}
-              onClick={()=>setEventPage(n=>n+1)}>Suivant</button>
-          </div>
+          <AdminPagination page={eventPage} totalPages={events?.pagination.totalPages??1} onPageChange={setEventPage} label="événements du lancement" />
         </>}
       </div>
     </section>}
