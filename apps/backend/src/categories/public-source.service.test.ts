@@ -108,7 +108,7 @@ describe("SCRUM-32 — API publique d'une source", () => {
       for (const call of findMany.mock.calls) {
         expect(call[0].where.publishedAt).toEqual({ lte: new Date("2026-11-15T10:00:00.000Z") });
       }
-      expect(findMany.mock.calls[1][0].where.OR).toBeDefined();
+      expect(findMany.mock.calls[1]?.[0]?.where.OR).toBeDefined();
     } finally {
       vi.useRealTimers();
     }
