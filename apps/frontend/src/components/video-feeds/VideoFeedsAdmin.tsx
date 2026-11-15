@@ -1,5 +1,6 @@
 "use client";
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import "@/components/admin/admin-workspace.css";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
@@ -114,7 +115,7 @@ export function VideoFeedsTable() {
     {items&&<div className="card shadow-sm lmn-admin-table-surface"><div className="table-responsive"><table className="table table-hover mb-0 align-middle"><thead><tr><th>Source</th><th>Chaîne</th><th>Catégorie / langue</th><th>Dernier traitement</th><th>Vidéos</th><th>Statut</th><th>Actions</th></tr></thead><tbody>
       {items.items.map(item=><tr key={item.id}><td>{item.source.name}</td><td className="text-break"><a href={"https://www.youtube.com/channel/"+encodeURIComponent(item.channelId)} target="_blank" rel="noopener noreferrer">{item.channelId}</a></td><td>{item.category.slug} / {item.languageIsoCode2.trim()}</td><td>{formatDate(item.lastRun?.startedAt)}<div className="small text-body-secondary">{item.lastRun?.status??"Jamais exécuté"}</div></td><td>{item._count.videos}</td><td><span className={"badge "+(item.isActive?"text-bg-success":"text-bg-secondary")}>{item.isActive?"Actif":"Inactif"}</span></td><td><div className="d-flex gap-2 flex-wrap"><Link className="btn btn-sm btn-outline-primary" href={"/admin/video-feeds/"+item.id+"/edit"}><AdminIcon name="pencil-square" className="me-2 align-middle" /> Modifier</Link><button type="button" className="btn btn-sm btn-outline-success" disabled={!item.isActive} onClick={()=>void collect(item)}>Collecter</button><button type="button" className="btn btn-sm btn-outline-secondary" onClick={()=>void toggle(item)}>{item.isActive?"Désactiver":"Activer"}</button><button type="button" className="btn btn-sm btn-outline-danger" onClick={()=>void remove(item)} disabled={item._count.runs>0||item._count.videos>0}><AdminIcon name="trash" className="me-2 align-middle" /> Supprimer</button></div></td></tr>)}
       {!items.items.length&&<tr><td colSpan={7} className="text-center py-4 text-body-secondary">Aucun flux vidéo trouvé.</td></tr>}
-    </tbody></table></div><div className="card-footer d-flex justify-content-between align-items-center"><span className="small">{items.pagination.total} flux</span><div className="d-flex gap-2"><button type="button" className="btn btn-outline-secondary btn-sm" disabled={page===1||loading} onClick={()=>setPage(x=>x-1)}>Précédent</button><span className="small align-self-center">Page {page} / {Math.max(1,items.pagination.totalPages)}</span><button type="button" className="btn btn-outline-secondary btn-sm" disabled={page>=items.pagination.totalPages||loading} onClick={()=>setPage(x=>x+1)}>Suivant</button></div></div></div>}
+    </tbody></table></div><div className="card-footer d-flex flex-wrap justify-content-between align-items-center"><span className="small">{items.pagination.total} flux</span><AdminPagination page={page} totalPages={items.pagination.totalPages} onPageChange={setPage} label="flux vidéo" /></div></div>}
   </main>;
 }
 
