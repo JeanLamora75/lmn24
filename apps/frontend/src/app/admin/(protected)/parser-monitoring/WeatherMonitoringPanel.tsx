@@ -2,6 +2,7 @@
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import "@/components/admin/admin-workspace.css";
 import Link from "next/link";
 import {useCallback,useEffect,useMemo,useState} from "react";
@@ -201,14 +202,7 @@ export function WeatherMonitoringPanel({period,from,to,visible}:{
                 onClick={()=>setSelected(run)}><AdminIcon name="eye" className="me-2 align-middle" /> Détails</button></td>
             </tr>)}</tbody>
           </table></div>}
-        <div className="d-flex gap-2 justify-content-end mb-3">
-          <button className="btn btn-sm btn-outline-secondary" disabled={page<=1}
-            onClick={()=>setPage(p=>p-1)}>Précédent</button>
-          <span className="small align-self-center">{page}/{Math.max(1,data.pagination.totalPages)}</span>
-          <button className="btn btn-sm btn-outline-secondary"
-            disabled={page>=data.pagination.totalPages}
-            onClick={()=>setPage(p=>p+1)}>Suivant</button>
-        </div>
+        <AdminPagination page={page} totalPages={data.pagination.totalPages} onPageChange={setPage} label="exécutions météo" />
         {selected&&<div className="border rounded p-3" role="region" aria-label="Détail du parser météo">
           <div className="d-flex justify-content-between mb-2">
             <h3 className="h6">Exécution météo : {STATES[selected.status]}</h3>
