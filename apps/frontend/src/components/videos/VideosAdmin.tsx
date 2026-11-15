@@ -1,5 +1,6 @@
 "use client";
 import { AdminIcon } from "@/components/admin/AdminIcon";
+import "@/components/admin/admin-workspace.css";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
 import { useCallback, useEffect, useState } from "react";
@@ -75,13 +76,13 @@ export function VideosAdmin() {
   }
   return <main className="container-fluid px-3 px-lg-4 py-4">
       <AdminFilterResetButton section="videos" />
-    <header className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <header className="lmn-admin-page-header">
       <div><Link href="/admin" className="btn btn-outline-secondary btn-sm mb-3">← Administration</Link>
         <h1 className="h2">Vidéos YouTube</h1><p className="text-body-secondary mb-0">Consulter, classer et modérer les vidéos importées.</p></div>
       <div className="d-flex gap-2"><Link className="btn btn-outline-primary" href="/admin/video-feeds">Flux vidéo</Link>
         <button className="btn btn-primary" type="button" onClick={refresh} disabled={loading}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Actualiser</button></div>
     </header>
-    <section className="card mb-3"><div className="card-body row g-2">
+    <section className="card lmn-admin-filter-panel mb-3"><div className="card-body row g-2">
       <div className="col-12 col-lg-4"><label className="form-label" htmlFor="videos-search">Recherche</label>
         <input id="videos-search" className="form-control" placeholder="Titre, média ou identifiant vidéo" value={search}
           onChange={e=>{setSearch(e.target.value);setPage(1);}}/></div>
@@ -100,7 +101,7 @@ export function VideosAdmin() {
     </div></section>
     {error&&<div role="alert" className="alert alert-danger">{error} <button type="button" className="btn btn-outline-danger btn-sm ms-2" onClick={refresh}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Réessayer</button></div>}
     {loading&&<p role="status">Chargement des vidéos…</p>}
-    {list&&<section className="card shadow-sm">
+    {list&&<section className="card shadow-sm lmn-admin-table-surface">
       <div className="table-responsive"><table className="table table-hover align-middle mb-0">
         <thead><tr><th>Vidéo</th><th>Média</th><th>Catégorie / langue</th><th>Publication YouTube</th><th>Visibilité</th><th>Actions</th></tr></thead>
         <tbody>{list.items.map(video=><tr key={video.id}>
