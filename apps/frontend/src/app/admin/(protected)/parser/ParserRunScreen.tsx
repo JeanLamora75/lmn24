@@ -106,6 +106,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
 
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
+  const [outcome, setOutcome] = useState<"idle" | "running" | "success" | "error">("idle");
   const [messages, setMessages] = useState<UiMessage[]>([
     {
       id: 0,
@@ -247,6 +248,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
 
     eventSourceRef.current?.close();
     setRunning(true);
+    setOutcome("running");
     setMessages([]);
 
     const payload = {
@@ -269,6 +271,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
       });
 
       if (response.status === 401) {
+        setOutcome("error");
         setRunning(false);
         router.replace("/admin/login");
         return;
@@ -298,6 +301,8 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
         try {
           const payloadEvent = JSON.parse(event.data) as ParserEvent;
           appendEvent(payloadEvent);
+          if (payloadEvent.type === "run-completed") setOutcome("success");
+          if (payloadEvent.type === "run-error") setOutcome("error");
 
           if (
             payloadEvent.type === "run-completed" ||
@@ -313,6 +318,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
       };
 
       eventSource.onerror = () => {
+        setOutcome("error");
         eventSource.close();
         eventSourceRef.current = null;
         setRunning(false);
@@ -328,6 +334,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
         ]);
       };
     } catch (error) {
+      setOutcome("error");
       setRunning(false);
       messageSequence.current += 1;
       setMessages([
@@ -443,6 +450,17 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
       </ParserCriteriaPanel>
 
       <ParserSection id="parser-information-title" title="Journal de l’extraction" className={styles.informationPanel}>
+        <div className={"alert " + (outcome==="success"?"alert-success":outcome==="error"?"alert-danger":outcome==="running"?"alert-info":"alert-secondary")}
+          role="status" aria-live="polite">
+          {outcome==="running"?"Extraction en cours : les événements s’ajoutent au journal."
+            :outcome==="success"?"Extraction terminée. Consultez le journal pour les résultats."
+            :outcome==="error"?"Extraction en erreur ou suivi interrompu. Consultez les détails ci-dessous."
+            :"Aucune extraction en cours. Sélectionnez les critères et lancez le traitement."}
+        </div>
+        <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <span className="small text-body-secondary">{messages.length} événement(s) affiché(s)</span>
+          <a href="/admin/parser-monitoring" className="small">Consulter l’historique complet</a>
+        </div>
 
           <div
             className={styles.messageLog}
