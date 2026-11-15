@@ -3,7 +3,8 @@
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
-import Link from "next/link";
+import { ParserWorkspaceHeader } from "@/components/admin/ParserWorkspace";
+import "@/components/admin/admin-workspace.css";
 import { WeatherMonitoringPanel } from "./WeatherMonitoringPanel";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -244,21 +245,12 @@ export function ParserMonitoringScreen() {
 
   return <main className="container-fluid px-3 px-lg-5 py-4">
       <AdminFilterResetButton section="parser-monitoring" />
-    <div className="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
-      <div>
-        <h1 className="h2 mb-1">Logs et statistiques des parsers</h1>
-        <p className="text-body-secondary mb-0">
-          Collectes Infos, Vidéos et Météo — indicateurs de flux et de villes volontairement distincts.
-        </p>
-      </div>
-      <div className="d-flex flex-wrap gap-2">
-        <Link href="/admin/parser" className="btn btn-outline-primary btn-sm">Parser Infos</Link>
-        <Link href="/admin/video-parser" className="btn btn-outline-primary btn-sm">Parser Vidéos</Link>
-        <Link href="/admin/weather-parser" className="btn btn-outline-primary btn-sm">Parser Météo</Link>
-        <Link href="/admin" className="btn btn-outline-secondary btn-sm"><AdminIcon name="arrow-left" className="me-2 align-middle" /> Retour admin</Link>
-      </div>
-    </div>
-    <section className="card mb-4 shadow-sm" aria-label="Filtres de supervision">
+    <ParserWorkspaceHeader
+      title="Logs et statistiques des parsers"
+      description="Supervisez les collectes Infos, Vidéos et Météo. Les indicateurs de flux et de villes restent distincts."
+      active="/admin/parser-monitoring"
+    />
+    <section className="card mb-4 shadow-sm lmn-admin-filter-panel" aria-label="Filtres de supervision">
       <div className="card-body">
         <div className="row g-3 align-items-end">
           <div className="col-6 col-md-3 col-xl-2">
@@ -366,7 +358,7 @@ export function ParserMonitoringScreen() {
       </div>
       <div className="row g-3 mb-4">
         {summary.panels.map(panel=><div className="col-12 col-lg-6" key={panel.type}>
-          <section className="card h-100 shadow-sm"><div className="card-body">
+          <section className="card lmn-admin-table-surface h-100 shadow-sm"><div className="card-body">
             <h2 className="h5">Parser {panel.type==="INFOS"?"Infos":"Vidéos"}</h2>
             <p className="text-body-secondary small mb-2">
               Dernière collecte : {date(panel.lastRun)}
@@ -380,7 +372,7 @@ export function ParserMonitoringScreen() {
           </div></section>
         </div>)}
       </div>
-      <section className="card shadow-sm mb-4"><div className="card-body">
+      <section className="card lmn-admin-table-surface shadow-sm mb-4"><div className="card-body">
         <h2 className="h5">Évolution des exécutions</h2>
         <Chart rows={summary.timeline}/>
         <h3 className="h6 mt-4">Articles et vidéos importés par période</h3>
@@ -390,7 +382,7 @@ export function ParserMonitoringScreen() {
         </p>
       </div></section>
     </>}
-    <section className="card shadow-sm mb-4"><div className="card-body">
+    <section className="card lmn-admin-table-surface shadow-sm mb-4"><div className="card-body">
       <div className="d-flex flex-wrap justify-content-between gap-2 align-items-center mb-3">
         <h2 className="h5 mb-0">Historique des exécutions par flux</h2>
         <label>Résultats / page{" "}
@@ -437,7 +429,7 @@ export function ParserMonitoringScreen() {
         </div>
       </div>
     </div></section>
-    <section className="card shadow-sm mb-4"><div className="card-body">
+    <section className="card lmn-admin-table-surface shadow-sm mb-4"><div className="card-body">
       <h2 className="h5">Lancements globaux des parsers</h2>
       <p className="text-body-secondary small">
         L’historique global commence à l’installation de SCRUM-60 ;
@@ -467,7 +459,7 @@ export function ParserMonitoringScreen() {
           onClick={()=>setBatchPage(n=>n+1)}>Suivant</button>
       </div>
     </div></section>
-    <section className="card shadow-sm mb-4"><div className="card-body">
+    <section className="card lmn-admin-table-surface shadow-sm mb-4"><div className="card-body">
       <h2 className="h5">Alertes et anomalies</h2>
       <p className="text-body-secondary small">
         {alerts?"Seuils : "+alerts.thresholds.consecutiveFailures+
@@ -487,7 +479,7 @@ export function ParserMonitoringScreen() {
           <small className="text-break">{row.feedUrl}</small>
         </div>)}</div>}
     </div></section>
-    {selected && <section className="card border-primary shadow-sm mb-4"
+    {selected && <section className="card border-primary shadow-sm mb-4 lmn-admin-form-surface"
       aria-label="Détails d'exécution" role="region">
       <div className="card-body">
         <div className="d-flex justify-content-between align-items-center gap-2">
