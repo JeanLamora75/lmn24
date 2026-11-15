@@ -3,7 +3,7 @@
 import { AdminIcon } from "@/components/admin/AdminIcon";
 import { useAdminSessionFilter } from "@/lib/admin-session-filters";
 import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButton";
-import Link from "next/link";
+import { ParserWorkspaceHeader, ParserCriteriaPanel, ParserSection } from "@/components/admin/ParserWorkspace";
 import { useRouter } from "next/navigation";
 import {
   useEffect,
@@ -346,29 +346,15 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
   return (
     <main className="container-fluid px-3 px-lg-4 py-4">
       <AdminFilterResetButton section="parser" />
-      <div className="mb-4">
-        <Link href="/admin" className="btn btn-outline-secondary"><AdminIcon name="arrow-left" className="me-2 align-middle" /> 
-          Retour à l’administration
-        </Link>
-      </div>
+      <ParserWorkspaceHeader
+        title={videoMode ? "Lancer le Parser Vidéos" : "Lancer le Parser Infos"}
+        description={videoMode
+          ? "Lancez une extraction manuelle des flux Atom/XML YouTube actifs."
+          : "Lancez une extraction manuelle des flux RSS/XML d’actualités actifs."}
+        active={videoMode ? "/admin/video-parser" : "/admin/parser"}
+      />
 
-      <header className="mb-4">
-        <h1 className="h2 mb-1">{videoMode ? "Lancer le Parser Vidéos" : "Lancer le Parser Infos"}</h1>
-        <p className="text-body-secondary mb-0">
-          {videoMode
-            ? "Lancez une extraction manuelle des flux Atom/XML YouTube actifs."
-            : "Lancez une extraction manuelle des flux RSS/XML d’actualités actifs."}
-        </p>
-      </header>
-
-      <section
-        className="card border-0 shadow-sm mb-4"
-        aria-labelledby="parser-criteria-title"
-      >
-        <div className="card-body p-4">
-          <h2 id="parser-criteria-title" className="h5 mb-3">
-            Critères de lancement
-          </h2>
+      <ParserCriteriaPanel id="parser-criteria-title">
 
           <div className="row g-3 align-items-end">
             <div className="col-12 col-md-6 col-xl-3">
@@ -454,17 +440,9 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
               </button>
             </div>
           </div>
-        </div>
-      </section>
+      </ParserCriteriaPanel>
 
-      <section
-        className={"card shadow-sm " + styles.informationPanel}
-        aria-labelledby="parser-information-title"
-      >
-        <div className="card-body p-4">
-          <h2 id="parser-information-title" className="h5 mb-3">
-            Informations
-          </h2>
+      <ParserSection id="parser-information-title" title="Journal de l’extraction" className={styles.informationPanel}>
 
           <div
             className={styles.messageLog}
@@ -496,8 +474,7 @@ export function ParserRunScreen({ mode = "infos" }: { mode?: "infos" | "videos" 
               ))
             )}
           </div>
-        </div>
-      </section>
+      </ParserSection>
     </main>
   );
 }
