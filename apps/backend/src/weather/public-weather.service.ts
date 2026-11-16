@@ -41,6 +41,8 @@ type CityWithReading = {
   slug: string;
   name: string;
   countryIso2: string;
+  latitude: { toString(): string };
+  longitude: { toString(): string };
   continentCode: string;
   timezone: string;
   displayOrder: number;
@@ -58,6 +60,8 @@ export function serializeWeatherCity(
     slug: city.slug,
     name: city.name,
     countryIso2: city.countryIso2.trim(),
+    latitude: Number(city.latitude),
+    longitude: Number(city.longitude),
     continentCode: city.continentCode.trim(),
     timezone: city.timezone,
     displayOrder: city.displayOrder,
@@ -90,6 +94,7 @@ export class PublicWeatherService {
         orderBy: [{ displayOrder: "asc" }, { slug: "asc" }],
         select: {
           slug: true, name: true, countryIso2: true, continentCode: true,
+          latitude: true, longitude: true,
           timezone: true, displayOrder: true,
           current: {
             select: {
