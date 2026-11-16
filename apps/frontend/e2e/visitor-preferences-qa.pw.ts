@@ -220,7 +220,7 @@ test("SCRUM-110: invalid persisted preferences fail safely and do not block navi
     JSON.stringify({ version: 8000, birthDate: "1890-01-01", theme: "dark" }),
   ));
   await page.goto("/fr/horoscope");
-  await expect(page.locator('a[href*="/horoscope/"]')).toHaveCount(12);
+  await expect(page.locator('a[href*="/horoscope/"]:not([href$="/biorythmes"])')).toHaveCount(12);
   await expect(page.locator('[data-favorite-sign="true"]')).toHaveCount(0);
   await expect(page.locator("html")).not.toHaveAttribute("data-bs-theme", "dark");
   await page.getByRole("button", { name: "Mes préférences" }).click();
