@@ -86,6 +86,8 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      - name: Build frontend workspace dependencies
+        run: pnpm --filter '@lmn24/frontend^...' build
       - name: Install Chromium browser and OS libraries
         run: pnpm --filter @lmn24/frontend exec playwright install --with-deps chromium
       - name: Browser acceptance (desktop + mobile)
