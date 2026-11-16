@@ -17,7 +17,7 @@ for (const [locale, title] of Object.entries(names)) {
     const dialog = page.getByRole("dialog", { name: title });
     await expect(dialog).toBeVisible();
     await expect(preferences).toHaveAttribute("aria-expanded", "true");
-    await expect(dialog.getByRole("button")).toBeFocused();
+    await expect(dialog.getByRole("button").first()).toBeFocused();
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveCount(0);
     await expect(preferences).toBeFocused();
