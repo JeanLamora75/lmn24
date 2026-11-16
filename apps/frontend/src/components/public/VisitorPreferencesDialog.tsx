@@ -40,7 +40,7 @@ export function VisitorPreferencesDialog({
     resetDraftField, resetDraftAll, cancelEdit, saveDraft } = useVisitorPreferences();
   const countries = useMemo(() => localizedCountries(locale), [locale]);
   const draftSign = zodiacSignFromBirthDate(draft?.birthDate);
-  const zodiacCopy = VISITOR_ZODIAC_PREVIEW[locale] ?? VISITOR_ZODIAC_PREVIEW.fr;
+  const zodiacCopy = VISITOR_ZODIAC_PREVIEW[locale] ?? VISITOR_ZODIAC_PREVIEW.fr!;
 
   // Preserve the current close and focus-restoration behavior from SCRUM-104.
   useEffect(() => {
@@ -85,9 +85,9 @@ export function VisitorPreferencesDialog({
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
     if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault(); last.focus();
+      event.preventDefault(); last?.focus();
     } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault(); first.focus();
+      event.preventDefault(); first?.focus();
     }
   }
 
