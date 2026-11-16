@@ -344,3 +344,72 @@ test("SCRUM-108 favorite API failure leaves continent cards visible", async ({ p
   await expect(page.locator("article")).toHaveCount(2);
   await expect(page.locator('[data-favorite="true"]')).toHaveCount(0);
 });
+
+const horoscopeFavoriteBadge: Record<string, string> = {
+  fr: "Mon signe", en: "My sign", de: "Mein Sternzeichen", es: "Mi signo",
+  pt: "O meu signo", it: "Il mio segno", ru: "Мой знак", nl: "Mijn sterrenbeeld",
+};
+
+for (const [locale, badge] of Object.entries(horoscopeFavoriteBadge)) {
+  test("SCRUM-109 highlights the preferred sign in " + locale + " without hiding other signs", async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("lmn24.visitorPreferences", JSON.stringify({
+        version: 1, theme: null, countryIso2: null, city: null, birthDate: "2000-02-29",
+      }));
+    });
+    await page.goto("/" + locale + "/horoscope");
+    const signs = page.locator("a[href*='/horoscope/']");
+    await expect(signs).toHaveCount(12);
+    const favorite = page.locator('[data-favorite-sign="true"]');
+    await expect(favorite).toHaveCount(1);
+    await expect(favorite).toHaveAttribute("href", "/" + locale + "/horoscope/pisces");
+    await expect(favorite).toContainText(badge);
+    const others = page.locator("a[href$='/horoscope/aries']");
+    await expect(others).toHaveCount(1);
+    await others.click();
+    await expect(page).toHaveURL(new RegExp("/" + locale + "/horoscope/aries"));
+    await page.goto("/" + locale + "/horoscope");
+    await expect(page.locator('[data-favorite-sign="true"]')).toHaveAttribute(
+      "href", "/" + locale + "/horoscope/pisces",
+    );
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("lmn24.visitorPreferences") ?? "{}"));
+    expect(stored.birthDate).toBe("2000-02-29");
+  });
+}
+
+test("SCRUM-109 no preference keeps all twelve signs neutral; save/reset updates favorite", async ({ page }) => {
+  await page.goto("/fr/horoscope");
+  await expect(page.locator("a[href*='/horoscope/']")).toHaveCount(12);
+  await expect(page.locator('[data-favorite-sign="true"]')).toHaveCount(0);
+  await page.getByRole("button", { name: "Mes préférences" }).click();
+  const dialog = page.getByRole("dialog", { name: "Mes préférences" });
+  await dialog.getByLabel("Date de naissance").fill("1990-03-21");
+  await dialog.getByRole("button", { name: "Annuler" }).click();
+  await expect(page.locator('[data-favorite-sign="true"]')).toHaveCount(0);
+  await page.getByRole("button", { name: "Mes préférences" }).click();
+  await dialog.getByLabel("Date de naissance").fill("1990-03-21");
+  await dialog.getByRole("button", { name: "Enregistrer" }).click();
+  await expect(page.locator('[data-favorite-sign="true"]')).toHaveAttribute("href", "/fr/horoscope/aries");
+  await page.getByRole("button", { name: "Mes préférences" }).click();
+  await dialog.getByRole("button", { name: "Réinitialiser" }).last().click();
+  await dialog.getByRole("button", { name: "Enregistrer" }).click();
+  await expect(page.locator('[data-favorite-sign="true"]')).toHaveCount(0);
+  await expect(page.locator("a[href*='/horoscope/']")).toHaveCount(12);
+});
+
+test("SCRUM-109 date of birth is never sent in outgoing requests", async ({ page }) => {
+  const suspicious: string[] = [];
+  await page.addInitScript(() => {
+    localStorage.setItem("lmn24.visitorPreferences", JSON.stringify({
+      version: 1, theme: null, countryIso2: null, city: null, birthDate: "1992-05-21",
+    }));
+  });
+  page.on("request", (request) => {
+    if (request.url().includes("1992-05-21") || (request.postData() ?? "").includes("1992-05-21")) {
+      suspicious.push(request.url());
+    }
+  });
+  await page.goto("/fr/horoscope");
+  await expect(page.locator('[data-favorite-sign="true"]')).toHaveAttribute("href", "/fr/horoscope/gemini");
+  expect(suspicious).toEqual([]);
+});
