@@ -149,5 +149,5 @@ test("SCRUM-106 theme survives locale change without changing the URL canonical"
   await dialog.getByRole("button", { name: "Enregistrer" }).click();
   await page.goto("/en/horoscope");
   await expect(page.locator("html")).toHaveAttribute("data-bs-theme", "dark");
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /en\\/horoscope/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", new RegExp("en/horoscope"));
 });
