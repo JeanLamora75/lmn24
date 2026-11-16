@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { VisitorPreferencesDialog } from "./VisitorPreferencesDialog";
 import { useVisitorPreferences } from "./VisitorPreferencesProvider";
+import { PREFERENCES_FORM_COPY } from "./visitor-preferences-copy";
 import styles from "./PublicHeader.module.css";
 
 const PREFERENCES_COPY: Record<SupportedLocale, { title: string; close: string; introduction: string }> = {
@@ -106,6 +107,7 @@ export function PublicHeader() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [preferencesOpen, setPreferencesOpen] = useState(false);
+  const [preferencesSaved, setPreferencesSaved] = useState(false);
   const preferencesButtonRef = useRef<HTMLButtonElement>(null);
   const preferencesCopy = PREFERENCES_COPY[locale];
   const { beginEdit } = useVisitorPreferences();
@@ -133,6 +135,12 @@ export function PublicHeader() {
       document.removeEventListener("keydown", handleEscape);
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!preferencesSaved) return;
+    const timeout = window.setTimeout(() => setPreferencesSaved(false), 4500);
+    return () => window.clearTimeout(timeout);
+  }, [preferencesSaved]);
 
   const changeLanguage = (nextLocale: SupportedLocale) => {
     setIsOpen(false);
@@ -179,7 +187,7 @@ export function PublicHeader() {
             title={preferencesCopy.title}
             aria-haspopup="dialog"
             aria-expanded={preferencesOpen}
-            onClick={() => { setIsOpen(false); beginEdit(); setPreferencesOpen(true); }}
+            onClick={() => { setIsOpen(false); setPreferencesSaved(false); beginEdit(); setPreferencesOpen(true); }}
           >
             <svg className={styles.preferencesIcon} viewBox="0 0 24 24"
               fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
@@ -188,6 +196,7 @@ export function PublicHeader() {
               <circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.5"/>
             </svg>
           </button>
+          {preferencesSaved && <span className={styles.preferencesSaved} role="status" aria-live="polite">{PREFERENCES_FORM_COPY[locale].saved}</span>}
           <div className={`dropdown ${styles.languageDropdown}`} ref={dropdownRef}>
             <button
               ref={toggleRef}
@@ -236,6 +245,7 @@ export function PublicHeader() {
         description={preferencesCopy.introduction}
         closeLabel={preferencesCopy.close}
         onClose={() => setPreferencesOpen(false)}
+        onSaved={() => { setPreferencesOpen(false); setPreferencesSaved(true); }}
         returnFocusRef={preferencesButtonRef}
       />
     </header>
