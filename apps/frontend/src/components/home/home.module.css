@@ -555,3 +555,18 @@
     transform: none;
   }
 }
+
+/* SCRUM-106 — brighten category accents on dark surfaces, with no change to light mode. */
+:global(html[data-bs-theme="dark"]) .categoryLink,
+:global(html[data-bs-theme="dark"]) .moreNewsLink,
+:global(html[data-bs-theme="dark"]) .sourceDirectoryLink {
+  color: color-mix(in srgb, var(--category-accent, #76b9ff) 60%, #fff);
+}
+:global(html[data-bs-theme="dark"]) .moreNewsLink:hover,
+:global(html[data-bs-theme="dark"]) .moreNewsLink:focus-visible {
+  background: color-mix(in srgb, var(--category-accent, #76b9ff) 60%, #fff);
+  color: #071b2b;
+}
+:global(html[data-bs-theme="dark"]) .articleCard:hover {
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+}
