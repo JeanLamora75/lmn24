@@ -45,8 +45,10 @@ test("SCRUM-111: stored birth date drives SVG curves, but temporary change does 
   await expect(page.locator('svg[role="img"]')).toHaveCount(1);
   await expect.poll(async()=>page.evaluate(()=>localStorage.getItem("lmn24.visitorPreferences"))).toBe(previous);
   await page.getByRole("button",{name:"15 jours suivants"}).click();
-  await page.getByRole("checkbox",{name:/Physique/}).uncheck();
-  await expect(page.getByRole("checkbox",{name:/Physique/})).not.toBeChecked();
+  const physical = page.getByRole("checkbox",{name:/Physique/});
+  await physical.focus();
+  await physical.press("Space"); // keyboard accessibility, avoids sticky mobile header intercept
+  await expect(physical).not.toBeChecked();
   await page.getByRole("button",{name:"Aujourd'hui"}).click();
   await page.reload();
   await expect(date).toHaveValue(favorite);
