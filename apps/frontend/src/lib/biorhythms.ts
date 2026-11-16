@@ -41,7 +41,7 @@ export function cycleValue(daysFromBirth: number, period: number): number {
 export type BiorhythmPoint = { date: string; dayOffset: number } & Record<BiorhythmCycle, number>;
 export function biorhythmWindow(birthDate: string, centerDate: string): BiorhythmPoint[] {
   const birth = utcDay(birthDate), center = utcDay(centerDate);
-  if (birth === null || center === null || birth > center) throw new RangeError("Invalid birth or center date");
+  if (birth === null || center === null) throw new RangeError("Invalid birth or center date");
   return Array.from({ length: 31 }, (_, i) => {
     const dateDay = center + i - 15;
     const days = dateDay - birth;
