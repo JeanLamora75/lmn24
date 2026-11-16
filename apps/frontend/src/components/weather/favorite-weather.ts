@@ -4,7 +4,7 @@ import type { WeatherCity } from "./weather-data";
 
 /** UI mapping: do not guess an admin city from its name alone. */
 export function findCatalogFavorite(items: WeatherCity[], favorite: VisitorCity): WeatherCity | null {
-  const canonical = (name: string) => name.normalize("NFKC").trim().toLocaleLowerCase("und").replace(/\s+/g, " ");
+  const canonical = (name: string) => name.normalize("NFKC").trim().toLowerCase().replace(/\s+/g, " ");
   const matches = items.filter(item =>
     item.countryIso2 === favorite.countryIso2 &&
     item.continentCode === favorite.continent &&
@@ -26,7 +26,7 @@ export const favoriteWeatherQuery = visitorCitySchema.pick({
   latitude: true, longitude: true, timezone: true,
 });
 const upstreamCurrent = z.object({
-  time: z.string().min(10),
+  time: z.number().int().nonnegative(),
   temperature_2m: z.number().finite(),
   apparent_temperature: z.number().finite().nullable().optional(),
   relative_humidity_2m: z.number().finite().min(0).max(100).nullable().optional(),
@@ -43,9 +43,8 @@ const upstreamSchema = z.object({
 export function normalizeFavoriteWeather(raw: unknown, city: z.infer<typeof favoriteWeatherQuery>, fetchedAt: string): WeatherCity {
   const parsed = upstreamSchema.parse(raw);
   const current = parsed.current;
-  // Open-Meteo current.time is local ISO without offset; timestamp comes from server fetch,
-  // not from a fictitious UTC conversion of the city's wall clock.
-  const observedAt = fetchedAt;
+  // Request timeformat=unixtime to retain the observation's real UTC instant.
+  const observedAt = new Date(current.time * 1000).toISOString();
   return {
     slug: "favorite-" + city.providerId,
     name: city.name,
