@@ -7,6 +7,8 @@ import { localizedCountries } from "@/lib/visitor-countries";
 import { useVisitorPreferences } from "./VisitorPreferencesProvider";
 import { PREFERENCES_FORM_COPY } from "./visitor-preferences-copy";
 import { VisitorCitySearch } from "./VisitorCitySearch";
+import { zodiacSignFromBirthDate } from "@/lib/visitor-zodiac";
+import { VISITOR_ZODIAC_PREVIEW } from "@/components/horoscope/visitor-zodiac-copy";
 import type { SupportedLocale } from "@lmn24/config";
 import styles from "./VisitorPreferencesDialog.module.css";
 
@@ -37,6 +39,8 @@ export function VisitorPreferencesDialog({
   const { draft, preferences, ready, conflict, saveState, updateDraft,
     resetDraftField, resetDraftAll, cancelEdit, saveDraft } = useVisitorPreferences();
   const countries = useMemo(() => localizedCountries(locale), [locale]);
+  const draftSign = zodiacSignFromBirthDate(draft?.birthDate);
+  const zodiacCopy = VISITOR_ZODIAC_PREVIEW[locale] ?? VISITOR_ZODIAC_PREVIEW.fr;
 
   // Preserve the current close and focus-restoration behavior from SCRUM-104.
   useEffect(() => {
@@ -171,6 +175,7 @@ export function VisitorPreferencesDialog({
                   ...previous, birthDate: event.target.value || null,
                 }))}/>
               <p className={styles.hint}>{t.birthHint}</p>
+              {draftSign && <p className={styles.zodiacPreview} role="status">{zodiacCopy.heading} : <strong>{zodiacCopy.signs[draftSign]}</strong></p>}
               {birthInvalid && <p className={styles.error} role="alert">{t.dateError}</p>}
             </section>
             <p className={styles.hint}>{t.privacy}</p>
