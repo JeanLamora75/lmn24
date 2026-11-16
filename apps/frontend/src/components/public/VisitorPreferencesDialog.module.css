@@ -57,10 +57,10 @@
 .section { padding: 1rem; border: 1px solid var(--bs-border-color, #dee2e6); border-radius: 0.8rem; background: var(--bs-tertiary-bg, #f8f9fa); }
 .sectionHeading { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
 .sectionHeading h3 { margin: 0; font-size: 1.05rem; font-weight: 650; }
-.reset { padding: 0.35rem 0.5rem; min-height: 36px; border: none; background: none; color: var(--bs-primary, #0d6efd); text-decoration: underline; font-size: 0.875rem; }
+.reset { padding: 0.35rem 0.5rem; min-height: 44px; border: none; background: none; color: var(--bs-primary, #0d6efd); text-decoration: underline; font-size: 0.875rem; }
 .reset:focus-visible, .resetAll:focus-visible { outline: 3px solid var(--bs-primary); outline-offset: 2px; }
 .themeChoices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; border: none; padding: 0; margin: 0; }
-.themeChoice { cursor: pointer; display: flex; align-items: center; gap: 0.45rem; justify-content: center; padding: 0.65rem 0.35rem; border: 1px solid var(--bs-border-color, #dee2e6); border-radius: 0.65rem; background: var(--bs-body-bg, #fff); font-size: 0.9rem; }
+.themeChoice { min-height: 44px; cursor: pointer; display: flex; align-items: center; gap: 0.45rem; justify-content: center; padding: 0.65rem 0.35rem; border: 1px solid var(--bs-border-color, #dee2e6); border-radius: 0.65rem; background: var(--bs-body-bg, #fff); font-size: 0.9rem; }
 .themeChoice:has(input:checked) { border-color: var(--bs-primary, #0d6efd); box-shadow: inset 0 0 0 1px var(--bs-primary, #0d6efd); }
 .themeChoice input { accent-color: var(--bs-primary, #0d6efd); }
 .fieldLabel { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.35rem; }
