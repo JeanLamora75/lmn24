@@ -1,0 +1,56 @@
+# Winston — Architecture des préférences visiteur
+
+# LMN24 — Préférences visiteur (cadrage approuvé 2026-11-16)
+
+Statut : spécification validée métier, à développer. Source : cadrage Mary / étude Winston et Sally. Périmètre : site public, 8 locales (fr,en,de,es,pt,it,ru,nl). Le code existant n'est pas modifié par ce document.
+
+## Décisions métier impératives
+- Aucun compte, aucune écriture des préférences personnelles en PostgreSQL, table Setting, logs, analytics ou backend.
+- Stockage local du navigateur uniquement (localStorage, JSON versionné) ; aucune sollicitation automatique lors de la première visite.
+- Icône Paramètres dans le header public ouvrant la modale « Mes préférences ».
+- Modifications en brouillon ; Enregistrer applique et persiste, Annuler / fermeture / Échap jettent le brouillon.
+- Réinitialisation individuelle et globale ; individuelle soumise à Enregistrer, globale avec confirmation, sans toucher aux données étrangères aux préférences.
+- Thème clair/sombre/automatique ; pays ISO, recherche mondiale de ville par pays, date de naissance complète facultative et signe occidental calculé localement.
+- Langue de l'URL / cookie next-intl indépendante du pays ; filtre ponctuel de météo ou signe ne change jamais les préférences.
+- Si aucune préférence : comportement existant du site. Ordre personnalisé des catégories réservé à une évolution ultérieure ; format de stockage extensible.
+- Ville favorite : ouvrir la météo sur son continent. Sur CE continent uniquement, mettre sa carte en première position, surlignée (« Ma ville ») ; si ville déjà administrée, déplacer sa carte sans doublon ; sinon récupérer ponctuellement ses données par API météo. Navigation manuelle vers d'autres continents autorisée pendant la consultation. Au retour à la rubrique, re-sélectionner le continent favori. Ne jamais créer de WeatherCity pour une ville favorite.
+
+## Références vérifiées sur main
+- apps/frontend/src/components/public/PublicHeader.tsx ; PublicHeader.module.css
+- apps/frontend/src/app/[locale]/layout.tsx
+- apps/frontend/src/components/weather/PublicWeather.tsx ; weather-region-choice.ts ; weather-data.ts
+- apps/frontend/src/app/[locale]/weather/page.tsx ; app/api/public/weather/route.ts
+- apps/frontend/src/app/[locale]/horoscope/page.tsx ; horoscope/[sign]/page.tsx
+- apps/frontend/src/i18n/routing.ts
+
+## Conception cible
+- Service typé central et Provider/hooks React dans le layout public, sans coupler les préférences aux pages administratives.
+- Clé de stockage dédiée (proposition : lmn24.visitorPreferences), objet versionné avec migrations contrôlées, valeurs validées strictement à la lecture (Zod), nettoyage des données invalides sans bloquer le site.
+- Contenu cible : version, theme ('light'|'dark'|'system'), countryIso2 (nullable), city (nullable : identifiant géocodeur, nom, région, code pays, code continent, lat/lon et fuseau si disponible), birthDate (nullable ISO YYYY-MM-DD). Ne pas stocker le signe dérivé ni envoyer la date à une API.
+- Édition transactionnelle : copie en mémoire, validation, une seule écriture localStorage lors d'Enregistrer ; reset d'un champ modifie seulement le brouillon. Gestion des erreurs/quota/private mode avec message et comportement non persistant.
+- Synchronisation entre onglets via événement storage, sans écraser un brouillon non enregistré sans avertissement.
+- SSR/hydratation : rendu public générique et SEO stable ; ne pas lire localStorage côté serveur ; stratégie anticlinotement de thème évaluée (script client minimal / attribut data-bs-theme pré-hydratation). Respecter prefers-color-scheme et prefers-reduced-motion.
+- Le header public est déjà un Client Component avec zone de choix de langue. Insérer l'icône paramètres près de cette zone en respectant le grid responsive et les tests existants.
+
+## Recherche de ville et météo
+- Géocodeur international à qualifier : pays filtrant, recherche asynchrone avec debounce, AbortController, protection contre erreurs/rate limit, résultats homonymes correctement identifiés, quotas/licence/confidentialité vérifiés. Le fournisseur n'est PAS encore choisi.
+- La ville mondiale n'est pas une entrée WeatherCity. Ne pas écrire de ville ou de résultat météo dans PostgreSQL pour les préférences individuelles.
+- Chaîne de décision à l'ouverture /weather : ville favorite valide -> continent de la ville ; sinon comportement SSR existant (cookie lmn24_weather_continent, GeoIP de confiance, puis EU). Le cookie legacy ne doit pas supplanter la favorite. Un changement manuel reste temporaire pour la consultation.
+- Vérifier si la favorite figure parmi les cartes du continent par identifiant fiable si disponible, sinon correspondance normalisée prudente (pays + nom + proximité). Jamais dédupliquer sur le seul nom ou coordonnées approximatives.
+- Si ville présente : réordonner l'array pour placer la carte en tête et la marquer. Si absente : requête géolocalisée dédiée (lat/lon) vers Open-Meteo via proxy API public sécurisé, validation/schéma météo homogène, carte en tête réutilisant WeatherCard. Fallback aux cartes normales si échec, avec message non bloquant. Ne pas propager de date de naissance ou d'autres préférences dans la requête.
+- Le proxy existant /api/public/weather n'accepte que continent : ajouter une route dédiée ou contrat versionné ; pas de contournement de la validation existante. Limites, cache court sans données utilisateur, protection contre abus, erreurs et timeout.
+- Un géocodeur ne garantit pas à lui seul la disponibilité des données météo : distinguer recherches ville et données météo. Vérifier attribution et conditions Open-Meteo.
+
+## Horoscope / thème / i18n
+- Calcul local signe à partir du jour/mois avec validation des dates et cas limites ; sur la page /horoscope, mettre le signe favori en avant sans cacher les 11 autres ; URL /horoscope/[sign] inchangée et toujours consultable.
+- Thème Bootstrap via data-bs-theme et variables/tokens ; audit indispensable des couleurs hardcodées CSS public (PublicHeader.module.css et globals.css) et contraste WCAG.
+- Pays n'implique aucune modification automatique de langue ; conserver next-intl, les liens SEO/canonical/hreflang/SSR actuels.
+
+## Tests et conditions de livraison
+- Unitaires : version/migration/validation, mode brouillon, reset, priorités météo, correspondance ville, calcul signe, changement d'onglet, stockage indisponible.
+- Intégration API : timeout/erreurs, 0 résultat, quotas, entrée malveillante, lat/lon extrêmes, absence d'écriture DB, doublons.
+- Playwright desktop/mobile 8 locales : header, clavier/focus/Échap, thème sans flash notable, géocodage, ville existante/inexistante, continent temporaire, SEO/hydratation, confidentialité.
+- Ne pas modifier les parcours d'administration du catalogue WeatherCity. Aucune migration Prisma liée au stockage de préférences.
+
+## Décisions techniques encore ouvertes
+Fournisseur de géocodage, modalités API météo personnalisée et politique de cache/quotas, seuil de correspondance entre villes, stratégie exacte de thème au rendu initial. À trancher en implémentation avec tests et validation documentaire avant livraison.
