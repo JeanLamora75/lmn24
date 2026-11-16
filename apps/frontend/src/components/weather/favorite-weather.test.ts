@@ -2,13 +2,14 @@ import { describe, expect, it } from "vitest";
 import { arrangeFavoriteCities, findCatalogFavorite, normalizeFavoriteWeather, favoriteWeatherInput } from "./favorite-weather";
 import type { VisitorCity } from "@/lib/visitor-preferences";
 import type { WeatherCity } from "./weather-data";
+import type { WeatherRegion } from "./weather-copy";
 
 const favorite: VisitorCity = {
   provider:"open-meteo-geocoding",providerId:"1850147",name:"Tokyo",
   region:"Tokyo",countryIso2:"JP",continent:"AS",latitude:35.68,
   longitude:139.69,timezone:"Asia/Tokyo",
 };
-const card = (name: string, countryIso2: string, continentCode: "AS"|"EU", slug: string): WeatherCity => ({
+const card = (name: string, countryIso2: string, continentCode: WeatherRegion, slug: string): WeatherCity => ({
   slug,name,countryIso2,continentCode,timezone:"Asia/Tokyo",displayOrder:1,
   freshness:"UNAVAILABLE",current:null,
 });
@@ -24,7 +25,7 @@ describe("SCRUM-108 — city favorite matching", () => {
     expect(result.catalog).toHaveLength(3);
   });
   it("never matches solely by name or on the wrong continent", () => {
-    expect(findCatalogFavorite([card("Tokyo","US","NA" as "AS","tokyo-us")],favorite)).toBeNull();
+    expect(findCatalogFavorite([card("Tokyo","US","NA","tokyo-us")],favorite)).toBeNull();
     expect(findCatalogFavorite([card("Tokyo","JP","EU","tokyo-eu")],favorite)).toBeNull();
     expect(findCatalogFavorite([card("Kyoto","JP","AS","kyoto")],favorite)).toBeNull();
   });
