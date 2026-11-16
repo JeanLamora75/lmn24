@@ -11,6 +11,7 @@ const favorite: VisitorCity = {
 };
 const card = (name: string, countryIso2: string, continentCode: WeatherRegion, slug: string): WeatherCity => ({
   slug,name,countryIso2,continentCode,timezone:"Asia/Tokyo",displayOrder:1,
+  latitude: 35.68, longitude: 139.69,
   freshness:"UNAVAILABLE",current:null,
 });
 
@@ -28,6 +29,7 @@ describe("SCRUM-108 — city favorite matching", () => {
     expect(findCatalogFavorite([card("Tokyo","US","NA","tokyo-us")],favorite)).toBeNull();
     expect(findCatalogFavorite([card("Tokyo","JP","EU","tokyo-eu")],favorite)).toBeNull();
     expect(findCatalogFavorite([card("Kyoto","JP","AS","kyoto")],favorite)).toBeNull();
+    expect(findCatalogFavorite([{...card("Tokyo","JP","AS","tokyo-remote"),latitude:36.8}],favorite)).toBeNull();
   });
   it("does not wrongly merge multiple catalog homonyms", () => {
     const catalog=[card("Tokyo","JP","AS","tokyo1"),card("Tokyo","JP","AS","tokyo2")];
