@@ -164,3 +164,53 @@ activée ici** ; sa planification est une étape distincte (SCRUM-57 / SCRUM-80)
 Pour les tests PostgreSQL sur une base de test :
 `database/tests/scrum_78_weather_purge_smoke.sql` exécute ses assertions
 dans un `ROLLBACK` ; il ne laisse aucune donnée en base.
+
+## SCRUM-102 / SCRUM-110 — Préférences des visiteurs du site public
+
+Sur les pages publiques, une icône « Mes préférences » est disponible à côté du
+sélecteur de langue. Son ouverture est **toujours volontaire**. On peut y choisir
+le thème clair, sombre ou automatique, un pays et une ville favorite dans le monde,
+ainsi qu'une date de naissance facultative. Enregistrer valide et stocke le
+brouillon ; Annuler, la croix et Échap l'abandonnent. « Tout réinitialiser » exige
+confirmation puis Enregistrer. Chaque section est également réinitialisable.
+
+Le contenu est uniquement conservé dans la clé navigateur versionnée
+`lmn24.visitorPreferences`. Il n'y a aucun compte lié à ces préférences,
+aucun enregistrement dans PostgreSQL et aucun signe zodiacal persistant : le
+signe occidental est calculé dans le navigateur à partir de la date validée.
+Ne jamais transmettre la date de naissance aux services météo, géographiques,
+analytics ou aux journaux applicatifs. La langue publique est indépendante de
+la ville et du pays choisis.
+
+Lorsque la ville est enregistrée, la page Météo s'ouvre sur le continent de
+la favorite **après hydratation du navigateur**. La ville est présentée en tête
+et distinguée sur son continent seulement. Une ville du catalogue météo est
+reconnue par pays, nom et coordonnées géographiques ; sinon ses données météo
+sont obtenues ponctuellement depuis une API dédiée, sans création de WeatherCity.
+Un changement de continent durant une visite ne modifie pas la favorite.
+La page Horoscope conserve les douze cartes et ses liens ; une seule carte peut
+porter le badge personnel « Mon signe ».
+
+### Contrôles techniques
+
+```bash
+pnpm --filter @lmn24/frontend typecheck
+pnpm --filter @lmn24/frontend lint
+pnpm --filter @lmn24/frontend test
+pnpm --filter @lmn24/frontend exec playwright install chromium
+pnpm --filter @lmn24/frontend exec playwright test e2e/visitor-preferences-qa.pw.ts
+```
+
+Playwright démarre le serveur Next.js localement si aucun serveur n'est disponible.
+La CI exécute les tests unitaires dans le job Quality puis les scénarios
+browser `Visitor preferences browser acceptance (SCRUM-110)` sous Chromium
+desktop et mobile. Les traces de tests échoués sont conservées comme artefacts.
+
+**Points à qualifier avant clôture de l'Epic :** exécution verte des jobs
+sur un même commit de `main`, revue du rendu visuel en clair et sombre,
+validation de la licence et des quotas Open-Meteo pour l'usage réel de LMN24,
+protection contre les abus côté infrastructure pour les deux proxys publics,
+et validation de la stratégie de script de thème avec la CSP effective.
+Le code ajoute des scénarios de test, il ne prouve pas à lui seul leur réussite.
+
+Rapport BMAD : `docs/BMAD/visitor-preferences-scrum-110-qa.md`.
