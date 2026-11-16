@@ -11,7 +11,7 @@
 
 .headerLayout {
   display: grid;
-  grid-template-columns: clamp(158px, 16vw, 245px) minmax(0, 1fr) clamp(175px, 22vw, 325px);
+  grid-template-columns: clamp(158px, 16vw, 245px) minmax(0, 1fr) clamp(205px, 22vw, 325px);
   align-items: stretch;
   width: 100%;
   min-height: 98px;
@@ -152,6 +152,7 @@
   min-width: 0;
   align-items: center;
   justify-content: flex-end;
+  gap: 0.5rem;
   padding: 0 clamp(0.7rem, 1.2vw, 1.35rem) 0 34px;
   isolation: isolate;
 }
@@ -179,6 +180,31 @@
   z-index: -1;
   transform: skewX(-24deg);
   background: linear-gradient(to bottom, #a9d9ff, #3799fa);
+}
+
+.preferencesButton {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 54px;
+  padding: 0;
+  border-radius: 999px;
+  border: 0;
+  background: #fff;
+  color: #102d54;
+  box-shadow: 0 3px 12px rgba(0, 39, 112, 0.18);
+  cursor: pointer;
+}
+.preferencesIcon { width: 27px; height: 27px; }
+.preferencesButton:hover { background: #f0f6ff; color: #074ead; }
+.preferencesButton:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 0.35rem rgba(13, 110, 253, 0.36);
 }
 
 .languageDropdown {
@@ -247,7 +273,7 @@
 
 @media (max-width: 1199.98px) {
   .headerLayout {
-    grid-template-columns: 144px minmax(0, 1fr) 95px;
+    grid-template-columns: 144px minmax(0, 1fr) 142px;
     min-height: 82px;
   }
   .logo {
@@ -270,7 +296,8 @@
     height: 25px;
   }
   .languagePanel {
-    padding: 0 10px 0 17px;
+    padding: 0 10px 0 12px;
+    gap: 0.4rem;
   }
   .languagePanel::before {
     display: none;
@@ -279,6 +306,8 @@
     background-image: linear-gradient(125deg, var(--bs-primary), #0750b5);
     clip-path: none;
   }
+  .preferencesButton { flex-basis: 44px; width: 44px; height: 48px; }
+  .preferencesIcon { width: 24px; height: 24px; }
   .languageButton {
     min-width: 60px;
     height: 54px;
@@ -329,7 +358,9 @@
     grid-area: language;
     background-color: var(--bs-primary);
     padding: 0 14px 0 8px;
+    gap: 8px;
   }
+  .preferencesButton { flex-basis: 44px; width: 44px; height: 48px; }
   .languageButton {
     min-width: 59px;
     height: 48px;
