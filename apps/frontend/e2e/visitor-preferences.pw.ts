@@ -64,6 +64,7 @@ test("SCRUM-105 saves explicitly and reset actions stay draft until Save", async
   await dialog.getByLabel("Date de naissance").fill("2000-02-29");
   await dialog.getByRole("button", { name: "Enregistrer" }).click();
   await expect(dialog).toHaveCount(0);
+  await expect(page.getByRole("status", { name: "" }).filter({ hasText: "Préférences enregistrées." })).toBeVisible();
   await expect.poll(() => page.evaluate(() => {
     const s = localStorage.getItem("lmn24.visitorPreferences");
     return s ? JSON.parse(s).birthDate : null;
