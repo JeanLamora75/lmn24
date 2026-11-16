@@ -2,17 +2,26 @@ import { z } from "zod";
 import { visitorCitySchema, type VisitorCity } from "@/lib/visitor-preferences";
 import type { WeatherCity } from "./weather-data";
 
-/** UI mapping: do not guess an admin city from its name alone. */
+/** Geodesic distance in kilometres, used only for read-only catalog matching. */
+export function kilometerDistance(latA: number, lonA: number, latB: number, lonB: number): number {
+  const rad = Math.PI / 180;
+  const deltaLat = (latB - latA) * rad;
+  const deltaLon = (lonB - lonA) * rad;
+  const h = Math.sin(deltaLat / 2) ** 2 +
+    Math.cos(latA * rad) * Math.cos(latB * rad) * Math.sin(deltaLon / 2) ** 2;
+  return 6371 * 2 * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+/** The public admin-city DTO includes coordinates: never equate cities by name alone. */
 export function findCatalogFavorite(items: WeatherCity[], favorite: VisitorCity): WeatherCity | null {
   const canonical = (name: string) => name.normalize("NFKC").trim().toLowerCase().replace(/\s+/g, " ");
   const matches = items.filter(item =>
     item.countryIso2 === favorite.countryIso2 &&
     item.continentCode === favorite.continent &&
-    // Match a timezone too: the admin public contract has no coordinates or geocoder ID.
-    // Without this extra signal, fall back to the dedicated coordinate API.
-    favorite.timezone !== null && item.timezone === favorite.timezone &&
-    canonical(item.name) === canonical(favorite.name));
-  // Never collapse two same-name cities belonging to the same country: identity is ambiguous.
+    canonical(item.name) === canonical(favorite.name) &&
+    typeof item.latitude === "number" && typeof item.longitude === "number" &&
+    kilometerDistance(item.latitude, item.longitude, favorite.latitude, favorite.longitude) <= 25);
+  // If multiple admin cities qualify, never silently select the wrong one.
   return matches.length === 1 ? matches[0] : null;
 }
 
@@ -52,6 +61,8 @@ export function normalizeFavoriteWeather(raw: unknown, city: z.infer<typeof favo
     slug: "favorite-" + city.providerId,
     name: city.name,
     countryIso2: city.countryIso2,
+    latitude: city.latitude,
+    longitude: city.longitude,
     continentCode: city.continent,
     timezone: parsed.timezone,
     displayOrder: -1,
