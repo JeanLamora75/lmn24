@@ -13,6 +13,7 @@ import { siteSchema } from "@/lib/seo-schema";
 import type { SeoLocale } from "@/lib/seo-metadata";
 import { GoogleAnalyticsTracker } from "@/components/public/GoogleAnalyticsTracker";
 import { PublicHeader } from "@/components/public/PublicHeader";
+import { VisitorPreferencesProvider } from "@/components/public/VisitorPreferencesProvider";
 import { routing, type AppLocale } from "@/i18n/routing";
 
 export const metadata: Metadata = {
@@ -45,9 +46,11 @@ export default async function LocaleLayout({ children, params }: Props) {
       <body className="d-flex min-vh-100 flex-column">
         <StructuredData data={siteSchema(locale as SeoLocale)} />
         <NextIntlClientProvider>
-          <PublicHeader />
-          <div className="flex-grow-1">{children}</div>
-          <PublicFooter />
+          <VisitorPreferencesProvider>
+            <PublicHeader />
+            <div className="flex-grow-1">{children}</div>
+            <PublicFooter />
+          </VisitorPreferencesProvider>
           <GoogleAnalyticsTracker />
         </NextIntlClientProvider>
       </body>
