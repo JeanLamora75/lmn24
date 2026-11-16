@@ -66,6 +66,39 @@ jobs:
         run: pnpm build
 
 
+  visitor-preferences-browser:
+    name: Visitor preferences browser acceptance (SCRUM-110)
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CI: "true"
+      PLAYWRIGHT_BASE_URL: http://127.0.0.1:3000
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.10.0
+          run_install: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.21.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Install Chromium browser and OS libraries
+        run: pnpm --filter @lmn24/frontend exec playwright install --with-deps chromium
+      - name: Browser acceptance (desktop + mobile)
+        run: pnpm --filter @lmn24/frontend exec playwright test e2e/visitor-preferences-qa.pw.ts
+      - name: Upload browser traces when tests fail
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visitor-preferences-browser-traces
+          path: apps/frontend/test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
   hashtag-schema:
     name: PostgreSQL hashtag schema
     runs-on: ubuntu-latest
