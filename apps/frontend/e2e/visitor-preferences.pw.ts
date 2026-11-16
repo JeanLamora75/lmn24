@@ -37,3 +37,64 @@ test("SCRUM-104 preferences coexist with the language switcher", async ({ page }
   await languages.click();
   await expect(page.getByRole("menu")).toBeVisible();
 });
+
+test("SCRUM-105 cancel and Escape discard changes without writing storage", async ({ page }) => {
+  await page.goto("/fr");
+  await page.getByRole("button", { name: "Mes préférences" }).click();
+  const dialog = page.getByRole("dialog", { name: "Mes préférences" });
+  await dialog.getByRole("radio", { name: "Sombre" }).check();
+  await dialog.getByRole("button", { name: "Annuler" }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("lmn24.visitorPreferences"))).toBeNull();
+  await page.getByRole("button", { name: "Mes préférences" }).click();
+  await expect(dialog.getByRole("radio", { name: "Automatique" })).toBeChecked();
+  await dialog.getByRole("radio", { name: "Sombre" }).check();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("lmn24.visitorPreferences"))).toBeNull();
+});
+
+test("SCRUM-105 saves explicitly and reset actions stay draft until Save", async ({ page }) => {
+  await page.goto("/fr");
+  const open = () => page.getByRole("button", { name: "Mes préférences" }).click();
+  await open();
+  const dialog = page.getByRole("dialog", { name: "Mes préférences" });
+  await dialog.getByRole("radio", { name: "Sombre" }).check();
+  await dialog.getByLabel("Pays").selectOption("FR");
+  await dialog.getByLabel("Date de naissance").fill("2000-02-29");
+  await dialog.getByRole("button", { name: "Enregistrer" }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => {
+    const s = localStorage.getItem("lmn24.visitorPreferences");
+    return s ? JSON.parse(s).birthDate : null;
+  })).toBe("2000-02-29");
+  await open();
+  await expect(dialog.getByRole("radio", { name: "Sombre" })).toBeChecked();
+  await expect(dialog.getByLabel("Pays")).toHaveValue("FR");
+  await dialog.getByRole("button", { name: "Tout réinitialiser" }).click();
+  await expect(dialog.getByText("Réinitialiser toutes les préférences ?")).toBeVisible();
+  await dialog.getByRole("button", { name: "Annuler" }).last().click();
+  await expect(dialog.getByRole("radio", { name: "Sombre" })).toBeChecked();
+  await dialog.getByRole("button", { name: "Tout réinitialiser" }).click();
+  await dialog.getByRole("button", { name: "Tout réinitialiser" }).last().click();
+  await expect(dialog.getByRole("radio", { name: "Automatique" })).toBeChecked();
+  await dialog.getByRole("button", { name: "Annuler" }).last().click();
+  await open();
+  await expect(dialog.getByRole("radio", { name: "Sombre" })).toBeChecked();
+  await dialog.getByRole("button", { name: "Tout réinitialiser" }).click();
+  await dialog.getByRole("button", { name: "Tout réinitialiser" }).last().click();
+  await dialog.getByRole("button", { name: "Enregistrer" }).click();
+  await expect.poll(() => page.evaluate(() => {
+    const s = localStorage.getItem("lmn24.visitorPreferences");
+    return s ? JSON.parse(s).countryIso2 : "missing";
+  })).toBeNull();
+});
+
+test("SCRUM-105 local validation rejects an invalid birthdate", async ({ page }) => {
+  await page.goto("/fr");
+  await page.getByRole("button", { name: "Mes préférences" }).click();
+  const dialog = page.getByRole("dialog", { name: "Mes préférences" });
+  await dialog.getByLabel("Date de naissance").fill("2027-01-01");
+  await expect(dialog.getByRole("button", { name: "Enregistrer" })).toBeDisabled();
+  await dialog.getByRole("button", { name: "Annuler" }).click();
+});
