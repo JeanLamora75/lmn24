@@ -5,7 +5,7 @@ import { VISITOR_ZODIAC_PREVIEW } from "./visitor-zodiac-copy";
 describe("SCRUM-109 — horoscope preference translations", () => {
   it("provides an understandable sign preview in all eight public locales", () => {
     expect(Object.keys(VISITOR_ZODIAC_PREVIEW).sort()).toEqual(
-      ["fr","en","de","es","pt","it","ru","nl"],
+      ["fr","en","de","es","pt","it","ru","nl"].sort(),
     );
     for (const translation of Object.values(VISITOR_ZODIAC_PREVIEW)) {
       expect(translation.heading.trim().length).toBeGreaterThan(3);
