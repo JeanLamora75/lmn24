@@ -19,7 +19,7 @@ describe("SCRUM-107 — anonymous geocoding proxy", () => {
   });
 
   it("filters by country, validates response and exposes only city fields", async () => {
-    const upstream = vi.fn(async () => new Response(JSON.stringify({
+    const upstream = vi.fn(async (_url: string, _init?: RequestInit) => new Response(JSON.stringify({
       results: [
         { id: 2988507, name: "Paris", country_code: "FR",
           latitude: 48.8566, longitude: 2.3522, admin1: "Île-de-France",
