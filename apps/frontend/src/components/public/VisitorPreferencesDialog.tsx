@@ -6,6 +6,7 @@ import { changeVisitorCountry, parseVisitorPreferences } from "@/lib/visitor-pre
 import { localizedCountries } from "@/lib/visitor-countries";
 import { useVisitorPreferences } from "./VisitorPreferencesProvider";
 import { PREFERENCES_FORM_COPY } from "./visitor-preferences-copy";
+import { VisitorCitySearch } from "./VisitorCitySearch";
 import type { SupportedLocale } from "@lmn24/config";
 import styles from "./VisitorPreferencesDialog.module.css";
 
@@ -143,13 +144,16 @@ export function VisitorPreferencesDialog({
                 {countries.map(({ code, name }) =>
                   <option key={code} value={code}>{name}</option>)}
               </select>
-              <div className={styles.cityRow}>
-                <span className={styles.fieldLabel}>{t.city}</span>
-                <span>{draft.city ? draft.city.name + " (" + draft.city.countryIso2 + ")" : t.noCity}</span>
-                {draft.city && <button type="button" className={styles.reset}
-                  onClick={() => resetDraftField("city")}>{t.reset}</button>}
-              </div>
-              <p className={styles.hint}>{t.cityLater}</p>
+              <VisitorCitySearch
+                key={draft.countryIso2 ?? "none"}
+                country={draft.countryIso2}
+                locale={locale}
+                current={draft.city}
+                clearLabel={t.reset}
+                onClear={() => resetDraftField("city")}
+                onSelect={(city) => updateDraft((previous) => previous.countryIso2 === city.countryIso2
+                  ? { ...previous, city } : previous)}
+              />
             </section>
 
             <section className={styles.section} aria-labelledby={birthId + "-title"}>
