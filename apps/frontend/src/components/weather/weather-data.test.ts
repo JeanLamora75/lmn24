@@ -58,6 +58,17 @@ describe("SCRUM-74 — worldwide weather public page",()=>{
     expect(result.items[0]?.freshness).toBe("FRESH");
     expect(result.items[1]?.current).toBeNull();
   });
+  it("accepts geographic coordinates and rejects out-of-range or invalid coordinates",()=>{
+    const base=response();
+    const items=base.items.map((item,i)=>({...item,
+      latitude:i===0?48.8566:52.52,longitude:i===0?2.3522:13.405}));
+    expect(parseWeatherResponse({...base,items},"EU").items[0]).toMatchObject({
+      name:"Paris",latitude:48.8566,longitude:2.3522
+    });
+    expect(()=>parseWeatherResponse({...base,items:[
+      {...items[0],latitude:100},items[1]
+    ]},"EU")).toThrow();
+  });
   it("rejects mismatched continent, malformed or untrusted responses",()=>{
     expect(()=>parseWeatherResponse(response(),"AS")).toThrow();
     expect(()=>parseWeatherResponse({...response(),items:[{
