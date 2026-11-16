@@ -60,3 +60,13 @@ Références internes :
 ## Traçabilité Jira
 - John — User Story [SCRUM-111](https://lmn24.atlassian.net/browse/SCRUM-111), créée le 16 novembre 2026, reprend ce cadrage et les 10 critères d'acceptation.
 - Aucun code applicatif n'est modifié par ce cadrage et cette rédaction Jira.
+
+## Réalisation Amelia — SCRUM-111 (2026-11-16)
+
+- `apps/frontend/src/lib/biorhythms.ts` implémente les fonctions pures `utcDay`, `validBirthDate`, `cycleValue`, `biorhythmWindow` et `isoAtDay`. Calcul en jours UTC, 23/28/33 jours, fenêtre de 31 jours et gestion dates invalides.
+- La page publique `/{locale}/horoscope` affiche un encart traduit avant les douze cartes. Nouvelle route statique `/{locale}/horoscope/biorythmes` et retour à l'horoscope. Aucun menu principal supplémentaire.
+- `BiorhythmChart.tsx` réutilise `VisitorPreferencesProvider.preferences.birthDate` après hydratation ; l'état temporaire de formulaire ne déclenche aucune sauvegarde, requête ou écriture PostgreSQL. Trois courbes SVG accessibles, valeurs centrales textuelles, interrupteurs et navigation ±15 jours.
+- Traductions huit langues dans `biorhythm-copy.ts`. Métadonnées canonical/hreflang et contenu SSR générique indépendants des dates personnelles. Sitemap public augmenté des huit routes biorythmes.
+- Tests : `src/lib/biorhythms.test.ts` (trois périodes, 0, années bissextiles, DST UTC, années limites), `e2e/biorhythms.pw.ts` (huit langues, 12 signes conservés, SEO, courbes, vie privée et mobile), ajout à la CI desktop/mobile.
+- Qualification : vérifier les exécutions GitHub Actions (Typecheck, Lint, Tests, Build, PostgreSQL et Playwright) sur le même SHA ; ne pas déclarer la story clôturée sans preuve de réussite.
+
