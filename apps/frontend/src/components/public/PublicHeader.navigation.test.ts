@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 
 const header = readFileSync(new URL("./PublicHeader.tsx", import.meta.url), "utf8");
 const styles = readFileSync(new URL("./PublicHeader.module.css", import.meta.url), "utf8");
+const dialog = readFileSync(new URL("./VisitorPreferencesDialog.tsx", import.meta.url), "utf8");
+const dialogStyles = readFileSync(new URL("./VisitorPreferencesDialog.module.css", import.meta.url), "utf8");
 const globe = new URL("../../../public/header-globe.webp", import.meta.url);
 
 describe("SCRUM-10 — approved LMN24 header redesign", () => {
@@ -69,6 +71,37 @@ describe("SCRUM-10 — approved LMN24 header redesign", () => {
     expect(styles).toContain('"navigation navigation"');
     expect(styles).toContain("focus-visible");
     expect(styles).toContain("prefers-reduced-motion: reduce");
+  });
+
+  it("SCRUM-104 exposes a localized preferences action without an automatic popup", () => {
+    const languages = ["fr", "en", "de", "es", "pt", "it", "ru", "nl"];
+    for (const language of languages) {
+      expect(header).toMatch(new RegExp("\\b" + language + ': \\{ title: "'));
+    }
+    expect(header).toContain('className={styles.preferencesButton}');
+    expect(header).toContain('aria-label={preferencesCopy.title}');
+    expect(header).toContain('aria-haspopup="dialog"');
+    expect(header).toContain('onClick={() => { setIsOpen(false); setPreferencesOpen(true); }}');
+    expect(header).toContain('<VisitorPreferencesDialog');
+    expect(header).toContain('open={preferencesOpen}');
+    expect(header).toContain('useState(false)');
+    expect(styles).toContain('min-width: 0');
+    expect(styles).toContain('.preferencesButton:focus-visible');
+    expect(styles).toContain('flex-basis: 44px');
+  });
+
+  it("SCRUM-104 modal is keyboard-accessible with focus return and responsive layout", () => {
+    expect(dialog).toContain('createPortal(');
+    expect(dialog).toContain('role="dialog"');
+    expect(dialog).toContain('aria-modal="true"');
+    expect(dialog).toContain('aria-labelledby={titleId}');
+    expect(dialog).toContain('aria-describedby={descriptionId}');
+    expect(dialog).toContain('event.key === "Escape"');
+    expect(dialog).toContain('event.key !== "Tab"');
+    expect(dialog).toContain('returnFocusRef.current?.focus()');
+    expect(dialog).toContain('event.target === event.currentTarget');
+    expect(dialogStyles).toContain('max-height: 95dvh');
+    expect(dialogStyles).toContain('z-index: 2000');
   });
 
   it("contains local, non-interactive globe art and the flag chevron", () => {
