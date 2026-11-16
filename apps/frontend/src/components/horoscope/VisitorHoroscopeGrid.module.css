@@ -1,0 +1,24 @@
+.favoriteSign {
+  border: 2px solid #3478d4 !important;
+  box-shadow: 0 0 0 1px rgba(52, 120, 212, .12), 0 8px 23px rgba(10, 77, 153, .13) !important;
+  background: var(--bs-body-bg, #fff);
+}
+.favoriteSign:focus-visible {
+  outline: 3px solid #3478d4;
+  outline-offset: 3px;
+}
+.favoriteBadge {
+  color: #063b78;
+  background: #dceeff;
+  border: 1px solid #71acec;
+  font-weight: 700;
+}
+:global(html[data-bs-theme="dark"]) .favoriteSign {
+  border-color: #8dc1ff !important;
+  box-shadow: 0 0 0 1px rgba(141, 193, 255, .22), 0 8px 22px rgba(0,0,0,.35) !important;
+}
+:global(html[data-bs-theme="dark"]) .favoriteBadge {
+  color: #e7f3ff;
+  background: #16416e;
+  border-color: #8dc1ff;
+}
