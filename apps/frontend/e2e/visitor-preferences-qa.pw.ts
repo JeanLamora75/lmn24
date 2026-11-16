@@ -175,3 +175,43 @@ test("SCRUM-110: dark-mode card text retains at least WCAG AA contrast", async (
   });
   expect(contrast).toBeGreaterThanOrEqual(4.5);
 });
+
+test("SCRUM-110: global reset only changes LMN24 preferences, not other browser data", async ({ page, context }) => {
+  await context.addCookies([{
+    name: "lmn24_weather_continent", value: "NA", url: "http://127.0.0.1:3000",
+  }]);
+  await page.addInitScript(() => {
+    localStorage.setItem("lmn24.visitorPreferences", JSON.stringify({
+      version: 1, theme: "dark", countryIso2: null, city: null, birthDate: "1992-05-21",
+    }));
+    localStorage.setItem("lmn24.otherFeature", "must-stay");
+  });
+  await page.goto("/fr/horoscope");
+  await page.getByRole("button", { name: "Mes préférences" }).click();
+  const dialog = page.getByRole("dialog", { name: "Mes préférences" });
+  await dialog.getByRole("button", { name: "Tout réinitialiser" }).click();
+  await dialog.getByRole("button", { name: "Tout réinitialiser" }).first().click();
+  await dialog.getByRole("button", { name: "Enregistrer" }).click();
+  const stored = await page.evaluate(() => ({
+    preferences: JSON.parse(localStorage.getItem("lmn24.visitorPreferences") ?? "{}"),
+    unrelated: localStorage.getItem("lmn24.otherFeature"),
+    weatherCookie: document.cookie.includes("lmn24_weather_continent=NA"),
+  }));
+  expect(stored.preferences.birthDate).toBeNull();
+  expect(stored.preferences.theme).toBeNull();
+  expect(stored.unrelated).toBe("must-stay");
+  expect(stored.weatherCookie).toBe(true);
+});
+
+test("SCRUM-110: invalid persisted preferences fail safely and do not block navigation", async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem(
+    "lmn24.visitorPreferences",
+    JSON.stringify({ version: 8000, birthDate: "1890-01-01", theme: "dark" }),
+  ));
+  await page.goto("/fr/horoscope");
+  await expect(page.locator('a[href*="/horoscope/"]')).toHaveCount(12);
+  await expect(page.locator('[data-favorite-sign="true"]')).toHaveCount(0);
+  await expect(page.locator("html")).not.toHaveAttribute("data-bs-theme", "dark");
+  await page.getByRole("button", { name: "Mes préférences" }).click();
+  await expect(page.getByRole("dialog", { name: "Mes préférences" })).toBeVisible();
+});
