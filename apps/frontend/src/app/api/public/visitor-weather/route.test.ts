@@ -37,7 +37,7 @@ describe("SCRUM-108 — visitor's weather API",()=>{
       continentCode:"AS",freshness:"FRESH",current:{temperatureC:18,provider:"OPEN_METEO"},
     });
     expect(response.headers.get("cache-control")).toContain("no-store");
-    const upstream=new URL(fetcher.mock.calls[0][0] as string);
+    const upstream=new URL(fetcher.mock.calls[0]?.[0] ?? "");
     expect(upstream.hostname).toBe("api.open-meteo.com");
     expect(upstream.searchParams.get("latitude")).toBe("35.68");
     expect(upstream.searchParams.get("longitude")).toBe("139.69");
