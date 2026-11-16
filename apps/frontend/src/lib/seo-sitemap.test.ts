@@ -10,10 +10,11 @@ describe("SCRUM-94 sitemap XML and public URL filtering", () => {
   });
   it("uses absolute HTTPS canonical URLs and never includes admin or API", () => {
     const urls = staticUrls();
-    expect(urls).toHaveLength(8 * (5 + 12));
+    expect(urls).toHaveLength(8 * (6 + 12));
     for (const locale of SEO_LOCALES) {
       expect(urls).toContain("https://www.lmn24.com/" + locale);
       expect(urls).toContain("https://www.lmn24.com/" + locale + "/horoscope/aries");
+      expect(urls).toContain("https://www.lmn24.com/" + locale + "/horoscope/biorythmes");
     }
     expect(urls.every(url => url.startsWith("https://www.lmn24.com/"))).toBe(true);
     expect(urls.some(url => /\/admin|\/api/.test(url))).toBe(false);
