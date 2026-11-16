@@ -11,14 +11,14 @@ import { useVisitorPreferences } from "./VisitorPreferencesProvider";
 import styles from "./PublicHeader.module.css";
 
 const PREFERENCES_COPY: Record<SupportedLocale, { title: string; close: string; introduction: string }> = {
-  fr: { title: "Mes préférences", close: "Fermer", introduction: "Vous pourrez bientôt personnaliser le thème, le pays, la ville et votre horoscope depuis cet espace." },
-  en: { title: "My preferences", close: "Close", introduction: "You will soon be able to personalize the theme, country, city and horoscope here." },
-  de: { title: "Meine Einstellungen", close: "Schließen", introduction: "Hier können Sie bald Design, Land, Stadt und Horoskop personalisieren." },
-  es: { title: "Mis preferencias", close: "Cerrar", introduction: "Pronto podrás personalizar aquí el tema, el país, la ciudad y el horóscopo." },
-  pt: { title: "As minhas preferências", close: "Fechar", introduction: "Em breve poderá personalizar aqui o tema, país, cidade e horóscopo." },
-  it: { title: "Le mie preferenze", close: "Chiudi", introduction: "Presto potrai personalizzare qui tema, paese, città e oroscopo." },
-  ru: { title: "Мои предпочтения", close: "Закрыть", introduction: "Скоро здесь можно будет настроить тему, страну, город и гороскоп." },
-  nl: { title: "Mijn voorkeuren", close: "Sluiten", introduction: "Binnenkort kun je hier het thema, land, de stad en horoscoop aanpassen." },
+  fr: { title: "Mes préférences", close: "Fermer", introduction: "Personnalisez votre expérience LMN24. Vos choix restent dans ce navigateur." },
+  en: { title: "My preferences", close: "Close", introduction: "Personalize your LMN24 experience. Your choices stay in this browser." },
+  de: { title: "Meine Einstellungen", close: "Schließen", introduction: "Passen Sie LMN24 an. Ihre Einstellungen bleiben in diesem Browser." },
+  es: { title: "Mis preferencias", close: "Cerrar", introduction: "Personaliza LMN24. Tus preferencias se guardan en este navegador." },
+  pt: { title: "As minhas preferências", close: "Fechar", introduction: "Personalize o LMN24. As suas preferências ficam neste navegador." },
+  it: { title: "Le mie preferenze", close: "Chiudi", introduction: "Personalizza LMN24. Le preferenze restano in questo browser." },
+  ru: { title: "Мои предпочтения", close: "Закрыть", introduction: "Настройте LMN24. Ваши предпочтения останутся в этом браузере." },
+  nl: { title: "Mijn voorkeuren", close: "Sluiten", introduction: "Personaliseer LMN24. Je voorkeuren blijven in deze browser." },
 };
 
 const LANGUAGE_FLAGS: Record<SupportedLocale, string> = {
