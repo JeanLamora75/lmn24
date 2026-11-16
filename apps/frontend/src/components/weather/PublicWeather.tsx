@@ -178,10 +178,13 @@ export function PublicWeather({
   useEffect(()=>{
     if(!externalFavorite || !favorite)return;
     const abort=new AbortController();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setFavoriteLoading(true);
-    setFavoriteError(false);
-    setFavoriteWeather(null);
+    // A microtask also keeps Strict Mode effect replay from committing stale UI.
+    queueMicrotask(()=>{
+      if(abort.signal.aborted)return;
+      setFavoriteLoading(true);
+      setFavoriteError(false);
+      setFavoriteWeather(null);
+    });
     const fetchFavorite=async()=>{
       try{
         const response=await fetch("/api/public/visitor-weather",{
