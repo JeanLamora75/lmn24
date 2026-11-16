@@ -56,3 +56,7 @@ Références internes :
 - `apps/frontend/src/app/[locale]/horoscope/page.tsx`
 - `apps/frontend/src/app/[locale]/horoscope/[sign]/page.tsx`
 - `apps/frontend/src/lib/visitor-preferences.ts`
+
+## Traçabilité Jira
+- John — User Story [SCRUM-111](https://lmn24.atlassian.net/browse/SCRUM-111), créée le 16 novembre 2026, reprend ce cadrage et les 10 critères d'acceptation.
+- Aucun code applicatif n'est modifié par ce cadrage et cette rédaction Jira.
