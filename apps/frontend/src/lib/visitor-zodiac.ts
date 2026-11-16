@@ -10,13 +10,6 @@ export const WESTERN_ZODIAC_SIGNS = [
 
 export type WesternZodiacSign = (typeof WESTERN_ZODIAC_SIGNS)[number];
 
-/** Non-leap year fixed boundaries; January/December wrap for Capricorn. */
-const FIRST_DAYS = [21, 20, 21, 21, 23, 23, 23, 23, 22, 22, 20, 19] as const;
-const MONTH_SIGNS: readonly WesternZodiacSign[] = [
-  "capricorn", "aquarius", "pisces", "aries", "taurus", "gemini",
-  "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius",
-];
-
 export function zodiacSignFromBirthDate(birthDate: string | null | undefined): WesternZodiacSign | null {
   if (!birthDate || !/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) return null;
   const [year, month, day] = birthDate.split("-").map(Number);
