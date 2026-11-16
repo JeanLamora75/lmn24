@@ -83,3 +83,25 @@
 :global(html[data-bs-theme="dark"]) .temperature {
   color: #8ec5ff;
 }
+
+/* SCRUM-108 — selected visitor city is emphasized without obscuring forecast data. */
+.favoriteCard {
+  border: 2px solid #3d83dc;
+  box-shadow: 0 0 0 1px rgba(35, 117, 211, 0.12), 0 8px 22px rgba(16, 70, 135, 0.13) !important;
+}
+.favoriteBadge {
+  color: #063b78;
+  background: #dceeff;
+  border: 1px solid #71acec;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+:global(html[data-bs-theme="dark"]) .favoriteCard {
+  border-color: #8dc1ff;
+  box-shadow: 0 0 0 1px rgba(141, 193, 255, 0.22), 0 8px 25px rgba(0, 0, 0, 0.36) !important;
+}
+:global(html[data-bs-theme="dark"]) .favoriteBadge {
+  color: #e7f3ff;
+  background: #16416e;
+  border-color: #8dc1ff;
+}
