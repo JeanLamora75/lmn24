@@ -12,8 +12,6 @@ const initial = {version:1,theme:null,countryIso2:null,city:null,birthDate:favor
 for(const locale of locales){
   test(`SCRUM-111: localized horoscope link and biorhythm page — ${locale}`,async({page})=>{
     await page.goto(`/${locale}/horoscope`);
-    const link=page.getByRole("link",{name:titles[locale]==="Vos biorythmes"?
-      "Découvrez vos biorythmes":undefined}).filter({has:page.locator(`a[href="/${locale}/horoscope/biorythmes"]`)}); 
     // The link is unique; do not depend on translations of the 12 existing signs.
     await expect(page.locator(`a[href="/${locale}/horoscope/biorythmes"]`)).toHaveCount(1);
     await expect(page.locator('a[href*="/horoscope/"]')).toHaveCount(13);
