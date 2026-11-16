@@ -40,7 +40,8 @@ describe("SCRUM-94 sitemap HTTP responses", () => {
     const response = getStatic();
     const xml = await response.text();
     expect(response.status).toBe(200);
-    expect(xml.match(/<loc>/g)?.length).toBe(136);
+    expect(xml.match(/<loc>/g)?.length).toBe(144);
+    expect(xml).toContain("/fr/horoscope/biorythmes");
     expect(xml).not.toContain("/api/");
   });
 
