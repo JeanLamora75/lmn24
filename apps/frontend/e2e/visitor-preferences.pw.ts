@@ -234,6 +234,8 @@ function weatherFixture(continent: "EU" | "AS", cityNames: Array<[string,string]
     items: cityNames.map(([name, country], index) => ({
       slug: name.toLowerCase().replace(/\\s/g, "-"), name,
       countryIso2: country, continentCode: continent,
+      latitude: name === "Tokyo" ? 35.68 : 35.5,
+      longitude: name === "Tokyo" ? 139.69 : 135.5,
       timezone: continent === "AS" ? "Asia/Tokyo" : "Europe/Paris",
       displayOrder: index + 1, freshness: "FRESH",
       current: {
