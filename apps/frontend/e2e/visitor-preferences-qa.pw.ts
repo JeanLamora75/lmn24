@@ -71,7 +71,7 @@ test("SCRUM-110: storage forbidden never crashes public pages or claims successf
 });
 
 test("SCRUM-110: cross-tab edits cannot silently overwrite an open draft", async ({ browser }) => {
-  const context = await browser.newContext({ baseURL: "http://127.0.0.1:3000" });
+  const context = await browser.newContext({ baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:3000" });
   try {
     const first = await context.newPage();
     await first.goto("/fr/horoscope");
@@ -121,4 +121,57 @@ test("SCRUM-110: private date stays out of URLs and requests, canonical remains 
   await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(8);
   await expect(page.locator("html")).toHaveAttribute("data-bs-theme", "dark");
   expect(leaks).toEqual([]);
+});
+
+const localePreferences: Record<string, { trigger: string; badge: string }> = {
+  fr: { trigger: "Mes préférences", badge: "Mon signe" },
+  en: { trigger: "My preferences", badge: "My sign" },
+  de: { trigger: "Meine Einstellungen", badge: "Mein Sternzeichen" },
+  es: { trigger: "Mis preferencias", badge: "Mi signo" },
+  pt: { trigger: "As minhas preferências", badge: "O meu signo" },
+  it: { trigger: "Le mie preferenze", badge: "Il mio segno" },
+  ru: { trigger: "Мои предпочтения", badge: "Мой знак" },
+  nl: { trigger: "Mijn voorkeuren", badge: "Mijn sterrenbeeld" },
+};
+for (const [locale, copy] of Object.entries(localePreferences)) {
+  test("SCRUM-110: public preferences localized in " + locale, async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("lmn24.visitorPreferences", JSON.stringify({
+        version: 1, theme: null, countryIso2: null, city: null, birthDate: "2000-02-29",
+      }));
+    });
+    await page.goto("/" + locale + "/horoscope");
+    await expect(page.locator("html")).toHaveAttribute("lang", locale);
+    await expect(page.locator('[data-favorite-sign="true"]')).toContainText(copy.badge);
+    const action = page.getByRole("button", { name: copy.trigger });
+    await expect(action).toBeVisible();
+    await action.click();
+    await expect(page.getByRole("dialog", { name: copy.trigger })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+  });
+}
+
+test("SCRUM-110: dark-mode card text retains at least WCAG AA contrast", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("lmn24.visitorPreferences", JSON.stringify({
+      version: 1, theme: "dark", countryIso2: null, city: null, birthDate: "2000-02-29",
+    }));
+  });
+  await page.goto("/fr/horoscope");
+  const contrast = await page.locator('[data-favorite-sign="true"] h2').evaluate((node) => {
+    const color = (value: string) => {
+      const parts = value.match(/[\\d.]+/g)?.map(Number) ?? [];
+      const rgb = parts.slice(0, 3).map((channel) => {
+        const value = channel / 255;
+        return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+      });
+      return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
+    };
+    const textColor = getComputedStyle(node).color;
+    const backgroundColor = getComputedStyle(node.closest("a")!).backgroundColor;
+    const a = color(textColor), b = color(backgroundColor);
+    return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  });
+  expect(contrast).toBeGreaterThanOrEqual(4.5);
 });
