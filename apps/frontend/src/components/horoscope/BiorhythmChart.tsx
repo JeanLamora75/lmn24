@@ -68,7 +68,7 @@ export function BiorhythmChart({ locale }: { locale: string }) {
         {BIORHYTHM_CYCLES.map(({key,period})=><div key={key} className={styles.valueCard}>
           <div className={styles.valueHeading}>
             <span className={styles.swatch} style={{backgroundColor:COLORS[key]}} aria-hidden="true"/>
-            <span>{t[key]} <small>({period} j)</small></span>
+            <span>{t[key]} <small>({period} {t.daysShort})</small></span>
           </div>
           <strong className={styles.value} style={{color:COLORS[key]}}>
             {Math.round(middle?.[key] ?? 0)>0?"+":""}{Math.round(middle?.[key] ?? 0)} %
@@ -107,7 +107,7 @@ export function BiorhythmChart({ locale }: { locale: string }) {
         {BIORHYTHM_CYCLES.map(({key,period})=><label key={key} className={styles.legendItem}>
           <input type="checkbox" checked={visible.includes(key)} onChange={()=>toggle(key)}/>
           <span className={styles.swatch} style={{backgroundColor:COLORS[key]}} aria-hidden="true"/>
-          <span>{t[key]} ({period} j)</span>
+          <span>{t[key]} ({period} {t.daysShort})</span>
         </label>)}
       </fieldset>
       <nav className={styles.navigation} aria-label={t.day}>
