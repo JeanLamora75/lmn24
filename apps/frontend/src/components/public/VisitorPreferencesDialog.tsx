@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect, useId, useRef, type KeyboardEvent, type RefObject } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type RefObject } from "react";
 import { createPortal } from "react-dom";
+import { changeVisitorCountry, parseVisitorPreferences } from "@/lib/visitor-preferences";
+import { localizedCountries } from "@/lib/visitor-countries";
+import { useVisitorPreferences } from "./VisitorPreferencesProvider";
+import { PREFERENCES_FORM_COPY } from "./visitor-preferences-copy";
+import type { SupportedLocale } from "@lmn24/config";
 import styles from "./VisitorPreferencesDialog.module.css";
 
 type Props = {
   open: boolean;
+  locale: SupportedLocale;
   title: string;
   description: string;
   closeLabel: string;
@@ -13,18 +19,24 @@ type Props = {
   returnFocusRef: RefObject<HTMLButtonElement | null>;
 };
 
-/**
- * SCRUM-104 — accessible modal shell.
- * SCRUM-105 will add editable preference sections and the save/cancel workflow.
- */
+/** SCRUM-105: all edits remain in-memory until Enregistrer is explicitly clicked. */
 export function VisitorPreferencesDialog({
-  open, title, description, closeLabel, onClose, returnFocusRef,
+  open, locale, title, description, closeLabel, onClose, returnFocusRef,
 }: Props) {
+  const t = PREFERENCES_FORM_COPY[locale];
   const titleId = useId();
   const descriptionId = useId();
+  const themeId = useId();
+  const countryId = useId();
+  const birthId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const [confirmReset, setConfirmReset] = useState(false);
+  const { draft, preferences, ready, conflict, saveState, updateDraft,
+    resetDraftField, resetDraftAll, cancelEdit, saveDraft } = useVisitorPreferences();
+  const countries = useMemo(() => localizedCountries(locale), [locale]);
 
+  // Preserve the current close and focus-restoration behavior from SCRUM-104.
   useEffect(() => {
     if (!open) return;
     const previousOverflow = document.body.style.overflow;
@@ -36,55 +48,54 @@ export function VisitorPreferencesDialog({
     };
   }, [open, returnFocusRef]);
 
+  const cancel = () => {
+    setConfirmReset(false);
+    cancelEdit();
+    onClose();
+  };
+  const submit = () => {
+    if (!ready || !draft || conflict) return;
+    if (saveDraft()) {
+      setConfirmReset(false);
+      onClose();
+    }
+  };
+  const dirty = draft !== null && JSON.stringify(draft) !== JSON.stringify(preferences);
+  const valid = draft !== null && parseVisitorPreferences(draft) !== null;
+  const birthInvalid = !!draft?.birthDate && !parseVisitorPreferences({
+    ...draft, countryIso2: null, city: null, birthDate: draft.birthDate,
+  });
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === "Escape") {
       event.stopPropagation();
-      onClose();
+      cancel();
       return;
     }
     if (event.key !== "Tab") return;
     const focusables = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>(
       'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
     ) ?? []);
-    if (focusables.length === 0) {
-      event.preventDefault();
-      return;
-    }
+    if (focusables.length === 0) { event.preventDefault(); return; }
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
     if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
+      event.preventDefault(); last.focus();
     } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
+      event.preventDefault(); first.focus();
     }
   }
 
   if (!open || typeof document === "undefined") return null;
   return createPortal(
     <div className={styles.backdrop} onMouseDown={(event) => {
-      if (event.target === event.currentTarget) onClose();
+      if (event.target === event.currentTarget) cancel();
     }}>
-      <div
-        ref={dialogRef}
-        className={styles.dialog}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        aria-describedby={descriptionId}
-        onKeyDown={onKeyDown}
-      >
+      <div ref={dialogRef} className={styles.dialog} role="dialog" aria-modal="true"
+        aria-labelledby={titleId} aria-describedby={descriptionId} onKeyDown={onKeyDown}>
         <div className={styles.header}>
           <h2 id={titleId} className={styles.title}>{title}</h2>
-          <button
-            ref={closeRef}
-            type="button"
-            className={styles.close}
-            onClick={onClose}
-            aria-label={closeLabel}
-            title={closeLabel}
-          >
+          <button ref={closeRef} type="button" className={styles.close}
+            onClick={cancel} aria-label={closeLabel} title={closeLabel}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
               strokeLinecap="round" aria-hidden="true" focusable="false">
               <path d="M5 5l14 14M19 5 5 19" />
@@ -92,6 +103,114 @@ export function VisitorPreferencesDialog({
           </button>
         </div>
         <p id={descriptionId} className={styles.description}>{description}</p>
+
+        {draft ? (
+          <div className={styles.form}>
+            <section className={styles.section} aria-labelledby={themeId}>
+              <div className={styles.sectionHeading}>
+                <h3 id={themeId}>{t.appearance}</h3>
+                <button type="button" className={styles.reset}
+                  onClick={() => resetDraftField("theme")}>{t.reset}</button>
+              </div>
+              <fieldset className={styles.themeChoices}>
+                <legend className={styles.srOnly}>{t.theme}</legend>
+                {([
+                  ["system", t.automatic], ["light", t.light], ["dark", t.dark],
+                ] as const).map(([value, label]) => (
+                  <label key={value} className={styles.themeChoice}>
+                    <input type="radio" name="visitor-theme" value={value}
+                      checked={(draft.theme ?? "system") === value}
+                      onChange={() => updateDraft((previous) => ({ ...previous, theme: value }))}/>
+                    <span>{label}</span>
+                  </label>
+                ))}
+              </fieldset>
+            </section>
+
+            <section className={styles.section} aria-labelledby={countryId + "-title"}>
+              <div className={styles.sectionHeading}>
+                <h3 id={countryId + "-title"}>{t.location}</h3>
+                <button type="button" className={styles.reset}
+                  onClick={() => resetDraftField("countryIso2")}>{t.reset}</button>
+              </div>
+              <label className={styles.fieldLabel} htmlFor={countryId}>{t.country}</label>
+              <select id={countryId} className="form-select"
+                value={draft.countryIso2 ?? ""}
+                onChange={(event) => updateDraft((previous) =>
+                  changeVisitorCountry(previous, event.target.value || null))}>
+                <option value="">{t.chooseCountry}</option>
+                {countries.map(({ code, name }) =>
+                  <option key={code} value={code}>{name}</option>)}
+              </select>
+              <div className={styles.cityRow}>
+                <span className={styles.fieldLabel}>{t.city}</span>
+                <span>{draft.city ? draft.city.name + " (" + draft.city.countryIso2 + ")" : t.noCity}</span>
+                {draft.city && <button type="button" className={styles.reset}
+                  onClick={() => resetDraftField("city")}>{t.reset}</button>}
+              </div>
+              <p className={styles.hint}>{t.cityLater}</p>
+            </section>
+
+            <section className={styles.section} aria-labelledby={birthId + "-title"}>
+              <div className={styles.sectionHeading}>
+                <h3 id={birthId + "-title"}>{t.birth}</h3>
+                <button type="button" className={styles.reset}
+                  onClick={() => resetDraftField("birthDate")}>{t.reset}</button>
+              </div>
+              <label className={styles.fieldLabel} htmlFor={birthId}>{t.birthDate}</label>
+              <input id={birthId} type="date" className="form-control"
+                min="1900-01-01" max={new Date().toISOString().slice(0, 10)}
+                value={draft.birthDate ?? ""}
+                aria-invalid={birthInvalid}
+                onChange={(event) => updateDraft((previous) => ({
+                  ...previous, birthDate: event.target.value || null,
+                }))}/>
+              <p className={styles.hint}>{t.birthHint}</p>
+              {birthInvalid && <p className={styles.error} role="alert">{t.dateError}</p>}
+            </section>
+            <p className={styles.hint}>{t.privacy}</p>
+
+            {saveState !== "idle" && (
+              <p role="alert" className={styles.error}>{
+                saveState === "unavailable" ? t.unavailable :
+                saveState === "conflict" ? t.conflict : t.invalid
+              }</p>
+            )}
+            {conflict && saveState === "idle" &&
+              <p role="alert" className={styles.error}>{t.conflict}</p>}
+            {dirty && <p className={styles.hint} role="status">{t.changed}</p>}
+
+            {confirmReset && (
+              <div className={styles.confirm} role="group" aria-label={t.resetConfirm}>
+                <p className={styles.confirmTitle}>{t.resetConfirm}</p>
+                <p className={styles.hint}>{t.resetWarning}</p>
+                <div className={styles.confirmActions}>
+                  <button type="button" className="btn btn-outline-secondary"
+                    onClick={() => setConfirmReset(false)}>{t.cancel}</button>
+                  <button type="button" className="btn btn-outline-danger"
+                    onClick={() => { resetDraftAll(); setConfirmReset(false); }}>
+                    {t.resetAll}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className={styles.actions}>
+              <button type="button" className={styles.resetAll}
+                onClick={() => setConfirmReset(true)} disabled={confirmReset}>
+                {t.resetAll}
+              </button>
+              <div className={styles.actionButtons}>
+                <button type="button" className="btn btn-outline-secondary"
+                  onClick={cancel}>{t.cancel}</button>
+                <button type="button" className="btn btn-primary"
+                  onClick={submit} disabled={!ready || !valid || conflict || confirmReset}>
+                  {t.save}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : <p className={styles.hint}>{t.privacy}</p>}
       </div>
     </div>,
     document.body,
