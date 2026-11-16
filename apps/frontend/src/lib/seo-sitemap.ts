@@ -61,7 +61,7 @@ export function dynamicUrl(kind: SeoKind, locale: SeoLocale, slug: string): stri
 }
 
 export function staticUrls(): string[] {
-  const sections = ["", "/videos", "/hashtags", "/horoscope", "/weather"];
+  const sections = ["", "/videos", "/hashtags", "/horoscope", "/horoscope/biorythmes", "/weather"];
   const signs = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra",
     "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
   return SEO_LOCALES.flatMap(locale => [
