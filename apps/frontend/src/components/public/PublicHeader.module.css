@@ -379,3 +379,19 @@
     transition: none;
   }
 }
+
+/* SCRUM-105: discreet confirmation near the preferences trigger. */
+.preferencesSaved {
+  position: absolute;
+  z-index: 1055;
+  top: calc(100% - 6px);
+  right: 1rem;
+  max-width: min(18rem, calc(100vw - 2rem));
+  padding: 0.55rem 0.85rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--bs-success-border-subtle, #a4d5b8);
+  background: var(--bs-body-bg, #fff);
+  color: var(--bs-body-color, #212529);
+  font-size: 0.875rem;
+  box-shadow: 0 5px 16px rgba(0, 39, 112, 0.18);
+}
