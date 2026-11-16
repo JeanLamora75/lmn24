@@ -8,6 +8,9 @@ export function findCatalogFavorite(items: WeatherCity[], favorite: VisitorCity)
   const matches = items.filter(item =>
     item.countryIso2 === favorite.countryIso2 &&
     item.continentCode === favorite.continent &&
+    // Match a timezone too: the admin public contract has no coordinates or geocoder ID.
+    // Without this extra signal, fall back to the dedicated coordinate API.
+    favorite.timezone !== null && item.timezone === favorite.timezone &&
     canonical(item.name) === canonical(favorite.name));
   // Never collapse two same-name cities belonging to the same country: identity is ambiguous.
   return matches.length === 1 ? matches[0] : null;
