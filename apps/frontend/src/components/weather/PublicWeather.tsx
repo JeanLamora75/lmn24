@@ -136,11 +136,17 @@ export function PublicWeather({
       return;
     }
     if(favoriteEntry.current===favoriteIdentity)return;
-    favoriteEntry.current=favoriteIdentity;
-    if(continent!==favorite.continent){
-      setMode("automatic");
-      void load(favorite.continent);
-    }
+    // Delay until after effect setup. React Strict Mode may replay effects in
+    // development; the first scheduled transition is cancelled on replay.
+    const timeout=window.setTimeout(()=>{
+      if(favoriteEntry.current===favoriteIdentity)return;
+      favoriteEntry.current=favoriteIdentity;
+      if(continent!==favorite.continent){
+        setMode("automatic");
+        void load(favorite.continent);
+      }
+    },0);
+    return ()=>window.clearTimeout(timeout);
   },[ready,favoriteIdentity,continent,favorite]);
 
   // Fetch a non-admin city only when its continent is selected and no catalog
@@ -148,6 +154,7 @@ export function PublicWeather({
   useEffect(()=>{
     if(!externalFavorite || !favorite)return;
     const abort=new AbortController();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFavoriteLoading(true);
     setFavoriteError(false);
     setFavoriteWeather(null);
