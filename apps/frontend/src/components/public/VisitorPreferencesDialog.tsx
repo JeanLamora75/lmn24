@@ -120,7 +120,7 @@ export function VisitorPreferencesDialog({
                 ] as const).map(([value, label]) => (
                   <label key={value} className={styles.themeChoice}>
                     <input type="radio" name="visitor-theme" value={value}
-                      checked={(draft.theme ?? "system") === value}
+                      checked={(draft.theme ?? "light") === value}
                       onChange={() => updateDraft((previous) => ({ ...previous, theme: value }))}/>
                     <span>{label}</span>
                   </label>
