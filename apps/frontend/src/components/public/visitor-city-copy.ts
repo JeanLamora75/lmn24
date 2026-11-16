@@ -1,0 +1,15 @@
+import type { SupportedLocale } from "@lmn24/config";
+
+export const CITY_SEARCH_COPY: Record<SupportedLocale, {
+  search: string; type: string; loading: string; empty: string; unavailable: string;
+  rateLimited: string; selectCountry: string; selected: string; retry: string;
+}> = {
+  fr: {search:"Rechercher une ville",type:"Saisissez au moins 2 caractères",loading:"Recherche de villes…",empty:"Aucune ville trouvée dans ce pays.",unavailable:"Recherche momentanément indisponible.",rateLimited:"Trop de recherches. Réessayez ultérieurement.",selectCountry:"Choisissez d'abord un pays.",selected:"Ville sélectionnée",retry:"Réessayer"},
+  en: {search:"Search for a city",type:"Enter at least 2 characters",loading:"Searching cities…",empty:"No cities found in this country.",unavailable:"City search is temporarily unavailable.",rateLimited:"Too many searches. Please try again later.",selectCountry:"Choose a country first.",selected:"Selected city",retry:"Retry"},
+  de: {search:"Stadt suchen",type:"Mindestens 2 Zeichen eingeben",loading:"Städte werden gesucht…",empty:"Keine Städte in diesem Land gefunden.",unavailable:"Städtesuche derzeit nicht verfügbar.",rateLimited:"Zu viele Suchanfragen. Bitte später erneut versuchen.",selectCountry:"Bitte zuerst ein Land auswählen.",selected:"Ausgewählte Stadt",retry:"Erneut versuchen"},
+  es: {search:"Buscar una ciudad",type:"Escribe al menos 2 caracteres",loading:"Buscando ciudades…",empty:"No se encontraron ciudades en este país.",unavailable:"La búsqueda de ciudades no está disponible.",rateLimited:"Demasiadas búsquedas. Inténtalo más tarde.",selectCountry:"Selecciona primero un país.",selected:"Ciudad seleccionada",retry:"Reintentar"},
+  pt: {search:"Pesquisar uma cidade",type:"Introduza pelo menos 2 caracteres",loading:"A pesquisar cidades…",empty:"Nenhuma cidade encontrada neste país.",unavailable:"Pesquisa de cidades temporariamente indisponível.",rateLimited:"Demasiadas pesquisas. Tente mais tarde.",selectCountry:"Escolha primeiro um país.",selected:"Cidade selecionada",retry:"Tentar novamente"},
+  it: {search:"Cerca una città",type:"Inserisci almeno 2 caratteri",loading:"Ricerca città…",empty:"Nessuna città trovata in questo paese.",unavailable:"Ricerca città temporaneamente non disponibile.",rateLimited:"Troppe ricerche. Riprova più tardi.",selectCountry:"Seleziona prima un paese.",selected:"Città selezionata",retry:"Riprova"},
+  ru: {search:"Найти город",type:"Введите не менее 2 символов",loading:"Поиск городов…",empty:"В этой стране города не найдены.",unavailable:"Поиск городов временно недоступен.",rateLimited:"Слишком много запросов. Попробуйте позже.",selectCountry:"Сначала выберите страну.",selected:"Выбранный город",retry:"Повторить"},
+  nl: {search:"Stad zoeken",type:"Voer minimaal 2 tekens in",loading:"Steden zoeken…",empty:"Geen steden gevonden in dit land.",unavailable:"Zoeken naar steden tijdelijk niet beschikbaar.",rateLimited:"Te veel zoekopdrachten. Probeer het later.",selectCountry:"Kies eerst een land.",selected:"Geselecteerde stad",retry:"Opnieuw proberen"},
+};
