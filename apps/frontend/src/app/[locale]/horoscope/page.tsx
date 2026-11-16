@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { biorhythmCopy } from "@/components/horoscope/biorhythm-copy";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -46,6 +48,18 @@ export default async function HoroscopeIndex({params}:Props){
      description:copy.subtitle})}/>
    <header className="text-center mb-4 mb-lg-5"><h1 className="display-5 fw-bold">{copy.title}</h1>
      <p className="lead text-body-secondary">{copy.subtitle}</p></header>
+   <Link href={`/${locale}/horoscope/biorythmes`}
+      className="card mb-4 mb-lg-5 text-decoration-none text-body border shadow-sm"
+      aria-label={biorhythmCopy(locale).link}>
+      <div className="card-body d-flex align-items-center gap-3 p-3 p-lg-4">
+        <span className="display-6 text-primary" aria-hidden="true">∿</span>
+        <div className="flex-grow-1">
+          <h2 className="h5 fw-bold mb-1">{biorhythmCopy(locale).link}</h2>
+          <p className="mb-0 text-body-secondary">{biorhythmCopy(locale).teaser}</p>
+        </div>
+        <span className="text-primary fs-4" aria-hidden="true">→</span>
+      </div>
+    </Link>
    <VisitorHoroscopeGrid locale={locale} choose={copy.choose}
      signs={SIGNS.map(([slug,symbol,dates],i)=>({slug,symbol,dates,name:copy.signs[i] ?? slug}))}/>
  </main>;
