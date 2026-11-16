@@ -33,7 +33,7 @@ Statut : spécification validée métier, à développer. Source : cadrage Mary 
 - Le header public est déjà un Client Component avec zone de choix de langue. Insérer l'icône paramètres près de cette zone en respectant le grid responsive et les tests existants.
 
 ## Recherche de ville et météo
-- Géocodeur international à qualifier : pays filtrant, recherche asynchrone avec debounce, AbortController, protection contre erreurs/rate limit, résultats homonymes correctement identifiés, quotas/licence/confidentialité vérifiés. Le fournisseur n'est PAS encore choisi.
+- Géocodeur international à qualifier : pays filtrant, recherche asynchrone avec debounce, AbortController, protection contre erreurs/rate limit, résultats homonymes correctement identifiés, quotas/licence/confidentialité vérifiés. Fournisseur d'implémentation SCRUM-107 : Open-Meteo Geocoding API, via une route proxy Next.js ; qualification définitive des conditions d'utilisation, quotas et caractère gratuit/commercial à confirmer avant clôture/déploiement (aucune recherche web externe autorisée à ce stade).
 - La ville mondiale n'est pas une entrée WeatherCity. Ne pas écrire de ville ou de résultat météo dans PostgreSQL pour les préférences individuelles.
 - Chaîne de décision à l'ouverture /weather : ville favorite valide -> continent de la ville ; sinon comportement SSR existant (cookie lmn24_weather_continent, GeoIP de confiance, puis EU). Le cookie legacy ne doit pas supplanter la favorite. Un changement manuel reste temporaire pour la consultation.
 - Vérifier si la favorite figure parmi les cartes du continent par identifiant fiable si disponible, sinon correspondance normalisée prudente (pays + nom + proximité). Jamais dédupliquer sur le seul nom ou coordonnées approximatives.
@@ -53,4 +53,15 @@ Statut : spécification validée métier, à développer. Source : cadrage Mary 
 - Ne pas modifier les parcours d'administration du catalogue WeatherCity. Aucune migration Prisma liée au stockage de préférences.
 
 ## Décisions techniques encore ouvertes
-Fournisseur de géocodage, modalités API météo personnalisée et politique de cache/quotas, seuil de correspondance entre villes, stratégie exacte de thème au rendu initial. À trancher en implémentation avec tests et validation documentaire avant livraison.
+Conditions d'utilisation et limites de l'API Open-Meteo Geocoding (fournisseur choisi provisoirement pour SCRUM-107), modalités API météo personnalisée et politique de cache/quotas, seuil de correspondance entre villes, contrôle visuel du thème initial. À trancher en implémentation avec tests et validation documentaire avant livraison.
+
+## SCRUM-107 — Implémentation de la recherche de ville (2026-11-16)
+
+- Endpoint public `GET /api/public/visitor-cities?country=FR&name=Paris&locale=fr`, validé strictement par Zod, sans entrée/sortie PostgreSQL. Le frontend ne transmet que pays ISO2, texte saisi volontairement et locale. Aucun profil, date de naissance, compte ou cookie n'est envoyé en paramètre de géocodage.
+- Backend Next.js Route Handler : proxy vers `https://geocoding-api.open-meteo.com/v1/search` avec `name`, `countryCode`, `language`, `count=10`, `format=json`. Délai maximal 6 s, réponse sans cache, 400/429/502/503, pas de clé API dans le navigateur.
+- Sortie filtrée/validée : `provider: open-meteo-geocoding`, `providerId`, `name`, `region`, `countryIso2`, `continent`, `latitude`, `longitude`, `timezone`. Pas de persistance des recherches serveur.
+- Conversion pays-continent dans `src/lib/visitor-geocoding.ts` : Europe, Asie, Afrique, Amérique du Nord (Caraïbes/Amérique centrale), Amérique du Sud, Océanie ; estimation géographique particulière RU/TR/KZ selon les coordonnées ; les territoires non cartographiés sont omis pour éviter de stocker un continent faux.
+- Autocomplete `VisitorCitySearch` : délai 350 ms, AbortController, protection anti-résultats obsolètes, message d'absence de résultat, erreur/429, sélection explicite. Le changement de pays nettoie la ville du brouillon.
+- Les suggestions restent des données éphémères en mémoire React ; la ville choisie est stockée uniquement lorsque l'utilisateur clique Enregistrer. La météo personnalisée sera implémentée dans SCRUM-108.
+- **Condition de qualification technique non encore levée** : vérifier officiellement les conditions de service Open-Meteo (usage du site LMN24, éventuelle activité commerciale, attribution, quotas, géocodage gratuit). Ne pas annoncer la conformité commerciale ou un quota garanti sans cette vérification.
+- Protéger l'API proxy des usages abusifs en production par règles d'infrastructure/gateway (ratelimiting en amont à qualifier) ; la limitation UI/debounce et le relais 429 ne constituent pas seuls une protection serveur exhaustive.
