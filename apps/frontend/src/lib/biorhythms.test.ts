@@ -38,7 +38,7 @@ describe("SCRUM-111 — pure deterministic traditional biorhythms",()=>{
     expect(isoAtDay(jan!)).toBe("2026-01-01");
   });
   it("does not count daylight-saving transitions as unequal UTC days",()=>{
-    for(const [a,b] of [["2026-03-28","2026-03-29"],["2026-10-24","2026-10-25"]]){
+    for(const [a,b] of [["2026-03-28","2026-03-29"],["2026-10-24","2026-10-25"]] as const){
       expect(utcDay(b)!-utcDay(a)!).toBe(1);
       const p=biorhythmWindow("2000-02-29",b);
       expect(p[15]?.date).toBe(b);
