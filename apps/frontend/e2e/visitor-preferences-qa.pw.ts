@@ -161,7 +161,7 @@ test("SCRUM-110: dark-mode card text retains at least WCAG AA contrast", async (
   await page.goto("/fr/horoscope");
   const contrast = await page.locator('[data-favorite-sign="true"] h2').evaluate((node) => {
     const color = (value: string) => {
-      const parts = value.match(/[\\d.]+/g)?.map(Number) ?? [];
+      const parts = value.match(/[\d.]+/g)?.map(Number) ?? [];
       const rgb = parts.slice(0, 3).map((channel) => {
         const value = channel / 255;
         return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
