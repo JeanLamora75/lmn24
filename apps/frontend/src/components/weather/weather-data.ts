@@ -9,6 +9,7 @@ export type WeatherReading = {
 export type WeatherCity = {
   slug:string; name:string;countryIso2:string;
   continentCode:WeatherRegion;timezone:string;displayOrder:number;
+  latitude?:number;longitude?:number;
   freshness:"FRESH"|"STALE"|"UNAVAILABLE";current:WeatherReading|null;
 };
 export type WeatherResponse = {
@@ -31,6 +32,10 @@ export function parseWeatherResponse(input:unknown,region:WeatherRegion):Weather
   if(!r.items.every(item=>item && typeof item.slug==="string" &&
       typeof item.name==="string" && typeof item.countryIso2==="string" &&
       typeof item.timezone==="string" && item.continentCode===region &&
+      (item.latitude===undefined || (typeof item.latitude==="number" &&
+        Number.isFinite(item.latitude) && Math.abs(item.latitude)<=90)) &&
+      (item.longitude===undefined || (typeof item.longitude==="number" &&
+        Number.isFinite(item.longitude) && Math.abs(item.longitude)<=180)) &&
       (item.freshness==="FRESH"||item.freshness==="STALE"||item.freshness==="UNAVAILABLE") &&
       (item.current===null || (item.current!==undefined &&
         typeof item.current.temperatureC==="number" &&
