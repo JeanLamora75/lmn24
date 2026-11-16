@@ -40,12 +40,14 @@ test("SCRUM-110: keyboard-only dialog, city suggestions and narrow screen", asyn
   const dialogGeometry = await dialog.evaluate((element) => {
     const rect = element.getBoundingClientRect();
     return {
-      left: rect.left, right: rect.right,
+      left: rect.left,
+      right: rect.right,
+      viewportWidth: window.innerWidth,
       overflow: element.scrollWidth - element.clientWidth,
     };
   });
   expect(dialogGeometry.left).toBeGreaterThanOrEqual(-1);
-  expect(dialogGeometry.right).toBeLessThanOrEqual(321);
+  expect(dialogGeometry.right).toBeLessThanOrEqual(dialogGeometry.viewportWidth + 1);
   expect(dialogGeometry.overflow).toBeLessThanOrEqual(1);
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
