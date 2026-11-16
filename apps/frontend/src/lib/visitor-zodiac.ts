@@ -30,5 +30,5 @@ export function zodiacSignFromBirthDate(birthDate: string | null | undefined): W
     "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn",
   ];
   const firstDays = [20, 19, 21, 20, 21, 21, 23, 23, 23, 23, 22, 22];
-  return day >= firstDays[month - 1] ? after[month - 1] : before[month - 1];
+  return (day >= firstDays[month - 1] ? after[month - 1] : before[month - 1]) ?? null;
 }
