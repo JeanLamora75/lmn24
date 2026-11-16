@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -8,6 +7,7 @@ import { seoAlternates, type SeoLocale } from "@/lib/seo-metadata";
 import { seoSocial } from "@/lib/seo-social";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { collectionSchema } from "@/lib/seo-schema";
+import { VisitorHoroscopeGrid } from "@/components/horoscope/VisitorHoroscopeGrid";
 
 type Locale = "fr"|"en"|"de"|"es"|"pt"|"it"|"ru"|"nl";
 const SIGNS = [
@@ -46,17 +46,7 @@ export default async function HoroscopeIndex({params}:Props){
      description:copy.subtitle})}/>
    <header className="text-center mb-4 mb-lg-5"><h1 className="display-5 fw-bold">{copy.title}</h1>
      <p className="lead text-body-secondary">{copy.subtitle}</p></header>
-   <div className="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-3 g-lg-4">
-     {SIGNS.map(([slug,symbol,dates],i)=><div className="col" key={slug}>
-       <Link href={`/${locale}/horoscope/${slug}`} className="card h-100 text-decoration-none text-body border shadow-sm text-center">
-         <div className="card-body py-4 d-flex flex-column align-items-center">
-           <span className="display-4 text-primary" aria-hidden="true">{symbol}</span>
-           <h2 className="h5 fw-semibold mt-3">{copy.signs[i]}</h2>
-           <p className="small text-body-secondary mb-3">{dates}</p>
-           <span className="mt-auto text-primary small fw-semibold">{copy.choose} →</span>
-         </div>
-       </Link>
-     </div>)}
-   </div>
+   <VisitorHoroscopeGrid locale={locale} choose={copy.choose}
+     signs={SIGNS.map(([slug,symbol,dates],i)=>({slug,symbol,dates,name:copy.signs[i] ?? slug}))}/>
  </main>;
 }
