@@ -151,3 +151,72 @@ test("SCRUM-106 theme survives locale change without changing the URL canonical"
   await expect(page.locator("html")).toHaveAttribute("data-bs-theme", "dark");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", new RegExp("en/horoscope"));
 });
+
+test("SCRUM-107 city search is country-filtered, distinguishes homonyms and only saves chosen city", async ({ page }) => {
+  let calls = 0;
+  await page.route("**/api/public/visitor-cities?**", async (route) => {
+    calls++;
+    const request = new URL(route.request().url());
+    expect(request.searchParams.get("country")).toBe("FR");
+    expect(request.searchParams.get("locale")).toBe("fr");
+    await route.fulfill({ status: 200, contentType: "application/json",
+      body: JSON.stringify({ cities: [
+        { provider:"open-meteo-geocoding",providerId:"2988507",name:"Paris",region:"Île-de-France",
+          countryIso2:"FR",continent:"EU",latitude:48.8566,longitude:2.3522,timezone:"Europe/Paris" },
+        { provider:"open-meteo-geocoding",providerId:"777777",name:"Paris",region:"Auvergne",
+          countryIso2:"FR",continent:"EU",latitude:45.1,longitude:3.8,timezone:"Europe/Paris" },
+      ] }) });
+  });
+  await page.goto("/fr");
+  const preferencesButton = page.getByRole("button", { name: "Mes préférences" });
+  await preferencesButton.click();
+  const dialog = page.getByRole("dialog", { name: "Mes préférences" });
+  const citySearch = dialog.getByRole("combobox", { name: "Rechercher une ville" });
+  await expect(citySearch).toBeDisabled();
+  await dialog.getByLabel("Pays").selectOption("FR");
+  await expect(citySearch).toBeEnabled();
+  await citySearch.fill("Paris");
+  const options = dialog.getByRole("option");
+  await expect(options).toHaveCount(2);
+  await dialog.getByRole("option", { name: "Paris, Île-de-France, FR" }).click();
+  await expect(dialog.getByText("Ville sélectionnée:")).toBeVisible();
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("lmn24.visitorPreferences"))).toBeNull();
+  await dialog.getByRole("button", { name: "Annuler" }).click();
+  await preferencesButton.click();
+  await expect(dialog.getByText("Ville sélectionnée:")).toHaveCount(0);
+  await dialog.getByLabel("Pays").selectOption("FR");
+  await dialog.getByRole("combobox", { name: "Rechercher une ville" }).fill("Paris");
+  await dialog.getByRole("option", { name: "Paris, Île-de-France, FR" }).click();
+  await dialog.getByRole("button", { name: "Enregistrer" }).click();
+  await expect.poll(() => page.evaluate(() => {
+    const snapshot = localStorage.getItem("lmn24.visitorPreferences");
+    return snapshot ? JSON.parse(snapshot).city?.providerId : null;
+  })).toBe("2988507");
+  expect(calls).toBeGreaterThanOrEqual(2);
+  await preferencesButton.click();
+  await expect(dialog.getByText("Paris, Île-de-France, FR")).toBeVisible();
+  await dialog.getByLabel("Pays").selectOption("DE");
+  await expect(dialog.getByText("Ville sélectionnée:")).toHaveCount(0);
+  await dialog.getByRole("button", { name: "Enregistrer" }).click();
+  await expect.poll(() => page.evaluate(() => {
+    const snapshot = localStorage.getItem("lmn24.visitorPreferences");
+    return snapshot ? JSON.parse(snapshot).city : "missing";
+  })).toBeNull();
+});
+
+test("SCRUM-107 shows empty and rate-limit states without saving arbitrary input", async ({ page }) => {
+  await page.route("**/api/public/visitor-cities?**", async (route) =>
+    route.fulfill({ status: 429, contentType: "application/json", body: '{"error":"rate-limited"}' }));
+  await page.goto("/fr");
+  await page.getByRole("button", { name: "Mes préférences" }).click();
+  const dialog = page.getByRole("dialog", { name: "Mes préférences" });
+  await dialog.getByLabel("Pays").selectOption("FR");
+  await dialog.getByRole("combobox", { name: "Rechercher une ville" }).fill("Paris");
+  await expect(dialog.getByText("Trop de recherches. Réessayez ultérieurement.")).toBeVisible();
+  await expect(dialog.getByRole("option")).toHaveCount(0);
+  await dialog.getByRole("button", { name: "Enregistrer" }).click();
+  await expect.poll(() => page.evaluate(() => {
+    const raw = localStorage.getItem("lmn24.visitorPreferences");
+    return raw ? JSON.parse(raw).city : "missing";
+  })).toBeNull();
+});
