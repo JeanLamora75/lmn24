@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { formatCityLocalTime } from "./weather-clock";
 import { weatherIconPath } from "./weather-icons";
@@ -127,6 +127,30 @@ export function PublicWeather({
   const favoriteCard=externalFavorite && favoriteWeather?.slug==="favorite-"+favorite?.providerId
     ?favoriteWeather:null;
 
+  const load=useCallback(async (next:WeatherRegion)=>{
+    controller.current?.abort();
+    const abort=new AbortController();
+    controller.current=abort;
+    const id=++requestId.current;
+    setContinent(next);
+    setData(null);
+    setError(false);
+    setLoading(true);
+    try{
+      const response=await fetch("/api/public/weather?continent="+encodeURIComponent(next),{
+        signal:abort.signal,cache:"no-store"
+      });
+      if(!response.ok)throw new Error("Weather service unavailable.");
+      const raw:unknown=await response.json();
+      const payload=parseWeatherResponse(raw,next);
+      if(id===requestId.current&&!abort.signal.aborted)setData(payload);
+    }catch{
+      if(id===requestId.current&&!abort.signal.aborted)setError(true);
+    }finally{
+      if(id===requestId.current&&!abort.signal.aborted)setLoading(false);
+    }
+  },[]);
+
   // At each /weather entry the local favorite wins over the legacy cookie/GeoIP.
   // Never override a manual continent change within the same page visit.
   useEffect(()=>{
@@ -147,7 +171,7 @@ export function PublicWeather({
       }
     },0);
     return ()=>window.clearTimeout(timeout);
-  },[ready,favoriteIdentity,continent,favorite]);
+  },[ready,favoriteIdentity,continent,favorite,load]);
 
   // Fetch a non-admin city only when its continent is selected and no catalog
   // match is available. Abort on changes, unmount, and manual navigation.
@@ -184,7 +208,7 @@ export function PublicWeather({
     };
     void fetchFavorite();
     return ()=>abort.abort();
-  },[externalFavorite,favoriteIdentity,favoriteRetry]);
+  },[externalFavorite,favoriteIdentity,favoriteRetry,favorite]);
 
   // One shared timer for all cards, aligned to minute boundaries.
   // First browser update happens after hydration to avoid SSR clock mismatch.
@@ -236,29 +260,6 @@ export function PublicWeather({
     router.refresh();
   }
 
-  async function load(next:WeatherRegion){
-    controller.current?.abort();
-    const abort=new AbortController();
-    controller.current=abort;
-    const id=++requestId.current;
-    setContinent(next);
-    setData(null);
-    setError(false);
-    setLoading(true);
-    try{
-      const response=await fetch("/api/public/weather?continent="+encodeURIComponent(next),{
-        signal:abort.signal,cache:"no-store"
-      });
-      if(!response.ok)throw new Error("Weather service unavailable.");
-      const raw:unknown=await response.json();
-      const payload=parseWeatherResponse(raw,next);
-      if(id===requestId.current&&!abort.signal.aborted)setData(payload);
-    }catch{
-      if(id===requestId.current&&!abort.signal.aborted)setError(true);
-    }finally{
-      if(id===requestId.current&&!abort.signal.aborted)setLoading(false);
-    }
-  }
   return <main className="container px-3 px-lg-4 pb-5">
     <header className={styles.intro}>
       <span className="text-primary fw-semibold small">LMN24 · {t.current}</span>
