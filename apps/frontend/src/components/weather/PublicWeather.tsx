@@ -12,6 +12,10 @@ import {
 import { CountryFlag } from "../home/CountryFlag";
 import { WEATHER_REGIONS, weatherCondition, weatherCopy, type WeatherRegion } from "./weather-copy";
 import { parseWeatherResponse, type WeatherResponse, type WeatherCity } from "./weather-data";
+import { arrangeFavoriteCities } from "./favorite-weather";
+import { favoriteWeatherCopy } from "./favorite-weather-copy";
+import { useVisitorPreferences } from "../public/VisitorPreferencesProvider";
+import type { VisitorCity } from "@/lib/visitor-preferences";
 import styles from "./weather.module.css";
 
 function dateLabel(instant:string,locale:string):string{
@@ -23,14 +27,18 @@ function dateLabel(instant:string,locale:string):string{
 function value(number:number):string{
   return Number.isFinite(number)?Math.round(number)+"°C":"—";
 }
-export function WeatherCard({city,locale,now}:{city:WeatherCity;locale:string;now:Date|null}){
+export function WeatherCard({city,locale,now,favorite=false}:{city:WeatherCity;locale:string;now:Date|null;favorite?:boolean}){
   const t=weatherCopy(locale);
   const reading=city.current;
   const available=reading!==null && city.freshness!=="UNAVAILABLE";
   const clock=formatCityLocalTime(now,city.timezone,locale);
   const icon=weatherIconPath(reading?.weatherCode??null,reading?.isDay??true);
-  return <article className={"card h-100 shadow-sm "+styles.weatherCard}>
+  return <article className={"card h-100 shadow-sm "+styles.weatherCard+(favorite?" "+styles.favoriteCard:"")}
+    data-favorite={favorite?"true":undefined}>
     <div className="card-body d-flex flex-column p-3 p-lg-4">
+      {favorite&&<span className={"badge mb-3 align-self-start "+styles.favoriteBadge}>
+        {favoriteWeatherCopy(locale).badge}
+      </span>}
       <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
         <div className="d-flex align-items-center gap-2 min-w-0">
           <CountryFlag countryIsoCode2={city.countryIso2} locale={locale} size="large"/>
@@ -91,6 +99,11 @@ export function PublicWeather({
 }){
   const router=useRouter();
   const t=weatherCopy(locale);
+  const f= favoriteWeatherCopy(locale);
+  const {preferences,ready}=useVisitorPreferences();
+  const favorite:VisitorCity|null=ready?preferences.city:null;
+  const favoriteIdentity=favorite?
+    [favorite.provider,favorite.providerId,favorite.countryIso2,favorite.latitude,favorite.longitude].join(":"):null;
   // Server and client share the same initial continent: no hydration mismatch or
   // flash of Europe's data when a preference or trusted GeoIP says otherwise.
   const [continent,setContinent]=useState<WeatherRegion>(initialContinent);
@@ -102,6 +115,69 @@ export function PublicWeather({
   const [error,setError]=useState(initialData===null);
   const requestId=useRef(0);
   const controller=useRef<AbortController|null>(null);
+  const favoriteEntry=useRef<string|null>(null);
+  const [favoriteWeather,setFavoriteWeather]=useState<WeatherCity|null>(null);
+  const [favoriteLoading,setFavoriteLoading]=useState(false);
+  const [favoriteError,setFavoriteError]=useState(false);
+  const [favoriteRetry,setFavoriteRetry]=useState(0);
+  const favoriteIsHere=!!favorite && favorite.continent===continent;
+  const arranged=data?arrangeFavoriteCities(data.items,favoriteIsHere?favorite:null):null;
+  const existingFavorite=arranged?.matched??null;
+  const externalFavorite= favoriteIsHere && !existingFavorite && data!==null && !loading && !error;
+  const favoriteCard=externalFavorite && favoriteWeather?.slug==="favorite-"+favorite?.providerId
+    ?favoriteWeather:null;
+
+  // At each /weather entry the local favorite wins over the legacy cookie/GeoIP.
+  // Never override a manual continent change within the same page visit.
+  useEffect(()=>{
+    if(!ready){return;}
+    if(!favoriteIdentity || !favorite){
+      favoriteEntry.current=null;
+      return;
+    }
+    if(favoriteEntry.current===favoriteIdentity)return;
+    favoriteEntry.current=favoriteIdentity;
+    if(continent!==favorite.continent){
+      setMode("automatic");
+      void load(favorite.continent);
+    }
+  },[ready,favoriteIdentity,continent,favorite]);
+
+  // Fetch a non-admin city only when its continent is selected and no catalog
+  // match is available. Abort on changes, unmount, and manual navigation.
+  useEffect(()=>{
+    if(!externalFavorite || !favorite)return;
+    const abort=new AbortController();
+    setFavoriteLoading(true);
+    setFavoriteError(false);
+    setFavoriteWeather(null);
+    const fetchFavorite=async()=>{
+      try{
+        const response=await fetch("/api/public/visitor-weather",{
+          method:"POST",
+          signal:abort.signal,
+          headers:{"content-type":"application/json","accept":"application/json"},
+          cache:"no-store",
+          body:JSON.stringify(favorite),
+        });
+        if(!response.ok)throw new Error("favorite-weather-unavailable");
+        const raw:unknown=await response.json();
+        const item=(raw && typeof raw==="object" && "city" in raw)?raw.city:null;
+        const parsed=parseWeatherResponse({
+          continent:favorite.continent,generatedAt:new Date().toISOString(),
+          staleAfterMinutes:15,attribution:{name:"Open-Meteo",url:"https://open-meteo.com/"},
+          count:1,items:[item],
+        },favorite.continent);
+        if(!abort.signal.aborted)setFavoriteWeather(parsed.items[0]??null);
+      }catch{
+        if(!abort.signal.aborted)setFavoriteError(true);
+      }finally{
+        if(!abort.signal.aborted)setFavoriteLoading(false);
+      }
+    };
+    void fetchFavorite();
+    return ()=>abort.abort();
+  },[externalFavorite,favoriteIdentity,favoriteRetry]);
 
   // One shared timer for all cards, aligned to minute boundaries.
   // First browser update happens after hydration to avoid SSR clock mismatch.
@@ -130,13 +206,20 @@ export function PublicWeather({
     // A first-party, non-identifying browser cookie is visible to the SSR
     // request and preserved across languages and browser restarts.
     const secure=window.location.protocol==="https:"?"; Secure":"";
-    document.cookie=WEATHER_CONTINENT_COOKIE+"="+next+
-      "; path=/; max-age="+WEATHER_COOKIE_MAX_AGE+"; SameSite=Lax"+secure;
+    if(!favorite){
+      document.cookie=WEATHER_CONTINENT_COOKIE+"="+next+
+        "; path=/; max-age="+WEATHER_COOKIE_MAX_AGE+"; SameSite=Lax"+secure;
+    }
     setMode("manual");
     void load(next);
   }
 
   function restoreAutomatic(){
+    if(favorite){
+      setMode("automatic");
+      if(continent!==favorite.continent)void load(favorite.continent);
+      return;
+    }
     // Removing the cookie restores trusted proxy GeoIP, or Europe if absent.
     const secure=window.location.protocol==="https:"?"; Secure":"";
     document.cookie=WEATHER_CONTINENT_COOKIE+
@@ -190,16 +273,17 @@ export function PublicWeather({
           <span className="badge rounded-pill text-bg-light border text-secondary"
             aria-live="polite">
             {mode==="manual"?t.modeManual:
+              favoriteIsHere?f.selected:
               initialSource==="geoip"?t.autoDetected:t.autoFallback}
           </span>
           {mode==="manual"&&<button type="button"
             className="btn btn-sm btn-outline-primary"
             disabled={resetting} onClick={restoreAutomatic}>
-            {t.resetAutomatic}
+            {favorite?f.returnToFavorite:t.resetAutomatic}
           </button>}
           <div className="text-body-secondary small" aria-live="polite">
             {!loading&&data&&data.items.length>0
-              ?t.regions[continent]+" · "+data.items.length+" "+t.cities :null}
+              ?t.regions[continent]+" · "+(data.items.length+(favoriteCard?1:0))+" "+t.cities :null}
           </div>
         </div>
       </div>
@@ -212,12 +296,27 @@ export function PublicWeather({
         <button className="btn btn-outline-danger btn-sm" type="button"
           onClick={()=>void load(continent)}>{t.retry}</button>
       </div>}
-      {!loading&&!error&&data&&data.items.length===0&&
+      {!loading&&!error&&data&&data.items.length===0&&!externalFavorite&&
         <p className="alert alert-info" role="status">{t.empty}</p>}
-      {!loading&&!error&&data&&data.items.length>0&&
+      {!loading&&!error&&externalFavorite&&favoriteLoading&&
+        <div role="status" className="d-flex gap-2 align-items-center mb-3">
+          <span className="spinner-border spinner-border-sm text-primary" aria-hidden="true"/>
+          {f.loading}
+        </div>}
+      {!loading&&!error&&externalFavorite&&favoriteError&&
+        <div role="status" className="alert alert-warning d-flex align-items-center flex-wrap gap-2">
+          <span>{f.unavailable}</span>
+          <button type="button" className="btn btn-sm btn-outline-secondary"
+            onClick={()=>setFavoriteRetry(count=>count+1)}>{f.retry}</button>
+        </div>}
+      {!loading&&!error&&data&&(data.items.length>0||favoriteCard!==null)&&
         <div className="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3 g-lg-4">
-          {data.items.map(city=><div className="col" key={city.slug}>
-            <WeatherCard city={city} locale={locale} now={now}/>
+          {favoriteCard&&<div className="col" key={"favorite-"+favorite?.providerId}>
+            <WeatherCard city={favoriteCard} locale={locale} now={now} favorite/>
+          </div>}
+          {arranged?.catalog.map(city=><div className="col" key={city.slug}>
+            <WeatherCard city={city} locale={locale} now={now}
+              favorite={existingFavorite?.slug===city.slug}/>
           </div>)}
         </div>}
     </section>
