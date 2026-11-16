@@ -6,7 +6,19 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { VisitorPreferencesDialog } from "./VisitorPreferencesDialog";
 import styles from "./PublicHeader.module.css";
+
+const PREFERENCES_COPY: Record<SupportedLocale, { title: string; close: string; introduction: string }> = {
+  fr: { title: "Mes préférences", close: "Fermer", introduction: "Vous pourrez bientôt personnaliser le thème, le pays, la ville et votre horoscope depuis cet espace." },
+  en: { title: "My preferences", close: "Close", introduction: "You will soon be able to personalize the theme, country, city and horoscope here." },
+  de: { title: "Meine Einstellungen", close: "Schließen", introduction: "Hier können Sie bald Design, Land, Stadt und Horoskop personalisieren." },
+  es: { title: "Mis preferencias", close: "Cerrar", introduction: "Pronto podrás personalizar aquí el tema, el país, la ciudad y el horóscopo." },
+  pt: { title: "As minhas preferências", close: "Fechar", introduction: "Em breve poderá personalizar aqui o tema, país, cidade e horóscopo." },
+  it: { title: "Le mie preferenze", close: "Chiudi", introduction: "Presto potrai personalizzare qui tema, paese, città e oroscopo." },
+  ru: { title: "Мои предпочтения", close: "Закрыть", introduction: "Скоро здесь можно будет настроить тему, страну, город и гороскоп." },
+  nl: { title: "Mijn voorkeuren", close: "Sluiten", introduction: "Binnenkort kun je hier het thema, land, de stad en horoscoop aanpassen." },
+};
 
 const LANGUAGE_FLAGS: Record<SupportedLocale, string> = {
   fr: "/flags/fr.png",
@@ -92,6 +104,9 @@ export function PublicHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [preferencesOpen, setPreferencesOpen] = useState(false);
+  const preferencesButtonRef = useRef<HTMLButtonElement>(null);
+  const preferencesCopy = PREFERENCES_COPY[locale];
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -154,6 +169,23 @@ export function PublicHeader() {
 
         <div className={styles.languagePanel}>
           <span className={styles.globeVisual} aria-hidden="true" />
+          <button
+            ref={preferencesButtonRef}
+            type="button"
+            className={styles.preferencesButton}
+            aria-label={preferencesCopy.title}
+            title={preferencesCopy.title}
+            aria-haspopup="dialog"
+            aria-expanded={preferencesOpen}
+                        onClick={() => { setIsOpen(false); setPreferencesOpen(true); }}
+          >
+            <svg className={styles.preferencesIcon} viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+              strokeLinejoin="round" aria-hidden="true" focusable="false">
+              <path d="M12 2.5v2m0 15v2m9.5-9.5h-2m-15 0h-2m16.22-6.72-1.42 1.42M7.2 16.8l-1.42 1.42m12.44 0-1.42-1.42M7.2 7.2 5.78 5.78"/>
+              <circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.5"/>
+            </svg>
+          </button>
           <div className={`dropdown ${styles.languageDropdown}`} ref={dropdownRef}>
             <button
               ref={toggleRef}
@@ -195,6 +227,14 @@ export function PublicHeader() {
           </div>
         </div>
       </div>
+      <VisitorPreferencesDialog
+        open={preferencesOpen}
+        title={preferencesCopy.title}
+        description={preferencesCopy.introduction}
+        closeLabel={preferencesCopy.close}
+        onClose={() => setPreferencesOpen(false)}
+        returnFocusRef={preferencesButtonRef}
+      />
     </header>
   );
 }
