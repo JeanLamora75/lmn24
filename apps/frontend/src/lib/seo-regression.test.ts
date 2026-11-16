@@ -42,10 +42,10 @@ describe("SCRUM-100 real SEO route contracts (no production network)", () => {
     expect(r.headers.get("content-type")).toContain("application/xml");
     const xml = await r.text();
     const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(x => x[1]!);
-    expect(urls.length).toBe(SEO_LANGUAGES.length * 17);
+    expect(urls.length).toBe(SEO_LANGUAGES.length * 18);
     expect(new Set(urls).size).toBe(urls.length);
     for (const locale of SEO_LANGUAGES) {
-      for (const section of ["", "/weather", "/videos", "/hashtags", "/horoscope"]) {
+      for (const section of ["", "/weather", "/videos", "/hashtags", "/horoscope", "/horoscope/biorythmes"]) {
         const url = SEO_SITE + "/" + locale + section;
         expect(urls, url).toContain(url);
         expect(seoAlternates(locale, section.replace(/^\//, "")).canonical).toBe(url);
