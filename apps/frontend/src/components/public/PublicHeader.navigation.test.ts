@@ -49,7 +49,7 @@ describe("SCRUM-10 — approved LMN24 header redesign", () => {
     }
     for (const locale of ["fr", "en", "de", "es", "pt", "it", "ru", "nl"]) {
       expect(header).toMatch(new RegExp("\\b" + locale + ": \\{ news:"));
-      const line = header.split("\n").find((row) => row.trimStart().startsWith(locale + ": {"));
+      const line = header.split("\n").find((row) => row.trimStart().startsWith(locale + ": { news:"));
       expect(line).toBeTruthy();
       for (const key of keys) expect(line).toContain(key + ":");
     }
