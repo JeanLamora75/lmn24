@@ -66,6 +66,26 @@ export function VisitorPreferencesDialog({
       onSaved();
     }
   };
+  // Handle Escape even when focus is not inside the portal (e.g. native select
+  // controls or mobile browsers). If autocomplete suggestions are open, leave
+  // Escape to the city search so only the suggestions are dismissed first.
+  useEffect(() => {
+    if (!open) return;
+    const onDocumentKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      const target = event.target;
+      if (target instanceof HTMLElement &&
+          target.matches('[role="combobox"][aria-expanded="true"]')) return;
+      event.preventDefault();
+      event.stopPropagation();
+      cancelEdit();
+      setConfirmReset(false);
+      onClose();
+    };
+    document.addEventListener("keydown", onDocumentKeyDown, true);
+    return () => document.removeEventListener("keydown", onDocumentKeyDown, true);
+  }, [open, cancelEdit, onClose]);
+
   const dirty = draft !== null && JSON.stringify(draft) !== JSON.stringify(preferences);
   const valid = draft !== null && parseVisitorPreferences(draft) !== null;
   const birthInvalid = !!draft?.birthDate && !parseVisitorPreferences({
