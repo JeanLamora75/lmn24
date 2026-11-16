@@ -81,10 +81,11 @@ describe("SCRUM-10 — approved LMN24 header redesign", () => {
     expect(header).toContain('className={styles.preferencesButton}');
     expect(header).toContain('aria-label={preferencesCopy.title}');
     expect(header).toContain('aria-haspopup="dialog"');
-    expect(header).toContain('onClick={() => { setIsOpen(false); beginEdit(); setPreferencesOpen(true); }}');
+    expect(header).toContain('onClick={() => { setIsOpen(false); setPreferencesSaved(false); beginEdit(); setPreferencesOpen(true); }}');
     expect(header).toContain('<VisitorPreferencesDialog');
     expect(header).toContain('open={preferencesOpen}');
     expect(header).toContain('locale={locale}');
+    expect(header).toContain('onSaved={() => { setPreferencesOpen(false); setPreferencesSaved(true); }}');
     expect(header).toContain('useState(false)');
     expect(styles).toContain('min-width: 0');
     expect(styles).toContain('.preferencesButton:focus-visible');
