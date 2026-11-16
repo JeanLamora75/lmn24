@@ -29,7 +29,7 @@ test("SCRUM-110: keyboard-only dialog, city suggestions and narrow screen", asyn
   await dialog.getByLabel("Pays").selectOption("FR");
   const input = dialog.getByRole("combobox", { name: "Rechercher une ville" });
   await input.fill("Paris");
-  await expect(dialog.getByRole("option")).toHaveCount(1);
+  await expect(dialog.getByRole("listbox").getByRole("option")).toHaveCount(1);
   await input.press("ArrowDown");
   await expect(input).toHaveAttribute("aria-activedescendant", /option-0$/);
   await input.press("Enter");
