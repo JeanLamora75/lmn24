@@ -39,10 +39,12 @@ export function VisitorPreferencesProvider({ children }: { children: ReactNode }
   useEffect(() => {
     // All reads are browser-only after hydration. Never serialize personal data into SSR.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPreferences(readVisitorPreferences(window.localStorage));
+    try { setPreferences(readVisitorPreferences(window.localStorage)); }
+    catch { setPreferences(defaultVisitorPreferences()); }
     setReady(true);
     const sync = (event: StorageEvent) => {
-      if (event.storageArea !== window.localStorage) return;
+      try { if (event.storageArea !== window.localStorage) return; }
+      catch { return; }
       if (event.key !== null && event.key !== VISITOR_PREFERENCES_KEY) return;
       let next = defaultVisitorPreferences();
       if (event.key === VISITOR_PREFERENCES_KEY && event.newValue !== null) {
@@ -90,7 +92,9 @@ export function VisitorPreferencesProvider({ children }: { children: ReactNode }
   const saveDraft = useCallback((): boolean => {
     if (draft === null) return false;
     if (conflict) { setSaveState("conflict"); return false; }
-    const result = persistVisitorPreferences(window.localStorage, draft);
+    let result: ReturnType<typeof persistVisitorPreferences>;
+    try { result = persistVisitorPreferences(window.localStorage, draft); }
+    catch { result = { ok: false, reason: "unavailable" }; }
     if (!result.ok) {
       setSaveState(result.reason);
       return false; // No in-memory "saved" state when persistence failed.
