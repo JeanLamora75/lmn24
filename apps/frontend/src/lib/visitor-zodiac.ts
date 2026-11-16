@@ -12,7 +12,7 @@ export type WesternZodiacSign = (typeof WESTERN_ZODIAC_SIGNS)[number];
 
 export function zodiacSignFromBirthDate(birthDate: string | null | undefined): WesternZodiacSign | null {
   if (!birthDate || !/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) return null;
-  const [year, month, day] = birthDate.split("-").map(Number);
+  const [year = NaN, month = NaN, day = NaN] = birthDate.split("-").map(Number);
   if (year < 1900 || month < 1 || month > 12 || day < 1) return null;
   const date = new Date(Date.UTC(year, month - 1, day));
   const now = new Date();
@@ -30,5 +30,5 @@ export function zodiacSignFromBirthDate(birthDate: string | null | undefined): W
     "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn",
   ];
   const firstDays = [20, 19, 21, 20, 21, 21, 23, 23, 23, 23, 22, 22];
-  return (day >= firstDays[month - 1] ? after[month - 1] : before[month - 1]) ?? null;
+  return (day >= (firstDays[month - 1] ?? Infinity) ? after[month - 1] : before[month - 1]) ?? null;
 }
