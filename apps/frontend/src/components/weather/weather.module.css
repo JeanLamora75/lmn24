@@ -71,3 +71,15 @@
 @media (prefers-reduced-motion: reduce) {
   .weatherCard { transition: none; }
 }
+
+/* SCRUM-106 — weather cards remain distinct and readable on a dark public theme. */
+:global(html[data-bs-theme="dark"]) .weatherCard {
+  border-color: var(--bs-border-color);
+  background: var(--bs-body-bg);
+}
+:global(html[data-bs-theme="dark"]) .weatherCard:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35) !important;
+}
+:global(html[data-bs-theme="dark"]) .temperature {
+  color: #8ec5ff;
+}
