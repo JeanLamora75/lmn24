@@ -51,6 +51,7 @@ export function BiorhythmChart({ locale }: { locale: string }) {
         <label htmlFor="biorhythm-birth" className="form-label fw-semibold">{t.birth}</label>
         <input id="biorhythm-birth" type="date" className="form-control"
           min="1900-01-01" max={today??undefined}
+          disabled={!ready || today===null}
           value={birth} onChange={event=>setTemporaryBirth(event.target.value)}
           aria-describedby="biorhythm-date-hint" />
         <p id="biorhythm-date-hint" className="small text-body-secondary mt-2 mb-0">
