@@ -22,7 +22,7 @@ export function findCatalogFavorite(items: WeatherCity[], favorite: VisitorCity)
     typeof item.latitude === "number" && typeof item.longitude === "number" &&
     kilometerDistance(item.latitude, item.longitude, favorite.latitude, favorite.longitude) <= 25);
   // If multiple admin cities qualify, never silently select the wrong one.
-  return matches.length === 1 ? matches[0] : null;
+  return matches.length === 1 ? (matches[0] ?? null) : null;
 }
 
 /** Cards stay catalog-ordered except for a single positively matched favorite. */
