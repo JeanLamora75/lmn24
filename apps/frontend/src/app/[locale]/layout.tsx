@@ -14,6 +14,8 @@ import type { SeoLocale } from "@/lib/seo-metadata";
 import { GoogleAnalyticsTracker } from "@/components/public/GoogleAnalyticsTracker";
 import { PublicHeader } from "@/components/public/PublicHeader";
 import { VisitorPreferencesProvider } from "@/components/public/VisitorPreferencesProvider";
+import { PublicThemeController } from "@/components/public/PublicThemeController";
+import { VISITOR_THEME_BOOTSTRAP_SCRIPT } from "@/lib/visitor-theme";
 import { routing, type AppLocale } from "@/i18n/routing";
 
 export const metadata: Metadata = {
@@ -42,11 +44,15 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: VISITOR_THEME_BOOTSTRAP_SCRIPT }} />
+      </head>
       <body className="d-flex min-vh-100 flex-column">
         <StructuredData data={siteSchema(locale as SeoLocale)} />
         <NextIntlClientProvider>
           <VisitorPreferencesProvider>
+            <PublicThemeController />
             <PublicHeader />
             <div className="flex-grow-1">{children}</div>
             <PublicFooter />
