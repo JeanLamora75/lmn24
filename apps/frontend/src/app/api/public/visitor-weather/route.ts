@@ -36,6 +36,7 @@ export async function POST(request: Request): Promise<Response> {
   apiUrl.searchParams.set("current",
     "temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day");
   apiUrl.searchParams.set("timezone", "auto");
+  apiUrl.searchParams.set("timeformat", "unixtime");
   try {
     const response = await fetch(apiUrl.toString(), {
       signal: AbortSignal.timeout(6500),
