@@ -16,12 +16,13 @@ type Props = {
   description: string;
   closeLabel: string;
   onClose: () => void;
+  onSaved: () => void;
   returnFocusRef: RefObject<HTMLButtonElement | null>;
 };
 
 /** SCRUM-105: all edits remain in-memory until Enregistrer is explicitly clicked. */
 export function VisitorPreferencesDialog({
-  open, locale, title, description, closeLabel, onClose, returnFocusRef,
+  open, locale, title, description, closeLabel, onClose, onSaved, returnFocusRef,
 }: Props) {
   const t = PREFERENCES_FORM_COPY[locale];
   const titleId = useId();
@@ -57,7 +58,7 @@ export function VisitorPreferencesDialog({
     if (!ready || !draft || conflict) return;
     if (saveDraft()) {
       setConfirmReset(false);
-      onClose();
+      onSaved();
     }
   };
   const dirty = draft !== null && JSON.stringify(draft) !== JSON.stringify(preferences);
