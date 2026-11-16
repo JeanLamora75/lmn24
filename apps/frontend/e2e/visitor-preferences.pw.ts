@@ -73,7 +73,7 @@ test("SCRUM-105 saves explicitly and reset actions stay draft until Save", async
   await expect(dialog.getByLabel("Pays")).toHaveValue("FR");
   await dialog.getByRole("button", { name: "Tout réinitialiser" }).click();
   await expect(dialog.getByText("Réinitialiser toutes les préférences ?")).toBeVisible();
-  await dialog.getByRole("button", { name: "Annuler" }).last().click();
+  await dialog.getByRole("button", { name: "Annuler" }).first().click();
   await expect(dialog.getByRole("radio", { name: "Sombre" })).toBeChecked();
   await dialog.getByRole("button", { name: "Tout réinitialiser" }).click();
   await dialog.getByRole("button", { name: "Tout réinitialiser" }).last().click();
