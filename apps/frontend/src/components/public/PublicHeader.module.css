@@ -395,3 +395,71 @@
   font-size: 0.875rem;
   box-shadow: 0 5px 16px rgba(0, 39, 112, 0.18);
 }
+
+/* SCRUM-106 — Keep the approved blue brand while providing legible dark surfaces. */
+:global(html[data-bs-theme="dark"]) .header {
+  border-bottom-color: #334861;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.35);
+}
+:global(html[data-bs-theme="dark"]) .headerLayout {
+  background: linear-gradient(116deg, #17283b 0%, #1c3046 42%, #172d47 100%);
+}
+:global(html[data-bs-theme="dark"]) .primaryNavigation {
+  background: linear-gradient(120deg, #192b40 0%, #20344b 55%, #1b3047 100%);
+  scrollbar-color: rgba(190, 211, 242, 0.5) transparent;
+}
+:global(html[data-bs-theme="dark"]) .navigationLink {
+  color: #e2ecf8;
+  background: linear-gradient(160deg, #30465e, #273b53);
+  border-color: #425a73;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.08);
+}
+:global(html[data-bs-theme="dark"]) .navigationLink:hover {
+  color: #fff;
+  background: #375575;
+}
+:global(html[data-bs-theme="dark"]) .navigationLink[aria-current="page"] {
+  color: #fff;
+  background: #176bc4;
+  border-color: #75a9ed;
+}
+:global(html[data-bs-theme="dark"]) .navigationLink:focus-visible {
+  outline-color: #cce3ff;
+}
+:global(html[data-bs-theme="dark"]) .preferencesButton,
+:global(html[data-bs-theme="dark"]) .languageButton {
+  background-color: #203952;
+  color: #fff;
+  border: 1px solid #6585a9 !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+}
+:global(html[data-bs-theme="dark"]) .preferencesButton:hover,
+:global(html[data-bs-theme="dark"]) .languageButton:hover {
+  background-color: #305474;
+}
+:global(html[data-bs-theme="dark"]) .preferencesButton:focus-visible,
+:global(html[data-bs-theme="dark"]) .languageButton:focus-visible {
+  outline-color: #cce3ff;
+}
+:global(html[data-bs-theme="dark"]) .languageMenu {
+  background-color: var(--bs-body-bg);
+  border-color: var(--bs-border-color);
+}
+:global(html[data-bs-theme="dark"]) .languageMenu :global(.dropdown-item) {
+  color: var(--bs-body-color);
+}
+:global(html[data-bs-theme="dark"]) .languageMenu :global(.dropdown-item:hover) {
+  background-color: var(--bs-tertiary-bg);
+}
+:global(html[data-bs-theme="dark"]) .languageMenu :global(.dropdown-item.active) {
+  color: #fff;
+  background-color: #176bc4;
+}
+:global(html[data-bs-theme="dark"]) .preferencesSaved {
+  border-color: #477e62;
+}
+@media (max-width: 767.98px) {
+  :global(html[data-bs-theme="dark"]) .primaryNavigation {
+    border-top-color: #3b546b;
+  }
+}
