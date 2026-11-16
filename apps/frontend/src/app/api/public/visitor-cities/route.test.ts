@@ -39,7 +39,7 @@ describe("SCRUM-107 — anonymous geocoding proxy", () => {
     });
     expect(JSON.stringify(payload)).not.toContain("population");
     expect(response.headers.get("cache-control")).toBe("no-store");
-    const upstreamUrl = new URL(upstream.mock.calls[0][0] as string);
+    const upstreamUrl = new URL(upstream.mock.calls[0]?.[0] ?? "");
     expect(upstreamUrl.hostname).toBe("geocoding-api.open-meteo.com");
     expect(upstreamUrl.searchParams.get("countryCode")).toBe("FR");
     expect(upstreamUrl.searchParams.get("name")).toBe("Paris");
