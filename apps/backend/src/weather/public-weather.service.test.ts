@@ -19,6 +19,8 @@ const reading = (minutesAgo: number) => ({
 });
 const city = (slug: string, order: number, current: ReturnType<typeof reading> | null) => ({
   slug, name: slug, countryIso2: "FR",
+  latitude: { toString: () => "48.8566" },
+  longitude: { toString: () => "2.3522" },
   continentCode: "EU", timezone: "Europe/Paris",
   displayOrder: order, current,
 });
@@ -42,6 +44,7 @@ describe("SCRUM-73 — public weather freshness and DTO", () => {
     const result = serializeWeatherCity(city("paris", 1, reading(181)), at, 180);
     expect(result).toEqual({
       slug: "paris", name: "paris", countryIso2: "FR",
+      latitude: 48.8566, longitude: 2.3522,
       continentCode: "EU", timezone: "Europe/Paris", displayOrder: 1,
       freshness: "STALE",
       current: {
@@ -52,7 +55,8 @@ describe("SCRUM-73 — public weather freshness and DTO", () => {
       },
     });
     expect(result).not.toHaveProperty("id");
-    expect(result).not.toHaveProperty("latitude");
+    expect(result.latitude).toBe(48.8566);
+    expect(result.longitude).toBe(2.3522);
     expect(result).not.toHaveProperty("ip");
     expect(serializeWeatherCity(city("london", 2, null), at, 180)).toMatchObject({
       freshness: "UNAVAILABLE", current: null,
