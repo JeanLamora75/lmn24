@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { VisitorPreferencesDialog } from "./VisitorPreferencesDialog";
+import { useVisitorPreferences } from "./VisitorPreferencesProvider";
 import styles from "./PublicHeader.module.css";
 
 const PREFERENCES_COPY: Record<SupportedLocale, { title: string; close: string; introduction: string }> = {
@@ -107,6 +108,7 @@ export function PublicHeader() {
   const [preferencesOpen, setPreferencesOpen] = useState(false);
   const preferencesButtonRef = useRef<HTMLButtonElement>(null);
   const preferencesCopy = PREFERENCES_COPY[locale];
+  const { beginEdit } = useVisitorPreferences();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -177,7 +179,7 @@ export function PublicHeader() {
             title={preferencesCopy.title}
             aria-haspopup="dialog"
             aria-expanded={preferencesOpen}
-                        onClick={() => { setIsOpen(false); setPreferencesOpen(true); }}
+            onClick={() => { setIsOpen(false); beginEdit(); setPreferencesOpen(true); }}
           >
             <svg className={styles.preferencesIcon} viewBox="0 0 24 24"
               fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
@@ -229,6 +231,7 @@ export function PublicHeader() {
       </div>
       <VisitorPreferencesDialog
         open={preferencesOpen}
+        locale={locale}
         title={preferencesCopy.title}
         description={preferencesCopy.introduction}
         closeLabel={preferencesCopy.close}
