@@ -33,8 +33,8 @@ describe("SCRUM-107 — global geocoding result validation", () => {
     const results = normalizeGeocodingResponse(data, "FR");
     expect(results).toHaveLength(2);
     expect(results.map((value) => value.providerId)).toEqual(["1", "2"]);
-    expect(results[0].region).toBe("Île-de-France");
-    expect(results[0].continent).toBe("EU");
+    expect(results[0]?.region).toBe("Île-de-France");
+    expect(results[0]?.continent).toBe("EU");
     expect(results.every((value) => value.countryIso2 === "FR")).toBe(true);
     expect(JSON.stringify(results)).not.toContain("birthDate");
   });
