@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   VISITOR_PREFERENCES_KEY,
   defaultVisitorPreferences,
@@ -35,12 +35,14 @@ export function VisitorPreferencesProvider({ children }: { children: ReactNode }
   const [ready, setReady] = useState(false);
   const [conflict, setConflict] = useState(false);
   const [saveState, setSaveState] = useState<PreferencesSaveState>("idle");
+  const editorOpen = useRef(false);
 
   useEffect(() => {
     // All reads are browser-only after hydration. Never serialize personal data into SSR.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     try { setPreferences(readVisitorPreferences(window.localStorage)); }
     catch { setPreferences(defaultVisitorPreferences()); }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReady(true);
     const sync = (event: StorageEvent) => {
       try { if (event.storageArea !== window.localStorage) return; }
@@ -52,16 +54,14 @@ export function VisitorPreferencesProvider({ children }: { children: ReactNode }
         catch { /* Invalid external data is not trusted. */ }
       }
       setPreferences(next);
-      setDraft((current) => {
-        if (current !== null) setConflict(true);
-        return current; // Never silently overwrite an open editor.
-      });
+      if (editorOpen.current) setConflict(true); // Never overwrite an open draft.
     };
     window.addEventListener("storage", sync);
     return () => window.removeEventListener("storage", sync);
   }, []);
 
   const beginEdit = useCallback(() => {
+    editorOpen.current = true;
     setDraft({ ...preferences, city: preferences.city ? { ...preferences.city } : null });
     setConflict(false);
     setSaveState("idle");
@@ -84,6 +84,7 @@ export function VisitorPreferencesProvider({ children }: { children: ReactNode }
   }, []);
 
   const cancelEdit = useCallback(() => {
+    editorOpen.current = false;
     setDraft(null);
     setConflict(false);
     setSaveState("idle");
@@ -99,6 +100,7 @@ export function VisitorPreferencesProvider({ children }: { children: ReactNode }
       setSaveState(result.reason);
       return false; // No in-memory "saved" state when persistence failed.
     }
+    editorOpen.current = false;
     setPreferences(result.value);
     setDraft(null);
     setConflict(false);
