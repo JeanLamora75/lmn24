@@ -5,8 +5,8 @@ body {
 
 body {
   margin: 0;
-  background: #fff;
-  color: #212529;
+  background: var(--bs-body-bg, #fff);
+  color: var(--bs-body-color, #212529);
 }
 
 /* Shared Bootstrap Icons design system for the administration. */
@@ -98,4 +98,26 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .btn.lmn-admin-compact-action,
   .btn.lmn-admin-icon-button { transition: none; }
+}
+
+/* SCRUM-106 — Public-only dark-mode adjustments. Admin routes have separate HTML layouts. */
+html[data-bs-theme="dark"] {
+  color-scheme: dark;
+}
+html[data-bs-theme="light"] {
+  color-scheme: light;
+}
+html[data-bs-theme="dark"] body {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+html[data-bs-theme="dark"] .card,
+html[data-bs-theme="dark"] .list-group-item,
+html[data-bs-theme="dark"] .modal-content {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+}
+html[data-bs-theme="dark"] .text-body-secondary {
+  color: var(--bs-secondary-color) !important;
 }
