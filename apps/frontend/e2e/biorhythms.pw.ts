@@ -21,7 +21,7 @@ for(const locale of locales){
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       "href",`https://www.lmn24.com/${locale}/horoscope/biorythmes`);
     await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(8);
-    await expect(page.locator('a[href$="/horoscope"]')).toHaveCount(1);
+    await expect(page.locator(`main a[href="/${locale}/horoscope"]`)).toHaveCount(1);
     // No preference: never fabricate a personal chart.
     await expect(page.locator('svg[role="img"]')).toHaveCount(0);
     await expect(page.locator('input[type="date"]')).toHaveValue("");
@@ -39,7 +39,7 @@ test("SCRUM-111: stored birth date drives SVG curves, but temporary change does 
   await expect(date).toHaveValue(favorite);
   await expect(page.locator('svg[role="img"]')).toHaveCount(1);
   await expect(page.getByRole("checkbox")).toHaveCount(3);
-  await expect(page.getByText(/divertissement uniquement/i)).toBeVisible();
+  await expect(page.getByRole("note")).toContainText(/divertissement uniquement/i);
   const previous=await page.evaluate(()=>localStorage.getItem("lmn24.visitorPreferences"));
   await date.fill("1990-12-31");
   await expect(page.locator('svg[role="img"]')).toHaveCount(1);
