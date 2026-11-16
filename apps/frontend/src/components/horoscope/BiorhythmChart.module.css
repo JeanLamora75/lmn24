@@ -1,0 +1,27 @@
+.panel { border:1px solid var(--bs-border-color,#d5dce6); border-radius:1rem; background:var(--bs-body-bg,#fff); padding:clamp(1rem,3vw,1.75rem); max-width:100%; min-width:0; }
+.formRow { display:flex; flex-wrap:wrap; justify-content:space-between; gap:1rem; align-items:flex-end; }
+.field { flex:1 1 220px; min-width:0; max-width:350px; }
+.focusDate { display:flex; flex-direction:column; gap:.25rem; }
+.values { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.65rem; margin:1.5rem 0 1.25rem; }
+.valueCard { padding:1rem; border-radius:.75rem; border:1px solid var(--bs-border-color,#d5dce6); min-width:0; }
+.valueHeading { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; color:var(--bs-body-color); }
+.value { display:block; font-size:clamp(1.25rem,3vw,1.8rem); margin-top:.5rem; font-variant-numeric:tabular-nums; }
+.swatch { display:inline-block; width:13px; height:13px; border-radius:3px; flex:none; }
+.chartWrap { width:100%; overflow-x:auto; }
+.chart { display:block; width:100%; height:auto; min-width:0; }
+.axis { fill:var(--bs-secondary-color,#677483); font-size:13px; }
+.centerLabel { fill:var(--bs-body-color,#243042); font-size:12px; font-weight:700; }
+.gridLine { stroke:var(--bs-border-color,#d5dce6); stroke-dasharray:4 5; stroke-width:1; }
+.zero { stroke:var(--bs-secondary-color,#677483); stroke-width:1.5; }
+.todayLine { stroke:var(--bs-body-color,#243042); stroke-width:1.5; stroke-dasharray:5 5; }
+.legend { border:0; padding:0; margin:1rem 0; min-width:0; display:flex; flex-wrap:wrap; gap:.8rem 1rem; }
+.legend legend { width:100%; float:none; }
+.legendItem { display:flex; align-items:center; gap:.4rem; cursor:pointer; min-height:44px; }
+.legendItem input { width:17px; height:17px; }
+.navigation { display:flex; gap:.65rem; justify-content:space-between; flex-wrap:wrap; }
+.navigation button { min-height:44px; }
+:global(html[data-bs-theme="dark"]) .value[style*="36, 91, 208"] { color:#8eb6ff !important; }
+:global(html[data-bs-theme="dark"]) .value[style*="191, 41, 75"] { color:#ff9eb3 !important; }
+:global(html[data-bs-theme="dark"]) .value[style*="22, 129, 78"] { color:#7ddfb0 !important; }
+@media(max-width:480px) { .values { grid-template-columns:1fr; } .navigation { justify-content:center; } .navigation button { flex:1 1 130px; } }
+@media(prefers-reduced-motion:reduce) { .panel * { scroll-behavior:auto !important; transition:none !important; animation:none !important; } }
