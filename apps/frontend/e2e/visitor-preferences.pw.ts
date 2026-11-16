@@ -220,3 +220,125 @@ test("SCRUM-107 shows empty and rate-limit states without saving arbitrary input
     return raw ? JSON.parse(raw).city : "missing";
   })).toBeNull();
 });
+
+const tokyoFavorite = {
+  provider: "open-meteo-geocoding", providerId: "1850147",
+  name: "Tokyo", region: "Tokyo", countryIso2: "JP", continent: "AS",
+  latitude: 35.68, longitude: 139.69, timezone: "Asia/Tokyo",
+};
+function weatherFixture(continent: "EU" | "AS", cityNames: Array<[string,string]>) {
+  return {
+    continent, generatedAt: "2026-11-16T10:30:00.000Z", staleAfterMinutes: 180,
+    attribution: { name: "Open-Meteo", url: "https://open-meteo.com/" },
+    count: cityNames.length,
+    items: cityNames.map(([name, country], index) => ({
+      slug: name.toLowerCase().replace(/\\s/g, "-"), name,
+      countryIso2: country, continentCode: continent,
+      timezone: continent === "AS" ? "Asia/Tokyo" : "Europe/Paris",
+      displayOrder: index + 1, freshness: "FRESH",
+      current: {
+        temperatureC: 19, apparentTemperatureC: 18,
+        humidityPct: 61, windSpeedKmh: 8, weatherCode: 2, isDay: true,
+        observedAt: "2026-11-16T10:00:00.000Z",
+        fetchedAt: "2026-11-16T10:30:00.000Z", provider: "OPEN_METEO",
+      },
+    })),
+  };
+}
+const visitorWeatherResponse = {
+  city: {
+    slug: "favorite-1850147", name: "Tokyo", countryIso2: "JP",
+    continentCode: "AS", timezone: "Asia/Tokyo", displayOrder: -1,
+    freshness: "FRESH",
+    current: {
+      temperatureC: 22, apparentTemperatureC: 21,
+      humidityPct: 62, windSpeedKmh: 9, weatherCode: 1, isDay: true,
+      observedAt: "2026-11-16T10:00:00.000Z",
+      fetchedAt: "2026-11-16T10:30:00.000Z", provider: "OPEN_METEO",
+    },
+  },
+};
+async function seedFavorite(page: import("@playwright/test").Page) {
+  await page.addInitScript((favorite) => {
+    localStorage.setItem("lmn24.visitorPreferences", JSON.stringify({
+      version: 1, theme: null, countryIso2: "JP", city: favorite, birthDate: null,
+    }));
+  }, tokyoFavorite);
+}
+
+test("SCRUM-108 favorite external city appears first only in its continent", async ({ page, context }) => {
+  await context.addCookies([{ name: "lmn24_weather_continent", value: "EU",
+    domain: "127.0.0.1", path: "/" }]);
+  await seedFavorite(page);
+  await page.route("**/api/public/weather?**", async (route) => {
+    const continent = new URL(route.request().url()).searchParams.get("continent");
+    const payload = continent === "AS"
+      ? weatherFixture("AS", [["Osaka", "JP"], ["Seoul", "KR"]])
+      : weatherFixture("EU", [["Paris", "FR"], ["Berlin", "DE"]]);
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(payload) });
+  });
+  let favoriteCalls = 0;
+  await page.route("**/api/public/visitor-weather", async (route) => {
+    favoriteCalls++;
+    const body = route.request().postDataJSON();
+    expect(body.providerId).toBe("1850147");
+    expect(body).not.toHaveProperty("birthDate");
+    await route.fulfill({ status: 200, contentType: "application/json",
+      body: JSON.stringify(visitorWeatherResponse) });
+  });
+  await page.goto("/fr/weather");
+  await expect(page.locator("#weather-continent")).toHaveValue("AS");
+  const chosen = page.locator('[data-favorite="true"]');
+  await expect(chosen).toHaveCount(1);
+  await expect(chosen).toContainText("Tokyo");
+  await expect(chosen).toContainText("Ma ville");
+  await expect(page.locator("article").first()).toContainText("Tokyo");
+  await page.locator("#weather-continent").selectOption("EU");
+  await expect(page.locator('[data-favorite="true"]')).toHaveCount(0);
+  await expect(page.locator("article").first()).toContainText("Paris");
+  await page.goto("/fr/weather");
+  await expect(page.locator("#weather-continent")).toHaveValue("AS");
+  await expect(page.locator("article").first()).toContainText("Tokyo");
+  expect(favoriteCalls).toBeGreaterThan(0);
+});
+
+test("SCRUM-108 existing catalog city is reused without any favorite API request", async ({ page, context }) => {
+  await context.addCookies([{ name: "lmn24_weather_continent", value: "EU",
+    domain: "127.0.0.1", path: "/" }]);
+  await seedFavorite(page);
+  await page.route("**/api/public/weather?**", async (route) => {
+    await route.fulfill({ status: 200, contentType: "application/json",
+      body: JSON.stringify(weatherFixture("AS", [["Osaka", "JP"], ["Tokyo", "JP"], ["Seoul", "KR"]])) });
+  });
+  let requests = 0;
+  await page.route("**/api/public/visitor-weather", async (route) => {
+    requests++;
+    await route.abort();
+  });
+  await page.goto("/en/weather");
+  await expect(page.locator("#weather-continent")).toHaveValue("AS");
+  const cards = page.locator("article");
+  await expect(cards).toHaveCount(3);
+  await expect(cards.first()).toContainText("Tokyo");
+  await expect(cards.first()).toContainText("My city");
+  await expect(page.locator('[data-favorite="true"]')).toHaveCount(1);
+  expect(requests).toBe(0);
+});
+
+test("SCRUM-108 favorite API failure leaves continent cards visible", async ({ page, context }) => {
+  await context.addCookies([{ name: "lmn24_weather_continent", value: "EU",
+    domain: "127.0.0.1", path: "/" }]);
+  await seedFavorite(page);
+  await page.route("**/api/public/weather?**", async (route) => {
+    await route.fulfill({ status: 200, contentType: "application/json",
+      body: JSON.stringify(weatherFixture("AS", [["Osaka", "JP"], ["Seoul", "KR"]])) });
+  });
+  await page.route("**/api/public/visitor-weather", async (route) => {
+    await route.fulfill({ status: 503, contentType: "application/json",
+      body: JSON.stringify({ error: "weather-unavailable" }) });
+  });
+  await page.goto("/fr/weather");
+  await expect(page.getByText("Impossible de charger la météo de votre ville favorite.")).toBeVisible();
+  await expect(page.locator("article")).toHaveCount(2);
+  await expect(page.locator('[data-favorite="true"]')).toHaveCount(0);
+});
