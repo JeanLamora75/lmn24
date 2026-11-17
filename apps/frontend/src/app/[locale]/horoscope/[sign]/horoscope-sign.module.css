@@ -1,0 +1,49 @@
+/* On small screens replace the eight date buttons by stable previous/date/next slots. */
+.mobileDateNavigation { display: none; }
+
+@media (max-width: 767.98px) {
+  .desktopDates,
+  .desktopSelectedDate { display: none !important; }
+
+  .mobileDateNavigation {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    align-items: center;
+    column-gap: .5rem;
+    width: 100%;
+    margin: 0 0 1.5rem;
+  }
+
+  .mobileDateArrow,
+  .mobileDateSlot {
+    width: 44px;
+    height: 44px;
+    flex: none;
+  }
+
+  .mobileDateArrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bs-primary, #0d6efd);
+    border: 1px solid var(--bs-primary, #0d6efd);
+    border-radius: .6rem;
+    text-decoration: none;
+  }
+
+  .mobileDateArrow svg { width: 24px; height: 24px; }
+  .mobileDateArrow:hover { background: var(--bs-primary-bg-subtle, #e7f1ff); }
+  .mobileDateArrow:focus-visible { outline: 3px solid var(--bs-primary, #0d6efd); outline-offset: 2px; }
+
+  .mobileDateSlot { visibility: hidden; }
+
+  .mobileSelectedDate {
+    min-width: 0;
+    margin: 0;
+    font-size: clamp(.95rem, 4vw, 1.3rem);
+    line-height: 1.35;
+    font-weight: 600;
+    text-align: center;
+    overflow-wrap: break-word;
+  }
+}
