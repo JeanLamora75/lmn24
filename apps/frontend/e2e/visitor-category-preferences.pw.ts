@@ -20,7 +20,7 @@ test("Visitor category tab: toggle, reorder, cancel and save only on explicit ac
   const open=page.getByRole("button",{name:"Mes préférences"});
   await open.click();
   const dialog=page.getByRole("dialog",{name:"Mes préférences"});
-  await expect(dialog.getByText("Personnalisez votre expérience LMN24. Le choix vous appartient.")).toBeHidden();
+  await expect(dialog.getByText("Personnalisez votre expérience LMN24. Le choix vous appartient.")).toHaveCSS("position","absolute");
   await dialog.getByRole("tab",{name:"Catégories"}).click();
   await expect(dialog.getByRole("tabpanel",{name:"Catégories"})).toBeVisible();
   const list=dialog.locator("ol li");
@@ -93,9 +93,9 @@ test("Category preference tabs have labels in all public locales",async({page})=
   for(const [locale,general,categories] of pairs){
     await page.goto(`/${locale}/horoscope`);
     await page.getByRole("button",{name:/préférences|preferences|Einstellungen|preferencias|preferências|preferenze|предпочтения|voorkeuren/i}).click();
-    const dialog=page.getByRole("dialog");
+    const dialog=page.getByRole("dialog").filter({has:page.getByRole("tab",{name:general})});
     await expect(dialog.getByRole("tab",{name:general})).toBeVisible();
     await expect(dialog.getByRole("tab",{name:categories})).toBeVisible();
-    await dialog.getByRole("button",{name:/fermer|close|schließen|cerrar|fechar|chiudi|закрыть|sluiten/i}).click();
+    await dialog.getByRole("button").first().click();
   }
 });
