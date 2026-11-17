@@ -200,8 +200,15 @@ test("SCRUM-110: global reset only changes LMN24 preferences, not other browser 
   await page.goto("/fr/horoscope");
   await page.getByRole("button", { name: "Mes préférences" }).click();
   const dialog = page.getByRole("dialog", { name: "Mes préférences" });
-  await dialog.getByRole("button", { name: "Tout réinitialiser" }).click();
-  await dialog.getByRole("button", { name: "Tout réinitialiser" }).first().click();
+  const resetButton = dialog.getByRole("button", { name: "Réinitialiser", exact: true }).last();
+  const cancelButton = dialog.getByRole("button", { name: "Annuler", exact: true });
+  const saveButton = dialog.getByRole("button", { name: "Enregistrer", exact: true });
+  const positions = await Promise.all([resetButton, cancelButton, saveButton].map(button => button.boundingBox()));
+  expect(positions.every(Boolean)).toBe(true);
+  expect(Math.max(...positions.map(pos => pos!.y)) - Math.min(...positions.map(pos => pos!.y))).toBeLessThan(2);
+  await resetButton.click();
+  await expect(dialog.getByText("Réinitialiser toutes les préférences ?")).toBeVisible();
+  await dialog.getByRole("button", { name: "Tout réinitialiser", exact: true }).click();
   await dialog.getByRole("button", { name: "Enregistrer" }).click();
   const stored = await page.evaluate(() => ({
     preferences: JSON.parse(localStorage.getItem("lmn24.visitorPreferences") ?? "{}"),
