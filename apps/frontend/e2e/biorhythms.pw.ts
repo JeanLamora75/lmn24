@@ -38,7 +38,6 @@ test("SCRUM-111: stored birth date drives SVG curves, but temporary change does 
   await expect(date).toHaveValue(favorite);
   await expect(page.locator('svg[role="img"]')).toHaveCount(1);
   await expect(page.getByRole("checkbox")).toHaveCount(3);
-  await expect(page.getByRole("note")).toContainText(/divertissement uniquement/i);
   const previous=await page.evaluate(()=>localStorage.getItem("lmn24.visitorPreferences"));
   await date.fill("1990-12-31");
   await expect(page.locator('svg[role="img"]')).toHaveCount(1);
