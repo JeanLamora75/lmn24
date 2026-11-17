@@ -20,7 +20,7 @@ test("Visitor category tab: toggle, reorder, cancel and save only on explicit ac
   const open=page.getByRole("button",{name:"Mes préférences"});
   await open.click();
   const dialog=page.getByRole("dialog",{name:"Mes préférences"});
-  await expect(dialog.getByText("Personnalisez votre expérience LMN24. Le choix vous appartient.")).toHaveCSS("position","absolute");
+  await expect(dialog.getByText("Personnalisez votre expérience LMN24. Le choix vous appartient.")).toHaveCount(0);
   await dialog.getByRole("tab",{name:"Catégories"}).click();
   await expect(dialog.getByRole("tabpanel",{name:"Catégories"})).toBeVisible();
   const list=dialog.locator("ol li");
