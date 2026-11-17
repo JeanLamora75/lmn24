@@ -136,3 +136,16 @@ export function changeVisitorCountry(
     city: draft.city?.countryIso2 === countryIso2 ? draft.city : null,
   };
 }
+
+/** A profile is active only when at least one non-default preference was saved.
+ * The mere existence of the localStorage key (or opening the modal) does not
+ * activate it. Draft edits never count until the user clicks Save.
+ */
+export function hasVisitorPreferences(preferences: VisitorPreferences): boolean {
+  return preferences.theme !== null ||
+    preferences.countryIso2 !== null ||
+    preferences.city !== null ||
+    preferences.birthDate !== null ||
+    preferences.categories.order.length > 0 ||
+    preferences.categories.hidden.length > 0;
+}
