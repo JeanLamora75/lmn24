@@ -55,6 +55,17 @@ export type PublicCategoryResponse = {
 export class PublicCategoryService {
   constructor(private readonly database: DatabaseService) {}
 
+  /** Public read-only catalog: include active categories even when they have no article in this locale. */
+  async getCatalog(): Promise<{ items: { id: string; slug: string; displayOrder: number }[] }> {
+    const items = await this.database.prisma.category.findMany({
+      where: { isActive: true },
+      select: { id: true, slug: true, displayOrder: true },
+      orderBy: [{ displayOrder: "asc" }, { id: "asc" }],
+      take: 100,
+    });
+    return { items };
+  }
+
   async getArticles(
     slug: string,
     locale: string,
