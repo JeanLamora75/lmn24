@@ -28,16 +28,16 @@ test("Visitor category tab: toggle, reorder, cancel and save only on explicit ac
   await expect(list.first()).toContainText(names[0]!);
   await dialog.getByRole("button",{name:/Descendre.*test category one/i}).click();
   await expect(list.first()).toContainText(names[1]!);
-  await dialog.getByRole("checkbox",{name:names[2]}).uncheck();
+  await dialog.getByRole("checkbox",{name:names[2]!}).uncheck();
   expect(await page.evaluate(()=>localStorage.getItem("lmn24.visitorPreferences"))).toBeNull();
   await dialog.getByRole("button",{name:"Annuler"}).click();
   await expect(dialog).toHaveCount(0);
   await open.click();
   await dialog.getByRole("tab",{name:"Catégories"}).click();
   await expect(list.first()).toContainText(names[0]!);
-  await expect(dialog.getByRole("checkbox",{name:names[2]})).toBeChecked();
+  await expect(dialog.getByRole("checkbox",{name:names[2]!})).toBeChecked();
   await dialog.getByRole("button",{name:/Descendre.*test category one/i}).click();
-  await dialog.getByRole("checkbox",{name:names[2]}).uncheck();
+  await dialog.getByRole("checkbox",{name:names[2]!}).uncheck();
   await dialog.getByRole("button",{name:"Enregistrer"}).click();
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("lmn24.visitorPreferences")??"{}"));
   expect(saved.categories.order.slice(0,3)).toEqual([ids[1],ids[0],ids[2]]);
@@ -45,7 +45,7 @@ test("Visitor category tab: toggle, reorder, cancel and save only on explicit ac
   await open.click();
   await dialog.getByRole("tab",{name:"Catégories"}).click();
   await expect(list.first()).toContainText(names[1]!);
-  await expect(dialog.getByRole("checkbox",{name:names[2]})).not.toBeChecked();
+  await expect(dialog.getByRole("checkbox",{name:names[2]!})).not.toBeChecked();
 });
 
 test("Visitor category tab is accessible at 320px and supports keyboard arrows",async({page})=>{
