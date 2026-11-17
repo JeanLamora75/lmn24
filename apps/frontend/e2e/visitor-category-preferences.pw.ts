@@ -50,8 +50,8 @@ test("Visitor category tab: toggle, reorder, cancel and save only on explicit ac
   await dialog.getByRole("tab",{name:"Catégories"}).click();
   await expect(list.first()).toContainText(names[0]!);
   await expect(dialog.getByRole("switch",{name:names[2]!})).toBeChecked();
-  await dialog.getByRole("button",{name:/Descendre.*test category one/i}).click();
-  await dialog.getByRole("checkbox",{name:names[2]!}).uncheck();
+  await dragCategory(page, names[0]!, names[1]!);
+  await dialog.getByRole("switch",{name:names[2]!}).uncheck();
   await dialog.getByRole("button",{name:"Enregistrer"}).click();
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("lmn24.visitorPreferences")??"{}"));
   expect(saved.categories.order.slice(0,3)).toEqual([ids[1],ids[0],ids[2]]);
@@ -79,7 +79,7 @@ test("Visitor category tab is accessible at 320px and supports keyboard arrows",
   await firstHandle.focus();
   await firstHandle.press("ArrowDown");
   await expect(dialog.locator("ol li").first()).toContainText(names[1]!);
-    const geometry=await dialog.evaluate(element=>{
+  const geometry=await dialog.evaluate(element=>{
     const rect=element.getBoundingClientRect();
     return {left:rect.left,right:rect.right,width:window.innerWidth,
       overflow:element.scrollWidth-element.clientWidth};
