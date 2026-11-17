@@ -14,7 +14,7 @@ Cette configuration doit rester simple à utiliser sur smartphone comme sur ordi
 1. « Activer/désactiver » signifie **afficher/masquer une rubrique sur la page d'accueil** du visiteur, pas supprimer ni désactiver la catégorie éditoriale pour les autres utilisateurs. La page dédiée d'une catégorie demeure accessible depuis son URL.
 2. La liste des catégories provient d'un catalogue public en lecture seule de catégories actives ; les identifiants UUID sont utilisés pour les préférences afin de conserver les choix indépendamment de la langue.
 3. Une catégorie nouvelle apparaît par défaut, sauf choix explicite ultérieur. L'ordre éditorial est conservé pour les catégories que le visiteur n'a jamais reclassées.
-4. Le visiteur choisit la visibilité avec une case à cocher, puis modifie la priorité avec **Monter/Descendre**. Aucune dépendance au glisser-déposer tactile.
+4. Décision confirmée par le propriétaire LMN24 : chaque ligne affiche exactement **une poignée de glisser-déposer à gauche, le nom de la catégorie au centre, un interrupteur d'activation à droite**. Les boutons Monter/Descendre sont supprimés. L'ordre est modifiable à la souris et au doigt ; pour les usages clavier/lecteur d'écran, la poignée conserve un déplacement avec les flèches haut/bas sans flèches visibles.
 5. Toutes les modifications restent dans le brouillon de la modale. **Enregistrer** persiste dans `lmn24.visitorPreferences` uniquement sur ce navigateur ; **Annuler** abandonne ; **Réinitialiser** sur l'onglet restaure la visibilité et l'ordre ; « Tout réinitialiser » demeure la confirmation générale.
 6. Les deux onglets ont une icône et un libellé traduits dans les huit langues FR/EN/DE/ES/PT/IT/RU/NL. Sur mobile, la modale reste accessible au clavier, aux lecteurs d'écran et sur écran étroit.
 7. Quand tout est masqué, ne pas faire croire à une panne d'actualité : afficher un état explicite. Si le catalogue n'est pas accessible, afficher une erreur et un bouton Réessayer ; ne pas effacer les choix sauvegardés.
@@ -25,11 +25,14 @@ Cette configuration doit rester simple à utiliser sur smartphone comme sur ordi
 **Exclus :** masquer les articles d'une catégorie sur toutes les autres pages, modifier l'ordre pour les autres visiteurs, synchronisation multi-appareils, recommandation algorithmique, personnalisation côté serveur, réorganisation de la navigation globale.
 **Conséquence :** le lien « Catégories » de la navigation publique et les pages individuelles restent inchangés.
 
-## Hypothèses à soumettre à validation
-- L'utilisateur a demandé « activer/désactiver les catégories », sans préciser **où**. L'interprétation retenue pour la version initiale est l'**accueil**, car les blocs catégoriels y sont ordonnables. Souhaitera-t-il aussi cacher des catégories dans les menus, les listes de découverte, la recherche et les flux secondaires ?
-- Le classement par boutons « Monter/Descendre » est volontairement privilégié pour l'accessibilité et la fiabilité ; faut-il ensuite proposer un glisser-déposer en complément ?
-- Souhaite-t-il pouvoir activer/désactiver toutes les catégories en un clic ou créer des ensembles « Mes sujets », sans modifier le principe de sélection individuelle ?
-- Le réglage doit-il rester strictement local au navigateur, comme les préférences existantes, ou devenir exportable/synchronisable après étude de confidentialité ?
+## Décisions confirmées le 17 novembre 2026
+- **Portée exacte : accueil uniquement.** Les catégories désactivées ne disparaissent ni de leurs pages publiques ni des autres surfaces du site.
+- **Présentation des lignes :** poignée drag-and-drop à gauche, nom de catégorie, interrupteur à droite ; supprimer les deux boutons fléchés.
+- **Interaction :** glisser-déposer tactile et souris, alternative par flèches clavier sur la poignée ; conservation des actions Enregistrer / Annuler et de l'ordre au rechargement.
+
+## Questions futures hors du périmètre actuel
+- Un bouton collectif pour activer/désactiver toutes les catégories serait-il utile ?
+- Une synchronisation multi-appareils pourrait-elle être proposée tout en restant facultative et respectueuse de la confidentialité ?
 
 ## Critères de recette et points de vigilance
 - Les préférences de version 1 déjà stockées restent lisibles sans perte de thème, ville ni date de naissance ; aucun état personnalisé n'est écrit avant Enregistrer.
@@ -40,7 +43,7 @@ Cette configuration doit rester simple à utiliser sur smartphone comme sur ordi
 - Une livraison terminée exige **une CI verte sur le même SHA de main** ; on ne déclare pas la recette concluante sur la simple présence des tests.
 
 ## Arbitrage Mary
-La version « deux onglets / tri et masquage de l'accueil » constitue un **MVP cohérent** sans nouveau compte ni dépendance payante. Mary recommande de valider explicitement l'étendue du masquage (accueil seulement versus tous les supports) avant d'étendre l'usage des préférences au reste du site.
+La version « deux onglets / tri et masquage de l'accueil » constitue un **MVP cohérent** sans nouveau compte ni dépendance payante. La portée est désormais validée par le propriétaire : **masquage limité à la page d'accueil**. Le glisser-déposer avec poignée est retenu ; aucune extension de la désactivation aux autres pages n'est demandée.
 
 Liens utiles :
 - [Étude Winston sur les préférences](https://github.com/JeanLamora75/lmn24/blob/main/docs/BMAD/visitor-preferences-winston-architecture.md)
