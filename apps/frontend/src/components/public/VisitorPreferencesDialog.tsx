@@ -43,6 +43,8 @@ export function VisitorPreferencesDialog({
   const birthId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const generalTabRef = useRef<HTMLButtonElement>(null);
+  const categoriesTabRef = useRef<HTMLButtonElement>(null);
   const [confirmReset, setConfirmReset] = useState(false);
   const { draft, preferences, ready, conflict, saveState, updateDraft,
     resetDraftField, resetDraftAll, cancelEdit, saveDraft } = useVisitorPreferences();
@@ -108,10 +110,19 @@ export function VisitorPreferencesDialog({
       cancel();
       return;
     }
+    if ((event.key === "ArrowRight" || event.key === "ArrowLeft" || event.key === "Home" || event.key === "End") &&
+        (event.target === generalTabRef.current || event.target === categoriesTabRef.current)) {
+      event.preventDefault();
+      const next = event.key === "Home" ? "general" : event.key === "End" ? "categories" :
+        activeTab === "general" ? "categories" : "general";
+      setActiveTab(next);
+      (next === "general" ? generalTabRef : categoriesTabRef).current?.focus();
+      return;
+    }
     if (event.key !== "Tab") return;
     const focusables = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>(
       'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-    ) ?? []);
+    ) ?? []).filter(element => !element.closest("[hidden]"));
     if (focusables.length === 0) { event.preventDefault(); return; }
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
@@ -141,16 +152,18 @@ export function VisitorPreferencesDialog({
         </div>
         <p id={descriptionId} className={styles.srOnly}>{description}</p>
         <div role="tablist" aria-label={title} className={styles.tabList}>
-          <button type="button" role="tab" id={generalTabId}
+          <button ref={generalTabRef} type="button" role="tab" id={generalTabId}
             aria-selected={activeTab === "general"} aria-controls={generalPanelId}
+            tabIndex={activeTab === "general" ? 0 : -1}
             className={styles.tabButton} onClick={() => setActiveTab("general")}>
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 7h16M4 17h16M8 4v6M16 14v6" />
             </svg><span>{tabs.general}</span>
           </button>
-          <button type="button" role="tab" id={categoriesTabId}
+          <button ref={categoriesTabRef} type="button" role="tab" id={categoriesTabId}
             aria-selected={activeTab === "categories"} aria-controls={categoriesPanelId}
+            tabIndex={activeTab === "categories" ? 0 : -1}
             className={styles.tabButton} onClick={() => setActiveTab("categories")}>
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
