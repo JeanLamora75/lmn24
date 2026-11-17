@@ -3,7 +3,7 @@ import { hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
-import { HomeSection } from "@/components/home/HomeSection";
+import { PersonalizedHomeSections } from "@/components/home/PersonalizedHomeSections";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { collectionSchema } from "@/lib/seo-schema";
 import {
@@ -97,23 +97,15 @@ export default async function HomePage({ params }: Props) {
       ) : sections.length === 0 ? (
         <p role="status" className={styles.emptyMessage}>{t.empty}</p>
       ) : (
-        sections.map((section, index) => {
-          const label = labels[section.slug] ??
-            section.slug.replace(/-/g, " ");
-          return (
-            <HomeSection
-              key={section.id}
-              section={section}
-              label={label}
-              locale={locale}
-              categoryLinkLabel={t.category.replace("{name}", label)}
-              moreNewsLabel={t.moreNews}
-              previousLabel={t.previous}
-              nextLabel={t.next}
-              aboveFold={index === 0}
-            />
-          );
-        })
+        <PersonalizedHomeSections
+          sections={sections}
+          labels={labels}
+          locale={locale as SeoLocale}
+          categoryLinkLabel={t.category}
+          moreNewsLabel={t.moreNews}
+          previousLabel={t.previous}
+          nextLabel={t.next}
+        />
       )}
     </main>
   );
