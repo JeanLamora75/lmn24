@@ -14,6 +14,20 @@ function interceptCatalog(page: import("@playwright/test").Page){
     }))}),
   }));
 }
+
+async function dragCategory(page: import("@playwright/test").Page, source: string, target: string) {
+  const grip = page.getByRole("button", { name: "Déplacer " + source });
+  const destination = page.locator("ol li").filter({ hasText: target });
+  await expect(grip).toBeVisible();
+  const from = await grip.boundingBox();
+  const to = await destination.boundingBox();
+  if (!from || !to) throw new Error("Missing category drag geometry");
+  await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, { steps: 8 });
+  await page.mouse.up();
+}
+
 test("Visitor category tab: toggle, reorder, cancel and save only on explicit action",async({page})=>{
   await interceptCatalog(page);
   await page.goto("/fr/horoscope");
@@ -26,16 +40,16 @@ test("Visitor category tab: toggle, reorder, cancel and save only on explicit ac
   const list=dialog.locator("ol li");
   await expect(list).toHaveCount(3);
   await expect(list.first()).toContainText(names[0]!);
-  await dialog.getByRole("button",{name:/Descendre.*test category one/i}).click();
+  await dragCategory(page, names[0]!, names[1]!);
   await expect(list.first()).toContainText(names[1]!);
-  await dialog.getByRole("checkbox",{name:names[2]!}).uncheck();
+  await dialog.getByRole("switch",{name:names[2]!}).uncheck();
   expect(await page.evaluate(()=>localStorage.getItem("lmn24.visitorPreferences"))).toBeNull();
   await dialog.getByRole("button",{name:"Annuler"}).click();
   await expect(dialog).toHaveCount(0);
   await open.click();
   await dialog.getByRole("tab",{name:"Catégories"}).click();
   await expect(list.first()).toContainText(names[0]!);
-  await expect(dialog.getByRole("checkbox",{name:names[2]!})).toBeChecked();
+  await expect(dialog.getByRole("switch",{name:names[2]!})).toBeChecked();
   await dialog.getByRole("button",{name:/Descendre.*test category one/i}).click();
   await dialog.getByRole("checkbox",{name:names[2]!}).uncheck();
   await dialog.getByRole("button",{name:"Enregistrer"}).click();
@@ -45,7 +59,7 @@ test("Visitor category tab: toggle, reorder, cancel and save only on explicit ac
   await open.click();
   await dialog.getByRole("tab",{name:"Catégories"}).click();
   await expect(list.first()).toContainText(names[1]!);
-  await expect(dialog.getByRole("checkbox",{name:names[2]!})).not.toBeChecked();
+  await expect(dialog.getByRole("switch",{name:names[2]!})).not.toBeChecked();
 });
 
 test("Visitor category tab is accessible at 320px and supports keyboard arrows",async({page})=>{
@@ -59,7 +73,13 @@ test("Visitor category tab is accessible at 320px and supports keyboard arrows",
   await general.press("ArrowRight");
   await expect(dialog.getByRole("tab",{name:"Catégories"})).toHaveAttribute("aria-selected","true");
   await expect(dialog.locator("ol li")).toHaveCount(3);
-  const geometry=await dialog.evaluate(element=>{
+  await expect(dialog.getByRole("button",{name:"Déplacer test category one"})).toBeVisible();
+  await expect(dialog.getByRole("switch")).toHaveCount(3);
+  const firstHandle=dialog.getByRole("button",{name:"Déplacer test category one"});
+  await firstHandle.focus();
+  await firstHandle.press("ArrowDown");
+  await expect(dialog.locator("ol li").first()).toContainText(names[1]!);
+    const geometry=await dialog.evaluate(element=>{
     const rect=element.getBoundingClientRect();
     return {left:rect.left,right:rect.right,width:window.innerWidth,
       overflow:element.scrollWidth-element.clientWidth};
