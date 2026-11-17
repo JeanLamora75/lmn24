@@ -80,7 +80,7 @@ export function BiorhythmChart({ locale }: { locale: string }) {
           role="img" aria-labelledby="biorhythm-svg-title biorhythm-svg-description">
           <title id="biorhythm-svg-title">{t.title} — {center?formatDate(center):""}</title>
           <desc id="biorhythm-svg-description">{BIORHYTHM_CYCLES.map(({key}) =>
-            `${t[key]}: ${Math.round(middle?.[key]??0)}%`).join("; ")}. {t.disclaimer}</desc>
+            `${t[key]}: ${Math.round(middle?.[key]??0)}%`).join("; ")}</desc>
           {[-100,-50,0,50,100].map(value=><g key={value}>
             <line x1={LEFT} x2={WIDTH-RIGHT} y1={yAt(value)} y2={yAt(value)}
               className={value===0?styles.zero:styles.gridLine}/>
@@ -116,6 +116,5 @@ export function BiorhythmChart({ locale }: { locale: string }) {
         <button type="button" className="btn btn-outline-primary" onClick={()=>step(15)}>{t.next}</button>
       </nav>
     </>}
-    <p className="small text-body-secondary mt-4 mb-0" role="note">{t.disclaimer}</p>
   </section>;
 }
