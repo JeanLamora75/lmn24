@@ -92,7 +92,7 @@ test("Category preference tabs have labels in all public locales",async({page})=
   ];
   for(const [locale,general,categories] of pairs){
     await page.goto(`/${locale}/horoscope`);
-    await page.getByRole("button",{name:/préférences|preferences|Einstellungen|preferencias|preferências|preferenze|предпочтения|voorkeuren/i}).click();
+    await page.locator('header button[aria-haspopup="dialog"]').click();
     const dialog=page.getByRole("dialog").filter({has:page.getByRole("tab",{name:general})});
     await expect(dialog.getByRole("tab",{name:general})).toBeVisible();
     await expect(dialog.getByRole("tab",{name:categories})).toBeVisible();
