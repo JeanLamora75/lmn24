@@ -18,7 +18,6 @@ type Props = {
   open: boolean;
   locale: SupportedLocale;
   title: string;
-  description: string;
   closeLabel: string;
   onClose: () => void;
   onSaved: () => void;
