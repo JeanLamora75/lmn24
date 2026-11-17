@@ -18,8 +18,7 @@ for(const locale of locales){
     await page.locator(`a[href="/${locale}/horoscope/biorythmes"]`).click();
     await expect(page).toHaveURL(new RegExp(`/${locale}/horoscope/biorythmes$`));
     await expect(page.getByRole("heading",{name:titles[locale]})).toBeVisible();
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
-      "href",`https://www.lmn24.com/${locale}/horoscope/biorythmes`);
+    await expect(page.locator(`link[rel="canonical"][href="https://www.lmn24.com/${locale}/horoscope/biorythmes"]`)).toHaveCount(1);
     await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(8);
     await expect(page.locator(`main a[href="/${locale}/horoscope"]`)).toHaveCount(1);
     // No preference: never fabricate a personal chart.
