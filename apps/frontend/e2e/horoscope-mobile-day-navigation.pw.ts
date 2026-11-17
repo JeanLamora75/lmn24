@@ -46,7 +46,9 @@ for (const width of [320, 390, 768, 1280]) {
 
     // Walk to the last available day: the right-hand slot remains reserved.
     for (let i = 0; i < 6; i++) {
+      const before = await date.getAttribute("datetime");
       await mobile.getByRole("link").last().click();
+      await expect(date).not.toHaveAttribute("datetime", before!);
     }
     await expect(buttons).toHaveCount(1);
     await assertCentered();
