@@ -6,6 +6,7 @@ import type { SupportedLocale } from "@lmn24/config";
 import type { VisitorPreferences } from "@/lib/visitor-preferences";
 import { CATEGORY_SETTINGS_COPY } from "./visitor-category-copy";
 import styles from "./VisitorPreferencesDialog.module.css";
+import { orderCategories } from "@/lib/category-personalization";
 
 type Category = { id: string; slug: string; displayOrder: number };
 type Props = {
@@ -13,17 +14,6 @@ type Props = {
   categories: VisitorPreferences["categories"];
   onChange: (next: VisitorPreferences["categories"]) => void;
 };
-
-export function arrangeCategoryCatalog(items: readonly Category[], order: readonly string[]): Category[] {
-  const positions = new Map(order.map((id, i) => [id, i]));
-  return [...items].sort((a, b) => {
-    const left = positions.get(a.id), right = positions.get(b.id);
-    if (left !== undefined && right !== undefined) return left - right;
-    if (left !== undefined) return -1;
-    if (right !== undefined) return 1;
-    return a.displayOrder - b.displayOrder || a.slug.localeCompare(b.slug);
-  });
-}
 
 /** The catalog is public. Only a local draft is changed until the existing Save button is clicked. */
 export function VisitorCategorySettings({ locale, categories, onChange }: Props) {
@@ -52,7 +42,7 @@ export function VisitorCategorySettings({ locale, categories, onChange }: Props)
     return () => controller.abort();
   }, [attempt]);
 
-  const ordered = useMemo(() => arrangeCategoryCatalog(items, categories.order), [items, categories.order]);
+  const ordered = useMemo(() => orderCategories(items, categories.order), [items, categories.order]);
   const move = (id: string, delta: number) => {
     const ids = ordered.map(item => item.id);
     const index = ids.indexOf(id);
@@ -61,7 +51,7 @@ export function VisitorCategorySettings({ locale, categories, onChange }: Props)
     const current = ids[index]!;
     ids[index] = ids[nextIndex]!;
     ids[nextIndex] = current;
-    onChange({ ...categories, order: ids });
+    onChange({ ...categories, order: [...ids, ...categories.order.filter(id => !ids.includes(id))] });
   };
   const toggle = (id: string, shown: boolean) =>
     onChange({ ...categories, hidden: shown
