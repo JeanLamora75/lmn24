@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import styles from "./horoscope-sign.module.css";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -67,9 +68,10 @@ export default async function HoroscopeSignPage({params,searchParams}:Props){
  }catch{serviceFailed=true;}
  const when=(day:string)=>new Intl.DateTimeFormat(lang,{weekday:"short",day:"numeric",month:"short",timeZone:"UTC"}).format(new Date(day+"T12:00:00Z"));
  const name=t.signs[index] ?? sign;
- const attr=horoscope?.astronomy?.attribution;
- // The source file explicitly requires a visible CosmyDay link on pages using its data.
- const attrUrl=attr?.url==="https://cosmyday.com"||attr?.url==="https://www.cosmyday.com"?attr.url:"https://cosmyday.com";
+ const selectedIndex=days.indexOf(selected);
+ const previous=selectedIndex>0?days[selectedIndex-1]:undefined;
+ const next=selectedIndex<days.length-1?days[selectedIndex+1]:undefined;
+ const selectedDateLabel=new Intl.DateTimeFormat(lang,{dateStyle:"full",timeZone:"UTC"}).format(new Date(selected+"T12:00:00Z"));
  return <main className="container py-4 py-lg-5">
    <StructuredData data={collectionSchema({locale:lang,
      url:"https://www.lmn24.com/"+locale+"/horoscope/"+sign,
@@ -82,7 +84,7 @@ export default async function HoroscopeSignPage({params,searchParams}:Props){
      <div className="display-2 text-primary" aria-hidden="true">{SYMBOLS[index]}</div>
      <h1 className="display-6 fw-semibold">{t.title} — {name}</h1>
    </header>
-   <nav aria-label={t.select} className="d-flex flex-wrap gap-2 justify-content-center mb-4">
+   <nav aria-label={t.select} className={`d-flex flex-wrap gap-2 justify-content-center mb-4 ${styles.desktopDates}`}>
      {days.map((day,i)=><Link key={day} href={`/${locale}/horoscope/${sign}?date=${day}`}
        aria-current={selected===day?"date":undefined}
        className={`btn ${selected===day?"btn-primary":"btn-outline-primary"} d-flex flex-column align-items-center`}>
@@ -90,7 +92,32 @@ export default async function HoroscopeSignPage({params,searchParams}:Props){
        <span className="small">{day.slice(8,10)}/{day.slice(5,7)}</span>
      </Link>)}
    </nav>
-   <h2 className="h4 text-center mb-4"><time dateTime={selected}>{new Intl.DateTimeFormat(lang,{dateStyle:"full",timeZone:"UTC"}).format(new Date(selected+"T12:00:00Z"))}</time></h2>
+   <h2 className={`h4 text-center mb-4 ${styles.desktopSelectedDate}`}><time dateTime={selected}>{selectedDateLabel}</time></h2>
+   <nav className={styles.mobileDateNavigation} aria-label={t.select}>
+     {previous
+       ? <Link href={`/${locale}/horoscope/${sign}?date=${previous}`}
+           className={styles.mobileDateArrow}
+           aria-label={`${t.select} : ${when(previous)}`}>
+           <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+             <path d="m15 18-6-6 6-6"/>
+           </svg>
+         </Link>
+       : <span className={styles.mobileDateSlot} aria-hidden="true"/>}
+     <h2 className={styles.mobileSelectedDate}>
+       <time dateTime={selected}>{selectedDateLabel}</time>
+     </h2>
+     {next
+       ? <Link href={`/${locale}/horoscope/${sign}?date=${next}`}
+           className={styles.mobileDateArrow}
+           aria-label={`${t.select} : ${when(next)}`}>
+           <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+             <path d="m9 18 6-6-6-6"/>
+           </svg>
+         </Link>
+       : <span className={styles.mobileDateSlot} aria-hidden="true"/>}
+   </nav>
    {serviceFailed?<p className="alert alert-warning" role="status">{t.serviceError}</p>
    :!horoscope?.available?<p className="alert alert-light border text-center" role="status">{t.unavailable}</p>
    :<article className="mx-auto" style={{maxWidth:"900px"}}>
@@ -99,10 +126,6 @@ export default async function HoroscopeSignPage({params,searchParams}:Props){
          <h3 className="h5 fw-semibold text-primary">{t.sections[i]}</h3>
          <p className="mb-0" style={{whiteSpace:"pre-line"}}>{horoscope[key]}</p>
        </div></section>)}
-     <p className="small text-body-secondary mt-4">{horoscope.disclaimer||t.disclaimer}</p>
-     <p className="small text-body-secondary">
-       <a href={attrUrl} target="_blank" rel="noopener noreferrer">{attr?.text||"Astronomical data: CosmyDay"}</a>
-     </p>
    </article>}
  </main>;
 }
