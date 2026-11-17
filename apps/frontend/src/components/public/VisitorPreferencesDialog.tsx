@@ -27,7 +27,7 @@ type Props = {
 
 /** SCRUM-105: all edits remain in-memory until Enregistrer is explicitly clicked. */
 export function VisitorPreferencesDialog({
-  open, locale, title, description, closeLabel, onClose, onSaved, returnFocusRef,
+  open, locale, title, closeLabel, onClose, onSaved, returnFocusRef,
 }: Props) {
   const t = PREFERENCES_FORM_COPY[locale];
   const tabs = CATEGORY_SETTINGS_COPY[locale];
@@ -150,7 +150,7 @@ export function VisitorPreferencesDialog({
             </svg>
           </button>
         </div>
-        <p id={descriptionId} className={styles.srOnly}>{description}</p>
+        <p id={descriptionId} className={styles.srOnly}>{tabs.general}. {tabs.categories}.</p>
         <div role="tablist" aria-label={title} className={styles.tabList}>
           <button ref={generalTabRef} type="button" role="tab" id={generalTabId}
             aria-selected={activeTab === "general"} aria-controls={generalPanelId}
