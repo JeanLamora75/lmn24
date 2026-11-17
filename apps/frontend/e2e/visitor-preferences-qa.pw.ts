@@ -233,3 +233,32 @@ test("SCRUM-110: invalid persisted preferences fail safely and do not block navi
   await page.getByRole("button", { name: "Mes préférences" }).click();
   await expect(page.getByRole("dialog", { name: "Mes préférences" })).toBeVisible();
 });
+
+test("Profile icon reflects saved preferences and never an unsaved draft", async ({ page }) => {
+  await page.goto("/fr/horoscope");
+  const profile = page.getByRole("button", { name: "Mes préférences" });
+  await expect(profile).toHaveAttribute("data-profile-status", "inactive");
+  await expect(profile).toBeEnabled();
+
+  await profile.click();
+  const dialog = page.getByRole("dialog", { name: "Mes préférences" });
+  await dialog.getByRole("radio", { name: "Sombre" }).check();
+  await expect(profile).toHaveAttribute("data-profile-status", "inactive");
+  await dialog.getByRole("button", { name: "Annuler" }).click();
+  await expect(profile).toHaveAttribute("data-profile-status", "inactive");
+
+  await profile.click();
+  await dialog.getByRole("radio", { name: "Sombre" }).check();
+  await dialog.getByRole("button", { name: "Enregistrer" }).click();
+  await expect(profile).toHaveAttribute("data-profile-status", "active");
+  await page.reload();
+  await expect(profile).toHaveAttribute("data-profile-status", "active");
+
+  await profile.click();
+  await dialog.getByRole("button", { name: "Réinitialiser", exact: true }).last().click();
+  await dialog.getByRole("button", { name: "Tout réinitialiser", exact: true }).click();
+  await expect(profile).toHaveAttribute("data-profile-status", "active");
+  await dialog.getByRole("button", { name: "Enregistrer" }).click();
+  await expect(profile).toHaveAttribute("data-profile-status", "inactive");
+  await expect(profile).toBeEnabled();
+});
