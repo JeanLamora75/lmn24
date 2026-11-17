@@ -7,6 +7,8 @@ import { localizedCountries } from "@/lib/visitor-countries";
 import { useVisitorPreferences } from "./VisitorPreferencesProvider";
 import { PREFERENCES_FORM_COPY } from "./visitor-preferences-copy";
 import { VisitorCitySearch } from "./VisitorCitySearch";
+import { VisitorCategorySettings } from "./VisitorCategorySettings";
+import { CATEGORY_SETTINGS_COPY } from "./visitor-category-copy";
 import { zodiacSignFromBirthDate } from "@/lib/visitor-zodiac";
 import { VISITOR_ZODIAC_PREVIEW } from "@/components/horoscope/visitor-zodiac-copy";
 import type { SupportedLocale } from "@lmn24/config";
@@ -28,8 +30,14 @@ export function VisitorPreferencesDialog({
   open, locale, title, description, closeLabel, onClose, onSaved, returnFocusRef,
 }: Props) {
   const t = PREFERENCES_FORM_COPY[locale];
+  const tabs = CATEGORY_SETTINGS_COPY[locale];
   const titleId = useId();
   const descriptionId = useId();
+  const generalTabId = useId();
+  const categoriesTabId = useId();
+  const generalPanelId = useId();
+  const categoriesPanelId = useId();
+  const [activeTab, setActiveTab] = useState<"general"|"categories">("general");
   const themeId = useId();
   const countryId = useId();
   const birthId = useId();
@@ -56,6 +64,7 @@ export function VisitorPreferencesDialog({
 
   const cancel = () => {
     setConfirmReset(false);
+    setActiveTab("general");
     cancelEdit();
     onClose();
   };
@@ -63,6 +72,7 @@ export function VisitorPreferencesDialog({
     if (!ready || !draft || conflict) return;
     if (saveDraft()) {
       setConfirmReset(false);
+      setActiveTab("general");
       onSaved();
     }
   };
@@ -80,6 +90,7 @@ export function VisitorPreferencesDialog({
       event.stopPropagation();
       cancelEdit();
       setConfirmReset(false);
+      setActiveTab("general");
       onClose();
     };
     document.addEventListener("keydown", onDocumentKeyDown, true);
@@ -128,10 +139,30 @@ export function VisitorPreferencesDialog({
             </svg>
           </button>
         </div>
-        <p id={descriptionId} className={styles.description}>{description}</p>
+        <p id={descriptionId} className={styles.srOnly}>{description}</p>
+        <div role="tablist" aria-label={title} className={styles.tabList}>
+          <button type="button" role="tab" id={generalTabId}
+            aria-selected={activeTab === "general"} aria-controls={generalPanelId}
+            className={styles.tabButton} onClick={() => setActiveTab("general")}>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 7h16M4 17h16M8 4v6M16 14v6" />
+            </svg><span>{tabs.general}</span>
+          </button>
+          <button type="button" role="tab" id={categoriesTabId}
+            aria-selected={activeTab === "categories"} aria-controls={categoriesPanelId}
+            className={styles.tabButton} onClick={() => setActiveTab("categories")}>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 5h3v3H4zM10 6h10M4 11h3v3H4zM10 12h10M4 17h3v3H4zM10 18h10" />
+            </svg><span>{tabs.categories}</span>
+          </button>
+        </div>
 
         {draft ? (
           <div className={styles.form}>
+            <div role="tabpanel" id={generalPanelId} aria-labelledby={generalTabId}
+              hidden={activeTab !== "general"} className={styles.tabPanel}>
             <section className={styles.section} aria-labelledby={themeId}>
               <div className={styles.sectionHeading}>
                 <h3 id={themeId}>{t.appearance}</h3>
@@ -198,6 +229,19 @@ export function VisitorPreferencesDialog({
               {draftSign && <p className={styles.zodiacPreview} role="status">{zodiacCopy.heading} : <strong>{zodiacCopy.signs[draftSign]}</strong></p>}
               {birthInvalid && <p className={styles.error} role="alert">{t.dateError}</p>}
             </section>
+            </div>
+            <div role="tabpanel" id={categoriesPanelId} aria-labelledby={categoriesTabId}
+              hidden={activeTab !== "categories"} className={styles.tabPanel}>
+              {activeTab === "categories" && <section className={styles.section}>
+                <div className={styles.sectionHeading}>
+                  <h3>{tabs.categories}</h3>
+                  <button type="button" className={styles.reset}
+                    onClick={() => resetDraftField("categories")}>{t.reset}</button>
+                </div>
+                <VisitorCategorySettings locale={locale} categories={draft.categories}
+                  onChange={(categories) => updateDraft(previous => ({ ...previous, categories }))}/>
+              </section>}
+            </div>
             <p className={styles.hint}>{t.privacy}</p>
 
             {saveState !== "idle" && (
