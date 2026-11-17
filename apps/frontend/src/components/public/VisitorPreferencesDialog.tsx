@@ -282,11 +282,11 @@ export function VisitorPreferencesDialog({
             )}
 
             <div className={styles.actions}>
-              <button type="button" className={styles.resetAll}
-                onClick={() => setConfirmReset(true)} disabled={confirmReset}>
-                {t.resetAll}
-              </button>
               <div className={styles.actionButtons}>
+                <button type="button" className="btn btn-outline-danger"
+                  onClick={() => setConfirmReset(true)} disabled={confirmReset}>
+                  {t.reset}
+                </button>
                 <button type="button" className="btn btn-outline-secondary"
                   onClick={cancel}>{t.cancel}</button>
                 <button type="button" className="btn btn-primary"
