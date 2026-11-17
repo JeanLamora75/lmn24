@@ -20,6 +20,12 @@ const limitSchema = z.coerce.number().int().min(1).max(CATEGORY_MAX_PAGE_SIZE);
 export class PublicCategoryController {
   constructor(private readonly categoryService: PublicCategoryService) {}
 
+  @Get("catalog")
+  @Header("Cache-Control", "public, max-age=60")
+  async catalog() {
+    return this.categoryService.getCatalog();
+  }
+
   @Get(":slug/articles")
   @Header("Cache-Control", "no-store")
   async list(
