@@ -31,12 +31,24 @@ export const visitorCitySchema = z.strictObject({
   timezone: z.string().trim().min(1).max(128).nullable(),
 });
 
+const categoryIds = z.array(z.string().uuid()).max(100);
+export const visitorCategorySettingsSchema = z.strictObject({
+  order: categoryIds,
+  hidden: categoryIds,
+}).superRefine((value, ctx) => {
+  if (new Set(value.order).size !== value.order.length || new Set(value.hidden).size !== value.hidden.length) {
+    ctx.addIssue({ code: "custom", message: "Duplicate category identifiers." });
+  }
+});
+export const defaultCategorySettings = () => ({ order: [] as string[], hidden: [] as string[] });
+
 export const visitorPreferencesSchema = z.strictObject({
   version: z.literal(VISITOR_PREFERENCES_VERSION),
   theme: z.enum(["light", "dark", "system"]).nullable(),
   countryIso2: z.string().regex(/^[A-Z]{2}$/).nullable(),
   city: visitorCitySchema.nullable(),
   birthDate: isoDate.nullable(),
+  categories: visitorCategorySettingsSchema.default(defaultCategorySettings),
 }).superRefine((value, ctx) => {
   if (value.city && value.city.countryIso2 !== value.countryIso2) {
     ctx.addIssue({ code: "custom", path: ["city"], message: "City country does not match selected country." });
@@ -45,10 +57,10 @@ export const visitorPreferencesSchema = z.strictObject({
 
 export type VisitorPreferences = z.infer<typeof visitorPreferencesSchema>;
 export type VisitorCity = z.infer<typeof visitorCitySchema>;
-export type VisitorPreferencesField = "theme" | "countryIso2" | "city" | "birthDate";
+export type VisitorPreferencesField = "theme" | "countryIso2" | "city" | "birthDate" | "categories";
 
 export function defaultVisitorPreferences(): VisitorPreferences {
-  return { version: 1, theme: null, countryIso2: null, city: null, birthDate: null };
+  return { version: 1, theme: null, countryIso2: null, city: null, birthDate: null, categories: defaultCategorySettings() };
 }
 
 /** A pre-release/version-zero snapshot, if one exists, is upgraded to v1. */
@@ -64,6 +76,7 @@ function migrate(input: unknown): unknown {
     countryIso2: candidate.countryIso2 ?? null,
     city: candidate.city ?? null,
     birthDate: candidate.birthDate ?? null,
+    categories: candidate.categories ?? defaultCategorySettings(),
   };
 }
 
@@ -109,6 +122,7 @@ export function resetVisitorPreference(
 ): VisitorPreferences {
   // Clearing a country also clears the now-invalid city, but never modifies storage.
   if (field === "countryIso2") return { ...draft, countryIso2: null, city: null };
+  if (field === "categories") return { ...draft, categories: defaultCategorySettings() };
   return { ...draft, [field]: null };
 }
 
