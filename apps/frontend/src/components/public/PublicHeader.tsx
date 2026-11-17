@@ -9,6 +9,7 @@ import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { VisitorPreferencesDialog } from "./VisitorPreferencesDialog";
 import { useVisitorPreferences } from "./VisitorPreferencesProvider";
 import { PREFERENCES_FORM_COPY } from "./visitor-preferences-copy";
+import { hasVisitorPreferences } from "@/lib/visitor-preferences";
 import styles from "./PublicHeader.module.css";
 
 const PREFERENCES_COPY: Record<SupportedLocale, { title: string; close: string }> = {
@@ -110,7 +111,8 @@ export function PublicHeader() {
   const [preferencesSaved, setPreferencesSaved] = useState(false);
   const preferencesButtonRef = useRef<HTMLButtonElement>(null);
   const preferencesCopy = PREFERENCES_COPY[locale];
-  const { beginEdit } = useVisitorPreferences();
+  const { beginEdit, preferences, ready } = useVisitorPreferences();
+  const profileActive = ready && hasVisitorPreferences(preferences);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -182,7 +184,8 @@ export function PublicHeader() {
           <button
             ref={preferencesButtonRef}
             type="button"
-            className={styles.preferencesButton}
+            className={`${styles.preferencesButton} ${profileActive ? styles.preferencesButtonActive : styles.preferencesButtonInactive}`}
+            data-profile-status={profileActive ? "active" : "inactive"}
             aria-label={preferencesCopy.title}
             title={preferencesCopy.title}
             aria-haspopup="dialog"
@@ -192,8 +195,8 @@ export function PublicHeader() {
             <svg className={styles.preferencesIcon} viewBox="0 0 24 24"
               fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
               strokeLinejoin="round" aria-hidden="true" focusable="false">
-              <path d="M12 2.5v2m0 15v2m9.5-9.5h-2m-15 0h-2m16.22-6.72-1.42 1.42M7.2 16.8l-1.42 1.42m12.44 0-1.42-1.42M7.2 7.2 5.78 5.78"/>
-              <circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.5"/>
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4.5 21v-2a7.5 7.5 0 0 1 15 0v2"/>
             </svg>
           </button>
           {preferencesSaved && <span className={styles.preferencesSaved} role="status" aria-live="polite">{PREFERENCES_FORM_COPY[locale].saved}</span>}
