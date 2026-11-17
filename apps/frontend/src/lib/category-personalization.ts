@@ -20,3 +20,18 @@ export function personalizeCategories<T extends { id: string; displayOrder: numb
   const hidden = new Set(settings.hidden);
   return orderCategories(items.filter(item => !hidden.has(item.id)), settings.order);
 }
+
+/** Move one existing category to a drop target, preserving all other items' order.
+ * No-op on missing IDs and self drops. Also used for keyboard reordering.
+ */
+export function moveCategoryOrder(
+  ids: readonly string[], sourceId: string, targetId: string,
+): string[] {
+  const from = ids.indexOf(sourceId);
+  const to = ids.indexOf(targetId);
+  if (from < 0 || to < 0 || from === to) return [...ids];
+  const result = [...ids];
+  result.splice(from, 1);
+  result.splice(to, 0, sourceId);
+  return result;
+}
