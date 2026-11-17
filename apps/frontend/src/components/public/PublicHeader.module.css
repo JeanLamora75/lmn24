@@ -199,6 +199,25 @@
   box-shadow: 0 3px 12px rgba(0, 39, 112, 0.18);
   cursor: pointer;
 }
+
+/* An inactive profile is still clickable; only its visual treatment is muted.
+ * Active means at least one saved, non-default preference (never an open draft).
+ */
+.preferencesButtonInactive {
+  background: #e6e9ef;
+  color: #66758a;
+  box-shadow: 0 1px 5px rgba(0, 39, 112, 0.10);
+  opacity: .83;
+}
+.preferencesButtonActive {
+  background: #fff;
+  color: #0866e7;
+  border: 2px solid #0866e7;
+  box-shadow: 0 3px 12px rgba(0, 39, 112, 0.18);
+}
+.preferencesButtonInactive:hover { opacity: 1; color: #294766; }
+.preferencesButtonActive:hover { color: #074ead; background: #eaf3ff; }
+
 .preferencesIcon { width: 27px; height: 27px; }
 .preferencesButton:hover { background: #f0f6ff; color: #074ead; }
 .preferencesButton:focus-visible {
@@ -463,3 +482,20 @@
     border-top-color: #3b546b;
   }
 }
+
+:global(html[data-bs-theme="dark"]) .preferencesButtonInactive {
+  background-color: #263746;
+  color: #879bb0;
+  border-color: #526679 !important;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, .2);
+  opacity: .8;
+}
+:global(html[data-bs-theme="dark"]) .preferencesButtonActive {
+  background-color: #173c6c;
+  color: #eaf4ff;
+  border-color: #79b5ff !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .3);
+  opacity: 1;
+}
+:global(html[data-bs-theme="dark"]) .preferencesButtonInactive:hover { opacity: 1; }
+:global(html[data-bs-theme="dark"]) .preferencesButtonActive:hover { background-color: #215184; }
