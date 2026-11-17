@@ -78,7 +78,12 @@ describe("SCRUM-10 — approved LMN24 header redesign", () => {
     for (const language of languages) {
       expect(header).toMatch(new RegExp("\\b" + language + ': \\{ title: "'));
     }
-    expect(header).toContain('className={styles.preferencesButton}');
+    expect(header).toContain('profileActive ? styles.preferencesButtonActive : styles.preferencesButtonInactive');
+    expect(header).toContain('data-profile-status={profileActive ? "active" : "inactive"}');
+    expect(header).toContain('hasVisitorPreferences(preferences)');
+    expect(header).toContain('<circle cx="12" cy="8" r="4"/>');
+    expect(styles).toContain('.preferencesButtonInactive');
+    expect(styles).toContain('.preferencesButtonActive');
     expect(header).toContain('aria-label={preferencesCopy.title}');
     expect(header).toContain('aria-haspopup="dialog"');
     expect(header).toContain('onClick={() => { setIsOpen(false); setPreferencesSaved(false); beginEdit(); setPreferencesOpen(true); }}');
