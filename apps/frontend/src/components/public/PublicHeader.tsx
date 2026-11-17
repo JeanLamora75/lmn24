@@ -11,15 +11,15 @@ import { useVisitorPreferences } from "./VisitorPreferencesProvider";
 import { PREFERENCES_FORM_COPY } from "./visitor-preferences-copy";
 import styles from "./PublicHeader.module.css";
 
-const PREFERENCES_COPY: Record<SupportedLocale, { title: string; close: string; introduction: string }> = {
-  fr: { title: "Mes préférences", close: "Fermer", introduction: "Personnalisez votre expérience LMN24. Vos choix restent dans ce navigateur." },
-  en: { title: "My preferences", close: "Close", introduction: "Personalize your LMN24 experience. Your choices stay in this browser." },
-  de: { title: "Meine Einstellungen", close: "Schließen", introduction: "Passen Sie LMN24 an. Ihre Einstellungen bleiben in diesem Browser." },
-  es: { title: "Mis preferencias", close: "Cerrar", introduction: "Personaliza LMN24. Tus preferencias se guardan en este navegador." },
-  pt: { title: "As minhas preferências", close: "Fechar", introduction: "Personalize o LMN24. As suas preferências ficam neste navegador." },
-  it: { title: "Le mie preferenze", close: "Chiudi", introduction: "Personalizza LMN24. Le preferenze restano in questo browser." },
-  ru: { title: "Мои предпочтения", close: "Закрыть", introduction: "Настройте LMN24. Ваши предпочтения останутся в этом браузере." },
-  nl: { title: "Mijn voorkeuren", close: "Sluiten", introduction: "Personaliseer LMN24. Je voorkeuren blijven in deze browser." },
+const PREFERENCES_COPY: Record<SupportedLocale, { title: string; close: string }> = {
+  fr: { title: "Mes préférences", close: "Fermer" },
+  en: { title: "My preferences", close: "Close" },
+  de: { title: "Meine Einstellungen", close: "Schließen" },
+  es: { title: "Mis preferencias", close: "Cerrar" },
+  pt: { title: "As minhas preferências", close: "Fechar" },
+  it: { title: "Le mie preferenze", close: "Chiudi" },
+  ru: { title: "Мои предпочтения", close: "Закрыть" },
+  nl: { title: "Mijn voorkeuren", close: "Sluiten" },
 };
 
 const LANGUAGE_FLAGS: Record<SupportedLocale, string> = {
@@ -242,7 +242,6 @@ export function PublicHeader() {
         open={preferencesOpen}
         locale={locale}
         title={preferencesCopy.title}
-        description={preferencesCopy.introduction}
         closeLabel={preferencesCopy.close}
         onClose={() => setPreferencesOpen(false)}
         onSaved={() => { setPreferencesOpen(false); setPreferencesSaved(true); }}
