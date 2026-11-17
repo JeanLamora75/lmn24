@@ -58,7 +58,9 @@ export function VisitorCategorySettings({ locale, categories, onChange }: Props)
     const index = ids.indexOf(id);
     const nextIndex = index + delta;
     if (index < 0 || nextIndex < 0 || nextIndex >= ids.length) return;
-    [ids[index], ids[nextIndex]] = [ids[nextIndex]!, ids[index]!];
+    const current = ids[index]!;
+    ids[index] = ids[nextIndex]!;
+    ids[nextIndex] = current;
     onChange({ ...categories, order: ids });
   };
   const toggle = (id: string, shown: boolean) =>
