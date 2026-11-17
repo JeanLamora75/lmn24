@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useVisitorPreferences } from "@/components/public/VisitorPreferencesProvider";
+import { personalizeCategories } from "@/lib/category-personalization";
 import { CATEGORY_SETTINGS_COPY } from "@/components/public/visitor-category-copy";
 import type { SupportedLocale } from "@lmn24/config";
 import { HomeSection } from "./HomeSection";
@@ -24,16 +25,7 @@ export function PersonalizedHomeSections({
   const { preferences, ready } = useVisitorPreferences();
   const visible = useMemo(() => {
     if (!ready) return sections;
-    const { order, hidden } = preferences.categories;
-    const positions = new Map(order.map((id, index) => [id, index]));
-    const withoutHidden = sections.filter(section => !hidden.includes(section.id));
-    return withoutHidden.sort((a, b) => {
-      const first = positions.get(a.id), second = positions.get(b.id);
-      if (first !== undefined && second !== undefined) return first - second;
-      if (first !== undefined) return -1;
-      if (second !== undefined) return 1;
-      return a.displayOrder - b.displayOrder || a.id.localeCompare(b.id);
-    });
+    return personalizeCategories(sections, preferences.categories);
   }, [sections, ready, preferences.categories]);
 
   if (ready && sections.length > 0 && visible.length === 0) {
