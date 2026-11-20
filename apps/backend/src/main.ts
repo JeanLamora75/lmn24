@@ -6,10 +6,21 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { Logger } from "nestjs-pino";
 
 import { AppModule } from "./app.module";
+import { shouldBlockTvApi } from "./tv/tv-public-gate";
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
+  // Fail closed even if a public TV controller is added in a later story.
+  app.use((req, res, next) => {
+    if (shouldBlockTvApi(req.path)) {
+      res.setHeader("Cache-Control", "no-store");
+      res.setHeader("X-Robots-Tag", "noindex, nofollow");
+      res.status(404).send("Not Found");
+      return;
+    }
+    next();
+  });
   // Autorise les imports JSON d’horoscopes au-delà de la limite Express par défaut (100 Ko).
   app.useBodyParser("json", { limit: "1mb" });
   app.enableShutdownHooks();
