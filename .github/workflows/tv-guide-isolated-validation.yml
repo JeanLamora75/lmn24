@@ -13,6 +13,7 @@ on:
       - "database/schema.sql"
       - "docs/BMAD/guide-tv-mondial-winston-migration-candidate.sql"
       - "docs/BMAD/guide-tv-mondial-winston-audit-privileges.sql"
+      - "docs/BMAD/guide-tv-mondial-winston-catalog-inventory.sql"
   workflow_dispatch:
 
 permissions:
@@ -88,6 +89,8 @@ jobs:
           docker exec ${{ job.services.postgres.id }} pg_dump -U postgres -d tv_guide_rehearsal -Fc -f /tmp/tv_before.dump
           docker exec ${{ job.services.postgres.id }} pg_restore -l /tmp/tv_before.dump > /dev/null
           docker exec ${{ job.services.postgres.id }} sha256sum /tmp/tv_before.dump
+      - name: Read-only PostgreSQL baseline inventory on isolated clone
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-catalog-inventory.sql
       - name: Audit catalog and default privileges before migration
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-audit-privileges.sql
       - name: Apply prototype against complete bootstrap and replay
@@ -136,3 +139,26 @@ jobs:
             [ -n "$before" ] && [ "$before" = "$after" ] || { echo "BUSINESS_DATA_DIFF: $table"; exit 1; }
           done
           echo 'BACKUP_RESTORE_PASS: pre- and post-migration dumps restored.'
+
+      - name: Refuse schema drift on disposable restored copies before replay
+        run: |
+          # Fresh clones of the RESTORED post-migration test database.
+          # Never use remote databases or production credentials.
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c "CREATE DATABASE tv_guide_constraint_drift TEMPLATE tv_guide_post_restore;"
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c "CREATE DATABASE tv_guide_column_drift TEMPLATE tv_guide_post_restore;"
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c "CREATE DATABASE tv_guide_trigger_drift TEMPLATE tv_guide_post_restore;"
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_constraint_drift -c "ALTER TABLE public.tv_airing DROP CONSTRAINT tv_airing_span;"
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_column_drift -c "ALTER TABLE public.tv_source ALTER COLUMN rights_status TYPE varchar(40);"
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_trigger_drift -c "ALTER TABLE public.tv_schedule_current DISABLE TRIGGER trg_tv_current_writer_lease;"
+          for spec in 'tv_guide_constraint_drift:TV constraint drift detected' 'tv_guide_column_drift:TV column type drift detected' 'tv_guide_trigger_drift:required TV trigger missing or disabled'; do
+            db="${spec%%:*}"
+            expected="${spec#*:}"
+            if docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d "$db" < docs/BMAD/guide-tv-mondial-winston-migration-candidate.sql > /tmp/tv-drift-result.log 2>&1; then
+              echo "DRIFT_REPLAY_UNEXPECTEDLY_SUCCEEDED: $db"; exit 1
+            fi
+            grep -F "$expected" /tmp/tv-drift-result.log || { cat /tmp/tv-drift-result.log; exit 1; }
+            echo "DRIFT_REJECTION_PASS: $db"
+          done
+          # Atomic preflight: no source SQL re-created the deliberately missing check.
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_constraint_drift -Atc "SELECT count(*) FROM pg_constraint WHERE conname='tv_airing_span';" | grep -x 0
+          echo 'TV_DRIFT_NEGATIVE_TESTS_PASS'
