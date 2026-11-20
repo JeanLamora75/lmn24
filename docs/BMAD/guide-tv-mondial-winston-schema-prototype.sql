@@ -270,16 +270,23 @@ EXECUTE FUNCTION public.tv_protect_published_revision();
 CREATE OR REPLACE FUNCTION public.tv_protect_published_airings()
 RETURNS trigger LANGUAGE plpgsql AS $tv_airing_protect$
 BEGIN
-  IF EXISTS (
+  -- Check BOTH old and new revisions: an UPDATE could otherwise move an
+  -- airing out of, or into, a published revision.
+  IF (TG_OP <> 'INSERT' AND EXISTS (
     SELECT 1 FROM public.tv_schedule_revision
-    WHERE id=COALESCE(OLD.revision_id,NEW.revision_id) AND status='PUBLISHED'
-  ) THEN
-    RAISE EXCEPTION 'TV published airings are immutable' USING ERRCODE='23514';
+    WHERE id=OLD.revision_id AND status='PUBLISHED'
+  )) OR (TG_OP <> 'DELETE' AND EXISTS (
+    SELECT 1 FROM public.tv_schedule_revision
+    WHERE id=NEW.revision_id AND status='PUBLISHED'
+  )) THEN
+    RAISE EXCEPTION 'TV published airings are immutable'
+      USING ERRCODE='23514';
   END IF;
-  RETURN COALESCE(NEW,OLD);
+  IF TG_OP='DELETE' THEN RETURN OLD; END IF;
+  RETURN NEW;
 END $tv_airing_protect$;
-DROP TRIGGER IF EXISTS trg_tv_published_airing_update ON public.tv_airing;
-CREATE TRIGGER trg_tv_published_airing_update BEFORE UPDATE OR DELETE
+DROP TRIGGER IF EXISTS trg_tv_published_airing_write ON public.tv_airing;
+CREATE TRIGGER trg_tv_published_airing_write BEFORE INSERT OR UPDATE OR DELETE
 ON public.tv_airing FOR EACH ROW
 EXECUTE FUNCTION public.tv_protect_published_airings();
 
