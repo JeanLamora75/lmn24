@@ -14,6 +14,7 @@ on:
       - "docs/BMAD/guide-tv-mondial-winston-migration-candidate.sql"
       - "docs/BMAD/guide-tv-mondial-winston-audit-privileges.sql"
       - "docs/BMAD/guide-tv-mondial-winston-catalog-inventory.sql"
+      - "docs/BMAD/guide-tv-mondial-scrum115-catalog-isolated-smoke.sql"
   workflow_dispatch:
 
 permissions:
@@ -78,6 +79,9 @@ jobs:
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated < docs/BMAD/guide-tv-mondial-winston-schema-prototype.sql
       - name: Test constraints, revision immutability and stale-owner denial
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated < docs/BMAD/guide-tv-mondial-winston-postgres-isolated-smoke.sql
+
+      - name: Validate SCRUM-115 catalogue variants numbering and country invariants
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated < docs/BMAD/guide-tv-mondial-scrum115-catalog-isolated-smoke.sql
 
       - name: Rehearse on LMN24 full bootstrap schema in separate throwaway database
         run: |
