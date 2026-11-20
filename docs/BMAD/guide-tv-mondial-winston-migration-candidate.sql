@@ -387,6 +387,17 @@ CREATE TABLE IF NOT EXISTS public.tv_translation_attempt (
 );
 CREATE INDEX IF NOT EXISTS idx_tv_translation_attempt_time ON public.tv_translation_attempt(occurred_at);
 
+-- PostgreSQL grants EXECUTE on new functions to PUBLIC by default.
+-- Do not expose the TV trigger functions as callable utilities.
+-- Trigger execution itself does not require EXECUTE from application roles.
+REVOKE ALL ON FUNCTION public.tv_assert_current_published() FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.tv_assert_current_writer_lease() FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.tv_protect_published_revision() FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.tv_protect_published_airings() FROM PUBLIC;
+-- Existing assert_parser_write_epoch(uuid) is managed by the legacy parser
+-- security contract. Never revoke its privileges here without a regression
+-- and role review.
+
 -- Postflight verifies expected table count, preventing silent partial application.
 DO $postflight$
 DECLARE n INTEGER;
