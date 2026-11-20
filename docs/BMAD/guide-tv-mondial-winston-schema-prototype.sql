@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS public.tv_channel_country (
   official_number INTEGER,
   manual_number INTEGER,
   assigned_number INTEGER,
+  default_variant_id UUID,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   CONSTRAINT tv_channel_country_pair_unique UNIQUE(channel_id,country_id),
@@ -91,6 +92,25 @@ CREATE TABLE IF NOT EXISTS public.tv_variant_country (
 );
 -- Both composite FKs ensure that a variant and its country association
 -- belong to the SAME channel, even under direct SQL writes.
+-- SCRUM-115 / D10: default variant is per channel-country association.
+-- The composite FK prevents a default that belongs to another channel or
+-- that is not available in this country. Keep the old is_default column
+-- for backwards prototype compatibility; it is NOT the publication default.
+DO $tv_default_fk$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conrelid='public.tv_channel_country'::regclass
+      AND conname='tv_channel_country_default_variant_fk'
+  ) THEN
+    ALTER TABLE public.tv_channel_country
+      ADD CONSTRAINT tv_channel_country_default_variant_fk
+      FOREIGN KEY(default_variant_id,id)
+      REFERENCES public.tv_variant_country(variant_id,channel_country_id)
+      DEFERRABLE INITIALLY IMMEDIATE;
+  END IF;
+END $tv_default_fk$;
+
 
 CREATE TABLE IF NOT EXISTS public.tv_source (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
