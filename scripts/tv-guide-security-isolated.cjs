@@ -25,6 +25,11 @@ const revision="a0000000-0000-4000-8000-000000000005";
 const token="f0000000-0000-4000-8000-000000000005";
 async function run(){
  const admin=await c(), owner=await c(), writer=await c(), newer=await c();
+ // pg_terminate_backend intentionally generates an asynchronous 57P01 error
+ // on the disconnected client; record it instead of crashing the Node runner.
+ let expectedTermination=false;
+ owner.on("error", e=>{if(e.code==="57P01")expectedTermination=true;else console.error("Unexpected owner error",e)});
+
  // Simulate application roles without privileges on the TV publication pointer.
  await admin.query("CREATE ROLE tv_reader_ci LOGIN PASSWORD 'tv_reader_ci' NOSUPERUSER NOCREATEDB NOCREATEROLE");
  await admin.query("CREATE ROLE tv_writer_ci LOGIN PASSWORD 'tv_writer_ci' NOSUPERUSER NOCREATEDB NOCREATEROLE");
@@ -53,6 +58,8 @@ async function run(){
  // No write can be committed by this old token after takeover.
  const killed=await admin.query("SELECT pg_terminate_backend($1) AS killed",[pid]);
  assert.equal(killed.rows[0].killed,true);
+ await new Promise(r=>setTimeout(r,80));
+ assert.equal(expectedTermination,true,"expected client to observe server-initiated termination");
  // Disconnect destroys session lock. Retry short bounded acquisition for release.
  let acquired=false;
  for(let i=0;i<20;i++){
