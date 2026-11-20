@@ -57,3 +57,31 @@ Ces images sont des *concepts de présentation*, pas des captures de l'applicati
 Prioriser une **planche conforme UX-01**, puis UX-02 et UX-03. Faire valider au propriétaire la densité des cartes, la mise en page mobile et la séparation des filtres avant d'étendre au reste des sept vues administratives.
 
 **Conclusion Sally :** direction visuelle suffisamment tangible pour avis initial, **SCRUM-127 EN COURS sur le fond et non terminée**. Aucun écran public ni fonctionnalité TV modifié ou ouvert.
+
+
+## 6. Deuxième itération — direction visuelle validée, prototype autonome
+
+**Retour explicite du propriétaire : « Oui je valide, continue »** après présentation de la direction graphique bleu/blanc, cartes horizontales et séparation des filtres. **Cette validation porte sur l'identité graphique générale**, et non sur toutes les maquettes finales ni sur l'ouverture du Guide TV.
+
+### Prototype hors ligne produit
+
+Un fichier autonome `LMN24_GuideTV_Sally_SCRUM-127_prototype.html` a été créé comme pièce téléchargeable de la conversation, **non ajouté à ce dépôt**. Ses caractéristiques :
+- Navigation interne entre accueil, fiche chaîne, fiche émission, recherche mondiale et administration ;
+- Accueil : filtres pays/langue/heure, J0…J+6, quatre onglets corrects dans l'ordre de Mary, Ce soir par défaut, cartes horizontales avec n° sous logo ;
+- Fiche chaîne : descriptif, variante, timeline avec lacune, lien vers fiche émission ;
+- Recherche : démonstration de numéros exacts et deux familles de résultats ;
+- Administration : navigation vers sept rubriques (Vue d'ensemble, Pays, Chaînes, Sources EPG, Imports, Traductions, Statistiques), états partiels et données de démonstration ;
+- Thème clair/sombre, réagencement CSS desktop/mobile, option de simulation de libellés EN/RU limitée à un texte de recherche ;
+- Aucune dépendance réseau ni intégration runtime du Guide TV, aucun accès BDD. Le contenu et les KPI sont explicitement fictifs.
+
+**Vérifications effectuées :** présence des cinq écrans et des sept rubriques, contrôle syntaxique JavaScript avec `node --check`. **Non effectués :** recette Playwright visuelle, lectorat d'écran, validation complète des huit locales et les maquettes individuelles de chaque modal.
+
+### Revue Sally et Murat — réserves explicites
+
+- Les images exploratoires générées présentent encore certaines compositions divergentes, elles ne sont **pas** une base d'implémentation littérale.
+- Le prototype autonome permet de valider la hiérarchie de navigation et la densité des écrans mais reste **une simulation** (pas d'API réelle, données inventées, boutons de démonstration).
+- La direction graphique est **validée** par le propriétaire, mais l'acceptation **écran par écran** de SCRUM-127 reste à obtenir.
+- Les captures et fichiers binaires ne sont pas archivés dans GitHub à ce stade ; les preuves visuelles sont dans la conversation.
+- La publication du Guide TV reste **strictement interdite** sans un GO distinct.
+
+**Prochain point :** faire valider la structure du prototype et produire les variantes détaillées des pages administration (modales et erreurs), puis tests vrais 320/390/768/1440 px et huit locales. SCRUM-127 reste ouverte.
