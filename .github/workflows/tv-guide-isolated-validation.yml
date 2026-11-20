@@ -1,0 +1,72 @@
+name: TV Guide isolated architecture validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/BMAD/guide-tv-mondial-winston-schema-prototype.sql"
+      - "docs/BMAD/guide-tv-mondial-winston-prisma-proposition.prisma"
+      - "docs/BMAD/guide-tv-mondial-winston-postgres-isolated-smoke.sql"
+      - ".github/workflows/tv-guide-isolated-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tv-schema:
+    name: Isolated Prisma and PostgreSQL tests (no production access)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: tv_guide_isolated
+        options: >-
+          --health-cmd "pg_isready -U postgres -d tv_guide_isolated"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/tv_guide_isolated
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6.1.0
+        with:
+          version: 12.10.0
+          run_install: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.21.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Build isolated full Prisma schema (never edit canonical schema)
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path("packages/database")
+          original = (root / "schema.prisma").read_text()
+          addition = Path("docs/BMAD/guide-tv-mondial-winston-prisma-proposition.prisma").read_text()
+          marker = '  sources Source[]'
+          assert original.count(marker) == 1, "Country inverse insertion marker changed"
+          original = original.replace(marker, '  tvCountry TvCountry?\n' + marker, 1)
+          (root / ".tv-guide-isolated.prisma").write_text(original + "\n\n" + addition)
+          PY
+      - name: Prisma validate isolated complete schema
+        run: pnpm --filter @lmn24/database exec prisma validate --schema .tv-guide-isolated.prisma
+      - name: Prisma generate in isolated workspace
+        run: pnpm --filter @lmn24/database exec prisma generate --schema .tv-guide-isolated.prisma
+      - name: Create disposable baseline country table and fencing function
+        run: |
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated -c "CREATE TABLE public.country(id UUID PRIMARY KEY);"
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated < database/migrations/20261017_parser_write_fence.sql
+      - name: Create isolated TV schema from DOCUMENTATION prototype
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated < docs/BMAD/guide-tv-mondial-winston-schema-prototype.sql
+      - name: Replay prototype to validate its schema-level idempotence
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated < docs/BMAD/guide-tv-mondial-winston-schema-prototype.sql
+      - name: Test constraints, revision immutability and stale-owner denial
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated < docs/BMAD/guide-tv-mondial-winston-postgres-isolated-smoke.sql
