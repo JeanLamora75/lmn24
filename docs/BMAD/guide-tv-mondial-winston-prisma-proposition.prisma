@@ -252,6 +252,7 @@ model TvScheduleCurrent {
   variant TvChannelVariant @relation(fields:[variantId],references:[id],onDelete:Restrict)
   revision TvScheduleRevision @relation(fields:[revisionId,variantId,localDate],references:[id,variantId,localDate],onDelete:Restrict,map:"tv_current_revision_scope_fk")
   @@id([variantId,localDate])
+  @@unique([revisionId,variantId,localDate],map:"tv_current_revision_unique_tuple")
   @@map("tv_schedule_current")
 }
 
