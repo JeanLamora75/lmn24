@@ -26,9 +26,13 @@ VALUES ('50000000-0000-4000-8000-000000000001','EPG Demo','https://invalid.examp
 INSERT INTO public.tv_programme(id,title) VALUES ('60000000-0000-4000-8000-000000000001','Programme');
 INSERT INTO public.tv_schedule_revision(id,variant_id,local_date,status,published_at)
 VALUES ('70000000-0000-4000-8000-000000000001','40000000-0000-4000-8000-000000000001','2026-11-20','STAGING',NULL),
-       ('70000000-0000-4000-8000-000000000002','40000000-0000-4000-8000-000000000001','2026-11-20','PUBLISHED',now());
+       ('70000000-0000-4000-8000-000000000002','40000000-0000-4000-8000-000000000001','2026-11-20','VALIDATED',NULL);
 INSERT INTO public.tv_airing(id,revision_id,programme_id,source_id,starts_at,ends_at,fingerprint)
 VALUES ('80000000-0000-4000-8000-000000000001','70000000-0000-4000-8000-000000000002','60000000-0000-4000-8000-000000000001','50000000-0000-4000-8000-000000000001','2026-11-20 20:00+01','2026-11-20 21:00+01','first');
+
+-- Finalize the fixture normally: prepare airings before publication.
+UPDATE public.tv_schedule_revision SET status='PUBLISHED', published_at=now()
+WHERE id='70000000-0000-4000-8000-000000000002';
 
 -- Set a real test-only parser lease in this same PostgreSQL session.
 SELECT pg_try_advisory_lock(241024,85) AS lease_acquired \gset
