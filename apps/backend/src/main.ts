@@ -12,7 +12,11 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
   // Fail closed even if a public TV controller is added in a later story.
-  app.use((req, res, next) => {
+  app.use((
+    req: { path: string },
+    res: { setHeader(name: string, value: string): void; status(code: number): { send(body: string): void } },
+    next: () => void,
+  ) => {
     if (shouldBlockTvApi(req.path)) {
       res.setHeader("Cache-Control", "no-store");
       res.setHeader("X-Robots-Tag", "noindex, nofollow");
