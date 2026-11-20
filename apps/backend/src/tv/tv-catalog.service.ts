@@ -77,8 +77,8 @@ export class TvCatalogService {
   }
 
   async discoverChannel(payload: {
-    countryId: string; slug: string; name: string; websiteUrl?: string | null;
-    logoUrl?: string | null;
+    countryId: string; slug: string; name: string; websiteUrl?: string | null | undefined;
+    logoUrl?: string | null | undefined;
   }) {
     await this.requireTvTables();
     const website = assertOfficialUrl(payload.websiteUrl ?? null);
