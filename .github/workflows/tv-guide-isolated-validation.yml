@@ -106,9 +106,19 @@ jobs:
           docker exec ${{ job.services.postgres.id }} pg_restore --exit-on-error -U postgres -d tv_guide_post_restore /tmp/tv_after.dump
           docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_pre_restore -Atc "SELECT CASE WHEN to_regclass('public.tv_country') IS NULL AND (SELECT COUNT(*) FROM country WHERE slug='baseline-britain')=1 AND (SELECT COUNT(*) FROM source WHERE slug='baseline-news')=1 THEN 'PRE_RESTORE_OK' ELSE 'FAIL' END;" | grep -x PRE_RESTORE_OK
           docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_post_restore -Atc "SELECT CASE WHEN (SELECT COUNT(*) FROM pg_tables WHERE schemaname='public' AND tablename LIKE 'tv_%')=19 AND (SELECT COUNT(*) FROM country WHERE slug='baseline-britain')=1 AND (SELECT COUNT(*) FROM source WHERE slug='baseline-news')=1 AND (SELECT COUNT(*) FROM tv_schedule_current)=1 THEN 'POST_RESTORE_OK' ELSE 'FAIL' END;" | grep -x POST_RESTORE_OK
+          # The concurrency scenario deliberately inserts a NEW TV test
+          # country after the first backup. Compare ORIGINAL business rows,
+          # not entire counts which legitimately include test fixtures.
           for table in country language category source; do
-            before=$(docker exec ${{ job.services.postgres.id }} psql -U postgres -d tv_guide_pre_restore -Atc "SELECT COUNT(*) FROM $table")
-            after=$(docker exec ${{ job.services.postgres.id }} psql -U postgres -d tv_guide_post_restore -Atc "SELECT COUNT(*) FROM $table")
-            [ "$before" = "$after" ] || { echo "BUSINESS_TABLE_COUNT_MISMATCH: $table"; exit 1; }
+            case "$table" in
+              country) filter="slug='baseline-britain'" ;;
+              language) filter="iso_code2='fr'" ;;
+              category) filter="slug='baseline'" ;;
+              source) filter="slug='baseline-news'" ;;
+            esac
+            sql="SELECT md5(string_agg(row_to_json(t)::text, ',' ORDER BY row_to_json(t)::text)) FROM (SELECT * FROM $table WHERE $filter) t"
+            before=$(docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_pre_restore -Atc "$sql")
+            after=$(docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_post_restore -Atc "$sql")
+            [ -n "$before" ] && [ "$before" = "$after" ] || { echo "BUSINESS_DATA_DIFF: $table"; exit 1; }
           done
           echo 'BACKUP_RESTORE_PASS: pre- and post-migration dumps restored.'
