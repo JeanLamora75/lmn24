@@ -106,6 +106,9 @@ jobs:
         run: node scripts/tv-guide-security-isolated.cjs
       - name: Audit privileges after migration using PostgreSQL catalog
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-audit-privileges.sql
+      - name: Assert PUBLIC EXECUTE revoked from new TV trigger functions
+        run: |
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal -Atc "SELECT CASE WHEN EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace CROSS JOIN LATERAL aclexplode(COALESCE(p.proacl,acldefault('f',p.proowner))) acl WHERE n.nspname='public' AND p.proname IN ('tv_assert_current_published','tv_assert_current_writer_lease','tv_protect_published_revision','tv_protect_published_airings') AND acl.grantee=0 AND acl.privilege_type='EXECUTE') THEN 'PRIVILEGE_FAIL' ELSE 'TV_FUNCTION_PRIVILEGE_PASS' END;" | grep -x TV_FUNCTION_PRIVILEGE_PASS
       - name: Back up modified rehearsal and restore both snapshots
         run: |
           docker exec ${{ job.services.postgres.id }} pg_dump -U postgres -d tv_guide_rehearsal -Fc -f /tmp/tv_after.dump
