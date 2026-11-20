@@ -25,6 +25,67 @@ BEGIN
   IF n NOT IN (0,19) THEN
     RAISE EXCEPTION 'TV candidate aborted: partial TV schema (% tables)', n;
   END IF;
+  -- SCRUM-114: count alone is insufficient: fail closed on incomplete
+  -- or structurally drifted TV schemas BEFORE any CREATE OR REPLACE.
+  IF n=19 THEN
+    IF EXISTS (
+      SELECT expected.name FROM unnest(ARRAY[
+        'tv_country', 'tv_channel', 'tv_channel_country', 'tv_channel_language', 'tv_channel_variant', 'tv_variant_country', 'tv_source', 'tv_source_country', 'tv_channel_external_id', 'tv_channel_description', 'tv_programme', 'tv_import_run', 'tv_import_scope', 'tv_import_event', 'tv_schedule_revision', 'tv_airing', 'tv_schedule_current', 'tv_translation_provider', 'tv_translation_attempt'
+      ]::text[]) AS expected(name)
+      WHERE to_regclass('public.' || expected.name) IS NULL
+    ) THEN
+      RAISE EXCEPTION 'TV candidate aborted: expected TV table name missing';
+    END IF;
+    IF EXISTS (
+      SELECT expected.name FROM unnest(ARRAY[
+        'tv_country_timezone_not_blank', 'tv_channel_name_nonempty', 'tv_channel_country_pair_unique', 'tv_channel_country_id_channel_unique', 'tv_channel_country_number_positive', 'tv_channel_country_active_number', 'tv_channel_language_format', 'tv_variant_channel_code', 'tv_variant_id_channel_unique', 'tv_variant_timezone_nonempty', 'tv_variant_country_variant_fk', 'tv_variant_country_association_fk', 'tv_source_format', 'tv_source_rights', 'tv_source_priority_positive', 'tv_external_source_id', 'tv_external_variant_channel_fk', 'tv_external_status', 'tv_external_verified_target', 'tv_external_variant_needs_channel', 'tv_description_origin', 'tv_description_nonempty', 'tv_programme_title_nonempty', 'tv_programme_season_positive', 'tv_programme_episode_positive', 'tv_import_days', 'tv_import_trigger', 'tv_import_status', 'tv_scope_status', 'tv_scope_attempts', 'tv_import_event_level', 'tv_revision_status', 'tv_revision_published_timestamp', 'tv_revision_tuple', 'tv_airing_span', 'tv_airing_revision_fp', 'tv_current_revision_unique_tuple', 'tv_current_revision_scope_fk', 'tv_provider_selected_approved', 'tv_description_provider_fk', 'tv_translation_attempt_status'
+      ]::text[]) AS expected(name)
+      WHERE NOT EXISTS (
+        SELECT 1 FROM pg_constraint co
+        JOIN pg_class c ON c.oid=co.conrelid
+        JOIN pg_namespace ns ON ns.oid=c.relnamespace
+        WHERE ns.nspname='public' AND c.relname LIKE 'tv_%'
+          AND co.conname=expected.name
+      )
+    ) THEN
+      RAISE EXCEPTION 'TV candidate aborted: TV constraint drift detected';
+    END IF;
+    IF EXISTS (
+      SELECT 1 FROM (VALUES
+        ('tv_country','reference_timezone','character varying(100)'),
+        ('tv_channel_country','country_id','uuid'),
+        ('tv_schedule_revision','status','character varying(16)'),
+        ('tv_schedule_current','revision_id','uuid'),
+        ('tv_airing','starts_at','timestamp with time zone'),
+        ('tv_source','rights_status','character varying(20)')
+      ) AS required(table_name,column_name,data_type)
+      WHERE NOT EXISTS (
+        SELECT 1 FROM pg_attribute a
+        JOIN pg_class c ON c.oid=a.attrelid
+        JOIN pg_namespace ns ON ns.oid=c.relnamespace
+        WHERE ns.nspname='public' AND c.relname=required.table_name
+          AND a.attname=required.column_name AND a.attnum>0
+          AND NOT a.attisdropped AND format_type(a.atttypid,a.atttypmod)=required.data_type
+      )
+    ) THEN
+      RAISE EXCEPTION 'TV candidate aborted: TV column type drift detected';
+    END IF;
+    IF EXISTS (
+      SELECT t.name FROM unnest(ARRAY[
+        'trg_tv_current_published','trg_tv_revision_immutable',
+        'trg_tv_published_airing_write','trg_tv_current_writer_lease'
+      ]::text[]) AS t(name)
+      WHERE NOT EXISTS (
+        SELECT 1 FROM pg_trigger tr
+        JOIN pg_class c ON c.oid=tr.tgrelid
+        JOIN pg_namespace ns ON ns.oid=c.relnamespace
+        WHERE ns.nspname='public' AND c.relname LIKE 'tv_%'
+          AND tr.tgname=t.name AND NOT tr.tgisinternal AND tr.tgenabled <> 'D'
+      )
+    ) THEN
+      RAISE EXCEPTION 'TV candidate aborted: required TV trigger missing or disabled';
+    END IF;
+  END IF;
 END $preflight$;
 
 CREATE TABLE IF NOT EXISTS public.tv_country (
