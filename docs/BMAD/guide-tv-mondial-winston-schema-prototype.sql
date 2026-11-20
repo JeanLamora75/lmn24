@@ -226,6 +226,7 @@ CREATE TABLE IF NOT EXISTS public.tv_schedule_current (
   local_date DATE NOT NULL,
   revision_id UUID NOT NULL UNIQUE,
   PRIMARY KEY(variant_id,local_date),
+  CONSTRAINT tv_current_revision_unique_tuple UNIQUE(revision_id,variant_id,local_date),
   CONSTRAINT tv_current_revision_scope_fk FOREIGN KEY (revision_id,variant_id,local_date)
   REFERENCES public.tv_schedule_revision(id,variant_id,local_date) ON DELETE RESTRICT
 );
