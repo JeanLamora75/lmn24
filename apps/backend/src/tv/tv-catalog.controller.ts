@@ -31,6 +31,20 @@ const associationUpdate = z.object({
   (p) => !p.isActive || p.manualNumber !== null || p.officialNumber !== null || p.assignedNumber !== null,
   "Active channel requires a national number",
 );
+const profileUpdate = z.object({
+  name: safeName,
+  logoUrl: z.string().max(2048).nullable(),
+  websiteUrl: z.string().max(2048).nullable(),
+  xUrl: z.string().max(2048).nullable(),
+  facebookUrl: z.string().max(2048).nullable(),
+  instagramUrl: z.string().max(2048).nullable(),
+  youtubeUrl: z.string().max(2048).nullable(),
+  officialLiveUrl: z.string().max(2048).nullable(),
+}).strict();
+const broadcastLanguages = z.object({
+  languages: z.array(z.string().regex(/^[a-z]{2}(-[A-Za-z0-9]{2,8})*$/)).max(50),
+}).strict();
+
 const variantCreate = z.object({
   channelId: uuid, channelCountryId: uuid,
   code: z.string().trim().min(1).max(64).regex(/^[A-Za-z0-9_-]+$/),
@@ -116,6 +130,37 @@ export class TvCatalogController {
     const parsed = associationUpdate.safeParse(body);
     if (!uuid.safeParse(id).success || !parsed.success) throw new BadRequestException("Invalid TV association");
     return this.catalog.updateAssociation(id, parsed.data);
+  }
+
+  @Post("associations/:id/assign-number")
+  @Header("Cache-Control", "no-store")
+  async assignNextNumber(@Req() request: RequestLike, @Param("id") id: string) {
+    await this.assertAdmin(request);
+    if (!uuid.safeParse(id).success) throw new BadRequestException("Invalid TV association");
+    return this.catalog.assignNextFreeNumber(id);
+  }
+
+  @Patch("channels/:id/profile")
+  @Header("Cache-Control", "no-store")
+  async updateProfile(@Req() request: RequestLike, @Param("id") id: string, @Body() body: unknown) {
+    await this.assertAdmin(request);
+    const parsed = profileUpdate.safeParse(body);
+    if (!uuid.safeParse(id).success || !parsed.success) throw new BadRequestException("Invalid TV channel profile");
+    try {
+      for (const field of ["logoUrl","websiteUrl","xUrl","facebookUrl","instagramUrl","youtubeUrl","officialLiveUrl"] as const) {
+        assertOfficialUrl(parsed.data[field]);
+      }
+    } catch { throw new BadRequestException("Invalid TV official link"); }
+    return this.catalog.updateChannelProfile(id, parsed.data);
+  }
+
+  @Put("channels/:id/languages")
+  @Header("Cache-Control", "no-store")
+  async replaceLanguages(@Req() request: RequestLike, @Param("id") id: string, @Body() body: unknown) {
+    await this.assertAdmin(request);
+    const parsed = broadcastLanguages.safeParse(body);
+    if (!uuid.safeParse(id).success || !parsed.success) throw new BadRequestException("Invalid broadcast languages");
+    return this.catalog.replaceBroadcastLanguages(id, parsed.data.languages);
   }
 
   @Post("variants")
