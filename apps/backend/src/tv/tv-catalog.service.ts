@@ -162,4 +162,94 @@ export class TvCatalogService {
       return { variantId };
     });
   }
+
+  /** Deterministic smallest available number. Transactions serialize automatic
+   * allocations; the unique expression index still protects manual races.
+   */
+  async assignNextFreeNumber(associationId: string) {
+    await this.requireTvTables();
+    try {
+      return await this.database.prisma.$transaction(async (tx) => {
+        await tx.$queryRaw`SELECT pg_advisory_xact_lock(241024, 198)`;
+        const associations = await tx.$queryRaw<Array<{
+          id: string; countryId: string; effectiveNumber: number | null;
+        }>>`
+          SELECT id, country_id AS "countryId",
+                 COALESCE(manual_number,official_number,assigned_number) AS "effectiveNumber"
+          FROM public.tv_channel_country WHERE id=${associationId}::uuid FOR UPDATE
+        `;
+        const association = associations[0];
+        if (!association) throw new NotFoundException("TV association not found");
+        if (association.effectiveNumber !== null) return {
+          id: association.id, effectiveNumber: association.effectiveNumber, unchanged: true,
+        };
+        const numbers = await tx.$queryRaw<Array<{ n: number }>>`
+          SELECT candidate.n FROM generate_series(1, 10000) AS candidate(n)
+          WHERE NOT EXISTS (
+            SELECT 1 FROM public.tv_channel_country cc
+            WHERE cc.country_id=${association.countryId}::uuid
+              AND COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)=candidate.n
+          )
+          ORDER BY candidate.n LIMIT 1
+        `;
+        const number = numbers[0]?.n;
+        if (number === undefined) throw new ConflictException("No national TV channel number available");
+        await tx.$executeRaw`
+          UPDATE public.tv_channel_country SET assigned_number=${number},updated_at=now()
+          WHERE id=${associationId}::uuid
+        `;
+        return { id: associationId, effectiveNumber: number, unchanged: false };
+      });
+    } catch (error) {
+      if (error instanceof NotFoundException || error instanceof ConflictException) throw error;
+      throw new ConflictException("Channel number assignment conflicted; retry");
+    }
+  }
+
+  async updateChannelProfile(id: string, profile: {
+    name: string; logoUrl: string | null; websiteUrl: string | null;
+    xUrl: string | null; facebookUrl: string | null;
+    instagramUrl: string | null; youtubeUrl: string | null;
+    officialLiveUrl: string | null;
+  }) {
+    await this.requireTvTables();
+    const logo = assertOfficialUrl(profile.logoUrl);
+    const site = assertOfficialUrl(profile.websiteUrl);
+    const x = assertOfficialUrl(profile.xUrl);
+    const facebook = assertOfficialUrl(profile.facebookUrl);
+    const instagram = assertOfficialUrl(profile.instagramUrl);
+    const youtube = assertOfficialUrl(profile.youtubeUrl);
+    const live = assertOfficialUrl(profile.officialLiveUrl);
+    const rows = await this.database.prisma.$queryRaw<Array<{ id: string }>>`
+      UPDATE public.tv_channel SET name=${profile.name},
+        logo_url=${logo}, website_url=${site}, x_url=${x},
+        facebook_url=${facebook},instagram_url=${instagram},
+        youtube_url=${youtube},official_live_url=${live},updated_at=now()
+      WHERE id=${id}::uuid RETURNING id
+    `;
+    if (!rows.length) throw new NotFoundException("TV channel not found");
+    return rows[0];
+  }
+
+  async replaceBroadcastLanguages(channelId: string, languages: string[]) {
+    await this.requireTvTables();
+    const unique = [...new Set(languages.map((s) => s.trim().toLowerCase()))];
+    return this.database.prisma.$transaction(async (tx) => {
+      const channels = await tx.$queryRaw<Array<{ id: string }>>`
+        SELECT id FROM public.tv_channel WHERE id=${channelId}::uuid FOR UPDATE
+      `;
+      if (!channels.length) throw new NotFoundException("TV channel not found");
+      await tx.$executeRaw`
+        DELETE FROM public.tv_channel_language WHERE channel_id=${channelId}::uuid
+      `;
+      for (const language of unique) {
+        await tx.$executeRaw`
+          INSERT INTO public.tv_channel_language(channel_id,language_code)
+          VALUES(${channelId}::uuid,${language})
+        `;
+      }
+      return { channelId, languages: unique };
+    });
+  }
+
 }
