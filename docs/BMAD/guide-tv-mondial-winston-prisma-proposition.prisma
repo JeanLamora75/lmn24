@@ -1,0 +1,285 @@
+// LMN24 Guide TV — BMAD Winston v0.6 — Prisma schema FRAGMENT for design review.
+// NOT to run Prisma migrate / generate against a production database.
+// To integrate later: append these models to packages/database/schema.prisma,
+// and add this inverse field to EXISTING Country model:
+//     tvCountry TvCountry?
+// SQL-only constraints/triggers, CHECKs and expression/partial indexes are
+// defined in the accompanying prototype SQL, not expressible fully in Prisma.
+// Deliberately no datasource/generator, because this is a fragment, not a
+// standalone project schema.
+// See docs/BMAD/guide-tv-mondial-winston-schema-prototype.sql.
+
+model TvCountry {
+  countryId String @id @map("country_id") @db.Uuid
+  isActive Boolean @default(false) @map("is_active")
+  referenceTimezone String @map("reference_timezone") @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  country Country @relation(fields:[countryId], references:[id], onDelete:Restrict)
+  channelCountries TvChannelCountry[]
+  sources TvSourceCountry[]
+  scopes TvImportScope[]
+  @@map("tv_country")
+}
+
+model TvChannel {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug String @unique @db.VarChar(255)
+  name String @db.VarChar(255)
+  logoUrl String? @map("logo_url") @db.Text
+  websiteUrl String? @map("website_url") @db.Text
+  xUrl String? @map("x_url") @db.Text
+  facebookUrl String? @map("facebook_url") @db.Text
+  instagramUrl String? @map("instagram_url") @db.Text
+  youtubeUrl String? @map("youtube_url") @db.Text
+  officialLiveUrl String? @map("official_live_url") @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  countries TvChannelCountry[]
+  languages TvChannelLanguage[]
+  variants TvChannelVariant[]
+  externalIds TvChannelExternalId[]
+  descriptions TvChannelDescription[]
+  translationAttempts TvTranslationAttempt[]
+  @@map("tv_channel")
+}
+
+model TvChannelCountry {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  channelId String @map("channel_id") @db.Uuid
+  countryId String @map("country_id") @db.Uuid
+  isActive Boolean @default(false) @map("is_active")
+  needsReview Boolean @default(true) @map("needs_review")
+  officialNumber Int? @map("official_number")
+  manualNumber Int? @map("manual_number")
+  assignedNumber Int? @map("assigned_number")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  channel TvChannel @relation(fields:[channelId],references:[id],onDelete:Restrict)
+  country TvCountry @relation(fields:[countryId],references:[countryId],onDelete:Restrict)
+  variants TvVariantCountry[]
+  @@unique([channelId,countryId],map:"tv_channel_country_pair_unique")
+  @@unique([id,channelId],map:"tv_channel_country_id_channel_unique")
+  // SQL-only effective-number unique expression index; NO fake @@unique.
+  @@map("tv_channel_country")
+}
+
+model TvChannelLanguage {
+  channelId String @map("channel_id") @db.Uuid
+  languageCode String @map("language_code") @db.VarChar(16)
+  channel TvChannel @relation(fields:[channelId],references:[id],onDelete:Cascade)
+  @@id([channelId,languageCode])
+  @@map("tv_channel_language")
+}
+
+model TvChannelVariant {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  channelId String @map("channel_id") @db.Uuid
+  code String @db.VarChar(64)
+  name String @db.VarChar(255)
+  timezone String @db.VarChar(100)
+  isDefault Boolean @default(false) @map("is_default")
+  channel TvChannel @relation(fields:[channelId],references:[id],onDelete:Restrict)
+  countries TvVariantCountry[]
+  externalIds TvChannelExternalId[]
+  revisions TvScheduleRevision[]
+  currentSchedules TvScheduleCurrent[]
+  @@unique([channelId,code],map:"tv_variant_channel_code")
+  @@unique([id,channelId],map:"tv_variant_id_channel_unique")
+  // SQL-only partial unique index: one default per channel.
+  @@map("tv_channel_variant")
+}
+
+model TvVariantCountry {
+  variantId String @map("variant_id") @db.Uuid
+  channelCountryId String @map("channel_country_id") @db.Uuid
+  channelId String @map("channel_id") @db.Uuid
+  variant TvChannelVariant @relation(fields:[variantId,channelId],references:[id,channelId],onDelete:Cascade,map:"tv_variant_country_variant_fk")
+  channelCountry TvChannelCountry @relation(fields:[channelCountryId,channelId],references:[id,channelId],onDelete:Cascade,map:"tv_variant_country_association_fk")
+  @@id([variantId,channelCountryId])
+  @@map("tv_variant_country")
+}
+
+model TvSource {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String @db.VarChar(255)
+  sourceUrl String @map("source_url") @db.Text
+  format String @db.VarChar(16)
+  isActive Boolean @default(false) @map("is_active")
+  rightsStatus String @default("UNREVIEWED") @map("rights_status") @db.VarChar(20)
+  rightsReference String? @map("rights_reference") @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  countries TvSourceCountry[]
+  externalIds TvChannelExternalId[]
+  airings TvAiring[]
+  scopes TvImportScope[]
+  @@map("tv_source")
+}
+
+model TvSourceCountry {
+  sourceId String @map("source_id") @db.Uuid
+  countryId String @map("country_id") @db.Uuid
+  priority Int
+  isActive Boolean @default(false) @map("is_active")
+  source TvSource @relation(fields:[sourceId],references:[id],onDelete:Cascade)
+  country TvCountry @relation(fields:[countryId],references:[countryId],onDelete:Restrict)
+  @@id([sourceId,countryId])
+  @@index([countryId,isActive,priority],map:"idx_tv_source_country_priority")
+  @@map("tv_source_country")
+}
+
+model TvChannelExternalId {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceId String @map("source_id") @db.Uuid
+  externalId String @map("external_id") @db.Text
+  channelId String? @map("channel_id") @db.Uuid
+  variantId String? @map("variant_id") @db.Uuid
+  mappingStatus String @default("PENDING_REVIEW") @map("mapping_status") @db.VarChar(20)
+  source TvSource @relation(fields:[sourceId],references:[id],onDelete:Cascade)
+  channel TvChannel? @relation(fields:[channelId],references:[id],onDelete:Restrict)
+  variant TvChannelVariant? @relation(fields:[variantId,channelId],references:[id,channelId],onDelete:Restrict,map:"tv_external_variant_channel_fk")
+  @@unique([sourceId,externalId],map:"tv_external_source_id")
+  @@map("tv_channel_external_id")
+}
+
+model TvChannelDescription {
+  channelId String @map("channel_id") @db.Uuid
+  languageCode String @map("language_code") @db.VarChar(16)
+  content String @db.Text
+  origin String @db.VarChar(16)
+  providerId String? @map("provider_id") @db.Uuid
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  channel TvChannel @relation(fields:[channelId],references:[id],onDelete:Cascade)
+  provider TvTranslationProvider? @relation(fields:[providerId],references:[id],onDelete:SetNull,map:"tv_description_provider_fk")
+  @@id([channelId,languageCode])
+  @@map("tv_channel_description")
+}
+
+model TvProgramme {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title String @db.Text
+  synopsis String? @db.Text
+  category String? @db.VarChar(120)
+  imageUrl String? @map("image_url") @db.Text
+  season Int?
+  episode Int?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  airings TvAiring[]
+  @@map("tv_programme")
+}
+
+model TvImportRun {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  trigger String @db.VarChar(12)
+  requestedDays Int @map("requested_days")
+  status String @default("QUEUED") @db.VarChar(16)
+  startedAt DateTime? @map("started_at") @db.Timestamptz(6)
+  finishedAt DateTime? @map("finished_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  scopes TvImportScope[]
+  events TvImportEvent[]
+  revisions TvScheduleRevision[]
+  @@map("tv_import_run")
+}
+
+model TvImportScope {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  runId String @map("run_id") @db.Uuid
+  countryId String @map("country_id") @db.Uuid
+  sourceId String? @map("source_id") @db.Uuid
+  status String @default("QUEUED") @db.VarChar(16)
+  attempts Int @default(0)
+  errorMessage String? @map("error_message") @db.Text
+  run TvImportRun @relation(fields:[runId],references:[id],onDelete:Cascade)
+  country TvCountry @relation(fields:[countryId],references:[countryId],onDelete:Restrict)
+  source TvSource? @relation(fields:[sourceId],references:[id],onDelete:SetNull)
+  events TvImportEvent[]
+  @@index([runId,status],map:"idx_tv_scope_run_status")
+  @@map("tv_import_scope")
+}
+
+model TvImportEvent {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  runId String @map("run_id") @db.Uuid
+  scopeId String? @map("scope_id") @db.Uuid
+  occurredAt DateTime @default(now()) @map("occurred_at") @db.Timestamptz(6)
+  level String @db.VarChar(8)
+  eventType String @map("event_type") @db.VarChar(64)
+  message String @db.Text
+  run TvImportRun @relation(fields:[runId],references:[id],onDelete:Cascade)
+  scope TvImportScope? @relation(fields:[scopeId],references:[id],onDelete:SetNull)
+  @@index([occurredAt],map:"idx_tv_import_event_time")
+  @@map("tv_import_event")
+}
+
+model TvScheduleRevision {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  variantId String @map("variant_id") @db.Uuid
+  localDate DateTime @map("local_date") @db.Date
+  runId String? @map("run_id") @db.Uuid
+  status String @default("STAGING") @db.VarChar(16)
+  publishedAt DateTime? @map("published_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  variant TvChannelVariant @relation(fields:[variantId],references:[id],onDelete:Restrict)
+  run TvImportRun? @relation(fields:[runId],references:[id],onDelete:SetNull)
+  airings TvAiring[]
+  current TvScheduleCurrent?
+  @@unique([id,variantId,localDate],map:"tv_revision_tuple")
+  @@index([variantId,localDate],map:"idx_tv_revision_variant_date")
+  @@map("tv_schedule_revision")
+}
+
+model TvAiring {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  revisionId String @map("revision_id") @db.Uuid
+  programmeId String @map("programme_id") @db.Uuid
+  sourceId String @map("source_id") @db.Uuid
+  startsAt DateTime @map("starts_at") @db.Timestamptz(6)
+  endsAt DateTime @map("ends_at") @db.Timestamptz(6)
+  fingerprint String @db.VarChar(128)
+  revision TvScheduleRevision @relation(fields:[revisionId],references:[id],onDelete:Cascade)
+  programme TvProgramme @relation(fields:[programmeId],references:[id],onDelete:Restrict)
+  source TvSource @relation(fields:[sourceId],references:[id],onDelete:Restrict)
+  @@unique([revisionId,fingerprint],map:"tv_airing_revision_fp")
+  @@index([revisionId,startsAt],map:"idx_tv_airing_revision_start")
+  @@map("tv_airing")
+}
+
+model TvScheduleCurrent {
+  variantId String @map("variant_id") @db.Uuid
+  localDate DateTime @map("local_date") @db.Date
+  revisionId String @unique @map("revision_id") @db.Uuid
+  variant TvChannelVariant @relation(fields:[variantId],references:[id],onDelete:Restrict)
+  revision TvScheduleRevision @relation(fields:[revisionId,variantId,localDate],references:[id,variantId,localDate],onDelete:Restrict,map:"tv_current_revision_scope_fk")
+  @@id([variantId,localDate])
+  @@map("tv_schedule_current")
+}
+
+model TvTranslationProvider {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  providerType String @map("provider_type") @db.VarChar(50)
+  endpoint String @db.Text
+  credentialReference String? @map("credential_reference") @db.Text
+  contactEmail String? @map("contact_email") @db.Text
+  isActive Boolean @default(false) @map("is_active")
+  isSelected Boolean @default(false) @map("is_selected")
+  freeApprovedAt DateTime? @map("free_approved_at") @db.Timestamptz(6)
+  rightsReviewedAt DateTime? @map("rights_reviewed_at") @db.Timestamptz(6)
+  descriptions TvChannelDescription[]
+  attempts TvTranslationAttempt[]
+  // SQL-only partial unique constraint: one selected provider.
+  @@map("tv_translation_provider")
+}
+
+model TvTranslationAttempt {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  channelId String @map("channel_id") @db.Uuid
+  providerId String? @map("provider_id") @db.Uuid
+  targetLanguage String @map("target_language") @db.VarChar(16)
+  status String @db.VarChar(16)
+  occurredAt DateTime @default(now()) @map("occurred_at") @db.Timestamptz(6)
+  channel TvChannel @relation(fields:[channelId],references:[id],onDelete:Cascade)
+  provider TvTranslationProvider? @relation(fields:[providerId],references:[id],onDelete:SetNull)
+  @@index([occurredAt],map:"idx_tv_translation_attempt_time")
+  @@map("tv_translation_attempt")
+}
