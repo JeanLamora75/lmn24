@@ -298,10 +298,31 @@ CREATE TRIGGER trg_tv_published_airing_write BEFORE INSERT OR UPDATE OR DELETE
 ON public.tv_airing FOR EACH ROW
 EXECUTE FUNCTION public.tv_protect_published_airings();
 
--- IMPORTANT: these triggers enforce status/immutability but NOT parser
--- owner fencing; application writes MUST use fencedParserWrite in the SAME
--- DB transaction that changes tv_schedule_current. Before runnable migration,
--- decide whether to enforce fencing in the trigger too (and how to pass owner).
+-- Every current-pointer change MUST hold the original writer lease.
+-- The actor token must be set with SET LOCAL app.tv_writer_owner within
+-- the SAME PostgreSQL transaction, never from client-controlled HTTP input.
+-- The existing assert_parser_write_epoch() checks the globally locked
+-- parser session token and transaction-fences superseded owners.
+CREATE OR REPLACE FUNCTION public.tv_assert_current_writer_lease()
+RETURNS trigger LANGUAGE plpgsql AS $tv_owner$
+DECLARE token_text TEXT;
+BEGIN
+  token_text := current_setting('app.tv_writer_owner', true);
+  IF token_text IS NULL OR token_text = '' THEN
+    RAISE EXCEPTION 'TV current pointer requires parser writer lease'
+      USING ERRCODE='42501';
+  END IF;
+  PERFORM public.assert_parser_write_epoch(token_text::uuid);
+  IF TG_OP='DELETE' THEN RETURN OLD; END IF;
+  RETURN NEW;
+END $tv_owner$;
+DROP TRIGGER IF EXISTS trg_tv_current_writer_lease ON public.tv_schedule_current;
+CREATE TRIGGER trg_tv_current_writer_lease BEFORE INSERT OR UPDATE OR DELETE
+ON public.tv_schedule_current FOR EACH ROW
+EXECUTE FUNCTION public.tv_assert_current_writer_lease();
+-- Required sequencing: existing parser_write_epoch migration must be
+-- present BEFORE creating this trigger. No direct writes to pointer
+-- from frontend or ordinary backend DB credentials.
 
 CREATE TABLE IF NOT EXISTS public.tv_translation_provider (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
