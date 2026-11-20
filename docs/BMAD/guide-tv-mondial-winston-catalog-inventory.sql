@@ -27,7 +27,7 @@ SELECT 'MIGRATION_LEDGER' AS section,
        CASE WHEN to_regclass('public._prisma_migrations') IS NULL
          THEN 'absent' ELSE 'present — inspect authorized migration history separately' END AS detail;
 SELECT 'FUNCTION_EXECUTE' AS section, p.proname AS name,
-       has_function_privilege('public',p.oid,'EXECUTE')::text AS detail
+       EXISTS (SELECT 1 FROM aclexplode(COALESCE(p.proacl,acldefault('f',p.proowner))) acl WHERE acl.grantee=0 AND acl.privilege_type='EXECUTE')::text AS detail
 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
 WHERE n.nspname='public' AND p.proname IN
 ('assert_parser_write_epoch','tv_assert_current_writer_lease',
