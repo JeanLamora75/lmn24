@@ -18,6 +18,7 @@ import { VideoFeedsModule } from "./video-feeds/video-feeds.module";
 import { VideosModule } from "./videos/videos.module";
 import { WeatherCitiesModule } from "./weather-cities/weather-cities.module";
 import { PublicWeatherModule } from "./weather/public-weather.module";
+import { TvCatalogModule } from "./tv/tv-catalog.module";
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { PublicWeatherModule } from "./weather/public-weather.module";
     VideosModule,
     WeatherCitiesModule,
     PublicWeatherModule,
+    TvCatalogModule,
   ],
   controllers: [HealthController],
 })
