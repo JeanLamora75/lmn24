@@ -53,6 +53,8 @@ model TvChannelCountry {
   officialNumber Int? @map("official_number")
   manualNumber Int? @map("manual_number")
   assignedNumber Int? @map("assigned_number")
+  // SQL candidate enforces the composite FK (default_variant_id,id) to tv_variant_country.
+  defaultVariantId String? @map("default_variant_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
   channel TvChannel @relation(fields:[channelId],references:[id],onDelete:Restrict)
