@@ -272,15 +272,23 @@ RETURNS trigger LANGUAGE plpgsql AS $tv_airing_protect$
 BEGIN
   -- Check BOTH old and new revisions: an UPDATE could otherwise move an
   -- airing out of, or into, a published revision.
-  IF (TG_OP <> 'INSERT' AND EXISTS (
-    SELECT 1 FROM public.tv_schedule_revision
-    WHERE id=OLD.revision_id AND status='PUBLISHED'
-  )) OR (TG_OP <> 'DELETE' AND EXISTS (
-    SELECT 1 FROM public.tv_schedule_revision
-    WHERE id=NEW.revision_id AND status='PUBLISHED'
-  )) THEN
-    RAISE EXCEPTION 'TV published airings are immutable'
-      USING ERRCODE='23514';
+  IF TG_OP IN ('UPDATE','DELETE') THEN
+    IF EXISTS (
+      SELECT 1 FROM public.tv_schedule_revision
+      WHERE id=OLD.revision_id AND status='PUBLISHED'
+    ) THEN
+      RAISE EXCEPTION 'TV published airings are immutable'
+        USING ERRCODE='23514';
+    END IF;
+  END IF;
+  IF TG_OP IN ('INSERT','UPDATE') THEN
+    IF EXISTS (
+      SELECT 1 FROM public.tv_schedule_revision
+      WHERE id=NEW.revision_id AND status='PUBLISHED'
+    ) THEN
+      RAISE EXCEPTION 'TV published airings are immutable'
+        USING ERRCODE='23514';
+    END IF;
   END IF;
   IF TG_OP='DELETE' THEN RETURN OLD; END IF;
   RETURN NEW;
