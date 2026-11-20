@@ -29,3 +29,17 @@ describe("SEO sitemap locale redirect regression",()=>{
     expect(matches("/api/admin/statistics")).toBe(false);
   });
 });
+
+describe("SCRUM-113 public TV proxy coverage", () => {
+  it("includes TV API prefixes excluded from generic locale middleware", () => {
+    expect(publicLocaleMatcher).toContain("/api/public/tv/:path*");
+    expect(publicLocaleMatcher).toContain("/api/tv/public/:path*");
+  });
+  it("matches localized TV pages at every supported language while leaving admin untouched", () => {
+    for (const locale of ["fr", "en", "de", "es", "pt", "it", "ru", "nl"]) {
+      expect(matches("/" + locale + "/tv")).toBe(true);
+      expect(matches("/" + locale + "/tv/search")).toBe(true);
+    }
+    expect(matches("/admin/tv")).toBe(false);
+  });
+});
