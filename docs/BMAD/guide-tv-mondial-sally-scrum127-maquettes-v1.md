@@ -85,3 +85,23 @@ Un fichier autonome `LMN24_GuideTV_Sally_SCRUM-127_prototype.html` a été cré�
 - La publication du Guide TV reste **strictement interdite** sans un GO distinct.
 
 **Prochain point :** faire valider la structure du prototype et produire les variantes détaillées des pages administration (modales et erreurs), puis tests vrais 320/390/768/1440 px et huit locales. SCRUM-127 reste ouverte.
+
+
+## 7. Validation du propriétaire et vérification navigateur — 20 novembre 2026
+
+**Décision utilisateur :** « Ok je valide le prototype, continuons ». Cela vaut **validation explicite de la structure globale du prototype HTML autonome**, en complément de l'approbation précédente de sa direction graphique (bleu/blanc, cartes horizontales et blocs filtres distincts). Cela **ne vaut ni approbation finale de chacun des sept formulaires administratifs, ni GO public, ni autorisation de migrer la base**.
+
+**Contrôles réellement exécutés sur le prototype hors ligne** avec Chromium headless + Playwright Python, HTML chargé depuis le fichier autonome via `page.set_content` (l'ouverture directe `file://` est bloquée par la politique du navigateur de test) :
+
+| Viewport | document.scrollWidth | fenêtre.innerWidth | Erreurs JS non interceptées | Résultat |
+|---|---:|---:|---|---|
+| 320 px | 320 | 320 | 0 | PASS structurel |
+| 390 px | 390 | 390 | 0 | PASS structurel |
+| 768 px | 768 | 768 | 0 | PASS structurel |
+| 1440 px | 1440 | 1440 | 0 | PASS structurel |
+
+Contrôles additionnels : présence des quatre onglets dans l'ordre `Chaînes / En ce moment / Ce soir / 2ème partie` ; présence des sept rubriques administration ; ouverture de la vue admin sans exception JS.
+
+**Limitations :** ce sont des contrôles du **prototype fictif autonome** et **non des tests E2E du frontend LMN24**. Aucun contrôle de contraste WCAG complet, parcours clavier/lecteur d'écran, régression sur les huit locales ni test de toutes les modales n'a été effectué. La recette de sécurité des vraies routes Next/Nest ne peut pas être déduite de ce résultat.
+
+**État SCRUM-127 :** validation de principe acquise, mais la story n'est pas complètement homologuée tant que les déclinaisons de formulaires, l'i18n complète et l'accessibilité n'ont pas été éprouvées. Un développement de la protection publique `SCRUM-113` peut être lancé **en parallèle**, sans considérer cette validation comme une permission de rendre le Guide TV public.
