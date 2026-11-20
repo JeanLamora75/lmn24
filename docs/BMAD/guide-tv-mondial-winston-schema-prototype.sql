@@ -1,5 +1,5 @@
--- LMN24 Guide TV — Winston — prototype SQL v0.5, 2026-11-20
--- STUDY ONLY. NOT an approved production migration. DO NOT execute against LMN24.
+-- LMN24 Guide TV — Winston — prototype SQL v0.6, 2026-11-20
+-- STUDY ONLY. NOT an approved production migration; constraints strengthened. DO NOT execute against LMN24.
 -- Review alongside docs/BMAD/guide-tv-mondial-winston-schema-recette.md
 -- Additive design prototype. Needs matching Prisma models, bootstrap alignment,
 -- isolated PostgreSQL checks, schema inventory, backup and authorization before application.
@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS public.tv_channel_country (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   CONSTRAINT tv_channel_country_pair_unique UNIQUE(channel_id,country_id),
+  CONSTRAINT tv_channel_country_id_channel_unique UNIQUE(id,channel_id),
   CONSTRAINT tv_channel_country_number_positive CHECK (
     (official_number IS NULL OR official_number > 0)
     AND (manual_number IS NULL OR manual_number > 0)
@@ -71,6 +72,7 @@ CREATE TABLE IF NOT EXISTS public.tv_channel_variant (
   timezone VARCHAR(100) NOT NULL,
   is_default BOOLEAN NOT NULL DEFAULT FALSE,
   CONSTRAINT tv_variant_channel_code UNIQUE(channel_id,code),
+  CONSTRAINT tv_variant_id_channel_unique UNIQUE(id,channel_id),
   CONSTRAINT tv_variant_timezone_nonempty CHECK(length(trim(timezone)) > 0)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS uq_tv_variant_single_default
@@ -78,12 +80,17 @@ ON public.tv_channel_variant(channel_id) WHERE is_default;
 
 -- A variant can be offered in several countries, or only one.
 CREATE TABLE IF NOT EXISTS public.tv_variant_country (
-  variant_id UUID NOT NULL REFERENCES public.tv_channel_variant(id) ON DELETE CASCADE,
-  channel_country_id UUID NOT NULL REFERENCES public.tv_channel_country(id) ON DELETE CASCADE,
-  PRIMARY KEY(variant_id,channel_country_id)
+  variant_id UUID NOT NULL,
+  channel_country_id UUID NOT NULL,
+  channel_id UUID NOT NULL,
+  PRIMARY KEY(variant_id,channel_country_id),
+  CONSTRAINT tv_variant_country_variant_fk FOREIGN KEY(variant_id,channel_id)
+    REFERENCES public.tv_channel_variant(id,channel_id) ON DELETE CASCADE,
+  CONSTRAINT tv_variant_country_association_fk FOREIGN KEY(channel_country_id,channel_id)
+    REFERENCES public.tv_channel_country(id,channel_id) ON DELETE CASCADE
 );
--- Cross-table invariant 'same channel' must be checked in application and
--- in a future DEFERRABLE trigger prior to adoption of this prototype.
+-- Both composite FKs ensure that a variant and its country association
+-- belong to the SAME channel, even under direct SQL writes.
 
 CREATE TABLE IF NOT EXISTS public.tv_source (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -116,8 +123,11 @@ CREATE TABLE IF NOT EXISTS public.tv_channel_external_id (
   variant_id UUID REFERENCES public.tv_channel_variant(id) ON DELETE RESTRICT,
   mapping_status VARCHAR(20) NOT NULL DEFAULT 'PENDING_REVIEW',
   CONSTRAINT tv_external_source_id UNIQUE(source_id,external_id),
+  CONSTRAINT tv_external_variant_channel_fk FOREIGN KEY(variant_id,channel_id)
+    REFERENCES public.tv_channel_variant(id,channel_id) ON DELETE RESTRICT,
   CONSTRAINT tv_external_status CHECK(mapping_status IN ('PENDING_REVIEW','VERIFIED','REJECTED')),
-  CONSTRAINT tv_external_verified_target CHECK(mapping_status <> 'VERIFIED' OR channel_id IS NOT NULL)
+  CONSTRAINT tv_external_verified_target CHECK(mapping_status <> 'VERIFIED' OR channel_id IS NOT NULL),
+  CONSTRAINT tv_external_variant_needs_channel CHECK(variant_id IS NULL OR channel_id IS NOT NULL)
 );
 
 CREATE TABLE IF NOT EXISTS public.tv_channel_description (
@@ -219,8 +229,64 @@ CREATE TABLE IF NOT EXISTS public.tv_schedule_current (
   CONSTRAINT tv_current_revision_scope_fk FOREIGN KEY (revision_id,variant_id,local_date)
   REFERENCES public.tv_schedule_revision(id,variant_id,local_date) ON DELETE RESTRICT
 );
--- Current revisions must be PUBLISHED and checked under the existing parser
--- write-fencing lease in the SAME transaction; add dedicated trigger / write service.
+-- The composite FK verifies date and variant. Also protect publication
+-- status in the database (a CHECK cannot query another table).
+CREATE OR REPLACE FUNCTION public.tv_assert_current_published()
+RETURNS trigger LANGUAGE plpgsql AS $tv_gate$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM public.tv_schedule_revision r
+    WHERE r.id=NEW.revision_id AND r.variant_id=NEW.variant_id
+      AND r.local_date=NEW.local_date AND r.status='PUBLISHED'
+      AND r.published_at IS NOT NULL
+  ) THEN
+    RAISE EXCEPTION 'TV current pointer must reference PUBLISHED revision'
+      USING ERRCODE='23514';
+  END IF;
+  RETURN NEW;
+END $tv_gate$;
+DROP TRIGGER IF EXISTS trg_tv_current_published ON public.tv_schedule_current;
+CREATE TRIGGER trg_tv_current_published BEFORE INSERT OR UPDATE
+ON public.tv_schedule_current FOR EACH ROW
+EXECUTE FUNCTION public.tv_assert_current_published();
+
+-- Prevent a formerly published revision from being mutated or demoted.
+CREATE OR REPLACE FUNCTION public.tv_protect_published_revision()
+RETURNS trigger LANGUAGE plpgsql AS $tv_revision$
+BEGIN
+  IF OLD.status='PUBLISHED' THEN
+    RAISE EXCEPTION 'TV published revisions are immutable' USING ERRCODE='23514';
+  END IF;
+  IF NEW.status='PUBLISHED' AND NEW.published_at IS NULL THEN
+    RAISE EXCEPTION 'TV publication requires published_at' USING ERRCODE='23514';
+  END IF;
+  RETURN NEW;
+END $tv_revision$;
+DROP TRIGGER IF EXISTS trg_tv_revision_immutable ON public.tv_schedule_revision;
+CREATE TRIGGER trg_tv_revision_immutable BEFORE UPDATE
+ON public.tv_schedule_revision FOR EACH ROW
+EXECUTE FUNCTION public.tv_protect_published_revision();
+
+CREATE OR REPLACE FUNCTION public.tv_protect_published_airings()
+RETURNS trigger LANGUAGE plpgsql AS $tv_airing_protect$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM public.tv_schedule_revision
+    WHERE id=COALESCE(OLD.revision_id,NEW.revision_id) AND status='PUBLISHED'
+  ) THEN
+    RAISE EXCEPTION 'TV published airings are immutable' USING ERRCODE='23514';
+  END IF;
+  RETURN COALESCE(NEW,OLD);
+END $tv_airing_protect$;
+DROP TRIGGER IF EXISTS trg_tv_published_airing_update ON public.tv_airing;
+CREATE TRIGGER trg_tv_published_airing_update BEFORE UPDATE OR DELETE
+ON public.tv_airing FOR EACH ROW
+EXECUTE FUNCTION public.tv_protect_published_airings();
+
+-- IMPORTANT: these triggers enforce status/immutability but NOT parser
+-- owner fencing; application writes MUST use fencedParserWrite in the SAME
+-- DB transaction that changes tv_schedule_current. Before runnable migration,
+-- decide whether to enforce fencing in the trigger too (and how to pass owner).
 
 CREATE TABLE IF NOT EXISTS public.tv_translation_provider (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -238,9 +304,18 @@ CREATE TABLE IF NOT EXISTS public.tv_translation_provider (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS uq_tv_one_selected_provider
 ON public.tv_translation_provider(is_selected) WHERE is_selected;
-ALTER TABLE public.tv_channel_description
-  ADD CONSTRAINT tv_description_provider_fk
-  FOREIGN KEY(provider_id) REFERENCES public.tv_translation_provider(id) ON DELETE SET NULL;
+DO $constraint$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname='tv_description_provider_fk'
+      AND conrelid='public.tv_channel_description'::regclass
+  ) THEN
+    ALTER TABLE public.tv_channel_description
+      ADD CONSTRAINT tv_description_provider_fk FOREIGN KEY(provider_id)
+      REFERENCES public.tv_translation_provider(id) ON DELETE SET NULL;
+  END IF;
+END $constraint$;
 
 CREATE TABLE IF NOT EXISTS public.tv_translation_attempt (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
