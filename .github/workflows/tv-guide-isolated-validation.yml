@@ -11,6 +11,8 @@ on:
       - "scripts/tv-guide-concurrency-isolated.cjs"
       - "scripts/tv-guide-security-isolated.cjs"
       - "database/schema.sql"
+      - "docs/BMAD/guide-tv-mondial-winston-migration-candidate.sql"
+      - "docs/BMAD/guide-tv-mondial-winston-audit-privileges.sql"
   workflow_dispatch:
 
 permissions:
@@ -86,11 +88,13 @@ jobs:
           docker exec ${{ job.services.postgres.id }} pg_dump -U postgres -d tv_guide_rehearsal -Fc -f /tmp/tv_before.dump
           docker exec ${{ job.services.postgres.id }} pg_restore -l /tmp/tv_before.dump > /dev/null
           docker exec ${{ job.services.postgres.id }} sha256sum /tmp/tv_before.dump
+      - name: Audit catalog and default privileges before migration
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-audit-privileges.sql
       - name: Apply prototype against complete bootstrap and replay
         run: |
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < database/migrations/20261017_parser_write_fence.sql
-          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-schema-prototype.sql
-          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-schema-prototype.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-migration-candidate.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-migration-candidate.sql
           docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal -Atc "SELECT CASE WHEN (SELECT COUNT(*) FROM country WHERE slug='baseline-britain')=1 AND (SELECT COUNT(*) FROM category WHERE slug='baseline')=1 AND (SELECT COUNT(*) FROM source WHERE slug='baseline-news')=1 THEN 'BASELINE_OK' ELSE 'FAIL' END;" | grep -x BASELINE_OK
       - name: Test independent concurrent PostgreSQL sessions
         env:
@@ -100,6 +104,8 @@ jobs:
         env:
           TV_REHEARSAL_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/tv_guide_rehearsal
         run: node scripts/tv-guide-security-isolated.cjs
+      - name: Audit privileges after migration using PostgreSQL catalog
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-audit-privileges.sql
       - name: Back up modified rehearsal and restore both snapshots
         run: |
           docker exec ${{ job.services.postgres.id }} pg_dump -U postgres -d tv_guide_rehearsal -Fc -f /tmp/tv_after.dump
