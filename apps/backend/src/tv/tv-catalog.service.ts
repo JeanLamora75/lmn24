@@ -1,0 +1,165 @@
+import {
+  ConflictException, Injectable, NotFoundException, ServiceUnavailableException,
+} from "@nestjs/common";
+import { DatabaseService } from "../database/database.service";
+import { assertIanaZone, assertOfficialUrl } from "./tv-catalog-policy";
+
+/** This module intentionally uses bound SQL parameters: TV schema is still a candidate,
+ * and must NOT be appended to the canonical Prisma schema before SCRUM-114 approval.
+ * All mutations are ADMIN-only and gated in the controller.
+ */
+@Injectable()
+export class TvCatalogService {
+  constructor(private readonly database: DatabaseService) {}
+
+  private async requireTvTables(): Promise<void> {
+    const rows = await this.database.prisma.$queryRaw<Array<{ present: boolean }>>`
+      SELECT to_regclass('public.tv_country') IS NOT NULL
+         AND to_regclass('public.tv_channel_country') IS NOT NULL
+         AND to_regclass('public.tv_variant_country') IS NOT NULL AS present
+    `;
+    if (rows[0]?.present !== true) {
+      throw new ServiceUnavailableException("TV catalogue schema is not installed.");
+    }
+  }
+
+  async listCountries() {
+    await this.requireTvTables();
+    return this.database.prisma.$queryRaw`
+      SELECT tc.country_id AS "countryId", c.iso_code2 AS "isoCode2",
+             tc.is_active AS "isActive", tc.reference_timezone AS "referenceTimezone",
+             count(cc.id)::int AS "channelCount",
+             count(cc.id) FILTER (WHERE cc.is_active AND NOT cc.needs_review)::int AS "approvedChannelCount"
+      FROM public.tv_country tc
+      JOIN public.country c ON c.id=tc.country_id
+      LEFT JOIN public.tv_channel_country cc ON cc.country_id=tc.country_id
+      GROUP BY tc.country_id,c.iso_code2,tc.is_active,tc.reference_timezone
+      ORDER BY c.iso_code2,tc.country_id
+    `;
+  }
+
+  async upsertCountry(countryId: string, referenceTimezone: string, isActive: boolean) {
+    await this.requireTvTables();
+    const zone = assertIanaZone(referenceTimezone);
+    const existingCountry = await this.database.prisma.country.findUnique({
+      where: { id: countryId }, select: { id: true },
+    });
+    if (!existingCountry) throw new NotFoundException("Country does not exist");
+    const rows = await this.database.prisma.$queryRaw`
+      INSERT INTO public.tv_country(country_id,is_active,reference_timezone)
+      VALUES (${countryId}::uuid,${isActive},${zone})
+      ON CONFLICT(country_id) DO UPDATE SET
+        is_active=EXCLUDED.is_active,
+        reference_timezone=EXCLUDED.reference_timezone,
+        updated_at=now()
+      RETURNING country_id AS "countryId", is_active AS "isActive",
+                reference_timezone AS "referenceTimezone"
+    `;
+    return rows;
+  }
+
+  async listChannels(countryId?: string) {
+    await this.requireTvTables();
+    return this.database.prisma.$queryRaw`
+      SELECT cc.id, cc.country_id AS "countryId",
+             cc.channel_id AS "channelId", c.slug, c.name, c.logo_url AS "logoUrl",
+             cc.is_active AS "isActive", cc.needs_review AS "needsReview",
+             cc.official_number AS "officialNumber", cc.manual_number AS "manualNumber",
+             cc.assigned_number AS "assignedNumber",
+             COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) AS "effectiveNumber",
+             cc.default_variant_id AS "defaultVariantId"
+      FROM public.tv_channel_country cc JOIN public.tv_channel c ON c.id=cc.channel_id
+      WHERE (${countryId ?? null}::uuid IS NULL OR cc.country_id=${countryId ?? null}::uuid)
+      ORDER BY cc.country_id, COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) NULLS LAST,
+               c.name,cc.id
+      LIMIT 500
+    `;
+  }
+
+  async discoverChannel(payload: {
+    countryId: string; slug: string; name: string; websiteUrl?: string | null;
+    logoUrl?: string | null;
+  }) {
+    await this.requireTvTables();
+    const website = assertOfficialUrl(payload.websiteUrl ?? null);
+    const logo = assertOfficialUrl(payload.logoUrl ?? null);
+    return this.database.prisma.$transaction(async (tx) => {
+      // Reuse existing channel on a discovery from another country.
+      const channels = await tx.$queryRaw<Array<{ id: string }>>`
+        INSERT INTO public.tv_channel(slug,name,website_url,logo_url)
+        VALUES (${payload.slug},${payload.name},${website},${logo})
+        ON CONFLICT(slug) DO UPDATE SET slug=EXCLUDED.slug
+        RETURNING id
+      `;
+      const id = channels[0]?.id;
+      if (!id) throw new ConflictException("Unable to discover TV channel");
+      const countries = await tx.$queryRaw<Array<{ id: string }>>`
+        SELECT country_id AS id FROM public.tv_country
+        WHERE country_id=${payload.countryId}::uuid
+      `;
+      if (!countries.length) throw new NotFoundException("TV country must be configured first");
+      const links = await tx.$queryRaw`
+        INSERT INTO public.tv_channel_country(channel_id,country_id)
+        VALUES (${id}::uuid,${payload.countryId}::uuid)
+        ON CONFLICT(channel_id,country_id) DO NOTHING
+        RETURNING id,channel_id AS "channelId",country_id AS "countryId",
+                  is_active AS "isActive",needs_review AS "needsReview"
+      `;
+      // Imports must NEVER overwrite existing MANUAL fields, status or associations.
+      return { channelId: id, discoveredAssociations: links };
+    });
+  }
+
+  async updateAssociation(id: string, patch: {
+    isActive: boolean; needsReview: boolean;
+    manualNumber: number | null; officialNumber: number | null;
+    assignedNumber: number | null; defaultVariantId: string | null;
+  }) {
+    await this.requireTvTables();
+    // Unique index and composite default-variant FK are the final arbiter under concurrency.
+    try {
+      const rows = await this.database.prisma.$queryRaw<Array<{ id: string }>>`
+        UPDATE public.tv_channel_country SET
+          is_active=${patch.isActive}, needs_review=${patch.needsReview},
+          manual_number=${patch.manualNumber},official_number=${patch.officialNumber},
+          assigned_number=${patch.assignedNumber},default_variant_id=${patch.defaultVariantId}::uuid,
+          updated_at=now()
+        WHERE id=${id}::uuid
+        RETURNING id
+      `;
+      if (!rows.length) throw new NotFoundException("TV channel-country not found");
+      return rows[0];
+    } catch (err) {
+      const code = typeof err === "object" && err !== null && "code" in err
+        ? String(err.code) : "";
+      if (code === "P2010" || code === "23505" || code === "23503" || code === "23514") {
+        throw new ConflictException("TV association conflicts with number, variant or active-state constraints.");
+      }
+      throw err;
+    }
+  }
+
+  async addVariant(payload: {
+    channelId: string; channelCountryId: string;
+    code: string; name: string; timezone: string;
+  }) {
+    await this.requireTvTables();
+    const zone = assertIanaZone(payload.timezone);
+    return this.database.prisma.$transaction(async (tx) => {
+      const rows = await tx.$queryRaw<Array<{ id: string }>>`
+        INSERT INTO public.tv_channel_variant(channel_id,code,name,timezone)
+        VALUES (${payload.channelId}::uuid,${payload.code},${payload.name},${zone})
+        ON CONFLICT(channel_id,code) DO UPDATE SET name=EXCLUDED.name
+        RETURNING id
+      `;
+      const variantId = rows[0]?.id;
+      if (!variantId) throw new ConflictException("Variant could not be created");
+      await tx.$executeRaw`
+        INSERT INTO public.tv_variant_country(variant_id,channel_country_id,channel_id)
+        VALUES (${variantId}::uuid,${payload.channelCountryId}::uuid,${payload.channelId}::uuid)
+        ON CONFLICT(variant_id,channel_country_id) DO NOTHING
+      `;
+      return { variantId };
+    });
+  }
+}
