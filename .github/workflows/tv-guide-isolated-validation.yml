@@ -77,38 +77,38 @@ jobs:
 
       - name: Rehearse on LMN24 full bootstrap schema in separate throwaway database
         run: |
-          docker exec -i \${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c "CREATE DATABASE tv_guide_rehearsal;"
-          docker exec -i \${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < database/schema.sql
-          docker exec \${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal -c "INSERT INTO country(iso_code2,iso_code3,slug) VALUES ('GB','GBR','baseline-britain'); INSERT INTO language(iso_code2) VALUES ('fr'); INSERT INTO category(slug,display_order) VALUES ('baseline',999); INSERT INTO source(name,slug,website_url,country_id) SELECT 'Baseline news','baseline-news','https://example.invalid',id FROM country WHERE iso_code2='GB';"
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c "CREATE DATABASE tv_guide_rehearsal;"
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < database/schema.sql
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal -c "INSERT INTO country(iso_code2,iso_code3,slug) VALUES ('GB','GBR','baseline-britain'); INSERT INTO language(iso_code2) VALUES ('fr'); INSERT INTO category(slug,display_order) VALUES ('baseline',999); INSERT INTO source(name,slug,website_url,country_id) SELECT 'Baseline news','baseline-news','https://example.invalid',id FROM country WHERE iso_code2='GB';"
       - name: Save pre-migration backup
         run: |
-          docker exec \${{ job.services.postgres.id }} pg_dump -U postgres -d tv_guide_rehearsal -Fc -f /tmp/tv_before.dump
-          docker exec \${{ job.services.postgres.id }} pg_restore -l /tmp/tv_before.dump > /dev/null
-          docker exec \${{ job.services.postgres.id }} sha256sum /tmp/tv_before.dump
+          docker exec ${{ job.services.postgres.id }} pg_dump -U postgres -d tv_guide_rehearsal -Fc -f /tmp/tv_before.dump
+          docker exec ${{ job.services.postgres.id }} pg_restore -l /tmp/tv_before.dump > /dev/null
+          docker exec ${{ job.services.postgres.id }} sha256sum /tmp/tv_before.dump
       - name: Apply prototype against complete bootstrap and replay
         run: |
-          docker exec -i \${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < database/migrations/20261017_parser_write_fence.sql
-          docker exec -i \${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-schema-prototype.sql
-          docker exec -i \${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-schema-prototype.sql
-          docker exec \${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal -Atc "SELECT CASE WHEN (SELECT COUNT(*) FROM country WHERE slug='baseline-britain')=1 AND (SELECT COUNT(*) FROM category WHERE slug='baseline')=1 AND (SELECT COUNT(*) FROM source WHERE slug='baseline-news')=1 THEN 'BASELINE_OK' ELSE 'FAIL' END;" | grep -x BASELINE_OK
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < database/migrations/20261017_parser_write_fence.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-schema-prototype.sql
+          docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-schema-prototype.sql
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal -Atc "SELECT CASE WHEN (SELECT COUNT(*) FROM country WHERE slug='baseline-britain')=1 AND (SELECT COUNT(*) FROM category WHERE slug='baseline')=1 AND (SELECT COUNT(*) FROM source WHERE slug='baseline-news')=1 THEN 'BASELINE_OK' ELSE 'FAIL' END;" | grep -x BASELINE_OK
       - name: Test independent concurrent PostgreSQL sessions
         env:
           TV_REHEARSAL_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/tv_guide_rehearsal
         run: node scripts/tv-guide-concurrency-isolated.cjs
       - name: Back up modified rehearsal and restore both snapshots
         run: |
-          docker exec \${{ job.services.postgres.id }} pg_dump -U postgres -d tv_guide_rehearsal -Fc -f /tmp/tv_after.dump
-          docker exec \${{ job.services.postgres.id }} pg_restore -l /tmp/tv_after.dump > /dev/null
-          docker exec \${{ job.services.postgres.id }} sha256sum /tmp/tv_after.dump
-          docker exec \${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c "CREATE DATABASE tv_guide_pre_restore;"
-          docker exec \${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c "CREATE DATABASE tv_guide_post_restore;"
-          docker exec \${{ job.services.postgres.id }} pg_restore --exit-on-error -U postgres -d tv_guide_pre_restore /tmp/tv_before.dump
-          docker exec \${{ job.services.postgres.id }} pg_restore --exit-on-error -U postgres -d tv_guide_post_restore /tmp/tv_after.dump
-          docker exec \${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_pre_restore -Atc "SELECT CASE WHEN to_regclass('public.tv_country') IS NULL AND (SELECT COUNT(*) FROM country WHERE slug='baseline-britain')=1 AND (SELECT COUNT(*) FROM source WHERE slug='baseline-news')=1 THEN 'PRE_RESTORE_OK' ELSE 'FAIL' END;" | grep -x PRE_RESTORE_OK
-          docker exec \${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_post_restore -Atc "SELECT CASE WHEN (SELECT COUNT(*) FROM pg_tables WHERE schemaname='public' AND tablename LIKE 'tv_%')=19 AND (SELECT COUNT(*) FROM country WHERE slug='baseline-britain')=1 AND (SELECT COUNT(*) FROM source WHERE slug='baseline-news')=1 AND (SELECT COUNT(*) FROM tv_schedule_current)=1 THEN 'POST_RESTORE_OK' ELSE 'FAIL' END;" | grep -x POST_RESTORE_OK
+          docker exec ${{ job.services.postgres.id }} pg_dump -U postgres -d tv_guide_rehearsal -Fc -f /tmp/tv_after.dump
+          docker exec ${{ job.services.postgres.id }} pg_restore -l /tmp/tv_after.dump > /dev/null
+          docker exec ${{ job.services.postgres.id }} sha256sum /tmp/tv_after.dump
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c "CREATE DATABASE tv_guide_pre_restore;"
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c "CREATE DATABASE tv_guide_post_restore;"
+          docker exec ${{ job.services.postgres.id }} pg_restore --exit-on-error -U postgres -d tv_guide_pre_restore /tmp/tv_before.dump
+          docker exec ${{ job.services.postgres.id }} pg_restore --exit-on-error -U postgres -d tv_guide_post_restore /tmp/tv_after.dump
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_pre_restore -Atc "SELECT CASE WHEN to_regclass('public.tv_country') IS NULL AND (SELECT COUNT(*) FROM country WHERE slug='baseline-britain')=1 AND (SELECT COUNT(*) FROM source WHERE slug='baseline-news')=1 THEN 'PRE_RESTORE_OK' ELSE 'FAIL' END;" | grep -x PRE_RESTORE_OK
+          docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_post_restore -Atc "SELECT CASE WHEN (SELECT COUNT(*) FROM pg_tables WHERE schemaname='public' AND tablename LIKE 'tv_%')=19 AND (SELECT COUNT(*) FROM country WHERE slug='baseline-britain')=1 AND (SELECT COUNT(*) FROM source WHERE slug='baseline-news')=1 AND (SELECT COUNT(*) FROM tv_schedule_current)=1 THEN 'POST_RESTORE_OK' ELSE 'FAIL' END;" | grep -x POST_RESTORE_OK
           for table in country language category source; do
-            before=$(docker exec \${{ job.services.postgres.id }} psql -U postgres -d tv_guide_pre_restore -Atc "SELECT COUNT(*) FROM $table")
-            after=$(docker exec \${{ job.services.postgres.id }} psql -U postgres -d tv_guide_post_restore -Atc "SELECT COUNT(*) FROM $table")
+            before=$(docker exec ${{ job.services.postgres.id }} psql -U postgres -d tv_guide_pre_restore -Atc "SELECT COUNT(*) FROM $table")
+            after=$(docker exec ${{ job.services.postgres.id }} psql -U postgres -d tv_guide_post_restore -Atc "SELECT COUNT(*) FROM $table")
             [ "$before" = "$after" ] || { echo "BUSINESS_TABLE_COUNT_MISMATCH: $table"; exit 1; }
           done
           echo 'BACKUP_RESTORE_PASS: pre- and post-migration dumps restored.'
