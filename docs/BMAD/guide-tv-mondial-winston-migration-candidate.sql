@@ -38,7 +38,7 @@ BEGIN
     END IF;
     IF EXISTS (
       SELECT expected.name FROM unnest(ARRAY[
-        'tv_country_timezone_not_blank', 'tv_channel_name_nonempty', 'tv_channel_country_pair_unique', 'tv_channel_country_id_channel_unique', 'tv_channel_country_number_positive', 'tv_channel_country_active_number', 'tv_channel_language_format', 'tv_variant_channel_code', 'tv_variant_id_channel_unique', 'tv_variant_timezone_nonempty', 'tv_variant_country_variant_fk', 'tv_variant_country_association_fk', 'tv_source_format', 'tv_source_rights', 'tv_source_priority_positive', 'tv_external_source_id', 'tv_external_variant_channel_fk', 'tv_external_status', 'tv_external_verified_target', 'tv_external_variant_needs_channel', 'tv_description_origin', 'tv_description_nonempty', 'tv_programme_title_nonempty', 'tv_programme_season_positive', 'tv_programme_episode_positive', 'tv_import_days', 'tv_import_trigger', 'tv_import_status', 'tv_scope_status', 'tv_scope_attempts', 'tv_import_event_level', 'tv_revision_status', 'tv_revision_published_timestamp', 'tv_revision_tuple', 'tv_airing_span', 'tv_airing_revision_fp', 'tv_current_revision_unique_tuple', 'tv_current_revision_scope_fk', 'tv_provider_selected_approved', 'tv_description_provider_fk', 'tv_translation_attempt_status'
+        'tv_country_timezone_not_blank', 'tv_channel_name_nonempty', 'tv_channel_country_pair_unique', 'tv_channel_country_id_channel_unique', 'tv_channel_country_default_variant_fk', 'tv_channel_country_number_positive', 'tv_channel_country_active_number', 'tv_channel_language_format', 'tv_variant_channel_code', 'tv_variant_id_channel_unique', 'tv_variant_timezone_nonempty', 'tv_variant_country_variant_fk', 'tv_variant_country_association_fk', 'tv_source_format', 'tv_source_rights', 'tv_source_priority_positive', 'tv_external_source_id', 'tv_external_variant_channel_fk', 'tv_external_status', 'tv_external_verified_target', 'tv_external_variant_needs_channel', 'tv_description_origin', 'tv_description_nonempty', 'tv_programme_title_nonempty', 'tv_programme_season_positive', 'tv_programme_episode_positive', 'tv_import_days', 'tv_import_trigger', 'tv_import_status', 'tv_scope_status', 'tv_scope_attempts', 'tv_import_event_level', 'tv_revision_status', 'tv_revision_published_timestamp', 'tv_revision_tuple', 'tv_airing_span', 'tv_airing_revision_fp', 'tv_current_revision_unique_tuple', 'tv_current_revision_scope_fk', 'tv_provider_selected_approved', 'tv_description_provider_fk', 'tv_translation_attempt_status'
       ]::text[]) AS expected(name)
       WHERE NOT EXISTS (
         SELECT 1 FROM pg_constraint co
@@ -54,6 +54,7 @@ BEGIN
       SELECT 1 FROM (VALUES
         ('tv_country','reference_timezone','character varying(100)'),
         ('tv_channel_country','country_id','uuid'),
+        ('tv_channel_country','default_variant_id','uuid'),
         ('tv_schedule_revision','status','character varying(16)'),
         ('tv_schedule_current','revision_id','uuid'),
         ('tv_airing','starts_at','timestamp with time zone'),
@@ -122,6 +123,7 @@ CREATE TABLE IF NOT EXISTS public.tv_channel_country (
   official_number INTEGER,
   manual_number INTEGER,
   assigned_number INTEGER,
+  default_variant_id UUID,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   CONSTRAINT tv_channel_country_pair_unique UNIQUE(channel_id,country_id),
@@ -174,6 +176,25 @@ CREATE TABLE IF NOT EXISTS public.tv_variant_country (
 );
 -- Both composite FKs ensure that a variant and its country association
 -- belong to the SAME channel, even under direct SQL writes.
+-- SCRUM-115 / D10: default variant is per channel-country association.
+-- The composite FK prevents a default that belongs to another channel or
+-- that is not available in this country. Keep the old is_default column
+-- for backwards prototype compatibility; it is NOT the publication default.
+DO $tv_default_fk$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conrelid='public.tv_channel_country'::regclass
+      AND conname='tv_channel_country_default_variant_fk'
+  ) THEN
+    ALTER TABLE public.tv_channel_country
+      ADD CONSTRAINT tv_channel_country_default_variant_fk
+      FOREIGN KEY(default_variant_id,id)
+      REFERENCES public.tv_variant_country(variant_id,channel_country_id)
+      DEFERRABLE INITIALLY IMMEDIATE;
+  END IF;
+END $tv_default_fk$;
+
 
 CREATE TABLE IF NOT EXISTS public.tv_source (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
