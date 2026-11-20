@@ -12,7 +12,7 @@ SELECT 'DATABASE_ROLE' AS section, r.rolname AS name,
        'login='||r.rolcanlogin||';super='||r.rolsuper||';inherit='||r.rolinherit AS detail
 FROM pg_roles r WHERE r.rolname IN ('lmn24_app','postgres','tv_epg_writer','tv_public_reader','tv_admin_catalog')
 ORDER BY r.rolname;
-SELECT 'SCHEMA_OBJECT_COUNT' AS section, n.nspname || '.' || c.relkind AS name,
+SELECT 'SCHEMA_OBJECT_COUNT' AS section, n.nspname || '.' || c.relkind::text AS name,
        count(*)::text AS detail
 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
 WHERE n.nspname='public' AND c.relkind IN ('r','p','v','m','S')
