@@ -7,7 +7,18 @@ const u=new URL(raw);
 assert.equal(u.hostname,"127.0.0.1");
 assert.equal(u.pathname,"/tv_guide_rehearsal");
 const clients=[];
-async function c(config={}) {const client=new Client({connectionString:raw,...config}); await client.connect();clients.push(client);return client}
+async function c(config={}) {
+  const target=new URL(raw);
+  if(config.user){target.username=config.user;target.password=config.password||""}
+  const client=new Client({connectionString:target.toString()});
+  await client.connect();
+  if(config.user){
+    const identity=(await client.query("SELECT current_user AS role")).rows[0].role;
+    assert.equal(identity,config.user,"SQL connection did not adopt restricted role");
+  }
+  clients.push(client);
+  return client;
+}
 async function err(fn,code) {let e;try{await fn()}catch(x){e=x}assert.ok(e,"expected rejection");if(code)assert.equal(e.code,code);return e}
 const variant="a0000000-0000-4000-8000-000000000004";
 const revision="a0000000-0000-4000-8000-000000000005";
