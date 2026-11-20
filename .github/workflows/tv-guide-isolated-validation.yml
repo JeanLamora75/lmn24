@@ -9,6 +9,7 @@ on:
       - "docs/BMAD/guide-tv-mondial-winston-postgres-isolated-smoke.sql"
       - ".github/workflows/tv-guide-isolated-validation.yml"
       - "scripts/tv-guide-concurrency-isolated.cjs"
+      - "scripts/tv-guide-security-isolated.cjs"
       - "database/schema.sql"
   workflow_dispatch:
 
@@ -95,6 +96,10 @@ jobs:
         env:
           TV_REHEARSAL_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/tv_guide_rehearsal
         run: node scripts/tv-guide-concurrency-isolated.cjs
+      - name: Test SQL least privilege and abrupt parser termination on disposable database
+        env:
+          TV_REHEARSAL_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/tv_guide_rehearsal
+        run: node scripts/tv-guide-security-isolated.cjs
       - name: Back up modified rehearsal and restore both snapshots
         run: |
           docker exec ${{ job.services.postgres.id }} pg_dump -U postgres -d tv_guide_rehearsal -Fc -f /tmp/tv_after.dump
