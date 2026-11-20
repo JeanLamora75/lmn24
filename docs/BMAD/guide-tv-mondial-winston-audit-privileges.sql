@@ -19,14 +19,13 @@ AND c.relname IN ('parser_write_epoch','scheduler_config','scheduler_job',
                    'tv_schedule_current','tv_schedule_revision','tv_translation_provider')
 ORDER BY r.rolname,c.relname;
 SELECT 'FUNCTION_EXECUTE' AS section, p.proname||'('||pg_get_function_identity_arguments(p.oid)||')' AS object,
-       'public='||has_function_privilege('public',p.oid,'EXECUTE') AS detail
+       'public_execute='||EXISTS(SELECT 1 FROM aclexplode(COALESCE(p.proacl,acldefault('f',p.proowner))) acl WHERE acl.grantee=0 AND acl.privilege_type='EXECUTE') AS detail
 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
 WHERE n.nspname='public' AND p.proname IN (
  'assert_parser_write_epoch','tv_assert_current_writer_lease',
  'tv_assert_current_published','tv_protect_published_airings','tv_protect_published_revision')
 ORDER BY p.proname;
 SELECT 'SCHEMA' AS section, n.nspname AS object,
-       'public_create='||has_schema_privilege('public',n.oid,'CREATE')
-       ||'; public_usage='||has_schema_privilege('public',n.oid,'USAGE') AS detail
+       'public_acl='||COALESCE(array_to_string(n.nspacl,','),'default') AS detail
 FROM pg_namespace n WHERE n.nspname='public';
 COMMIT;
