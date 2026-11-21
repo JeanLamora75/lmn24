@@ -24,8 +24,13 @@ export async function acquireTvWriterLease(connectionString:string):Promise<TvWr
   if(!connectionString)throw new Error("Missing isolated database connection");
   const client=new Client({connectionString,connectionTimeoutMillis:10_000});
   const abort=new AbortController(), ownerToken=randomUUID();
-  let closed=false,locked=false;
-  const lost=()=>{if(!closed)abort.abort(new TvImportLeaseLostError());};
+  let closed=false,locked=false,probeStarted=0;
+  let watchdog:ReturnType<typeof setInterval>|undefined;
+  const lost=()=>{
+    if(closed||abort.signal.aborted)return;
+    if(watchdog)clearInterval(watchdog);
+    abort.abort(new TvImportLeaseLostError());
+  };
   client.on("error",lost);client.on("end",lost);
   try {
     await client.connect();
@@ -47,11 +52,24 @@ export async function acquireTvWriterLease(connectionString:string):Promise<TvWr
     closed=true;client.off("error",lost);client.off("end",lost);
     await client.end().catch(()=>undefined);throw e;
   }
+  // Probe the locked session, not a second pooled connection. Detect silent
+  // network partitions and abort the worker before any further write.
+  watchdog=setInterval(()=>{
+    if(closed||abort.signal.aborted)return;
+    if(probeStarted){
+      if(Date.now()-probeStarted>15_000)lost();
+      return;
+    }
+    probeStarted=Date.now();
+    void client.query("SELECT 1").catch(lost).finally(()=>{probeStarted=0;});
+  },5_000);
+  watchdog.unref();
   return {
     client,ownerToken,signal:abort.signal,
     async release(){
       if(closed)return;
       closed=true;
+      if(watchdog)clearInterval(watchdog);
       try {
         if(locked && !abort.signal.aborted){
           await client.query("SELECT pg_advisory_unlock($1,$2)",[LOCK_CLASS,LOCK_ID]);
