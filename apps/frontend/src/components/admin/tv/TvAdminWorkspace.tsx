@@ -385,7 +385,6 @@ function ChannelEditor({item,onClose,onSaved}:{item:Channel;onClose:()=>void;onS
      officialNumber:item.officialNumber,assignedNumber:item.assignedNumber,
      defaultVariantId:item.defaultVariantId,expectedVersion:item.version,
     });
-    if(logoFile)await uploadTvChannelIcon(item.channelId,logoFile);
     onSaved();
    }catch(err){setError((err as Error).message);}finally{setBusy(false);}
   }}>
