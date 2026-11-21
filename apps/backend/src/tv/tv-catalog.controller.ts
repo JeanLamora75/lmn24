@@ -17,6 +17,7 @@ const number = z.number().int().min(1).max(2147483647).nullable();
 const countryUpdate = z.object({
   referenceTimezone: z.string().min(1).max(100),
   isActive: z.boolean(),
+  expectedVersion:z.string().min(1).max(100).optional(),
 }).strict();
 const discovered = z.object({
   countryId: uuid, slug: z.string().trim().min(1).max(255).regex(/^[a-z0-9][a-z0-9-]*$/),
@@ -27,6 +28,7 @@ const associationUpdate = z.object({
   isActive: z.boolean(), needsReview: z.boolean(),
   manualNumber: number, officialNumber: number, assignedNumber: number,
   defaultVariantId: uuid.nullable(),
+  expectedVersion:z.string().min(1).max(100).optional(),
 }).strict().refine(
   (p) => !p.isActive || p.manualNumber !== null || p.officialNumber !== null || p.assignedNumber !== null,
   "Active channel requires a national number",
@@ -99,7 +101,7 @@ export class TvCatalogController {
     if (!uuid.safeParse(id).success || !parsed.success) throw new BadRequestException("Invalid TV country");
     try { assertIanaZone(parsed.data.referenceTimezone); }
     catch { throw new BadRequestException("Invalid IANA timezone"); }
-    return this.catalog.upsertCountry(id, parsed.data.referenceTimezone, parsed.data.isActive);
+    return this.catalog.upsertCountry(id, parsed.data.referenceTimezone, parsed.data.isActive,parsed.data.expectedVersion);
   }
 
   @Get("channels")
