@@ -7,6 +7,8 @@ const patterns=[
  /^catalog\/(?:countries|channels)$/,
  /^catalog\/countries\/[0-9a-f-]{36}$/i,
  /^catalog\/channels\/discover$/,
+ /^catalog\/channels\/associations\/[0-9a-f-]{36}$/i,
+ /^catalog\/channels\/[0-9a-f-]{36}\/icon\/import$/i,
  /^catalog\/associations\/[0-9a-f-]{36}$/i,
  /^catalog\/associations\/[0-9a-f-]{36}\/assign-number$/i,
  /^catalog\/channels\/[0-9a-f-]{36}\/(?:profile|languages|icon)$/i,
