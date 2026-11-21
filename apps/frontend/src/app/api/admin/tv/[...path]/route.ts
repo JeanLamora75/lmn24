@@ -15,6 +15,9 @@ const patterns=[
  /^epg-sources\/[0-9a-f-]{36}\/(?:configuration|rights|mappings)$/i,
  /^epg-sources\/countries\/[0-9a-f-]{36}\/priorities$/i,
  /^epg-sources\/mappings(?:\/[0-9a-f-]{36})?$/i,
+ /^translations\/providers$/,
+ /^translations\/providers\/[0-9a-f-]{36}\/select$/i,
+ /^translations\/channels\/[0-9a-f-]{36}\/descriptions(?:\/(?:fr|en|de|es|pt|it|ru|nl))?$/i,
  /^import-runs$/,
  /^import-runs\/[0-9a-f-]{36}(?:\/(?:events|retry))?$/i,
 ];
