@@ -781,7 +781,10 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     const requested=view==="overview"||view==="statistics"?
      ["catalog/countries","catalog/channels","epg-sources","import-runs?page=1&pageSize=100"]:
      view==="translations"?["catalog/channels"]:
-     (view==="sources"||view==="channels")?["epg-sources","catalog/countries","catalog/channels"]:
+      (view==="sources"||view==="channels"||view==="associations")
+       ?["epg-sources","catalog/countries",
+         ...(view==="associations"?[]:[view==="channels"&&country
+           ?"catalog/channels?countryId="+country:"catalog/channels"])] :
      [paths[view]??"catalog/countries","catalog/countries"];
     const unique=[...new Set(requested)];
     const responses=await Promise.all(unique.map(async name=>{
