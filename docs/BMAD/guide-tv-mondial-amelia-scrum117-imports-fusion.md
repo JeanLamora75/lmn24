@@ -50,3 +50,34 @@
 ## 4. Verdict
 
 **Livraison technique intermédiaire**, prête pour poursuite de l'intégration et des tests isolés. **SCRUM-117 ne doit pas être clôturée en l'état**, car le parseur effectif, les imports automatiques et la rétention finale des snapshots publiés ne sont pas terminés. Cette séparation empêche de présenter une architecture non activée comme un service EPG opérationnel.
+
+
+## 5. Itération finale Amelia / Murat — 21 novembre 2026
+
+### Développements supplémentaires réellement publiés
+
+- **Décodage EPG hors réseau** : `tv-epg-decoder.ts` lit XMLTV/XMLTV_GZIP et JSON via `xml2js@0.5.0` déclaré dans le package backend et dans le lockfile pnpm ; limite de 50 000 programmes et 48 MiB, conversion des offsets XMLTV en instants UTC, validation des durées, refus des DTD et des entités XML. Aucun contenu XML/JSON ne certifie automatiquement une couverture complète.
+- **Jours IANA** : `tv-import-time.ts` calcule des bornes UTC de journées civiles locales sans supposer 24 h ; testés notamment Paris et New York en journées DST 23/25 h. La fusion `tv-import-policy.ts` conserve les vrais instants UTC des émissions traversant minuit, sans découpe fictive. Les attestations de couverture se calculent sur l'intersection réelle du jour.
+- **Adaptateur de rapprochement** : `tv-epg-loader.ts` relie les données décodées à des identifiants de chaîne `VERIFIED` en base et à une variante explicitement associée au pays ; les programmes sont insérés de manière déterministe sous le verrou/fencing existant, avec synopsis/images uniquement si leurs droits respectifs sont approuvés. Les candidats issus d'une source partiellement échouée ne sont pas ajoutés à la fusion. Les certificats de couverture proviennent d'un **fournisseur de preuves indépendant injecté**. Par défaut `noCoverageAttested` ne valide **aucun intervalle** ; une simple déclaration du fournisseur EPG ne suffit jamais.
+- **Exécution contrôlée** : `tv-import-authorized-runner.ts` connecte le downloader, le parseur, le chargeur et le worker, mais **refuse d'exécuter** sans cinq paramètres explicites : `TV_CATALOG_ADMIN_ENABLED`, `TV_IMPORTS_ENABLED`, `TV_EPG_NETWORK_ENABLED`, `TV_MIGRATION_QUALIFIED` et `TV_EPG_SOURCE_USE_APPROVED`, tous à `true`. Aucun de ces paramètres n'est activé par le code, les workflows ou le présent document ; l'administration et le Guide TV restent fermés. Le worker **n'est pas lancé automatiquement** par l'application en l'absence de cet accord.
+- **Planification** : `tv-import-scheduler.ts` est enregistré dans NestJS mais reste désactivé tant que trois paramètres administratifs/automatiques explicites ne sont pas à `true`. Il programme des runs `AUTOMATIC` de J0 à J+6, chaque jour à 03:00 UTC, avec une vérification PostgreSQL idempotente par jour calendaire. Il **crée uniquement des demandes** ; l'exécution réseau nécessite l'activation distincte du runner et son déploiement supervisé.
+- **Crash / fencing** : `tv-import-recovery.ts` met les anciens runs `RUNNING` en `INTERRUPTED` ou `PARTIAL` lorsqu'un nouvel acteur possède le verrou global, conservant les scopes déjà réussis ; le worker l'appelle avant le run suivant. `tv-import-publisher.ts` inclut un watchdog sur la connexion verrouillée.
+- **Purge J-7 et 30 j** : les deux prototypes SQL candidats autorisent uniquement la suppression des révisions `PUBLISHED` réellement expirées sous `SET LOCAL app.tv_retention=true` et jeton de verrou valide ; toute mutation normale reste impossible. `tv-import-retention.ts` retire les pointeurs courants expirés sous fencing, purge les révisions après sept jours civils locaux et les événements/runs terminés de plus de 30 jours sans supprimer le catalogue. La migration reste **candidate documentaire et non appliquée**.
+- **Tests ajoutés** : `tv-epg-decoder.test.ts`, `tv-import-time.test.ts`, `tv-import-worker.test.ts`, `tv-epg-loader.test.ts`, `tv-import-scheduler.test.ts`, `tv-import-authorized-runner.test.ts`, fixture SQL `guide-tv-mondial-scrum117-retention-recovery-isolated-smoke.sql`, et scénario SQL de publication atomique préexistant. Tous sont hors réseau et hors production.
+
+### Tableau d'acceptation mis à jour
+
+| Critère | Résultat constaté | Encore exigé avant fermeture |
+|---|---|---|
+| AC01 — quotidien/manual 1..7 | Planificateur UTC intégré et drapeaux OFF ; demandes par pays même inactif en mode manuel | Démarrage supervisé d'un worker et démonstration quotidienne bout en bout avec source explicitement autorisée |
+| AC02 — fusion/licences | XMLTV/JSON, mapping `VERIFIED`, droits par famille, priorité par pays, date IANA, source en échec mise en quarantaine | Attestations de couverture réelles, scénario multi-sources sur copie fidèle, droits sources réels approuvés |
+| AC03 — snapshots atomiques | Fencing, staging, CAS, refus des révisions non publiées et protection d'ancienne grille ; tests PG jetables | Recette réelle du chargeur + publisher sur copie fidèle migrée |
+| AC04 — locks/reprise | Lease exclusif, watchdog, idempotence de queue, reprise des runs abandonnés, isolation sous PostgreSQL | Essais multiprocessus et coupure réseau sur worker complet, preuve de récupération |
+| AC05 — PARTIAL/retry | Journaux, statuts, reprise ciblée des scopes échoués, unit tests avec erreur source | Recette HTTP/admin et supervision UI sur schéma intégré |
+| AC06 — rétention | SQL candidate + code de purge sous autorisation explicite, script isolé de preuve | Validation complète sur copie fidèle et raccordement du job de rétention |
+
+### Verdict Murat
+
+Les tests **isolés et unitaires** sont une preuve technique importante, mais **ne constituent pas une homologation de production**. Pour la clôture effective de SCRUM-117, il manque la répétition sur **copie fidèle anonymisée** et la vérification des **sources réelles et de leurs droits**, non autorisées dans cette conversation ; une CI complète verte sur un même SHA est aussi requise. **Ne pas clôturer SCRUM-117 en se fondant uniquement sur les fichiers ou les tests isolés.**
+
+Aucune connexion de production, appel réseau réel EPG, migration officielle ni publication publique n'a été effectué.
