@@ -36,21 +36,32 @@ function setup(){
  return {lease,transport,query};
 }
 describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
- it("decodes valid fixture under owner, rejects unlicensed source, never invents coverage",async()=>{
+ it("decodes a source under owner, inspects unlicensed feeds without publishing, never invents coverage",async()=>{
   const {lease,transport,query}=setup();
   const loader=createVerifiedDbEpgLoader(lease,"run",{transport,
    attest:noCoverageAttested,now:new Date("2026-11-21T12:00:00Z")});
   const result=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
   expect(result.scopeResults).toEqual([
-   {scopeId:"s1",outcome:"SUCCESS"},{scopeId:"s2",outcome:"ERROR"},
+   {scopeId:"s1",outcome:"SUCCESS"},{scopeId:"s2",outcome:"SUCCESS"},
   ]);
-  expect(transport).toHaveBeenCalledOnce();
+  expect(transport).toHaveBeenCalledTimes(2);
+  expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_channel_external_id"))).toBe(true);
   expect(result.days).toHaveLength(1);
   expect(result.days[0]?.coverage).toEqual([]);
   expect(result.days[0]?.candidates).toHaveLength(1);
   expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_programme")
     &&c[1]?.[2]!==null)).toBe(false); // synopsis must be omitted without rights
   expect(query.mock.calls.some(c=>c[0].includes("assert_parser_write_epoch"))).toBe(true);
+ });
+ it("reuses each global source acquisition across multiple country partitions",async()=>{
+  const {lease,transport}=setup();
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+   transport,attest:noCoverageAttested,now:new Date("2026-11-21T12:00:00Z"),
+  });
+  const signal=new AbortController().signal;
+  await loader.loadCountry(countryId,["s1","s2"],signal);
+  await loader.loadCountry("a1000000-0000-4000-8000-000000000002",["s1","s2"],signal);
+  expect(transport).toHaveBeenCalledTimes(2); // one fetch per globally active source, not per country
  });
  it("accepts independently attested IANA coverage without trusting feed metadata",async()=>{
   const {lease,transport}=setup();
