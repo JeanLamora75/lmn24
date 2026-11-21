@@ -4,7 +4,7 @@ import { z } from "zod";
 import { EPG_FETCH_LIMITS, type EpgFormat } from "./tv-epg-source-policy";
 
 // Bounded by payload bytes and emission count; neither limit alone is sufficient.
-// A streaming decoder is still required before supporting larger feeds.
+// Transport still buffers the bounded downloaded payload; SAX parsing is incremental.
 const MAX_PROGRAMMES = 250_000;
 const MAX_CONTENT = EPG_FETCH_LIMITS.maxExpandedBytes;
 export type EpgProgramme = {
