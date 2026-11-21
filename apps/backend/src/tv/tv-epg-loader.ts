@@ -155,7 +155,6 @@ export function createVerifiedDbEpgLoader(
           JOIN unnest($2::text[],$3::text[]) AS incoming(external_id,logo_url)
             ON incoming.external_id=m.external_id
           WHERE m.source_id=$1::uuid AND m.channel_id=c.id
-            AND m.mapping_status='PENDING_REVIEW'
             AND c.logo_url IS NULL AND incoming.logo_url IS NOT NULL`,
           [row.sourceId,externalIds,logos]);
         // Explicit ISO country metadata is provisional: create an inactive
@@ -168,7 +167,7 @@ export function createVerifiedDbEpgLoader(
             SELECT m.channel_id,$3::uuid,FALSE,TRUE
             FROM public.tv_channel_external_id m
             WHERE m.source_id=$1::uuid AND m.external_id=ANY($2::text[])
-              AND m.channel_id IS NOT NULL AND m.mapping_status='PENDING_REVIEW'
+              AND m.channel_id IS NOT NULL
             ON CONFLICT(channel_id,country_id) DO NOTHING`,
             [row.sourceId,externalIds,row.scopeCountryId]);
         }else{
@@ -185,7 +184,7 @@ export function createVerifiedDbEpgLoader(
                 ON m.source_id=$3::uuid AND m.external_id=hint.external_id
               JOIN public.country c ON upper(c.iso_code2)=hint.iso2
               JOIN public.tv_country t ON t.country_id=c.id
-              WHERE m.channel_id IS NOT NULL AND m.mapping_status='PENDING_REVIEW'
+              WHERE m.channel_id IS NOT NULL
               ON CONFLICT(channel_id,country_id) DO NOTHING`,
               [geographic.map(c=>c.externalId),
                geographic.map(c=>c.countryIso2),row.sourceId]);
