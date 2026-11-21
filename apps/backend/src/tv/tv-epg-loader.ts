@@ -48,7 +48,7 @@ async function assertOwner(lease:TvWriterLease){
  */
 export function createVerifiedDbEpgLoader(
  lease:TvWriterLease,runId:string,
- options:{transport:EpgTransport;attest:AttestedCoverage;now?:Date;discoveryOnly?:boolean},
+ options:{transport:EpgTransport;attest:AttestedCoverage;now?:Date;discoveryOnly?:boolean;stagingOnly?:boolean},
 ):ValidatedEpgLoader{
  const db=lease.client;
  const now=options.now??new Date();
@@ -136,23 +136,34 @@ export function createVerifiedDbEpgLoader(
         results.push({scopeId:row.scopeId,outcome:"SUCCESS",message:"DISCOVERY_ONLY"});continue;
       }
       let mapped=0;
+      const mappedChannels=new Map<string,Mapping|null>();
       for(const p of decoded.programmes){
         if(signal.aborted)throw new TvImportLeaseLostError();
-        const matches=await db.query<Mapping>(`
-          SELECT COALESCE(m.variant_id,cc.default_variant_id) AS "variantId",
-                 v.timezone
-          FROM public.tv_channel_external_id m
-          JOIN public.tv_channel_country cc ON cc.channel_id=m.channel_id
-            AND cc.country_id=$3::uuid
-          JOIN public.tv_channel_variant v
-            ON v.id=COALESCE(m.variant_id,cc.default_variant_id)
-          JOIN public.tv_variant_country vc
-            ON vc.variant_id=v.id AND vc.channel_country_id=cc.id
-          WHERE m.source_id=$1::uuid AND m.external_id=$2
-            AND m.mapping_status='VERIFIED'
-          LIMIT 1`,[row.sourceId,p.externalChannelId,countryId]);
-        const mapping=matches.rows[0];
+        if(!mappedChannels.has(p.externalChannelId)){
+          const matches=await db.query<Mapping>(`
+            SELECT COALESCE(m.variant_id,cc.default_variant_id) AS "variantId",
+                   v.timezone
+            FROM public.tv_channel_external_id m
+            JOIN public.tv_channel_country cc ON cc.channel_id=m.channel_id
+              AND cc.country_id=$3::uuid
+            JOIN public.tv_channel_variant v
+              ON v.id=COALESCE(m.variant_id,cc.default_variant_id)
+            JOIN public.tv_variant_country vc
+              ON vc.variant_id=v.id AND vc.channel_country_id=cc.id
+            WHERE m.source_id=$1::uuid AND m.external_id=$2
+              AND m.mapping_status='VERIFIED'
+            LIMIT 1`,[row.sourceId,p.externalChannelId,countryId]);
+          mappedChannels.set(p.externalChannelId,matches.rows[0]??null);
+        }
+        const mapping=mappedChannels.get(p.externalChannelId);
         if(!mapping?.variantId)continue; // never guess by similar names
+        // A feed may include past or distant future emissions. Only stage
+        // programmes inside the explicitly requested calendar window.
+        const start=Date.parse(p.startsAt),end=Date.parse(p.endsAt);
+        const today=dateInZone(now,mapping.timezone);
+        const first=localDayBounds(today,mapping.timezone).startMs;
+        const last=localDayBounds(addCalendarDays(today,days-1),mapping.timezone).endMs;
+        if(start>=last||end<=first)continue;
         mapped++;
         // Persist catalogue data only under current fenced lease; source rights
         // independently determine which synopsis/image fields may be reused.
@@ -172,8 +183,7 @@ export function createVerifiedDbEpgLoader(
                 ?p.imageUrl:null]);
           await db.query("COMMIT");
         }catch(err){await db.query("ROLLBACK").catch(()=>undefined);throw err;}
-        const start=Date.parse(p.startsAt),end=Date.parse(p.endsAt);
-        const today=dateInZone(now,mapping.timezone);
+        if(options.stagingOnly)continue;
         for(let n=0;n<days;n++){
           const localDate=addCalendarDays(today,n);
           const {startMs,endMs}=localDayBounds(localDate,mapping.timezone);
@@ -202,9 +212,14 @@ export function createVerifiedDbEpgLoader(
         }
       }
       if(!mapped){
-        // A valid source can be fully inspected without verified programme mappings.
-        // No speculative programme is published and no previous grid is replaced.
+        // No verified mapping and licensed emission inside the requested window.
         results.push({scopeId:row.scopeId,outcome:"SUCCESS",message:"DISCOVERY_ONLY"});continue;
+      }
+      if(options.stagingOnly){
+        // Programmes are private catalogue records. Never create, stage, or
+        // publish schedule revisions in this mode; public GO remains separate.
+        results.push({scopeId:row.scopeId,outcome:"SUCCESS",message:"PROGRAMMES_STAGED"});
+        continue;
       }
       // Only commit candidates of a completely decoded and mapped scope;
       // a partially failed source must never contaminate a published grid.
