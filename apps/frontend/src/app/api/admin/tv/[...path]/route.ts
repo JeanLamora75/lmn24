@@ -13,6 +13,7 @@ const patterns=[
  /^catalog\/variants$/,
  /^epg-sources$/,
  /^epg-sources\/discoveries$/,
+ /^epg-sources\/discoveries\/import$/,
  /^epg-sources\/[0-9a-f-]{36}\/(?:configuration|rights|mappings|test-connection)$/i,
  /^epg-sources\/countries\/[0-9a-f-]{36}\/priorities$/i,
  /^epg-sources\/mappings(?:\/[0-9a-f-]{36})?$/i,
