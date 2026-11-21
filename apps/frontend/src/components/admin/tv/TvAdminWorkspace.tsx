@@ -613,13 +613,7 @@ function EpgDiscoveryInbox({countries,onImported}:{
  const [feedback,setFeedback]=useState("");
  const [refresh,setRefresh]=useState(0);
  const [sort,setSort]=useState<TvSortState>(null);
- const toggleSort=(key:string)=>setSort(current=>nextTvSort(current,key));
- const orderedItems=useMemo(()=>sortTvRows(items,sort,(item,key)=>{
-  if(key==="channel")return item.channelName??item.externalId;
-  if(key==="source")return item.sourceName;
-  if(key==="country")return "Pays inconnu";
-  return null;
- }),[items,sort]);
+ const toggleSort=(key:string)=>{setSort(current=>nextTvSort(current,key));setPage(1);setSelected([]);};
  async function importSelected(){
   if(saving||!countryId||!selected.length)return;
   setSaving(true);setError("");setFeedback("");
@@ -635,7 +629,8 @@ function EpgDiscoveryInbox({countries,onImported}:{
  useEffect(()=>{
   const controller=new AbortController();
   void fetch(api+"epg-sources/discoveries?page="+page+"&search="+encodeURIComponent(query)+
-   "&countryId=UNCLASSIFIED",{
+   "&countryId=UNCLASSIFIED&sort="+encodeURIComponent(sort?.key??"source")+
+   "&direction="+encodeURIComponent(sort?.direction??"asc"),{
    cache:"no-store",signal:controller.signal,
   }).then(async res=>{
    if(!res.ok)throw new Error(messageFor(res.status));
@@ -645,7 +640,7 @@ function EpgDiscoveryInbox({countries,onImported}:{
   }).catch(err=>{if(!controller.signal.aborted)setError((err as Error).message);})
    .finally(()=>{if(!controller.signal.aborted)setLoading(false);});
   return ()=>controller.abort();
- },[page,query,refresh]);
+ },[page,query,refresh,sort]);
  return <AdminDataPanel label="Chaînes EPG découvertes — à classer">
   <div className="p-3">
    <p className="text-body-secondary">
@@ -695,7 +690,7 @@ function EpgDiscoveryInbox({countries,onImported}:{
       <TvSortableHeader label="Source" sortKey="source" sort={sort} onSort={toggleSort}/>
       <TvSortableHeader label="Pays" sortKey="country" sort={sort} onSort={toggleSort}/>
      </tr></thead>
-     <tbody>{orderedItems.map(item=><tr key={item.id}>
+     <tbody>{items.map(item=><tr key={item.id}>
       <td><input type="checkbox" aria-label={"Sélectionner "+item.externalId}
        checked={selected.includes(item.id)}
        onChange={e=>setSelected(previous=>e.target.checked
