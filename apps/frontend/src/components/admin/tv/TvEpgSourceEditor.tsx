@@ -1,5 +1,5 @@
 "use client";
-import {useState} from "react";
+import {useEffect,useMemo,useState} from "react";
 import styles from "@/app/admin/(protected)/tv/tv-admin.module.css";
 export type TvEpgSource={
  id:string;name:string;sourceUrl:string;format:string;isActive:boolean;version:string;
@@ -31,8 +31,12 @@ const rightKeys=["programme","synopsis","image","logo"] as const;
 type Key=typeof rightKeys[number];
 const readable:Record<Key,string>={programme:"Programmes",synopsis:"Synopsis",image:"Images",logo:"Logos"};
 const rightOptions=[{value:"UNREVIEWED",label:"À vérifier"},{value:"APPROVED",label:"Autorisé"},{value:"REJECTED",label:"Non autorisé"},{value:"EXPIRED",label:"Expiré"}] as const;
-export function TvEpgSourceEditor({item,onClose,onSaved}:{
- item:TvEpgSource;onClose:()=>void;onSaved:()=>void;
+type MappingRow={id:string;sourceId:string;externalId:string;status:string;
+ channelId:string|null;variantId:string|null;channelName:string|null};
+type MappingChannel={id:string;name:string;countryId:string;countryLabel:string;
+ defaultVariantId:string|null};
+export function TvEpgSourceEditor({item,channels,onClose,onSaved}:{
+ item:TvEpgSource;channels:MappingChannel[];onClose:()=>void;onSaved:()=>void;
 }){
  const [name,setName]=useState(item.name);
  const [url,setUrl]=useState(item.sourceUrl);
@@ -43,6 +47,56 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
   reference:item[(k+"RightsReference") as keyof TvEpgSource]??"",
  }])) as Record<Key,{status:string;reference:string}>;
  const [rights,setRights]=useState(initial);
+ const [mappings,setMappings]=useState<MappingRow[]>([]);
+ const [mappingLoading,setMappingLoading]=useState(true);
+ const [mappingError,setMappingError]=useState("");
+ const [mappingSearch,setMappingSearch]=useState("");
+ const [mappingStatus,setMappingStatus]=useState("PENDING_REVIEW");
+ const [mappingPage,setMappingPage]=useState(1);
+ const [mappingBusy,setMappingBusy]=useState("");
+ const [selection,setSelection]=useState<Record<string,string>>({});
+ useEffect(()=>{
+  const controller=new AbortController();
+  void fetch("/api/admin/tv/epg-sources/"+item.id+"/mappings",{
+   cache:"no-store",signal:controller.signal,
+  }).then(async res=>{
+   if(!res.ok)throw new Error(await describeSaveError(res));
+   return res.json() as Promise<{items:MappingRow[]}>;
+  }).then(data=>{if(!controller.signal.aborted)setMappings(data.items);})
+   .catch(err=>{if(!controller.signal.aborted)setMappingError((err as Error).message);})
+   .finally(()=>{if(!controller.signal.aborted)setMappingLoading(false);});
+  return ()=>controller.abort();
+ },[item.id]);
+ const filteredMappings=useMemo(()=>mappings.filter(m=>
+  (mappingStatus==="ALL"||m.status===mappingStatus)
+  &&(!mappingSearch||[m.externalId,m.channelName??""].join(" ")
+   .toLocaleLowerCase().includes(mappingSearch.toLocaleLowerCase()))),
+  [mappings,mappingStatus,mappingSearch]);
+ const mappingPages=Math.max(1,Math.ceil(filteredMappings.length/15));
+ async function reviewMapping(mapping:MappingRow,status:"VERIFIED"|"REJECTED"){
+  const channelId=selection[mapping.id]??mapping.channelId??"";
+  if(status==="VERIFIED"&&!channelId){
+   setMappingError("Sélectionne une chaîne avant de valider sa correspondance.");
+   return;
+  }
+  setMappingBusy(mapping.id);setMappingError("");
+  try{
+   const response=await fetch("/api/admin/tv/epg-sources/mappings/"+mapping.id,{
+    method:"PATCH",headers:{"content-type":"application/json"},
+    body:JSON.stringify({
+     sourceId:item.id,externalId:mapping.externalId,
+     channelId:status==="VERIFIED"?channelId:null,
+     variantId:null,status,
+    }),
+   });
+   if(!response.ok)throw new Error(await describeSaveError(response));
+   const channel=channels.find(x=>x.id===channelId);
+   setMappings(previous=>previous.map(x=>x.id===mapping.id
+    ?{...x,status,channelId:status==="VERIFIED"?channelId:null,
+       channelName:status==="VERIFIED"?channel?.name??null:null}:x));
+  }catch(err){setMappingError((err as Error).message);}
+  finally{setMappingBusy("");}
+ }
  const [diagnosing,setDiagnosing]=useState(false);
  const [diagnostic,setDiagnostic]=useState<{
   ok:boolean;stage:string;code:string|null;bytes:number|null;
@@ -135,6 +189,69 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
     </div>)}
     <button type="button" className="btn btn-outline-primary" disabled={busy}
      onClick={()=>void saveRights()}>Enregistrer les droits</button>
+   </fieldset>
+   <fieldset className="mt-4">
+    <legend className="h5">Correspondances des chaînes EPG</legend>
+    <p className="small text-body-secondary">Les identifiants découverts ne sont jamais associés automatiquement.
+     Sélectionne une chaîne LMN24, puis valide explicitement la correspondance.
+     Les programmes ne sont importés que pour les correspondances vérifiées.
+     {mappings.length===1000?" Affichage limité aux 1 000 premières correspondances.":""}
+    </p>
+    {mappingLoading&&<p role="status">Chargement des identifiants EPG…</p>}
+    {mappingError&&<p role="alert" className="alert alert-danger">{mappingError}</p>}
+    {!mappingLoading&&<>
+     <div className="d-flex flex-wrap gap-2 mb-2">
+      <label className="flex-grow-1">Rechercher
+       <input className="form-control" value={mappingSearch}
+        onChange={e=>{setMappingSearch(e.target.value);setMappingPage(1);}}
+        placeholder="Identifiant EPG ou chaîne"/>
+      </label>
+      <label>État
+       <select className="form-select" value={mappingStatus}
+        onChange={e=>{setMappingStatus(e.target.value);setMappingPage(1);}}>
+        <option value="PENDING_REVIEW">À vérifier</option>
+        <option value="VERIFIED">Vérifiées</option>
+        <option value="REJECTED">Rejetées</option>
+        <option value="ALL">Toutes</option>
+       </select>
+      </label>
+     </div>
+     <div className="table-responsive">
+      <table className="table align-middle">
+       <thead><tr><th>ID externe</th><th>Chaîne LMN24</th><th>Action</th></tr></thead>
+       <tbody>{filteredMappings.slice((mappingPage-1)*15,mappingPage*15)
+        .map(m=><tr key={m.id}>
+         <td><code>{m.externalId}</code><div className="small text-body-secondary">{m.status}</div></td>
+         <td><select className="form-select form-select-sm"
+          aria-label={"Chaîne LMN24 pour "+m.externalId}
+          disabled={!!mappingBusy}
+          value={selection[m.id]??m.channelId??""}
+          onChange={e=>setSelection(prev=>({...prev,[m.id]:e.target.value}))}>
+          <option value="">Sélectionner une chaîne</option>
+          {channels.map(ch=><option key={ch.id} value={ch.id}>
+           {ch.countryLabel} · {ch.name}</option>)}
+         </select></td>
+         <td><div className="d-flex gap-1">
+          <button className="btn btn-sm btn-outline-primary" type="button"
+           disabled={!!mappingBusy||!(selection[m.id]??m.channelId)}
+           onClick={()=>void reviewMapping(m,"VERIFIED")}>Valider</button>
+          <button className="btn btn-sm btn-outline-secondary" type="button"
+           disabled={!!mappingBusy} onClick={()=>void reviewMapping(m,"REJECTED")}>Rejeter</button>
+         </div></td>
+        </tr>)}</tbody>
+      </table>
+     </div>
+     {!filteredMappings.length&&<p className="text-body-secondary">Aucune correspondance dans cette sélection.</p>}
+     <div className="d-flex align-items-center justify-content-between gap-2">
+      <span className="small text-body-secondary">{filteredMappings.length} correspondances · page {mappingPage}/{mappingPages}</span>
+      <div className="d-flex gap-1">
+       <button className="btn btn-sm btn-outline-secondary" type="button"
+        disabled={mappingPage<=1} onClick={()=>setMappingPage(p=>p-1)}>Précédent</button>
+       <button className="btn btn-sm btn-outline-secondary" type="button"
+        disabled={mappingPage>=mappingPages} onClick={()=>setMappingPage(p=>p+1)}>Suivant</button>
+      </div>
+     </div>
+    </>}
    </fieldset>
    <div className="d-flex justify-content-end mt-3">
     <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Fermer</button>
