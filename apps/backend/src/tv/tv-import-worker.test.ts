@@ -45,7 +45,7 @@ describe("SCRUM-117 worker partial country failures",()=>{
   expect(result.status).toBe("PARTIAL");
   expect(fake.query.mock.calls.some(c=>JSON.stringify(c).includes("upstream.secret.invalid"))).toBe(false);
   expect(fake.query.mock.calls.some(c=>String(c[0]).includes("UPDATE public.tv_import_scope")
-    &&JSON.stringify(c[1]).includes("ERROR"))).toBe(true);
+    &&String(c[0]).includes("status='ERROR'") &&JSON.stringify(c[1]).includes('"b"'))).toBe(true);
   expect(fake.release).toHaveBeenCalledOnce();
  });
  it("never publishes a country with incomplete coverage",async()=>{
