@@ -58,6 +58,29 @@ describe("Admin manual discovery worker dispatch",()=>{
    expect(mock.run).toHaveBeenCalledOnce();
   }finally{process.env.NODE_ENV=previous;}
  });
+ it("explicitly starts private programme staging with no coverage or public publication",async()=>{
+  const s=setup();
+  await expect(s.service.launchManualImport({
+   days:1,countryId:runId,mode:"STAGING",
+  })).resolves.toMatchObject({status:"STARTED",mode:"STAGING"});
+  expect(s.create).toHaveBeenCalledWith({
+   trigger:"MANUAL",days:1,countryId:runId,mode:"STAGING",
+  });
+  expect(mock.run).toHaveBeenCalledWith(expect.objectContaining({
+   runId,discoveryOnly:false,stagingOnly:true,attest:expect.any(Function),
+  }));
+  const args=mock.run.mock.calls[0]?.[0] as {attest:(x:unknown)=>Promise<unknown[]>};
+  await expect(args.attest({})).resolves.toEqual([]);
+ });
+ it("preserves staging mode when retrying failed scopes",async()=>{
+  const s=setup();
+  s.retryFailed.mockResolvedValue({id:runId,retried:1,mode:"STAGING"});
+  await expect(s.service.retryFailedImport(runId))
+   .resolves.toMatchObject({mode:"STAGING",retried:1});
+  expect(mock.run).toHaveBeenCalledWith(expect.objectContaining({
+   stagingOnly:true,discoveryOnly:false,
+  }));
+ });
  it("retries only failed scopes and immediately dispatches worker",async()=>{
   const s=setup();
   await expect(s.service.retryFailedImport(runId)).resolves.toMatchObject({
