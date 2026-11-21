@@ -20,7 +20,8 @@
     "db:format": "pnpm --filter @lmn24/database prisma:format",
     "db:migrate:dev": "pnpm --filter @lmn24/database prisma:migrate:dev",
     "db:migrate:deploy": "pnpm --filter @lmn24/database prisma:migrate:deploy",
-    "db:studio": "pnpm --filter @lmn24/database prisma:studio"
+    "db:studio": "pnpm --filter @lmn24/database prisma:studio",
+    "tv:migrate:geography": "node --env-file=.env scripts/migrate-tv-source-geography-local.cjs"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
