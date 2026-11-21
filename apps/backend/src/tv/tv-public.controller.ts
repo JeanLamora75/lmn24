@@ -26,6 +26,7 @@ const scheduleQuery=z.object({
 const countryQuery=z.object({locale:language}).strict();
 const searchQuery=z.object({
   q:z.string().trim().min(1).max(120),
+  section:z.enum(["all","channels","programmes"]).default("all"),
   channelsPage:pageQuery,programmesPage:pageQuery,
   pageSize:z.coerce.number().int().min(1).max(50).default(30),
 }).strict();
