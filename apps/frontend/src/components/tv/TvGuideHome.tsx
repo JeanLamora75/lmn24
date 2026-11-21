@@ -36,9 +36,9 @@ function duration(start:string,end:string):string{
  const minutes=Math.max(0,Math.round((Date.parse(end)-Date.parse(start))/60000));
  return Number.isFinite(minutes)?minutes+" min":"";
 }
-function TvCard({item,locale,mode,tab,countryIso2,localDate}:{
+function TvCard({item,locale,mode,tab,countryIso2}:{
  item:TvScheduleItem;locale:TvLocale;mode:ClockMode;tab:TvTab;
- countryIso2:string;localDate:string;
+ countryIso2:string;
 }){
  const copy=TV_COPY[locale],a=item.airing,zone=mode==="VISITOR"
   ?Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -126,6 +126,7 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
      setCountries(items);
      setCountryIso2(resolveCountry(items,preferences.countryIso2,locale)?.countryIso2??null);
      setCountryError(false);
+     setLoading(true);
    }).catch(()=>{
      if(!controller.signal.aborted)setCountryError(true);
    }).finally(()=>{if(!controller.signal.aborted)setLoadingCountries(false);});
@@ -158,16 +159,17 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
 
  const changeCountry=useCallback((iso:string)=>{
   setCountryIso2(iso);setSchedule(null);setPage(1);setDayIndex(0);setError(false);
+  setLoading(true);
  },[]);
  const changeTab=useCallback((next:TvTab)=>{
   if(next==="NOW"&&dayIndex>0)return;
-  setTab(next);setSchedule(null);setPage(1);setError(false);
+  setTab(next);setSchedule(null);setPage(1);setError(false);setLoading(true);
  },[dayIndex]);
  const changeDate=useCallback((step:-1|1)=>{
   const result=moveDate(dayIndex,tab,step);
   if(result.dayIndex===dayIndex)return;
   setDayIndex(result.dayIndex);setTab(result.tab);setPage(1);
-  setSchedule(null);setNotice(result.notice?copy.changeNow:"");
+  setSchedule(null);setLoading(true);setNotice(result.notice?copy.changeNow:"");
  },[dayIndex,tab,copy.changeNow]);
  const visible=useMemo(()=>filterBroadcastLanguage(schedule?.items??[],language),
   [schedule,language]);
@@ -242,7 +244,7 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
    {validScope&&visible.length>0&&<div className={styles.grid}>
      {visible.map((item,i)=><TvCard key={item.channel.id+":"+i} item={item}
        locale={locale} mode={clockMode} tab={tab} countryIso2={countryIso2??""}
-       localDate={date??""}/>)}
+       />)}
     </div>}
    {validScope&&!loading&&!error&&schedule.items.length===0&&
       <p className={styles.feedback}>{copy.empty}</p>}
