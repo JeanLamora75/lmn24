@@ -882,15 +882,17 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   const normal=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
   const pool=view==="countries"?countries:view==="channels"?channels:view==="sources"?sources:runs;
   return pool.filter(item=>{
-   const joined=normal(JSON.stringify(item));
-   if(filter&&!joined.includes(normal(filter)))return false;
+   const displayedCountry=view==="countries"&&"isoCode2" in item
+    ?region(item.isoCode2,locale,countryNames):"";
+   const joined=normal(JSON.stringify(item)+" "+displayedCountry);
+   if(filter&&!joined.includes(normal(filter.trim())))return false;
    if(country&&("countryId" in item)&&item.countryId!==country)return false;
    if(status==="active"&&("isActive" in item)&&!item.isActive)return false;
    if(status==="inactive"&&("isActive" in item)&&item.isActive)return false;
    if(status==="review"&&("needsReview" in item)&&!item.needsReview)return false;
    return true;
   });
- },[view,countries,channels,sources,runs,filter,country,status]);
+ },[view,countries,channels,sources,runs,filter,country,status,locale,countryNames]);
  const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
  const visible=filtered.slice((Math.min(page,pages)-1)*PAGE_SIZE,Math.min(page,pages)*PAGE_SIZE);
  const action=view==="channels"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("channel")}>Ajouter une chaîne</button>
