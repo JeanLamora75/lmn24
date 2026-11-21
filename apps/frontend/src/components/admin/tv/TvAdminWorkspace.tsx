@@ -1178,15 +1178,14 @@ export function TvChannelEditPage({associationId}:{associationId:string}){
  const [error,setError]=useState("");
  useEffect(()=>{
   const ctrl=new AbortController();
-  void fetch(api+"catalog/channels",{cache:"no-store",signal:ctrl.signal})
+  void fetch(api+"catalog/channels/associations/"+encodeURIComponent(associationId),
+   {cache:"no-store",signal:ctrl.signal})
    .then(async response=>{
-    if(!response.ok)throw new Error(messageFor(response.status));
-    return response.json() as Promise<{items:Channel[]}>;
-   }).then(data=>{
-    if(ctrl.signal.aborted)return;
-    const selected=data.items.find(item=>item.id===associationId);
-    if(!selected)throw new Error("Chaîne introuvable.");
-    setChannel(selected);
+    if(!response.ok)throw new Error(response.status===404
+     ?"Chaîne introuvable.":messageFor(response.status));
+    return response.json() as Promise<Channel>;
+   }).then(selected=>{
+    if(!ctrl.signal.aborted)setChannel(selected);
    }).catch(e=>{if(!ctrl.signal.aborted)setError((e as Error).message);})
    .finally(()=>{if(!ctrl.signal.aborted)setLoading(false);});
   return ()=>ctrl.abort();
