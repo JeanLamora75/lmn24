@@ -116,7 +116,7 @@ export class TvCatalogService {
     isActive: boolean; needsReview: boolean;
     manualNumber: number | null; officialNumber: number | null;
     assignedNumber: number | null; defaultVariantId: string | null;
-    expectedVersion?:string;
+    expectedVersion?:string|undefined;
   }) {
     await this.requireTvTables();
     // Unique index and composite default-variant FK are the final arbiter under concurrency.
