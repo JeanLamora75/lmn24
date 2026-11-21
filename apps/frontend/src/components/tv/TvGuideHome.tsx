@@ -10,6 +10,8 @@ import {
  type TvSchedule,type TvScheduleItem,type TvTab,
 } from "./tv-guide-model";
 import styles from "./tv-guide.module.css";
+import {useTvCountryNames} from "@/lib/tv-country-name-hook";
+import {tvCountryName} from "@/lib/tv-country-names";
 
 type CountryResponse={items:TvCountry[]};
 type ClockMode="CHANNEL"|"VISITOR";
@@ -89,6 +91,7 @@ function TvCard({item,locale,mode,tab,countryIso2,nowMs}:{
 
 export function TvGuideHome({locale}: {locale:TvLocale}){
  const copy=TV_COPY[locale];
+ const countryNames=useTvCountryNames(locale);
  const router=useRouter();
  const {preferences,ready}=useVisitorPreferences();
  const [countries,setCountries]=useState<TvCountry[]>([]);
@@ -201,7 +204,7 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
     <select className="form-select" disabled={loadingCountries||!countries.length}
       value={countryIso2??""} onChange={e=>changeCountry(e.target.value)}>
      {countries.length===0&&<option value="">—</option>}
-     {countries.map(c=><option key={c.countryIso2} value={c.countryIso2}>{c.label}</option>)}
+     {countries.map(c=><option key={c.countryIso2} value={c.countryIso2}>{tvCountryName(c.countryIso2,locale,countryNames)}</option>)}
     </select>
    </label>
    <label>{copy.language}
