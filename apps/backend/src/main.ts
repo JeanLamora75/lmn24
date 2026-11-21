@@ -25,8 +25,9 @@ async function bootstrap(): Promise<void> {
     }
     next();
   });
-  // Autorise les imports JSON d’horoscopes au-delà de la limite Express par défaut (100 Ko).
-  app.useBodyParser("json", { limit: "1mb" });
+  // Horoscopes and bounded TV icon uploads (1 Mo binary => ~1,33 Mo base64).
+  // The TV icon endpoint applies its own stricter file-size and format checks.
+  app.useBodyParser("json", { limit: "1.5mb" });
   app.enableShutdownHooks();
 
   const allowedOrigins = (process.env.CORS_ORIGINS ?? "http://localhost:3000")
