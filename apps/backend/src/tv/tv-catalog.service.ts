@@ -84,15 +84,25 @@ export class TvCatalogService {
   async discoverChannel(payload: {
     countryId: string; slug: string; name: string; websiteUrl?: string | null | undefined;
     logoUrl?: string | null | undefined;
+    xUrl?: string | null | undefined;
+    facebookUrl?: string | null | undefined;
+    instagramUrl?: string | null | undefined;
+    youtubeUrl?: string | null | undefined;
+    officialLiveUrl?: string | null | undefined;
   }) {
     await this.requireTvTables();
     const website = assertOfficialUrl(payload.websiteUrl ?? null);
     const logo = assertOfficialUrl(payload.logoUrl ?? null);
+    const x = assertOfficialUrl(payload.xUrl ?? null);
+    const facebook = assertOfficialUrl(payload.facebookUrl ?? null);
+    const instagram = assertOfficialUrl(payload.instagramUrl ?? null);
+    const youtube = assertOfficialUrl(payload.youtubeUrl ?? null);
+    const live = assertOfficialUrl(payload.officialLiveUrl ?? null);
     return this.database.prisma.$transaction(async (tx) => {
       // Reuse existing channel on a discovery from another country.
       const channels = await tx.$queryRaw<Array<{ id: string }>>`
-        INSERT INTO public.tv_channel(slug,name,website_url,logo_url)
-        VALUES (${payload.slug},${payload.name},${website},${logo})
+        INSERT INTO public.tv_channel(slug,name,website_url,logo_url,x_url,facebook_url,instagram_url,youtube_url,official_live_url)
+        VALUES (${payload.slug},${payload.name},${website},${logo},${x},${facebook},${instagram},${youtube},${live})
         ON CONFLICT(slug) DO UPDATE SET slug=EXCLUDED.slug
         RETURNING id
       `;
