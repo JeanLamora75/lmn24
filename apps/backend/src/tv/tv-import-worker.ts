@@ -1,5 +1,5 @@
 import { Client } from "pg";
-import { acquireTvWriterLease,publishTvRevision, type ValidatedAirings } from "./tv-import-publisher";
+import { acquireTvWriterLease,publishTvRevision, type ValidatedAirings, type TvWriterLease } from "./tv-import-publisher";
 import { deriveRunStatus,mergeAirings,type AiringCandidate,type Coverage } from "./tv-import-policy";
 import { recoverAbandonedTvRuns } from "./tv-import-recovery";
 
@@ -35,10 +35,12 @@ async function event(client:Client,runId:string,scopeId:string|null,level:"INFO"
      VALUES($1::uuid,$2::uuid,$3,$4,$5)`,[runId,scopeId,level,type,message]);
 }
 export async function processQueuedTvRun(
- connectionString:string,runId:string,loader:ValidatedEpgLoader,
+ connectionString:string,runId:string,
+ loader:ValidatedEpgLoader | ((lease:TvWriterLease)=>ValidatedEpgLoader),
 ):Promise<{runId:string;status:"QUEUED"|"SUCCESS"|"PARTIAL"|"ERROR"|"INTERRUPTED"}>{
  const lease=await acquireTvWriterLease(connectionString);
  const db=lease.client;
+ const activeLoader=typeof loader==="function"?loader(lease):loader;
  try{
    // New exclusive owner first finalizes abandoned RUNNING rows.
    await recoverAbandonedTvRuns(lease);
@@ -58,7 +60,7 @@ export async function processQueuedTvRun(
        break;
      }
      try{
-       const loaded=await loader.loadCountry(countryId,own.map(s=>s.id),lease.signal);
+       const loaded=await activeLoader.loadCountry(countryId,own.map(s=>s.id),lease.signal);
        const allowedScopeIds=new Set(own.map(s=>s.id));
        if(loaded.scopeResults.some(r=>!allowedScopeIds.has(r.scopeId))
           ||new Set(loaded.scopeResults.map(r=>r.scopeId)).size!==own.length)
