@@ -38,7 +38,7 @@ export class TvImportExecutionService {
   * matching pending import, then dispatch the discovery worker immediately.
   * No successful response may describe a merely queued run as started.
   */
- async launchManualImport(input:{days:number;countryId?:string|undefined;mode?:"DISCOVERY"|"STAGING"}){
+ async launchManualImport(input:{days:number;countryId?:string|undefined;mode?:"DISCOVERY"|"STAGING"|undefined}){
   if(!this.readiness().ready){
    throw new ServiceUnavailableException(
     "TV_SOURCE_USE_NOT_QUALIFIED: import execution unavailable; no run was created");
