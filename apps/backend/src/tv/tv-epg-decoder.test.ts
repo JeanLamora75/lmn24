@@ -17,6 +17,19 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   expect(decoded.coverage).toEqual([]);
   expect(parseXmltvTime("20260329030000 +0200")).toBe("2026-03-29T01:00:00.000Z");
  });
+ it("streams UTF-8 across chunk boundaries and retains escaped/CDATAs",async()=>{
+  const prefix='<tv><programme channel="fr" start="20261121190000 +0100" stop="20261121200000 +0100"><title>';
+  const pad=' '.repeat(64*1024-prefix.length-1);
+  const xml=prefix+pad+'Été &amp; cinéma</title><desc><![CDATA[Une <sélection> spéciale]]></desc></programme></tv>';
+  const decoded=await decodeEpgBuffer(Buffer.from(xml,"utf8"),"XMLTV");
+  expect(decoded.programmes).toHaveLength(1);
+  expect(decoded.programmes[0]?.originalTitle).toBe("Été & cinéma");
+  expect(decoded.programmes[0]?.originalSynopsis).toBe("Une <sélection> spéciale");
+ });
+ it("rejects malformed trailing XML even after valid emissions",async()=>{
+  const input='<tv><programme channel="fr" start="20261121190000 +0100" stop="20261121200000 +0100"><title>OK</title></programme><broken></tv>';
+  await expect(decodeEpgBuffer(Buffer.from(input),"XMLTV")).rejects.toThrow();
+ });
  it("requires real timezone offset and valid calendar dates",()=>{
   for(const bad of ["20261121193000","20260230000000 +0100","20261121193000 +9999"]){
    expect(()=>parseXmltvTime(bad),bad).toThrow();
