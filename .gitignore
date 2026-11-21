@@ -34,3 +34,7 @@ Thumbs.db
 uploads/
 apps/backend/uploads/
 SMN.zip
+
+# Downloaded TV icons are local runtime assets, not versioned content.
+apps/frontend/public/tv-icons/*
+!apps/frontend/public/tv-icons/.gitkeep
