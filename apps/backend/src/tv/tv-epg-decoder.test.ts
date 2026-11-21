@@ -18,9 +18,10 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   expect(parseXmltvTime("20260329030000 +0200")).toBe("2026-03-29T01:00:00.000Z");
  });
  it("streams UTF-8 across chunk boundaries and retains escaped/CDATAs",async()=>{
-  const prefix='<tv><programme channel="fr" start="20261121190000 +0100" stop="20261121200000 +0100"><title>';
-  const pad=' '.repeat(64*1024-prefix.length-1);
-  const xml=prefix+pad+'Été &amp; cinéma</title><desc><![CDATA[Une <sélection> spéciale]]></desc></programme></tv>';
+  const prefix='<tv><meta>';
+  const after='</meta><programme channel="fr" start="20261121190000 +0100" stop="20261121200000 +0100"><title>';
+  const pad='x'.repeat(64*1024-prefix.length-after.length-1);
+  const xml=prefix+pad+after+'Été &amp; cinéma</title><desc><![CDATA[Une <sélection> spéciale]]></desc></programme></tv>';
   const decoded=await decodeEpgBuffer(Buffer.from(xml,"utf8"),"XMLTV");
   expect(decoded.programmes).toHaveLength(1);
   expect(decoded.programmes[0]?.originalTitle).toBe("Été & cinéma");
