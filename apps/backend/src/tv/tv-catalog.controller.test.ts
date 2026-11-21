@@ -58,4 +58,13 @@ describe("SCRUM-115 TV catalogue ADMIN authorization", () => {
       officialNumber: null, assignedNumber: null, defaultVariantId: null,
     })).rejects.toMatchObject({ status: 400 });
   });
+ it("SCRUM-122 passes optimistic version token and respects ADMIN gate",async()=>{
+  const s=setup("ADMIN");
+  const id="a1000000-0000-4000-8000-000000000001";
+  const version="2026-11-21 08:00:00.123456+00";
+  await s.controller.upsertCountry(request,id,{referenceTimezone:"Europe/Paris",
+   isActive:false,expectedVersion:version});
+  expect(s.upsertCountry).toHaveBeenCalledWith(id,"Europe/Paris",false,version);
+ });
+
 });
