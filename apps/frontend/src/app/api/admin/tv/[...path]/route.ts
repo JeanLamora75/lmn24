@@ -32,7 +32,7 @@ async function handle(request:NextRequest,context:Context,method:"GET"|"POST"|"P
  if(body&&body.length>100_000)
   return NextResponse.json({message:"Payload too large"},{status:413,headers:{"cache-control":"no-store"}});
  return proxyAdminBackend(request,"/admin/tv/"+route+request.nextUrl.search,{
-  method,headers:body===undefined?undefined:{"content-type":"application/json"},body,
+  method,headers:body===undefined?{}:{"content-type":"application/json"},body:body??null,
  });
 }
 export const GET=(request:NextRequest,context:Context)=>handle(request,context,"GET");
