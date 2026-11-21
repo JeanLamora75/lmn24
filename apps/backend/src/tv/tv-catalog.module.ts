@@ -6,10 +6,11 @@ import { TvEpgSourcesController } from "./tv-epg-sources.controller";
 import { TvEpgSourcesService } from "./tv-epg-sources.service";
 import { TvImportRunsController } from "./tv-import-runs.controller";
 import { TvImportRunsService } from "./tv-import-runs.service";
+import { TvImportScheduler } from "./tv-import-scheduler";
 
 @Module({
   imports: [AuthModule],
   controllers: [TvCatalogController, TvEpgSourcesController, TvImportRunsController],
-  providers: [TvCatalogService, TvEpgSourcesService, TvImportRunsService],
+  providers: [TvCatalogService, TvEpgSourcesService, TvImportRunsService, TvImportScheduler],
 })
 export class TvCatalogModule {}
