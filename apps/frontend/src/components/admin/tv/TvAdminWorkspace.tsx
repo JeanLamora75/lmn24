@@ -29,6 +29,22 @@ type ImportRun={id:string;trigger:string;requestedDays:number;status:string;crea
 type ImportDetail=ImportRun&{scopes:{id:string;countryId:string;sourceId:string|null;
  status:string;attempts:number;errorMessage:string|null}[]};
 type ImportEvent={id:string;occurredAt:string;eventType:string;level:string;message:string};
+const failureMessages:Record<string,string>={
+ EPG_HTTP_404:"Fichier EPG introuvable sur le serveur du fournisseur (HTTP 404).",
+ EPG_HTTP_403:"Le fournisseur refuse l'accès au fichier (HTTP 403).",
+ EPG_HTTP_429:"Le fournisseur limite les téléchargements (HTTP 429).",
+ EPG_HTTP_5XX:"Le serveur du fournisseur rencontre une erreur.",
+ EPG_HTTP_REDIRECT:"Le fournisseur renvoie vers une autre URL ; la redirection est bloquée pour sécurité.",
+ EPG_HTTP_ERROR:"Le fournisseur refuse le téléchargement.",
+ EPG_DNS_ERROR:"Impossible de résoudre ou de valider l'adresse du fournisseur.",
+ EPG_TIMEOUT:"Le fournisseur ne répond pas dans le délai autorisé.",
+ EPG_SIZE_LIMIT:"Le flux EPG dépasse les limites techniques de téléchargement ou de décodage.",
+ EPG_XMLTV_INVALID:"Le fichier EPG ne respecte pas le format attendu.",
+ EPG_NO_PROGRAMMES:"Le fichier EPG ne contient aucun programme exploitable.",
+ EPG_DATABASE_WRITE:"La découverte a échoué pendant l'enregistrement des identifiants en base.",
+ EPG_SOURCE_UNAVAILABLE:"La source EPG n'a pas pu être analysée.",
+};
+function importDiagnostic(value:string):string{return failureMessages[value]??value;}
 const LABELS:Record<TvView,string>={
  overview:"Vue d'ensemble",countries:"Pays",channels:"Chaînes",
  sources:"Sources EPG",imports:"Imports",translations:"Traductions",statistics:"Statistiques",
@@ -645,14 +661,14 @@ export function TvAdminWorkspace({view}:{view:TvView}){
       </button>}
      <ul>
      {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {s.status}
-       {s.errorMessage?" — "+s.errorMessage:""}</li>)}</ul>
+       {s.errorMessage?" — "+importDiagnostic(s.errorMessage):""}</li>)}</ul>
      {["PARTIAL","ERROR","INTERRUPTED"].includes(detail.status)&&detail.scopes.some(s=>["ERROR","INTERRUPTED"].includes(s.status))&&
       <button type="button" className="btn btn-outline-primary" onClick={async()=>{
        try{const r=await request<{id:string}>("import-runs/"+detail.id+"/retry","POST",{});await openRun(r.id);
         setReload(v=>v+1);}catch(e){setError((e as Error).message);}
       }}>Relancer uniquement les échecs</button>}
      <h3 className="h6 mt-3">Journal d’événements</h3>
-     <ul>{events.map(e=><li key={e.id}>{new Date(e.occurredAt).toLocaleString("fr-FR")} · {e.level} · {e.eventType} : {e.message}</li>)}</ul>
+     <ul>{events.map(e=><li key={e.id}>{new Date(e.occurredAt).toLocaleString("fr-FR")} · {e.level} · {e.eventType} : {importDiagnostic(e.message)}</li>)}</ul>
     </>:<p>Chargement…</p>}
    </div>
   </AdminDataPanel>}
