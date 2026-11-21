@@ -48,12 +48,12 @@ export function TvWorldSearch({locale,initialQuery=""}:{locale:TvLocale;initialQ
  const [errors,setErrors]=useState({channels:false,programmes:false});
  const [pending,setPending]=useState(0);
  const requestId=useRef(0);
- const sectionRef=useRef<"all"|SectionName>("all");
+ const [requestedSection,setRequestedSection]=useState<"all"|SectionName>("all");
  const submit=(event:React.FormEvent)=>{
   event.preventDefault();
   const q=input.trim();
   requestId.current++;
-  sectionRef.current="all";
+  setRequestedSection("all");
   setQuery(q);setData(null);setItems({channels:[],programmes:[]});
   setPages({channels:1,programmes:1});setErrors({channels:false,programmes:false});
   setLoading(null);setPending(x=>x+1);
@@ -63,7 +63,7 @@ export function TvWorldSearch({locale,initialQuery=""}:{locale:TvLocale;initialQ
   const controller=new AbortController();
   const id=++requestId.current;
   const params=new URLSearchParams({q:query,channelsPage:String(pages.channels),
-   programmesPage:String(pages.programmes),pageSize:"30",section:sectionRef.current});
+   programmesPage:String(pages.programmes),pageSize:"30",section:requestedSection});
   fetch("/api/public/tv/search?"+params.toString(),{cache:"no-store",signal:controller.signal})
    .then(async response=>{
     if(!response.ok)throw new Error("request");
@@ -97,9 +97,9 @@ export function TvWorldSearch({locale,initialQuery=""}:{locale:TvLocale;initialQ
     if(!controller.signal.aborted&&requestId.current===id)setLoading(null);
    });
   return ()=>controller.abort();
- },[query,pages,pending]);
+ },[query,pages,pending,requestedSection]);
  const loadMore=useCallback((part:SectionName)=>{
-  sectionRef.current=part;
+  setRequestedSection(part);
   setLoading(part);setPages(old=>({...old,[part]:old[part]+1}));
  },[]);
  const retry=useCallback((part:SectionName)=>{
