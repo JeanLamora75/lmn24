@@ -55,6 +55,17 @@ describe("EPG import error diagnostics (no secrets leak)",()=>{
    .toBe("EPG_PROGRAMME_LIMIT");
  });
 
+ it("preserves the sanitized phase identifiers across repeated classification",()=>{
+  for(const code of [
+   "EPG_DNS_LOOKUP_FAILED",
+   "EPG_HTTP_REQUEST_FAILED",
+   "EPG_HTTP_TRANSFER_FAILED",
+   "EPG_GZIP_PROCESS_FAILED",
+  ]){
+   expect(EPG_FAILURE_CODES.has(code)).toBe(true);
+   expect(classifyEpgFailure(new Error(code),"DOWNLOAD")).toBe(code);
+  }
+ });
  it("distinguishes exact source, size and decoder stages without leaking details",()=>{
   const cases:[string,"DOWNLOAD"|"DECODE",string][]=[
    ["Invalid EPG source URL","DOWNLOAD","EPG_URL_INVALID"],
