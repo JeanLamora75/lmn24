@@ -80,7 +80,7 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
   expect(loaded.days).toEqual([]);
   expect(loaded.scopeResults).toEqual([
    {scopeId:"s1",outcome:"SUCCESS",message:"PROGRAMMES_STAGED"},
-   {scopeId:"s2",outcome:"SUCCESS",message:"DISCOVERY_ONLY"},
+   {scopeId:"s2",outcome:"SUCCESS",message:"RIGHTS_REQUIRED"},
   ]);
   expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_programme"))).toBe(true);
   expect(query.mock.calls.some(c=>c[0].includes("FROM public.tv_schedule_current"))).toBe(false);
