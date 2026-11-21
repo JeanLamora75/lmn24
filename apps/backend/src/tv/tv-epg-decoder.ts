@@ -18,7 +18,7 @@ export type EpgCoverageClaim = {
   /** Claim is untrusted until source licence/coverage independently verified. */
   verified:boolean;
 };
-export type EpgChannel={externalId:string;name:string;countryIso2:string|null};
+export type EpgChannel={externalId:string;name:string;countryIso2:string|null;logoUrl:string|null};
 export type EpgDecoded = {programmes:EpgProgramme[];coverage:EpgCoverageClaim[];
  channels?:EpgChannel[];skippedInvalidDuration?:number};
 
@@ -98,7 +98,7 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   const sax=new Parser({strict:true}).saxParser;
   const results:EpgProgramme[]=[];
   const channels:EpgChannel[]=[];
-  let currentChannel:{externalId:string;name:string;countryIso2:string|null}|null=null;
+  let currentChannel:EpgChannel|null=null;
   let channelField:"display-name"|"country"|null=null;
   let channelText="";
   let skippedInvalidDuration=0;
@@ -117,9 +117,20 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
     }
     if(depth===2 && node.name==="channel"){
       const externalId=node.attributes.id?.trim().slice(0,500)??"";
-      currentChannel=externalId?{externalId,name:externalId,countryIso2:null}:null;
+      currentChannel=externalId?{externalId,name:externalId,countryIso2:null,logoUrl:null}:null;
       const raw=node.attributes.country?.trim().toUpperCase();
       if(currentChannel&&raw&&/^[A-Z]{2}$/.test(raw))currentChannel.countryIso2=raw;
+      return;
+    }
+    if(currentChannel&&depth===3&&node.name==="icon"&&!currentChannel.logoUrl){
+      const value=node.attributes.src?.trim()??"";
+      if(value.length<=2048){
+        try{
+          const url=new URL(value);
+          if(url.protocol==="https:"||url.protocol==="http:")
+            currentChannel.logoUrl=url.toString();
+        }catch{/* Invalid upstream channel logo is ignored. */}
+      }
       return;
     }
     if(currentChannel&&depth===3&&(node.name==="display-name"||node.name==="country")){
