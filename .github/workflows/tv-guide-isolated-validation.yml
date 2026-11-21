@@ -96,9 +96,6 @@ jobs:
       - name: Validate SCRUM-117 retention authorization and recent-publication denial
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated < docs/BMAD/guide-tv-mondial-scrum117-retention-recovery-isolated-smoke.sql
 
-      - name: Validate SCRUM-118 public TV visibility and content-level rights
-        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated < docs/BMAD/guide-tv-mondial-scrum118-public-read-isolated-smoke.sql
-
       - name: Rehearse on LMN24 full bootstrap schema in separate throwaway database
         run: |
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d postgres -c "CREATE DATABASE tv_guide_rehearsal;"
@@ -119,6 +116,9 @@ jobs:
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-migration-candidate.sql
           docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-winston-migration-candidate.sql
           docker exec ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal -Atc "SELECT CASE WHEN (SELECT COUNT(*) FROM country WHERE slug='baseline-britain')=1 AND (SELECT COUNT(*) FROM category WHERE slug='baseline')=1 AND (SELECT COUNT(*) FROM source WHERE slug='baseline-news')=1 THEN 'BASELINE_OK' ELSE 'FAIL' END;" | grep -x BASELINE_OK
+      - name: Validate SCRUM-118 on complete disposable LMN24 country and TV schema
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_rehearsal < docs/BMAD/guide-tv-mondial-scrum118-public-read-isolated-smoke.sql
+
       - name: Test independent concurrent PostgreSQL sessions
         env:
           TV_REHEARSAL_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/tv_guide_rehearsal
