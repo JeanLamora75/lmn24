@@ -88,6 +88,8 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
       })),
     };
   }
+  // Enforce the same DTD/entity policy for direct decoder calls as for downloads.
+  assertSafeXmltvDeclarations(data.toString("utf8"));
   // xml2js uses the SAX parser internally. Process its XML events directly,
   // rather than materializing the entire <tv> document and all programme nodes.
   // Input is fed in bounded chunks so the parser only holds one item at a time.
