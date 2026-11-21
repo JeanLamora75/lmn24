@@ -48,9 +48,6 @@ CREATE TABLE IF NOT EXISTS public.tv_channel_country (
     (official_number IS NULL OR official_number > 0)
     AND (manual_number IS NULL OR manual_number > 0)
     AND (assigned_number IS NULL OR assigned_number > 0)
-  ),
-  CONSTRAINT tv_channel_country_active_number CHECK (
-    NOT is_active OR COALESCE(manual_number,official_number,assigned_number) IS NOT NULL
   )
 );
 -- Must enforce across all associations, not only active ones; potential
