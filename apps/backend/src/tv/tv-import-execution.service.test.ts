@@ -21,12 +21,37 @@ function setup(overrides:Record<string,string>={},status="QUEUED"){
  Object.assign(vars,overrides);
  const config={get:(key:string)=>vars[key]} as unknown as ConfigService;
  const getRun=vi.fn().mockResolvedValue({id:runId,status,scopes:[]});
- const runs={getRun} as unknown as TvImportRunsService;
- return {service:new TvImportExecutionService(config,runs),getRun};
+ const findQueuedManual=vi.fn().mockResolvedValue(null);
+ const create=vi.fn().mockResolvedValue({id:runId,status:"QUEUED",scopeCount:1});
+ const runs={getRun,findQueuedManual,create} as unknown as TvImportRunsService;
+ return {service:new TvImportExecutionService(config,runs),getRun,findQueuedManual,create};
 }
 beforeEach(()=>{mock.run.mockReset();mock.run.mockResolvedValue({status:"SUCCESS"});});
 
 describe("Admin manual discovery worker dispatch",()=>{
+ it("one click starts import, without leaving a merely queued success",async()=>{
+  const s=setup();
+  await expect(s.service.launchManualImport({days:1,countryId:runId}))
+   .resolves.toMatchObject({id:runId,status:"STARTED",mode:"DISCOVERY",reusedPendingRun:false});
+  expect(s.create).toHaveBeenCalledWith({trigger:"MANUAL",days:1,countryId:runId});
+  expect(mock.run).toHaveBeenCalledOnce();
+ });
+ it("reuses a matching queued France run rather than creating a duplicate",async()=>{
+  const s=setup();
+  s.findQueuedManual.mockResolvedValue({id:runId});
+  await expect(s.service.launchManualImport({days:1,countryId:runId}))
+   .resolves.toMatchObject({id:runId,status:"STARTED",reusedPendingRun:true});
+  expect(s.create).not.toHaveBeenCalled();
+  expect(mock.run).toHaveBeenCalledOnce();
+ });
+ it("preflight blocks unapproved external network before creating any run",async()=>{
+  const s=setup({TV_EPG_NETWORK_ENABLED:"false"});
+  await expect(s.service.launchManualImport({days:1,countryId:runId}))
+   .rejects.toMatchObject({status:503});
+  expect(s.findQueuedManual).not.toHaveBeenCalled();
+  expect(s.create).not.toHaveBeenCalled();
+  expect(mock.run).not.toHaveBeenCalled();
+ });
  it("fails closed before any DB or network work when operational flags missing",async()=>{
   for(const key of keys){
    const s=setup({[key]:"false"});
