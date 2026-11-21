@@ -1,7 +1,7 @@
 import {ConflictException,Injectable,Logger,ServiceUnavailableException} from "@nestjs/common";
 import {ConfigService} from "@nestjs/config";
 import {TvImportRunsService} from "./tv-import-runs.service";
-import {runAuthorizedTvImport,tvEpgExecutionApproved} from "./tv-import-authorized-runner";
+import {runAuthorizedTvImport,tvEpgExecutionApproved,tvLocalDiscoveryApproved} from "./tv-import-authorized-runner";
 import {noCoverageAttested} from "./tv-epg-loader";
 
 const REQUIRED_FLAGS=[
@@ -19,11 +19,19 @@ export class TvImportExecutionService {
  private readonly starting=new Set<string>();
  constructor(private readonly config:ConfigService,private readonly runs:TvImportRunsService){}
 
+ private executionEnvironment(){
+  return {...Object.fromEntries(REQUIRED_FLAGS.map(key=>[key,this.config.get<string>(key)])),
+   NODE_ENV:process.env.NODE_ENV,
+   TV_PUBLIC_ENABLED:this.config.get<string>("TV_PUBLIC_ENABLED"),
+   TV_PUBLIC_RELEASE_APPROVED:this.config.get<string>("TV_PUBLIC_RELEASE_APPROVED")};
+ }
  readiness(){
-  const env=Object.fromEntries(REQUIRED_FLAGS.map(key=>[key,this.config.get<string>(key)]));
+  const env=this.executionEnvironment();
+  const connectionString=this.config.get<string>("DATABASE_URL")??"";
+  const local=tvLocalDiscoveryApproved(env,connectionString);
   const missing=REQUIRED_FLAGS.filter(key=>env[key]!=="true");
-  return {ready:tvEpgExecutionApproved(env),mode:"DISCOVERY" as const,
-   missingFlags:missing,publicPublication:false};
+  return {ready:local||tvEpgExecutionApproved(env),mode:"DISCOVERY" as const,
+   missingFlags:local?[]:missing,publicPublication:false};
  }
 
  /** Single-click workflow: validate before queueing, reuse an existing
@@ -65,7 +73,7 @@ export class TvImportExecutionService {
    this.starting.delete(runId);
    throw error;
   }
-  const env=Object.fromEntries(REQUIRED_FLAGS.map(key=>[key,this.config.get<string>(key)]));
+  const env=this.executionEnvironment();
   // The worker owns the database lease. Errors do not disappear into the HTTP
   // response; its transactional run status and event history remain authoritative.
   // The lease/recovery protocol handles interrupted RUNNING work.
