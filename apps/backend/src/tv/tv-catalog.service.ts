@@ -64,7 +64,6 @@ export class TvCatalogService {
   async listChannels(countryId?: string, search="") {
     await this.requireTvTables();
     const pattern="%"+search.trim().replace(/[!%_]/g,(char)=>"!"+char)+"%";
-    return this.database.prisma.$queryRaw`")+"%";
     return this.database.prisma.$queryRaw`
       SELECT cc.id, cc.country_id AS "countryId",
              cc.channel_id AS "channelId", c.slug, c.name, c.logo_url AS "logoUrl",
