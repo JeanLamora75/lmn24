@@ -538,7 +538,7 @@ function ChannelQuickControls({item,onSaved}:{item:Channel;onSaved:()=>void}){
     <button type="button" className="btn btn-sm btn-outline-secondary" disabled={pending}
      title="Annuler" aria-label="Annuler la saisie du numéro"
      onClick={()=>{setEditing(false);setError("");}}>×</button>
-   </div>:<button type="button" className="btn btn-sm btn-link text-body text-decoration-none"
+   </div>:<button type="button" className="btn btn-sm btn-link text-body text-decoration-none w-100 text-start"
      disabled={pending} title="Modifier le numéro"
      aria-label={"Modifier le numéro de "+item.name}
      onClick={()=>{setNumber(currentNumber===null?"":String(currentNumber));setError("");setEditing(true);}}>
