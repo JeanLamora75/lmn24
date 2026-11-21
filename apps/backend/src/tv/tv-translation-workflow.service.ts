@@ -81,6 +81,8 @@ export class TvTranslationWorkflowService{
    const response=await fetch(endpoint,{method:"POST",
     headers:{"content-type":"application/json"},redirect:"error",signal:controller.signal,
     body:JSON.stringify({q:content,source,target,format:"text"})});
+   if(response.status===400||response.status===422)
+    throw new Error("TRANSLATION_UNSUPPORTED");
    if(!response.ok||Number(response.headers.get("content-length")??0)>30000)
     throw new Error("TRANSLATION_PROVIDER_UNAVAILABLE");
    const raw=await response.text();
@@ -101,19 +103,25 @@ export class TvTranslationWorkflowService{
   const source=descriptions.find(d=>d.languageCode===sourceLanguage);
   if(!source||!source.content.trim())
    throw new ConflictException("TV_TRANSLATION_SOURCE_MISSING");
+  // The current schema cannot trace rights of SOURCE descriptions back to
+  // a licensed EPG source. Only administrator-authored text is safe to submit.
+  if(source.origin!=="MANUAL")
+   throw new ConflictException("TV_TRANSLATION_SOURCE_RIGHTS_UNVERIFIED");
   const targets=retryLanguages(descriptions,attempts,sourceLanguage);
   if(!targets.length)return {status:"COMPLETE" as const,previewId:null,
    translated:{},failed:[],unsupported:[],missing:[]};
   const translated:Record<string,string>={};
   const failed:string[]=[];
+  const unsupported:string[]=[];
   for(const target of targets){
    try{translated[target]=await this.translate(endpoint,source.content,sourceLanguage,target);}
-   catch{
-    failed.push(target);
+   catch(error){
+    const notSupported=error instanceof Error&&error.message==="TRANSLATION_UNSUPPORTED";
+    (notSupported?unsupported:failed).push(target);
     // Deliberately no raw provider error or credentials in stored logs.
     await this.db.prisma.$executeRaw`
      INSERT INTO public.tv_translation_attempt(channel_id,provider_id,target_language,status)
-     VALUES(${channelId}::uuid,${provider.id}::uuid,${target},'ERROR')`;
+     VALUES(${channelId}::uuid,${provider.id}::uuid,${target},${notSupported?'UNSUPPORTED':'ERROR'})`;
    }
   }
   const previewId=Object.keys(translated).length?randomUUID():null;
@@ -125,8 +133,8 @@ export class TvTranslationWorkflowService{
    this.previews.set(previewId,{channelId,sourceLanguage,sourceVersion:source.version,
     providerId:provider.id,translated,createdAt:Date.now()});
   }
-  return {status:failed.length?"PARTIAL":"READY",previewId,translated,
-   failed,unsupported:[],missing:[],providerId:provider.id};
+  return {status:failed.length||unsupported.length?"PARTIAL":"READY",previewId,translated,
+   failed,unsupported,missing:[],providerId:provider.id};
  }
  async approve(channelId:string,previewId:string,languages:string[]){
   await this.requireTables();
