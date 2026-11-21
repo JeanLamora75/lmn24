@@ -77,7 +77,10 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
    transport,attest,stagingOnly:true,now:new Date("2026-11-21T12:00:00Z"),
   });
   const loaded=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
-  expect(loaded.days).toEqual([]);
+  expect(loaded.days).toHaveLength(1);
+  expect(loaded.days[0]?.privateStaging).toBe(true);
+  expect(loaded.days[0]?.candidates).toHaveLength(1);
+  expect(loaded.days[0]?.coverage).toEqual([]);
   expect(loaded.scopeResults).toEqual([
    {scopeId:"s1",outcome:"SUCCESS",message:"PROGRAMMES_STAGED"},
    {scopeId:"s2",outcome:"SUCCESS",message:"RIGHTS_REQUIRED"},
