@@ -96,6 +96,6 @@ export class TvImportRunsController {
  async retry(@Req() request:ReqLike,@Param("id") id:string){
   await this.authorize(request);
   if(!uuid.safeParse(id).success)throw new BadRequestException("Invalid TV import ID");
-  return this.runs.retryFailed(id);
+  return this.execution.retryFailedImport(id);
  }
 }
