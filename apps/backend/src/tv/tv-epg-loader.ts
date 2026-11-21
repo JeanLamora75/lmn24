@@ -116,7 +116,15 @@ export function createVerifiedDbEpgLoader(
       // Cache local channel icons before entering the database transaction.
       // Missing or invalid icons do not prevent importing channel identities.
       const iconMap=new Map<string,string>();
-      const remoteIcons=(decoded.channels??[]).filter(c=>!!c.logoUrl);
+      const declaredIds=(decoded.channels??[]).map(c=>c.externalId);
+      const stored=declaredIds.length?await db.query<{external_id:string}>(`
+        SELECT m.external_id
+        FROM public.tv_channel_external_id m
+        JOIN public.tv_channel c ON c.id=m.channel_id
+        WHERE m.source_id=$1::uuid AND m.external_id=ANY($2::text[])
+          AND c.logo_url LIKE '/tv-icons/%'`,[row.sourceId,declaredIds]):{rows:[]};
+      const alreadyLocal=new Set(stored.rows.map(x=>x.external_id));
+      const remoteIcons=(decoded.channels??[]).filter(c=>!!c.logoUrl&&!alreadyLocal.has(c.externalId));
       for(let offset=0;offset<remoteIcons.length;offset+=12){
        if(signal.aborted)throw new TvImportLeaseLostError();
        await Promise.all(remoteIcons.slice(offset,offset+12).map(async c=>{
@@ -166,7 +174,8 @@ export function createVerifiedDbEpgLoader(
           JOIN unnest($2::text[],$3::text[]) AS incoming(external_id,logo_url)
             ON incoming.external_id=m.external_id
           WHERE m.source_id=$1::uuid AND m.channel_id=c.id
-            AND c.logo_url IS NULL AND incoming.logo_url IS NOT NULL`,
+            AND (c.logo_url IS NULL OR c.logo_url NOT LIKE '/tv-icons/%')
+            AND incoming.logo_url IS NOT NULL`,
           [row.sourceId,externalIds,logos]);
         // Explicit ISO country metadata is provisional: create an inactive
         // national association flagged for review, never publish on this basis.
