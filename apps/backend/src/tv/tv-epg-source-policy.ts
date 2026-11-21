@@ -81,8 +81,11 @@ export function validateEpgSourceUrl(raw:string): URL {
   return url;
 }
 export const EPG_FETCH_LIMITS = {
-  maxCompressedBytes: 12*1024*1024,
-  maxExpandedBytes: 48*1024*1024,
+  // Bounded headroom for global XMLTV guides (~50 MB uncompressed).
+  // These caps stay enforced on both transport and decoded input to prevent
+  // decompression bombs and uncontrolled memory use until streaming ingestion.
+  maxCompressedBytes: 24*1024*1024,
+  maxExpandedBytes: 96*1024*1024,
   maxRedirects: 0, // Disabled: no redirect bypass of DNS/SSRF checks.
-  timeoutMs: 15000,
+  timeoutMs: 30000,
 } as const;
