@@ -69,6 +69,37 @@ describe("Safe pinned IPv4 EPG download",()=>{
    .rejects.toThrow("EPG_DNS_NON_PUBLIC");
   expect(fake.request).toHaveBeenCalledTimes(1);
  });
+ it("retries a temporary reset and resolves DNS again before a successful attempt",async()=>{
+  fake.lookup.mockResolvedValue([{address:"1.1.1.1",family:4}]);
+  fake.request.mockImplementationOnce(()=>{
+   const req=new EventEmitter() as EventEmitter&{end:()=>void};
+   req.end=()=>{const error=Object.assign(new Error("socket hang up"),{code:"ECONNRESET"});req.emit("error",error);};
+   return req;
+  });
+  respond(200,"<tv></tv>");
+  await expect(downloadEpgSource("https://example.org/guide.xml","XMLTV"))
+   .resolves.toEqual(Buffer.from("<tv></tv>"));
+  expect(fake.request).toHaveBeenCalledTimes(2);
+  expect(fake.lookup).toHaveBeenCalledTimes(2);
+ });
+ it("stops after three temporary connection failures",async()=>{
+  fake.lookup.mockResolvedValue([{address:"1.1.1.1",family:4}]);
+  for(let i=0;i<3;i++)fake.request.mockImplementationOnce(()=>{
+   const req=new EventEmitter() as EventEmitter&{end:()=>void};
+   req.end=()=>req.emit("error",Object.assign(new Error("refused"),{code:"ECONNREFUSED"}));
+   return req;
+  });
+  await expect(downloadEpgSource("https://example.org/guide.xml","XMLTV"))
+   .rejects.toThrow("EPG_CONNECTION_REFUSED");
+  expect(fake.request).toHaveBeenCalledTimes(3);
+ });
+ it("never retries HTTP 403",async()=>{
+  fake.lookup.mockResolvedValue([{address:"1.1.1.1",family:4}]);
+  respond(403,"");
+  await expect(downloadEpgSource("https://example.org/guide.xml","XMLTV"))
+   .rejects.toThrow("EPG_HTTP_403");
+  expect(fake.request).toHaveBeenCalledTimes(1);
+ });
  it("refuses HTTPS-to-HTTP downgrade",async()=>{
   fake.lookup.mockResolvedValueOnce([{address:"1.1.1.1",family:4}]);
   respond(302,"",{location:"http://example.org/guide.xml"});
