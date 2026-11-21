@@ -672,7 +672,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     {detail?<><p>Statut : {detail.status}</p>
 
      <ul>
-     {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {s.status}
+     {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {sources.find(source=>source.id===s.sourceId)?.name??"Source EPG"} · {s.status}
        {s.errorMessage?" — "+importDiagnostic(s.errorMessage):""}</li>)}</ul>
      {["PARTIAL","ERROR","INTERRUPTED"].includes(detail.status)&&detail.scopes.some(s=>["ERROR","INTERRUPTED"].includes(s.status))&&
       <button type="button" className="btn btn-outline-primary" onClick={async()=>{
