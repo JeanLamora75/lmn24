@@ -1,5 +1,5 @@
 import { Client } from "pg";
-import { acquireTvWriterLease,publishTvRevision, type ValidatedAirings, type TvWriterLease } from "./tv-import-publisher";
+import { acquireTvWriterLease,publishTvRevision,stagePrivateTvRevision, type ValidatedAirings, type TvWriterLease } from "./tv-import-publisher";
 import { deriveRunStatus,mergeAirings,type AiringCandidate,type Coverage } from "./tv-import-policy";
 import { recoverAbandonedTvRuns } from "./tv-import-recovery";
 import {EPG_FAILURE_CODES} from "./tv-epg-failure";
@@ -13,6 +13,7 @@ export type EpgDayBatch={
   expectedRevisionId:string|null;
   candidates:readonly AiringCandidate[];
   coverage:readonly Coverage[];
+  privateStaging?:boolean;
 };
 export type ScopeResult={ scopeId:string;outcome:"SUCCESS"|"ERROR"|"INTERRUPTED";message?:string };
 export interface ValidatedEpgLoader {
@@ -69,16 +70,26 @@ export async function processQueuedTvRun(
        for(const day of loaded.days){
          if(day.countryId!==countryId)throw new Error("Cross-country batch rejected");
          const merge=mergeAirings(day.candidates,day.coverage,day.dayStartMs,day.dayEndMs);
-         if(!merge.canReplaceExisting)throw new Error("TV_EPG_COVERAGE_UNCONFIRMED");
+         if(!day.privateStaging&&!merge.canReplaceExisting)
+          throw new Error("TV_EPG_COVERAGE_UNCONFIRMED");
          const airings:ValidatedAirings[]=merge.airings.map(x=>({
             programmeId:x.programmeId,sourceId:x.sourceId,startsAt:x.startsAt,
             endsAt:x.endsAt,fingerprint:x.fingerprint,
          }));
-         await publishTvRevision(lease,{
-           variantId:day.variantId,countryId:day.countryId,localDate:day.localDate,
-           runId,expectedRevisionId:day.expectedRevisionId,
-           airings,fullCoverageConfirmed:true,
-         });
+         if(day.privateStaging){
+           // Private drafts preserve source/airing provenance but NEVER switch
+           // the current published grid or bypass coverage qualification.
+           if(airings.length)await stagePrivateTvRevision(lease,{
+             variantId:day.variantId,countryId:day.countryId,
+             localDate:day.localDate,runId,airings,
+           });
+         }else{
+           await publishTvRevision(lease,{
+             variantId:day.variantId,countryId:day.countryId,localDate:day.localDate,
+             runId,expectedRevisionId:day.expectedRevisionId,
+             airings,fullCoverageConfirmed:true,
+           });
+         }
          if(merge.rejected.length)await event(db,runId,null,"WARN","MERGE_CONFLICT",
            "Rejected "+merge.rejected.length+" duplicate/overlapping/invalid EPG candidates");
        }
@@ -101,7 +112,7 @@ export async function processQueuedTvRun(
            rightsNeeded?"RIGHTS_REQUIRED":mappingsNeeded?"MAPPINGS_REQUIRED":
              status==="SUCCESS"?"SCOPE_SUCCESS":"SCOPE_FAILED",
            discoveryOnly?"Source scanned; unknown mappings await review, no programmes published":
-           staged?"Verified, licensed programmes staged privately; no schedules published":
+           staged?"Verified licensed programmes and draft schedules staged privately; no public grids published":
            rightsNeeded?"Source requires approved programme rights and a non-empty evidence reference; no programmes staged":
            mappingsNeeded?"No verified channel mappings in requested period; no programmes staged":
            status==="SUCCESS"?"Imported verified scope":diagnostic);
