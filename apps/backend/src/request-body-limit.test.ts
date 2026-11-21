@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 describe("Backend JSON request size configuration", () => {
-  it("raises the JSON body parser limit to one MiB for horoscope uploads", () => {
+  it("accepts horoscope JSON and bounded base64 TV icon uploads", () => {
     const main = readFileSync(resolve(process.cwd(), "src/main.ts"), "utf8");
     expect(main).toContain("NestFactory.create<NestExpressApplication>");
     expect(main).toMatch(/app\.useBodyParser\(["']json["'],\s*\{\s*limit:\s*["']1mb["']\s*\}\)/);
