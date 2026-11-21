@@ -159,6 +159,16 @@ export class TvImportRunsService {
       `;
       if(!current.length)throw new NotFoundException("TV import run not found");
       if(current[0].status==="RUNNING")throw new ConflictException("TV_IMPORT_RUNNING_CANNOT_DELETE");
+      // A queued job has no completed work: physically remove it so a worker
+      // cannot claim it after it disappears from the UI.
+      if(current[0].status==="QUEUED"){
+        await tx.$executeRaw`
+          DELETE FROM public.tv_import_run WHERE id=${id}::uuid AND status='QUEUED'
+        `;
+        return {id,deleted:true};
+      }
+      // Completed work remains traceable for data provenance; an audit
+      // tombstone removes it from the admin list without mutating TV content.
       await tx.$executeRaw`
         INSERT INTO public.tv_import_event(run_id,level,event_type,message)
         SELECT ${id}::uuid,'INFO','ADMIN_DELETED','Removed from administration'
