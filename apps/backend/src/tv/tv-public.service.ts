@@ -205,9 +205,17 @@ export class TvPublicService {
   }
   async airingDetails(id:string,now=new Date()){
     await this.requireSchema();
-    const rows=await this.db.prisma.$queryRaw<AiringRow[]>`
+    const rows=await this.db.prisma.$queryRaw<Array<AiringRow & {
+      channelId:string;channelName:string;channelNumber:number;
+      countryIso2:string;referenceTimeZone:string;variantTimeZone:string;
+    }>>`
       SELECT a.id,r.variant_id AS "variantId",a.source_id AS "sourceId",
         a.starts_at AS "startsAt",a.ends_at AS "endsAt",p.title,p.category,
+        cc.channel_id AS "channelId",ch.name AS "channelName",
+        COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)::int AS "channelNumber",
+        trim(c.iso_code2) AS "countryIso2",
+        tc.reference_timezone AS "referenceTimeZone",
+        v.timezone AS "variantTimeZone",
         CASE WHEN src.synopsis_rights_status='APPROVED' AND
           nullif(btrim(src.synopsis_rights_reference),'') IS NOT NULL
           THEN p.synopsis ELSE NULL END AS description,
@@ -217,12 +225,14 @@ export class TvPublicService {
       FROM public.tv_airing a
       JOIN public.tv_schedule_revision r ON r.id=a.revision_id
       JOIN public.tv_schedule_current cur ON cur.revision_id=r.id
+      JOIN public.tv_channel_variant v ON v.id=r.variant_id
       JOIN public.tv_programme p ON p.id=a.programme_id
       JOIN public.tv_source src ON src.id=a.source_id
       JOIN public.tv_source_country sc ON sc.source_id=src.id AND sc.is_active
       JOIN public.tv_variant_country vc ON vc.variant_id=r.variant_id
       JOIN public.tv_channel_country cc ON cc.id=vc.channel_country_id
         AND cc.country_id=sc.country_id
+      JOIN public.tv_channel ch ON ch.id=cc.channel_id
       JOIN public.tv_country tc ON tc.country_id=cc.country_id
       JOIN public.country c ON c.id=tc.country_id
       WHERE a.id=${id}::uuid AND r.status='PUBLISHED' AND r.published_at IS NOT NULL
@@ -230,7 +240,7 @@ export class TvPublicService {
         AND cc.is_active AND NOT cc.needs_review
         AND src.programme_rights_status='APPROVED'
         AND nullif(btrim(src.programme_rights_reference),'') IS NOT NULL
-      LIMIT 1`;
+      ORDER BY c.iso_code2,cc.channel_id LIMIT 1`;
     const air=rows[0];
     if(!air)throw new NotFoundException("TV_NOT_FOUND");
     // A published airing remains authentic; do not substitute a fictional
@@ -238,7 +248,13 @@ export class TvPublicService {
     const iso=serializeAirings([air])[0]!;
     if(Date.parse(iso.endsAt)<now.getTime()-7*86_400_000)
       throw new NotFoundException("TV_NOT_FOUND");
-    return iso;
+    const {channelId,channelName,channelNumber,countryIso2,variantTimeZone,referenceTimeZone}=air;
+    return {...iso,
+      channel:{id:channelId,name:channelName,number:channelNumber},
+      countryIso2,referenceTimeZone,variantTimeZone,
+      // Not available in the licensed candidate schema. Never invent seasons,
+      // episodes, official streaming destinations or editorial translations.
+      season:null,episode:null};
   }
   responseLanguages(){return [...TV_LANGUAGES];}
 }
