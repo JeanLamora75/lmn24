@@ -823,6 +823,8 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     channels={channels.map(ch=>({id:ch.channelId,name:ch.name,countryId:ch.countryId,
      countryLabel:region(countryCodes.get(ch.countryId)??"",locale,countryNames),
      defaultVariantId:ch.defaultVariantId}))}
+    countries={countries.map(c=>({id:c.countryId,
+     name:region(c.isoCode2,locale,countryNames),timezone:c.referenceTimezone,code:c.isoCode2}))}
     onClose={()=>setSourceEditor(null)} onSaved={saved}/>}
   {dialog==="priorities"&&<SourcePrioritiesEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
   {dialog==="channel"&&<ChannelCreateEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
