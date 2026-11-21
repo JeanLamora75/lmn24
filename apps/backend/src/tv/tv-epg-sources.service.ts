@@ -84,7 +84,7 @@ export class TvEpgSourcesService {
   }
 
   async updateSourceConfiguration(sourceId:string,input:{
-    name:string;sourceUrl:string;format:EpgFormat;isActive:boolean;expectedVersion?:string;
+    name:string;sourceUrl:string;format:EpgFormat;isActive:boolean;expectedVersion?:string|undefined;
   }) {
     await this.requireSchema();
     const url=validateEpgSourceUrl(input.sourceUrl).toString();
