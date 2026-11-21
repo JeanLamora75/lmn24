@@ -1,5 +1,5 @@
 "use client";
-import {useEffect,useMemo,useRef,useState} from "react";
+import {Fragment,useEffect,useMemo,useRef,useState} from "react";
 import {mergeSocialDiscovery, SOCIAL_KEYS, SOCIAL_LABELS, type SocialKey, type SocialLinkValues} from "@/lib/source-social-discovery";
 import {useRouter} from "next/navigation";
 import {TvTranslationPanel} from "./TvTranslationPanel";
@@ -11,6 +11,7 @@ import {useAdminSessionFilter} from "@/lib/admin-session-filters";
 import styles from "@/app/admin/(protected)/tv/tv-admin.module.css";
 import {loadTvCountryNames,tvCountryName,type TvCountryNames} from "@/lib/tv-country-names";
 import {TvSortableHeader,sortTvRows,nextTvSort,type TvSortState} from "./TvSortableHeader";
+import {groupTvChannels,tvChannelDisplayKey} from "./tv-channel-grouping";
 
 export type TvView="overview"|"countries"|"channels"|"sources"|"imports"|"translations"|"statistics"|"associations";
 type Country={countryId:string;isoCode2:string;referenceTimezone:string;isActive:boolean;
@@ -650,6 +651,7 @@ function EpgDiscoveryInbox({countries,onImported}:{
  const [feedback,setFeedback]=useState("");
  const [refresh,setRefresh]=useState(0);
  const [sort,setSort]=useState<TvSortState>(null);
+ const [expandedChannelGroups,setExpandedChannelGroups]=useState<string[]>([]);
  const toggleSort=(key:string)=>{setSort(current=>nextTvSort(current,key));setPage(1);setSelected([]);};
  async function importSelected(){
   if(saving||!countryId||!selected.length)return;
@@ -941,7 +943,11 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    return true;
   });
  },[view,sortedCountries,channels,sources,runs,filter,country,status,locale,countryNames]);
- const sortedRows=useMemo(()=>sortTvRows(filtered,sort,(item,key)=>{
+ const channelGroups=useMemo(()=>groupTvChannels(
+  view==="channels"?(filtered as Channel[]):[]
+ ),[filtered,view]);
+ const rowsForSort=view==="channels"?channelGroups.representatives:filtered;
+ const sortedRows=useMemo(()=>sortTvRows(rowsForSort,sort,(item,key)=>{
   if(view==="countries"){
    const v=item as Country;
    switch(key){
@@ -985,7 +991,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    }
   }
   return null;
- },locale),[filtered,sort,view,locale,countryNames,countryCodes]);
+ },locale),[rowsForSort,sort,view,locale,countryNames,countryCodes]);
  const pages=Math.max(1,Math.ceil(sortedRows.length/PAGE_SIZE));
  const visible=sortedRows.slice((Math.min(page,pages)-1)*PAGE_SIZE,Math.min(page,pages)*PAGE_SIZE);
  const action=view==="channels"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("channel")}>Ajouter une chaîne</button>
@@ -1057,25 +1063,44 @@ export function TvAdminWorkspace({view}:{view:TvView}){
        <td><AdminIconButton name="pencil-square" label={"Modifier "+region(v.isoCode2,locale,countryNames)} onClick={()=>setCountryEditor(v)}/></td>
       </tr>)}
       {view==="channels"&&(visible as Channel[]).map(v=>{
-       const isoCode=countryCodes.get(v.countryId)?.toLowerCase()??"";
-       return <tr key={v.id}>
-        <td><div className="d-flex align-items-center gap-3">
-         <span className={styles.channelLogoSlot} aria-hidden="true">
-          {v.logoUrl&&<img src={v.logoUrl} alt="" loading="lazy"
-           className={styles.channelLogoImage}
-           onError={e=>{e.currentTarget.style.visibility="hidden";}}/>}
-         </span>
-         <span>{v.name}</span>
-        </div></td>
-        <td><div className="d-flex align-items-center gap-2">
-         {isoCode&&<img src={`/country-flags/w160/${isoCode}.png`} alt="" loading="lazy"
-          style={{width:32,height:22,objectFit:"contain",flexShrink:0}}/>}
-         <span>{region(countryCodes.get(v.countryId)??"",locale,countryNames)}</span>
-        </div></td>
-        <td>{v.effectiveNumber??"—"}</td>
-        <td>{v.needsReview?"À vérifier":v.isActive?"Active":"Inactive"}</td>
-        <td><AdminIconButton name="pencil-square" label={"Modifier "+v.name} onClick={()=>router.push("/admin/tv/channels/"+encodeURIComponent(v.id)+"/edit")}/></td>
-       </tr>;
+       const key=tvChannelDisplayKey(v);
+       const members=channelGroups.members.get(key)??[v];
+       const expanded=expandedChannelGroups.includes(key);
+       const groupRows=expanded?members:[v];
+       return <Fragment key={key}>{groupRows.map((entry,index)=>{
+        const isoCode=countryCodes.get(entry.countryId)?.toLowerCase()??"";
+        return <tr key={entry.id}>
+         <td><div className="d-flex align-items-center gap-3">
+          <span className={styles.channelLogoSlot} aria-hidden="true">
+           {entry.logoUrl&&<img src={entry.logoUrl} alt="" loading="lazy"
+            className={styles.channelLogoImage}
+            onError={e=>{e.currentTarget.style.visibility="hidden";}}/>}
+          </span>
+          <div>
+           <span>{entry.name}</span>
+           {members.length>1&&index===0&&<button type="button"
+            className="btn btn-sm btn-outline-secondary ms-2"
+            aria-expanded={expanded}
+            onClick={()=>setExpandedChannelGroups(old=>old.includes(key)
+             ?old.filter(item=>item!==key):[...old,key])}>
+            {expanded?"Masquer les fiches":"Voir les "+members.length+" fiches"}
+           </button>}
+           {expanded&&index>0&&<div className="small text-body-secondary">
+            Autre fiche · identifiant {entry.channelId.slice(0,8)}
+           </div>}
+          </div>
+         </div></td>
+         <td><div className="d-flex align-items-center gap-2">
+          {isoCode&&<img src={`/country-flags/w160/${isoCode}.png`} alt="" loading="lazy"
+           style={{width:32,height:22,objectFit:"contain",flexShrink:0}}/>}
+          <span>{region(countryCodes.get(entry.countryId)??"",locale,countryNames)}</span>
+         </div></td>
+         <td>{entry.effectiveNumber??"—"}</td>
+         <td>{entry.needsReview?"À vérifier":entry.isActive?"Active":"Inactive"}</td>
+         <td><AdminIconButton name="pencil-square" label={"Modifier "+entry.name}
+          onClick={()=>router.push("/admin/tv/channels/"+encodeURIComponent(entry.id)+"/edit")}/></td>
+        </tr>;
+       })}</Fragment>;
       })}
       {view==="sources"&&(visible as Source[]).map((v,i)=><tr key={v.id+":"+(v.countryId??i)}>
        <td>{v.name}</td><td>{v.format}</td>
@@ -1098,7 +1123,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
        </div></td>
       </tr>)}
      </tbody></table></div>
-    {filtered.length===0&&<p className="p-3 text-body-secondary">Aucune donnée correspondant aux filtres.</p>}
+    {rowsForSort.length===0&&<p className="p-3 text-body-secondary">Aucune donnée correspondant aux filtres.</p>}
     <div className="p-3"><AdminPagination page={Math.min(page,pages)} totalPages={pages} onPageChange={setPage}
       label={LABELS[view]}/></div>
    </AdminDataPanel>}
