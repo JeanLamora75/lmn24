@@ -18,7 +18,9 @@ export type EpgCoverageClaim = {
   /** Claim is untrusted until source licence/coverage independently verified. */
   verified:boolean;
 };
-export type EpgDecoded = {programmes:EpgProgramme[];coverage:EpgCoverageClaim[];skippedInvalidDuration?:number};
+export type EpgChannel={externalId:string;name:string;countryIso2:string|null};
+export type EpgDecoded = {programmes:EpgProgramme[];coverage:EpgCoverageClaim[];
+ channels?:EpgChannel[];skippedInvalidDuration?:number};
 
 const validIso=(value:string):string=>{
   if(!/^(?:19|20|21)\d\d-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-]\d\d:\d\d)$/.test(value))
@@ -95,6 +97,10 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   // Input is fed in bounded chunks so the parser only holds one item at a time.
   const sax=new Parser({strict:true}).saxParser;
   const results:EpgProgramme[]=[];
+  const channels:EpgChannel[]=[];
+  let currentChannel:{externalId:string;name:string;countryIso2:string|null}|null=null;
+  let channelField:"display-name"|"country"|null=null;
+  let channelText="";
   let skippedInvalidDuration=0;
   let depth=0,rootSeen=false,programme:({
     channel:string;externalId:string;start:string;end:string;
@@ -107,6 +113,17 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
     if(depth===1){
       if(node.name!=="tv")throw new Error("Invalid XMLTV root");
       rootSeen=true;
+      return;
+    }
+    if(depth===2 && node.name==="channel"){
+      const externalId=node.attributes.id?.trim().slice(0,500)??"";
+      currentChannel=externalId?{externalId,name:externalId,countryIso2:null}:null;
+      const raw=node.attributes.country?.trim().toUpperCase();
+      if(currentChannel&&raw&&/^[A-Z]{2}$/.test(raw))currentChannel.countryIso2=raw;
+      return;
+    }
+    if(currentChannel&&depth===3&&(node.name==="display-name"||node.name==="country")){
+      channelField=node.name;channelText="";
       return;
     }
     if(depth===2 && node.name==="programme"){
@@ -128,6 +145,10 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
     }
   };
   const appendText=(value:string)=>{
+    if(channelField&&currentChannel){
+      if(channelText.length<255)channelText+=value.slice(0,255-channelText.length);
+      return;
+    }
     if(!capture)return;
     const limit=capture==="desc"?10000:capture==="category"?120:1000;
     if(captured.length<limit)captured+=value.slice(0,limit-captured.length);
@@ -140,6 +161,18 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
       throw new Error("EPG_XML_SECURITY_REJECTED");
   };
   sax.onclosetag=(name)=>{
+    if(currentChannel&&channelField===name&&depth===3){
+      const value=channelText.trim();
+      if(channelField==="display-name"&&value&&currentChannel.name===currentChannel.externalId)
+        currentChannel.name=value.slice(0,255);
+      if(channelField==="country"&&/^[A-Z]{2}$/i.test(value))
+        currentChannel.countryIso2=value.toUpperCase();
+      channelField=null;channelText="";
+    }
+    if(currentChannel&&name==="channel"&&depth===2){
+      channels.push(currentChannel);
+      currentChannel=null;
+    }
     if(programme && capture===name && depth===3){
       const value=captured.trim();
       if(capture==="title"&&!programme.title)programme.title=value;
@@ -180,5 +213,5 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   sax.close();
   if(!rootSeen||depth!==0)throw new Error("Invalid XMLTV contents");
   // Programme records never certify whole-day coverage.
-  return {programmes:results,coverage:[],skippedInvalidDuration};
+  return {programmes:results,coverage:[],channels,skippedInvalidDuration};
 }
