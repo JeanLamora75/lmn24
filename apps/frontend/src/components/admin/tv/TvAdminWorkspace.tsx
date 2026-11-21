@@ -15,7 +15,7 @@ type Country={countryId:string;isoCode2:string;referenceTimezone:string;isActive
 type Channel={id:string;countryId:string;channelId:string;slug:string;name:string;
  isActive:boolean;needsReview:boolean;effectiveNumber:number|null;manualNumber:number|null;
  officialNumber:number|null;assignedNumber:number|null;defaultVariantId:string|null;version:string};
-type Source={id:string;name:string;sourceUrl:string;format:string;isActive:boolean;
+type Source={id:string;name:string;sourceUrl:string;format:string;isActive:boolean;version:string;
  programmeRightsStatus:string;programmeRightsReference:string|null;
  synopsisRightsStatus:string;synopsisRightsReference:string|null;imageRightsStatus:string;
  imageRightsReference:string|null;logoRightsStatus:string;logoRightsReference:string|null;
