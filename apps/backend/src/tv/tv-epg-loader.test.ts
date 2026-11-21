@@ -66,6 +66,9 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
    {scopeId:"s2",outcome:"SUCCESS",message:"DISCOVERY_ONLY"},
   ]);
   expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_channel_external_id"))).toBe(true);
+  expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_channel(slug,name)"))).toBe(true);
+  expect(query.mock.calls.some(c=>c[0].includes("UPDATE public.tv_channel_external_id"))).toBe(true);
+  expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_channel_country"))).toBe(false);
   expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_programme"))).toBe(false);
   expect(query.mock.calls.some(c=>c[0].includes("FROM public.tv_schedule_current"))).toBe(false);
   expect(attest).not.toHaveBeenCalled();
