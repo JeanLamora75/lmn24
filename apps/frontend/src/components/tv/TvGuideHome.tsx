@@ -36,9 +36,9 @@ function duration(start:string,end:string):string{
  const minutes=Math.max(0,Math.round((Date.parse(end)-Date.parse(start))/60000));
  return Number.isFinite(minutes)?minutes+" min":"";
 }
-function TvCard({item,locale,mode,tab,countryIso2}:{
+function TvCard({item,locale,mode,tab,countryIso2,nowMs}:{
  item:TvScheduleItem;locale:TvLocale;mode:ClockMode;tab:TvTab;
- countryIso2:string;
+ countryIso2:string;nowMs:number|null;
 }){
  const copy=TV_COPY[locale],a=item.airing,zone=mode==="VISITOR"
   ?Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -49,9 +49,9 @@ function TvCard({item,locale,mode,tab,countryIso2}:{
  // no false link to an unavailable page is rendered.
  const channelLinkAvailable=false;
  const airingLinkAvailable=false;
- const live=tab==="NOW"&&a&&Date.parse(a.startsAt)<=Date.now()&&Date.now()<Date.parse(a.endsAt);
+ const live=tab==="NOW"&&a&&nowMs!==null&&Date.parse(a.startsAt)<=nowMs&&nowMs<Date.parse(a.endsAt);
  const progress=live&&a?Math.max(0,Math.min(100,
-  100*(Date.now()-Date.parse(a.startsAt))/(Date.parse(a.endsAt)-Date.parse(a.startsAt)))):null;
+  100*((nowMs??0)-Date.parse(a.startsAt))/(Date.parse(a.endsAt)-Date.parse(a.startsAt)))):null;
  return <article className={styles.card} aria-label={`${copy.channelNumber} ${item.channel.number}: ${item.channel.name}`}>
   <div className={styles.identity}>
    <div className={styles.logoBox}>
@@ -108,6 +108,13 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
  const [retry,setRetry]=useState(0);
  const [page,setPage]=useState(1);
  const [search,setSearch]=useState("");
+ const [nowMs,setNowMs]=useState<number|null>(null);
+ useEffect(()=>{
+  const tick=()=>setNowMs(Date.now());
+  const first=setTimeout(tick,0);
+  const timer=setInterval(tick,30_000);
+  return ()=>{clearTimeout(first);clearInterval(timer);};
+ },[]);
  const selectedCountry=useMemo(()=>countries.find(c=>c.countryIso2===countryIso2)??null,
   [countries,countryIso2]);
  const today=selectedCountry?localToday(new Date(),selectedCountry.referenceTimeZone):null;
@@ -243,7 +250,7 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
      <p className={styles.feedback}>{copy.empty}</p>}
    {validScope&&visible.length>0&&<div className={styles.grid}>
      {visible.map((item,i)=><TvCard key={item.channel.id+":"+i} item={item}
-       locale={locale} mode={clockMode} tab={tab} countryIso2={countryIso2??""}
+       locale={locale} mode={clockMode} tab={tab} countryIso2={countryIso2??""} nowMs={nowMs}
        />)}
     </div>}
    {validScope&&!loading&&!error&&schedule.items.length===0&&
