@@ -175,6 +175,14 @@ export class TvCatalogService {
         VALUES (${variantId}::uuid,${payload.channelCountryId}::uuid,${payload.channelId}::uuid)
         ON CONFLICT(variant_id,channel_country_id) DO NOTHING
       `;
+      // The first verified variant becomes the default for its country.
+      // Preserve any explicit existing administrator choice.
+      await tx.$executeRaw`
+        UPDATE public.tv_channel_country
+        SET default_variant_id=${variantId}::uuid,updated_at=now()
+        WHERE id=${payload.channelCountryId}::uuid
+          AND channel_id=${payload.channelId}::uuid AND default_variant_id IS NULL
+      `;
       return { variantId };
     });
   }
