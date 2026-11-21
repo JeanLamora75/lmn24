@@ -1022,10 +1022,12 @@ export function TvAdminWorkspace({view}:{view:TvView}){
       {view==="channels"&&(visible as Channel[]).map(v=>{
        const isoCode=countryCodes.get(v.countryId)?.toLowerCase()??"";
        return <tr key={v.id}>
-        <td><div className="d-flex align-items-center gap-3" style={{minHeight:52}}>
-         {v.logoUrl&&<img src={v.logoUrl} alt="" loading="lazy"
-          style={{height:52,width:80,objectFit:"contain",flexShrink:0}}
-          onError={e=>{e.currentTarget.style.visibility="hidden";}}/>}
+        <td><div className="d-flex align-items-center gap-3">
+         <span className={styles.channelLogoSlot} aria-hidden="true">
+          {v.logoUrl&&<img src={v.logoUrl} alt="" loading="lazy"
+           className={styles.channelLogoImage}
+           onError={e=>{e.currentTarget.style.visibility="hidden";}}/>}
+         </span>
          <span>{v.name}</span>
         </div></td>
         <td><div className="d-flex align-items-center gap-2">
