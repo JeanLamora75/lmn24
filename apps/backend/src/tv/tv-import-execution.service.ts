@@ -38,7 +38,7 @@ export class TvImportExecutionService {
   * matching pending import, then dispatch the discovery worker immediately.
   * No successful response may describe a merely queued run as started.
   */
- async launchManualImport(input:{days:number;countryId?:string|undefined}){
+ async launchManualImport(input:{days:number;countryId?:string|undefined;mode?:"DISCOVERY"|"STAGING"}){
   if(!this.readiness().ready){
    throw new ServiceUnavailableException(
     "TV_SOURCE_USE_NOT_QUALIFIED: import execution unavailable; no run was created");
@@ -46,7 +46,7 @@ export class TvImportExecutionService {
   const existing=await this.runs.findQueuedManual(input);
   const run=existing??await this.runs.create({...input,trigger:"MANUAL"});
   try{
-   const execution=await this.startDiscovery(run.id);
+   const execution=await this.startRun(run.id,input.mode??"DISCOVERY");
    return {...execution,reusedPendingRun:!!existing};
   }catch(error){
    // A run already persisted remains available for a future permitted retry;
@@ -64,7 +64,8 @@ export class TvImportExecutionService {
   const execution=await this.startDiscovery(next.id);
   return {...execution,fromRunId:originalRunId,retried:next.retried};
  }
- async startDiscovery(runId:string){
+ async startDiscovery(runId:string){return this.startRun(runId,"DISCOVERY");}
+ async startRun(runId:string,mode:"DISCOVERY"|"STAGING"){
   const state=this.readiness();
   if(!state.ready)throw new ServiceUnavailableException(
    "TV_DISCOVERY_EXECUTION_DISABLED: operational approvals missing");
@@ -88,13 +89,14 @@ export class TvImportExecutionService {
   // response; its transactional run status and event history remain authoritative.
   // The lease/recovery protocol handles interrupted RUNNING work.
   void runAuthorizedTvImport({
-   env,connectionString,runId,discoveryOnly:true,attest:noCoverageAttested,
+   env,connectionString,runId,discoveryOnly:mode==="DISCOVERY",
+   stagingOnly:mode==="STAGING",attest:noCoverageAttested,
   }).catch(async()=>{
    // A pre-start failure is stored as ERROR rather than leaving QUEUED forever.
    // If the worker already claimed RUNNING, the guarded update does nothing.
    try{await this.runs.failUnstartedRun(runId);}catch{/* Database may be offline. */}
    this.logger.warn("TV discovery worker failed; inspect run status and events");
   }).finally(()=>{this.starting.delete(runId);});
-  return {id:runId,status:"STARTED" as const,mode:"DISCOVERY" as const};
+  return {id:runId,status:"STARTED" as const,mode};
  }
 }
