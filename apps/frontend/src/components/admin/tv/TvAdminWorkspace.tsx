@@ -517,6 +517,7 @@ function SourcePrioritiesEditor({countries,locale,countryNames,onClose,onSaved}:
 }
 function ImportEditor({countries,locale,countryNames,onClose,onSaved}:{countries:Country[];locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:(id:string)=>void}){
  const [country,setCountry]=useState("");const [days,setDays]=useState(7);
+ const [mode,setMode]=useState<"DISCOVERY"|"STAGING">("DISCOVERY");
  const [busy,setBusy]=useState(false);const [error,setError]=useState("");
  const eligible=country?countries.filter(c=>c.countryId===country):countries.filter(c=>c.isActive);
  return <Modal title="Lancer un import EPG manuel" onClose={onClose}>
@@ -539,10 +540,17 @@ function ImportEditor({countries,locale,countryNames,onClose,onSaved}:{countries
     onChange={e=>setDays(Number(e.target.value))}>
     {[1,2,3,4,5,6,7].map(x=><option key={x} value={x}>{x}</option>)}
    </select>
+   <label className="form-label" htmlFor="tv-import-mode">Type d’import</label>
+   <select id="tv-import-mode" className="form-select mb-3" value={mode}
+    onChange={e=>setMode(e.target.value as "DISCOVERY"|"STAGING")}>
+    <option value="DISCOVERY">Découvrir les identifiants des chaînes</option>
+    <option value="STAGING">Importer les programmes dans le catalogue privé</option>
+   </select>
    <p className="text-body-secondary">{eligible.length} pays concernés.
-    L’import manuel d’un pays inactif est autorisé. Toutes les sources EPG actives
-    sont prises en compte sans rattachement préalable aux pays ; les droits sont
-    vérifiés avant toute publication et les correspondances inconnues restent à valider.</p>
+    {mode==="DISCOVERY"
+     ?" Les identifiants des chaînes sont découverts et attendent une vérification ; aucun programme n’est enregistré."
+     :" Seules les émissions de chaînes déjà associées et vérifiées, issues de sources autorisées avec une référence de droits, sont enregistrées dans le catalogue privé. Aucune grille n’est publiée."}
+    {" "}Les sources actives sont prises en compte selon leur priorité par pays.</p>
    {eligible.length===0&&<p className="alert alert-warning">Aucun pays éligible.</p>}
    {error&&<p role="alert" className="alert alert-danger">{error}</p>}
    <div className="d-flex gap-2 justify-content-end">
