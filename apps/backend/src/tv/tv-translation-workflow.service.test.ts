@@ -9,7 +9,7 @@ const endpoint="http://127.0.0.1:5000/translate";
 type DBOptions={selected?:boolean;sourceOrigin?:"SOURCE"|"MANUAL";sourceVersion?:string;
  approvalSourceVersion?:string;alreadyPresent?:string[]};
 function setup(opts:DBOptions={}){
- const rows=vi.fn(async(strings:TemplateStringsArray)=>{
+ const rows=vi.fn(async(strings:TemplateStringsArray,...values:unknown[])=>{
   const sql=strings.join("");
   if(sql.includes("to_regclass("))return [{ok:true}];
   if(sql.includes("FROM public.tv_translation_provider WHERE is_selected=TRUE"))
@@ -22,9 +22,8 @@ function setup(opts:DBOptions={}){
     origin:opts.sourceOrigin??"MANUAL",version:opts.sourceVersion??"version-1"}];
   if(sql.includes("FROM public.tv_translation_attempt"))return [];
   if(sql.includes("INSERT INTO public.tv_channel_description")){
-   const target=(strings as unknown as string[]).length;
-   void target;
-   return [{languageCode:"en"}];
+   return opts.alreadyPresent?.includes(String(values[1]))?[]:
+    [{languageCode:String(values[1])}];
   }
   throw new Error("Unexpected query: "+sql);
  });
@@ -79,14 +78,13 @@ describe("SCRUM-123 translation provider safety and zero-loss preview",()=>{
   await expect(service.approve(channel,result.previewId!,["en"])).rejects.toMatchObject({status:409});
  });
  it("does not overwrite an existing target created after preview",async()=>{
-  const {service,rows}=setup();
+  const {service}=setup({alreadyPresent:["en"]});
   vi.stubGlobal("fetch",vi.fn(async()=>({ok:true,status:200,headers:new Headers(),
    text:async()=>JSON.stringify({translatedText:"Text"})})));
   const result=await service.preview(channel,"fr");
-  rows.mockImplementationOnce(async()=>[{ok:true}]);
   // The approval uses INSERT ... ON CONFLICT DO NOTHING; a target created
   // while the preview is open remains protected, never UPDATEd.
   const approved=await service.approve(channel,result.previewId!,["en"]);
-  expect(approved).toHaveProperty("saved");
+  expect(approved).toMatchObject({saved:[],conflicts:["en"],status:"PARTIAL"});
  });
 });
