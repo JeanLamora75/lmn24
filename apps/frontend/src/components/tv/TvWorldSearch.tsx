@@ -37,10 +37,10 @@ function validResult(raw:unknown):raw is Response{
  return typeof v.query==="string"&&parseSection<Channel>(v.channels)
   &&parseSection<Programme>(v.programmes);
 }
-export function TvWorldSearch({locale}:{locale:TvLocale}){
+export function TvWorldSearch({locale,initialQuery=""}:{locale:TvLocale;initialQuery?:string}){
  const t=locale==="fr"?messages.fr:messages.en;
- const [input,setInput]=useState("");
- const [query,setQuery]=useState("");
+ const [input,setInput]=useState(initialQuery);
+ const [query,setQuery]=useState(initialQuery);
  const [data,setData]=useState<Response|null>(null);
  const [items,setItems]=useState<{channels:Channel[];programmes:Programme[]}>({channels:[],programmes:[]});
  const [pages,setPages]=useState({channels:1,programmes:1});
@@ -48,13 +48,12 @@ export function TvWorldSearch({locale}:{locale:TvLocale}){
  const [errors,setErrors]=useState({channels:false,programmes:false});
  const [pending,setPending]=useState(0);
  const requestId=useRef(0);
- useEffect(()=>{const q=new URLSearchParams(window.location.search).get("q")?.trim().slice(0,120)??"";
-  if(q){setInput(q);setQuery(q);}
- },[]);
+ const sectionRef=useRef<"all"|SectionName>("all");
  const submit=(event:React.FormEvent)=>{
   event.preventDefault();
   const q=input.trim();
   requestId.current++;
+  sectionRef.current="all";
   setQuery(q);setData(null);setItems({channels:[],programmes:[]});
   setPages({channels:1,programmes:1});setErrors({channels:false,programmes:false});
   setLoading(null);setPending(x=>x+1);
@@ -64,7 +63,7 @@ export function TvWorldSearch({locale}:{locale:TvLocale}){
   const controller=new AbortController();
   const id=++requestId.current;
   const params=new URLSearchParams({q:query,channelsPage:String(pages.channels),
-   programmesPage:String(pages.programmes),pageSize:"30",section:loading??"all"});
+   programmesPage:String(pages.programmes),pageSize:"30",section:sectionRef.current});
   fetch("/api/public/tv/search?"+params.toString(),{cache:"no-store",signal:controller.signal})
    .then(async response=>{
     if(!response.ok)throw new Error("request");
@@ -100,9 +99,11 @@ export function TvWorldSearch({locale}:{locale:TvLocale}){
   return ()=>controller.abort();
  },[query,pages,pending]);
  const loadMore=useCallback((part:SectionName)=>{
+  sectionRef.current=part;
   setLoading(part);setPages(old=>({...old,[part]:old[part]+1}));
  },[]);
  const retry=useCallback((part:SectionName)=>{
+  sectionRef.current=part;
   setLoading(part);setPending(v=>v+1);
  },[]);
  const countryName=(iso:string)=>new Intl.DisplayNames([locale],{type:"region"}).of(iso)??iso;
