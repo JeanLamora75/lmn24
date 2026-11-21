@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useMemo,useState,type FormEvent} from "react";
 import {useRouter} from "next/navigation";
+import {TvTranslationPanel} from "./TvTranslationPanel";
 import {AdminPageHeading,AdminFilterPanel,AdminDataPanel} from "@/components/admin/AdminWorkspace";
 import {AdminPagination} from "@/components/admin/AdminPagination";
 import {AdminIconButton} from "@/components/admin/AdminIcon";
@@ -399,15 +400,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     </>:<p>Chargement…</p>}
    </div>
   </AdminDataPanel>}
-  {view==="translations"&&<AdminDataPanel label="Traductions et fournisseurs">
-   <div className="p-3">
-    <h2 className="h5">Descriptions multilingues</h2>
-    <p>Langues prévues : FR, EN, DE, ES, PT, IT, RU, NL.</p>
-    <p>La configuration des fournisseurs et les traductions par langue ne sont pas encore connectées à une API administrative sécurisée.
-     Aucune traduction automatique, substitution de fournisseur ou écrasement de champ MANUAL n’est lancé ici.</p>
-    <p className="text-body-secondary">Cette vue reste en lecture seule jusqu’à l’achèvement des contrats et de la recette.</p>
-   </div>
-  </AdminDataPanel>}
+  {view==="translations"&&!loading&&!error&&<TvTranslationPanel channels={channels}/>}
   {countryEditor&&<CountryEditor item={countryEditor} onClose={()=>setCountryEditor(null)} onSaved={saved}/>}
   {channelEditor&&<ChannelEditor item={channelEditor} onClose={()=>setChannelEditor(null)} onSaved={saved}/>}
   {dialog==="source"&&<SourceEditor onClose={()=>setDialog(null)} onSaved={saved}/>}
