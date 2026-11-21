@@ -120,7 +120,7 @@ export function createVerifiedDbEpgLoader(
       // Acquisition is allowed before republication rights approval;
       // importing to the public programme grid is NOT.
       if(row.programmeRightsStatus!=="APPROVED"||!row.programmeRightsReference?.trim()){
-        results.push({scopeId:row.scopeId,outcome:"SUCCESS"});continue;
+        results.push({scopeId:row.scopeId,outcome:"SUCCESS",message:"DISCOVERY_ONLY"});continue;
       }
       let mapped=0;
       for(const p of decoded.programmes){
@@ -191,7 +191,7 @@ export function createVerifiedDbEpgLoader(
       if(!mapped){
         // A valid source can be fully inspected without verified programme mappings.
         // No speculative programme is published and no previous grid is replaced.
-        results.push({scopeId:row.scopeId,outcome:"SUCCESS"});continue;
+        results.push({scopeId:row.scopeId,outcome:"SUCCESS",message:"DISCOVERY_ONLY"});continue;
       }
       // Only commit candidates of a completely decoded and mapped scope;
       // a partially failed source must never contaminate a published grid.
