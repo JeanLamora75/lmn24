@@ -2,7 +2,8 @@ import {
   ConflictException, Injectable, NotFoundException, ServiceUnavailableException,
 } from "@nestjs/common";
 import { DatabaseService } from "../database/database.service";
-import { assertIanaZone, assertOfficialUrl } from "./tv-catalog-policy";
+import { assertIanaZone, assertOfficialUrl,assertTvLogoUrl } from "./tv-catalog-policy";
+import {saveUploadedTvIcon,validateUploadedIcon} from "./tv-icon-storage";
 
 /** This module intentionally uses bound SQL parameters: TV schema is still a candidate,
  * and must NOT be appended to the canonical Prisma schema before SCRUM-114 approval.
@@ -92,7 +93,7 @@ export class TvCatalogService {
   }) {
     await this.requireTvTables();
     const website = assertOfficialUrl(payload.websiteUrl ?? null);
-    const logo = assertOfficialUrl(payload.logoUrl ?? null);
+    const logo = assertTvLogoUrl(payload.logoUrl ?? null);
     const x = assertOfficialUrl(payload.xUrl ?? null);
     const facebook = assertOfficialUrl(payload.facebookUrl ?? null);
     const instagram = assertOfficialUrl(payload.instagramUrl ?? null);
@@ -230,6 +231,20 @@ export class TvCatalogService {
     }
   }
 
+  async uploadChannelIcon(channelId:string,base64:string){
+    await this.requireTvTables();
+    const rows=await this.database.prisma.$queryRaw<Array<{id:string}>>`
+      SELECT id FROM public.tv_channel WHERE id=${channelId}::uuid
+    `;
+    if(!rows.length)throw new NotFoundException("TV channel not found");
+    const bytes=validateUploadedIcon(base64);
+    const url=await saveUploadedTvIcon(channelId,bytes);
+    await this.database.prisma.$executeRaw`
+      UPDATE public.tv_channel SET logo_url=${url} WHERE id=${channelId}::uuid
+    `;
+    return {logoUrl:url};
+  }
+
   async updateChannelProfile(id: string, profile: {
     name: string; logoUrl: string | null; websiteUrl: string | null;
     xUrl: string | null; facebookUrl: string | null;
@@ -237,7 +252,7 @@ export class TvCatalogService {
     officialLiveUrl: string | null;
   }) {
     await this.requireTvTables();
-    const logo = assertOfficialUrl(profile.logoUrl);
+    const logo = assertTvLogoUrl(profile.logoUrl);
     const site = assertOfficialUrl(profile.websiteUrl);
     const x = assertOfficialUrl(profile.xUrl);
     const facebook = assertOfficialUrl(profile.facebookUrl);
