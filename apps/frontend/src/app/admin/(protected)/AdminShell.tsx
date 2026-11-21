@@ -11,7 +11,7 @@ import "./admin-accessibility.css";
 
 const STORAGE_KEY = "lmn24-admin-sidebar-collapsed";
 
-export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
+export function AdminShell({ children, tvAdmin = false }: Readonly<{ children: ReactNode; tvAdmin?: boolean }>) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -85,14 +85,15 @@ export function AdminShell({ children }: Readonly<{ children: ReactNode }>) {
     try { window.localStorage.setItem(STORAGE_KEY, String(next)); } catch { /* storage unavailable */ }
   };
 
-  const filtered = useMemo(() => ADMIN_SECTIONS.map(section => ({
+  const sections = useMemo(() => ADMIN_SECTIONS.filter(section => tvAdmin || section.id !== "tv"), [tvAdmin]);
+  const filtered = useMemo(() => sections.map(section => ({
     ...section,
     features: section.features.filter(feature =>
       !query.trim() || normalizeAdminSearch(feature.title + " " + feature.description + " " + section.title)
         .includes(normalizeAdminSearch(query))),
-  })).filter(section => section.features.length), [query]);
+  })).filter(section => section.features.length), [query, sections]);
 
-  const active = ADMIN_SECTIONS.flatMap(section => section.features)
+  const active = sections.flatMap(section => section.features)
     .filter(feature => pathname === feature.href || pathname.startsWith(feature.href + "/"))
     .sort((a, b) => b.href.length - a.href.length)[0];
   const isHome = pathname === "/admin";
