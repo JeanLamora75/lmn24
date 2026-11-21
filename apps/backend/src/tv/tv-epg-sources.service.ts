@@ -152,7 +152,7 @@ export class TvEpgSourcesService {
    * assigned to a country. Surface the inbox without assuming global feeds
    * belong to the country of a particular import run.
    */
-  async listPendingDiscoveries(limit:number,offset:number,search:string,countryId:string|null){
+  async listPendingDiscoveries(limit:number,offset:number,search:string,countryId:string|null,sort="source",direction="asc"){
     await this.requireSchema();
     const term=search.trim().slice(0,120);
     // Null denotes UNCLASSIFIED. A selected country is a REAL filter over
@@ -193,7 +193,12 @@ export class TvEpgSourcesService {
             SELECT 1 FROM public.tv_channel_country cc
             WHERE cc.channel_id=m.channel_id AND cc.country_id=${countryId}::uuid))
         )
-      ORDER BY s.name,m.external_id,m.id
+      ORDER BY
+        CASE WHEN ${sort}='channel' AND ${direction}='asc' THEN COALESCE(c.name,m.external_id) END ASC,
+        CASE WHEN ${sort}='channel' AND ${direction}='desc' THEN COALESCE(c.name,m.external_id) END DESC,
+        CASE WHEN ${sort}='source' AND ${direction}='asc' THEN s.name END ASC,
+        CASE WHEN ${sort}='source' AND ${direction}='desc' THEN s.name END DESC,
+        s.name,m.external_id,m.id
       LIMIT ${limit} OFFSET ${offset}
     `;
     return {total:total[0]?.count??0,items};
