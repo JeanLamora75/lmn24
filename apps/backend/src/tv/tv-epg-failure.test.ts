@@ -29,4 +29,30 @@ describe("EPG import error diagnostics (no secrets leak)",()=>{
   expect(classifyEpgFailure(new Error("internal.url/token"),"DOWNLOAD"))
    .toBe("EPG_SOURCE_UNAVAILABLE");
  });
+ it("distinguishes TLS, connection, compression and HTTP encoding without leaking upstream data",()=>{
+  const cases:[Error,"DOWNLOAD"|"DECODE",string][]=[
+   [Object.assign(new Error("request failed for https://secret.example/token"),{code:"ECONNRESET"}),"DOWNLOAD","EPG_CONNECTION_ERROR"],
+   [Object.assign(new Error("socket hang up"),{code:"ECONNRESET"}),"DOWNLOAD","EPG_CONNECTION_ERROR"],
+   [Object.assign(new Error("certificate has expired"),{code:"CERT_HAS_EXPIRED"}),"DOWNLOAD","EPG_TLS_ERROR"],
+   [new Error("incorrect header check"),"DOWNLOAD","EPG_GZIP_INVALID"],
+   [new Error("unexpected end of file"),"DOWNLOAD","EPG_GZIP_INVALID"],
+   [new Error("Unexpected content encoding"),"DOWNLOAD","EPG_CONTENT_ENCODING_INVALID"],
+   [Object.assign(new Error("upstream TLS error"),{cause:Object.assign(new Error("private"),{code:"UNABLE_TO_VERIFY_LEAF_SIGNATURE"})}),"DOWNLOAD","EPG_TLS_ERROR"],
+  ];
+  for(const [error,stage,expected] of cases){
+   const actual=classifyEpgFailure(error,stage);
+   expect(actual).toBe(expected);
+   expect(EPG_FAILURE_CODES.has(actual)).toBe(true);
+   expect(actual).not.toMatch(/https:|secret|token|private/);
+  }
+ });
+ it("keeps unknown transport failures generic and XML failures distinct",()=>{
+  expect(classifyEpgFailure(new Error("unknown https://secret.example/token"),"DOWNLOAD"))
+   .toBe("EPG_SOURCE_UNAVAILABLE");
+  expect(classifyEpgFailure(new Error("Incomplete XMLTV item"),"DECODE"))
+   .toBe("EPG_XMLTV_INVALID");
+  expect(classifyEpgFailure(new Error("XMLTV programme limit"),"DECODE"))
+   .toBe("EPG_SIZE_LIMIT");
+ });
+
 });
