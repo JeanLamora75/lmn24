@@ -134,7 +134,7 @@ export function TvTranslationPanel({channels}:{channels:Channel[]}){
      <button type="button" className="btn btn-outline-primary" disabled={busy} onClick={()=>void register()}>
       Ajouter un adaptateur local (inactif)</button>
     </div>
-    <p className="text-body-secondary">Aucun fournisseur n'est activé sur sa seule déclaration de gratuité.
+    <p className="text-body-secondary">Aucun fournisseur n&apos;est activé sur sa seule déclaration de gratuité.
      Il doit être vérifié comme totalement gratuit, sans carte bancaire ni facturation, et autorisé pour la republication.
      L’adaptateur doit être installé localement par l’exploitant. Aucun secret ni suivi de quota n’est affiché.</p>
     <div className="table-responsive"><table className="table">
