@@ -42,7 +42,11 @@ const failureMessages:Record<string,string>={
  EPG_XMLTV_INVALID:"Le fichier EPG ne respecte pas le format attendu.",
  EPG_NO_PROGRAMMES:"Le fichier EPG ne contient aucun programme exploitable.",
  EPG_DATABASE_WRITE:"La découverte a échoué pendant l'enregistrement des identifiants en base.",
- EPG_SOURCE_UNAVAILABLE:"La source EPG n'a pas pu être analysée.",
+ EPG_TLS_ERROR:"Connexion sécurisée impossible : certificat ou négociation TLS du fournisseur en échec.",
+ EPG_CONNECTION_ERROR:"La connexion au fournisseur EPG a été interrompue ou refusée.",
+ EPG_GZIP_INVALID:"Le fichier EPG compressé est corrompu, incomplet ou n'est pas au format GZIP attendu.",
+ EPG_CONTENT_ENCODING_INVALID:"Le fournisseur a renvoyé un encodage HTTP non pris en charge.",
+ EPG_SOURCE_UNAVAILABLE:"La source EPG n'a pas pu être analysée (erreur non classifiée).",
 };
 function importDiagnostic(value:string):string{return failureMessages[value]??value;}
 const LABELS:Record<TvView,string>={
