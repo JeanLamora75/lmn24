@@ -793,7 +793,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     if(abort.signal.aborted||current!==reload)return;
     for(const [name,payload] of responses){
      if(name==="catalog/countries")setCountries((payload as {items:Country[]}).items);
-     else if(name==="catalog/channels")setChannels((payload as {items:Channel[]}).items);
+     else if(name.startsWith("catalog/channels"))setChannels((payload as {items:Channel[]}).items);
      else if(name==="epg-sources")setSources((payload as {items:Source[]}).items);
      else if(name.startsWith("import-runs"))setRuns((payload as {items:ImportRun[]}).items);
     }
@@ -801,7 +801,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    finally{if(!abort.signal.aborted)setLoading(false);}
   }
   void load();return ()=>abort.abort();
- },[view,reload,router]);
+ },[view,reload,router,country]);
  async function openRun(id:string){
   setSelectedRun(id);setDetail(null);setEvents([]);
   try{
