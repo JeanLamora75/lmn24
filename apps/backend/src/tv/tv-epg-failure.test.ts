@@ -52,7 +52,7 @@ describe("EPG import error diagnostics (no secrets leak)",()=>{
   expect(classifyEpgFailure(new Error("Incomplete XMLTV item"),"DECODE"))
    .toBe("EPG_XMLTV_ITEM_INVALID");
   expect(classifyEpgFailure(new Error("XMLTV programme limit"),"DECODE"))
-   .toBe("EPG_SIZE_LIMIT");
+   .toBe("EPG_PROGRAMME_LIMIT");
  });
 
  it("distinguishes exact source, size and decoder stages without leaking details",()=>{
