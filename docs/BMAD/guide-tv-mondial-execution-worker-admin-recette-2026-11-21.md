@@ -58,3 +58,32 @@ Date : 21 novembre 2026 — périmètre SCRUM-117 / SCRUM-122.
 - Tests : `tv-import-execution.service.test.ts`,
   `tv-import-runs.controller.test.ts`,
   `tv-epg-loader.test.ts`.
+
+## Simplification UX validée pendant la recette — un seul clic (21/11/2026)
+
+L'ancienne distinction utilisateur « mise en file » / « exécuter la découverte » a été supprimée.
+**Lancer un import** appelle désormais l'orchestrateur qui valide la capacité
+à démarrer **avant** de créer un nouveau run, réutilise une demande manuelle
+`QUEUED` identique pour le même pays et la même durée, et démarre immédiatement
+le worker en mode `DISCOVERY`. Le formulaire ne présente plus un second bouton
+ni des noms de flags techniques. Statuts et événements sont suivis dans l'écran.
+
+**Exception locale strictement bornée :** une requête explicite ADMIN peut lancer
+la découverte des identifiants en développement sur une base PostgreSQL
+`lmn24` dont l'hôte est `localhost`, `127.0.0.1` ou `::1`, à condition
+que les modules admin soient activés et que les deux flags de publication
+publique restent désactivés. `NODE_ENV=production` interdit cette exception ;
+`NODE_ENV` absent est accepté pour le mode `tsx watch` local. L'exception
+**ne concerne pas** le téléchargement automatisé en production ni la
+publication des programmes. Le clic de recette autorise uniquement la
+récupération de métadonnées de chaînes pour vérification interne, sans
+certifier de droits de redistribution du fournisseur.
+
+En production, les cinq autorisations de l'exécuteur restent obligatoires.
+L'absence d'autorisation bloque la création d'un nouveau run avec une erreur
+explicite : aucun faux succès `QUEUED`. Une erreur de démarrage après création
+marque le run `ERROR` si le worker ne l'avait pas encore pris en charge.
+
+**Limite :** le mode `DISCOVERY` écrit les identifiants externes inconnus
+`PENDING_REVIEW` et l'audit du run ; il n'alimente pas encore les diffusions
+publiques. La correspondance sûre avec les chaînes nationales reste à valider.
