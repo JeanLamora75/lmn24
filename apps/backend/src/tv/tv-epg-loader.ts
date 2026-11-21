@@ -2,7 +2,7 @@ import {createHash} from "node:crypto";
 import type {TvWriterLease} from "./tv-import-publisher";
 import {TvImportLeaseLostError} from "./tv-import-publisher";
 import {downloadEpgSource} from "./tv-epg-download";
-import {decodeEpgBuffer,type EpgProgramme} from "./tv-epg-decoder";
+import {decodeEpgBuffer} from "./tv-epg-decoder";
 import {localDayBounds} from "./tv-import-time";
 import type {ValidatedEpgLoader,EpgDayBatch,ScopeResult} from "./tv-import-worker";
 import type {Coverage,AiringCandidate} from "./tv-import-policy";
@@ -166,7 +166,7 @@ export function createVerifiedDbEpgLoader(
         }else groups.set(key,entry);
       }
       results.push({scopeId:row.scopeId,outcome:"SUCCESS"});
-    }catch(err){
+    }catch{
       if(signal.aborted)throw new TvImportLeaseLostError();
       // Never propagate arbitrary source URL/content into log messages.
       results.push({scopeId:row.scopeId,outcome:"ERROR"});
