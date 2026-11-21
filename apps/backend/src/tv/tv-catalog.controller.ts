@@ -8,7 +8,7 @@ import { ApiExcludeController } from "@nestjs/swagger";
 import { z } from "zod";
 import { AuthService } from "../auth/auth.service";
 import { AUTH_FAILURE_MESSAGE, DEFAULT_SESSION_COOKIE_NAME } from "../auth/auth.constants";
-import { assertIanaZone, assertOfficialUrl } from "./tv-catalog-policy";
+import { assertIanaZone, assertOfficialUrl,assertTvLogoUrl } from "./tv-catalog-policy";
 import { TvCatalogService } from "./tv-catalog.service";
 
 const uuid = z.string().uuid();
@@ -125,7 +125,8 @@ export class TvCatalogController {
     if (!parsed.success) throw new BadRequestException("Invalid TV channel");
     try {
       assertOfficialUrl(parsed.data.websiteUrl ?? null);
-      for (const field of ["logoUrl","xUrl","facebookUrl","instagramUrl","youtubeUrl","officialLiveUrl"] as const) {
+      assertTvLogoUrl(parsed.data.logoUrl ?? null);
+      for (const field of ["xUrl","facebookUrl","instagramUrl","youtubeUrl","officialLiveUrl"] as const) {
         assertOfficialUrl(parsed.data[field] ?? null);
       }
     } catch { throw new BadRequestException("Invalid official link"); }
@@ -149,6 +150,22 @@ export class TvCatalogController {
     return this.catalog.assignNextFreeNumber(id);
   }
 
+  @Post("channels/:id/icon")
+  @Header("Cache-Control","no-store")
+  async uploadIcon(@Req() request:RequestLike,@Param("id") id:string,
+    @Body() body:unknown){
+    await this.assertAdmin(request);
+    const parsed=z.object({base64:z.string().min(8).max(1_400_000)}).strict().safeParse(body);
+    if(!uuid.safeParse(id).success||!parsed.success)
+      throw new BadRequestException("Invalid TV icon upload");
+    try{return await this.catalog.uploadChannelIcon(id,parsed.data.base64);}
+    catch(error){
+      if(error instanceof Error && error.message.startsWith("TV_ICON_"))
+        throw new BadRequestException("Unsupported TV icon: PNG/JPEG/WebP up to 1 MB.");
+      throw error;
+    }
+  }
+
   @Patch("channels/:id/profile")
   @Header("Cache-Control", "no-store")
   async updateProfile(@Req() request: RequestLike, @Param("id") id: string, @Body() body: unknown) {
@@ -156,7 +173,8 @@ export class TvCatalogController {
     const parsed = profileUpdate.safeParse(body);
     if (!uuid.safeParse(id).success || !parsed.success) throw new BadRequestException("Invalid TV channel profile");
     try {
-      for (const field of ["logoUrl","websiteUrl","xUrl","facebookUrl","instagramUrl","youtubeUrl","officialLiveUrl"] as const) {
+      assertTvLogoUrl(parsed.data.logoUrl);
+      for (const field of ["websiteUrl","xUrl","facebookUrl","instagramUrl","youtubeUrl","officialLiveUrl"] as const) {
         assertOfficialUrl(parsed.data[field]);
       }
     } catch { throw new BadRequestException("Invalid TV official link"); }
