@@ -90,6 +90,68 @@ export type PublishInput = {
   /** Derived by separately verified coverage. Empty input alone is insufficient. */
   fullCoverageConfirmed:boolean;
 };
+/** Persist a private draft schedule only. This method intentionally NEVER
+ * modifies tv_schedule_current, never marks a revision PUBLISHED, and never
+ * treats a feed's own contents as independently attested coverage.
+ */
+export async function stagePrivateTvRevision(lease:TvWriterLease,input:{
+ variantId:string;countryId:string;localDate:string;runId:string;
+ airings:readonly ValidatedAirings[];
+}):Promise<string>{
+ if(lease.signal.aborted)throw new TvImportLeaseLostError();
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(input.localDate))
+  throw new Error("Invalid local date");
+ if(!input.airings.length)throw new Error("Cannot stage empty TV schedule");
+ for(const row of input.airings){
+  if(!(Date.parse(row.startsAt)<Date.parse(row.endsAt)))
+   throw new Error("Invalid airing span");
+ }
+ const db=lease.client;
+ await db.query("BEGIN");
+ try{
+  await db.query("SELECT set_config('app.tv_writer_owner',$1,true)",[lease.ownerToken]);
+  await db.query("SELECT public.assert_parser_write_epoch($1::uuid)",[lease.ownerToken]);
+  const scoped=await db.query<{allowed:boolean}>(`
+   SELECT EXISTS (
+     SELECT 1 FROM public.tv_variant_country vc
+     JOIN public.tv_channel_country cc ON cc.id=vc.channel_country_id
+     WHERE vc.variant_id=$1::uuid AND cc.country_id=$2::uuid
+   ) AS allowed`,[input.variantId,input.countryId]);
+  if(!scoped.rows[0]?.allowed)throw new Error("TV_VARIANT_NOT_IN_COUNTRY");
+  const sourceIds=[...new Set(input.airings.map(a=>a.sourceId))];
+  for(const id of sourceIds){
+   const permitted=await db.query<{allowed:boolean}>(`
+    SELECT EXISTS (
+      SELECT 1 FROM public.tv_source s
+      LEFT JOIN public.tv_source_country sc ON sc.source_id=s.id
+        AND sc.country_id=$2::uuid
+      WHERE s.id=$1::uuid AND s.is_active
+        AND (sc.source_id IS NULL OR sc.is_active)
+        AND s.programme_rights_status='APPROVED'
+        AND nullif(btrim(s.programme_rights_reference),'') IS NOT NULL
+    ) AS allowed`,[id,input.countryId]);
+   if(!permitted.rows[0]?.allowed)throw new Error("TV_SOURCE_RIGHTS_NOT_APPROVED");
+  }
+  const created=await db.query<{id:string}>(`
+   INSERT INTO public.tv_schedule_revision(variant_id,local_date,run_id,status)
+   VALUES($1::uuid,$2::date,$3::uuid,'STAGING') RETURNING id`,
+   [input.variantId,input.localDate,input.runId]);
+  const revisionId=created.rows[0]?.id;
+  if(!revisionId)throw new Error("TV staging revision not created");
+  for(const row of input.airings){
+   await db.query(`
+    INSERT INTO public.tv_airing(revision_id,programme_id,source_id,starts_at,ends_at,fingerprint)
+    VALUES($1::uuid,$2::uuid,$3::uuid,$4::timestamptz,$5::timestamptz,$6)`,
+    [revisionId,row.programmeId,row.sourceId,row.startsAt,row.endsAt,row.fingerprint]);
+  }
+  if(lease.signal.aborted)throw new TvImportLeaseLostError();
+  await db.query("COMMIT");
+  return revisionId;
+ }catch(error){
+  await db.query("ROLLBACK").catch(()=>undefined);
+  throw error;
+ }
+}
 /** Performs stage, validate and CAS switch under the SAME fenced transaction.
  * No publication is attempted for absent/unreliable EPG coverage.
  * All SQL inputs are parameters, not interpolated SQL.
