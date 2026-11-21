@@ -78,6 +78,16 @@ export class TvEpgSourcesController {
    return this.service.updateSourceConfiguration(id,parsed.data);
  }
 
+ @Post(":id/test-connection")
+ @Header("Cache-Control","no-store")
+ async testConnection(@Req() request:ReqLike,@Param("id") id:string){
+   await this.assertAdmin(request);
+   if(!uuid.safeParse(id).success)throw new BadRequestException("Invalid EPG source");
+   if(this.config.get<string>("TV_IMPORTS_ENABLED")!=="true")
+     throw new ServiceUnavailableException("EPG diagnostics disabled");
+   return this.service.testConnection(id);
+ }
+
  @Get(":id/mappings")
  @Header("Cache-Control","no-store")
  async listMappings(@Req() request:ReqLike,@Param("id") id:string){
