@@ -50,8 +50,8 @@ export class TvPublicController {
     if(!parsed.success)throw new BadRequestException("TV_INVALID_FILTER");
     return parsed.data;
   }
-  private dayCheck<T>(fn:()=>T):T {
-    try{return fn();}
+  private async dayCheck<T>(fn:()=>Promise<T>):Promise<T> {
+    try{return await fn();}
     catch(error){
       if(error instanceof RangeError){
         throw new UnprocessableEntityException(error.message==="TV_NOW_ONLY_TODAY"
