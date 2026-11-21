@@ -11,6 +11,7 @@ type ChannelRow={
   id:string;channelId:string;name:string;number:number;logoUrl:string|null;
   countryId:string;countryIso2:string;referenceTimeZone:string;
   defaultVariantId:string|null;variantId:string|null;variantTimeZone:string|null;
+  broadcastLanguages:string[];
 };
 type AiringRow={
   id:string;variantId:string;sourceId:string;startsAt:Date;endsAt:Date;
@@ -61,6 +62,9 @@ export class TvPublicService {
         NULL::text AS "logoUrl",
         cc.country_id AS "countryId",trim(c.iso_code2) AS "countryIso2",
         tc.reference_timezone AS "referenceTimeZone",
+        COALESCE((SELECT array_agg(l.language_code ORDER BY l.language_code)
+          FROM public.tv_channel_language l WHERE l.channel_id=cc.channel_id),
+          ARRAY[]::varchar[]) AS "broadcastLanguages",
         cc.default_variant_id AS "defaultVariantId",
         selected.id AS "variantId", selected.timezone AS "variantTimeZone"
       FROM public.tv_channel_country cc
@@ -146,7 +150,8 @@ export class TvPublicService {
         timezone:c.variantTimeZone??country.referenceTimeZone,
         variantId:c.variantId,airings:all,coverage:this.coverage(),now,
       });
-      return {channel:{id:c.channelId,number:c.number,name:c.name,logoUrl:c.logoUrl},
+      return {channel:{id:c.channelId,number:c.number,name:c.name,
+          logoUrl:c.logoUrl,broadcastLanguages:c.broadcastLanguages},
         variant:c.variantId?{id:c.variantId,timeZone:c.variantTimeZone}:null,
         ...state,coverageState:"UNKNOWN" as const};
     });
