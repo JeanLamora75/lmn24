@@ -18,7 +18,7 @@ export type EpgCoverageClaim = {
   /** Claim is untrusted until source licence/coverage independently verified. */
   verified:boolean;
 };
-export type EpgChannel={externalId:string;name:string;countryIso2:string|null;logoUrl:string|null;websiteUrl:string|null};
+export type EpgChannel={externalId:string;name:string;countryIso2:string|null;logoUrl:string|null;websiteUrl:string|null;logoUrls?:string[]};
 /** Some XMLTV suppliers accidentally concatenate their own base URL with
  * the real logo URL. Use the last explicit http(s) URL, never prepend a host.
  * The icon cache still validates DNS/public addresses before downloading.
@@ -119,6 +119,7 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   let channelField:"display-name"|"country"|"url"|null=null;
   let channelText="";
   let displayNameCaptured=false;
+  let channelIconUrls:string[]=[];
   let skippedInvalidDuration=0;
   let depth=0,rootSeen=false,programme:({
     channel:string;externalId:string;start:string;end:string;
@@ -136,14 +137,18 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
     if(depth===2 && node.name==="channel"){
       const externalId=node.attributes.id?.trim().slice(0,500)??"";
       currentChannel=externalId?{externalId,name:externalId,countryIso2:null,logoUrl:null,websiteUrl:null}:null;
+      channelIconUrls=[];
       displayNameCaptured=false;
       const raw=node.attributes.country?.trim().toUpperCase();
       if(currentChannel&&raw&&/^[A-Z]{2}$/.test(raw))currentChannel.countryIso2=raw;
       return;
     }
-    if(currentChannel&&depth===3&&node.name==="icon"&&!currentChannel.logoUrl){
+    if(currentChannel&&depth===3&&node.name==="icon"){
       const logo=xmltvHttpUrl(node.attributes.src??"",true);
-      if(logo)currentChannel.logoUrl=logo;
+      if(logo&&!channelIconUrls.includes(logo)&&channelIconUrls.length<8){
+        channelIconUrls.push(logo);
+        if(!currentChannel.logoUrl)currentChannel.logoUrl=logo;
+      }
       return;
     }
     if(currentChannel&&depth===3&&(node.name==="display-name"||node.name==="country"||node.name==="url")){
@@ -199,6 +204,7 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
       channelField=null;channelText="";
     }
     if(currentChannel&&name==="channel"&&depth===2){
+      if(channelIconUrls.length>1)currentChannel.logoUrls=channelIconUrls;
       channels.push(currentChannel);
       currentChannel=null;
     }
