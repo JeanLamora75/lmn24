@@ -34,10 +34,7 @@ const associationUpdate = z.object({
   manualNumber: number, officialNumber: number, assignedNumber: number,
   defaultVariantId: uuid.nullable(),
   expectedVersion:z.string().min(1).max(100).optional(),
-}).strict().refine(
-  (p) => !p.isActive || p.manualNumber !== null || p.officialNumber !== null || p.assignedNumber !== null,
-  "Active channel requires a national number",
-);
+}).strict();
 const profileUpdate = z.object({
   name: safeName,
   logoUrl: z.string().max(2048).nullable(),
