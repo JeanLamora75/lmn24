@@ -887,7 +887,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
      </label>
      {view==="channels"&&<label className="col-12 col-md-4">Pays
       <select className="form-select" value={country} onChange={e=>{setCountry(e.target.value);setPage(1);}}>
-       <option value="">Tous les pays</option>{countries.map(c=>
+       <option value="">Tous les pays</option>{sortedCountries.map(c=>
         <option key={c.countryId} value={c.countryId}>{region(c.isoCode2,locale,countryNames)}</option>)}
       </select></label>}
      {view!=="imports"&&<label className="col-12 col-md-4">Statut
@@ -1002,7 +1002,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     channels={channels.map(ch=>({id:ch.channelId,name:ch.name,countryId:ch.countryId,
      countryLabel:region(countryCodes.get(ch.countryId)??"",locale,countryNames),
      defaultVariantId:ch.defaultVariantId}))}
-    countries={countries.map(c=>({id:c.countryId,
+    countries={sortedCountries.map(c=>({id:c.countryId,
      name:region(c.isoCode2,locale,countryNames),timezone:c.referenceTimezone,code:c.isoCode2}))}
     onClose={()=>{setSourceEditor(null);setReviewExternalId("");}} onSaved={saved}/>}
   {dialog==="priorities"&&<SourcePrioritiesEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
