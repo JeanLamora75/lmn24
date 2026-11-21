@@ -955,12 +955,25 @@ export function TvAdminWorkspace({view}:{view:TvView}){
        <td>{v.approvedChannelCount} / {v.channelCount}</td><td>Inconnue</td>
        <td><AdminIconButton name="pencil-square" label={"Modifier "+region(v.isoCode2,locale,countryNames)} onClick={()=>setCountryEditor(v)}/></td>
       </tr>)}
-      {view==="channels"&&(visible as Channel[]).map(v=><tr key={v.id}>
-       <td>{v.name}</td><td>{region(countryCodes.get(v.countryId)??"",locale,countryNames)}</td>
-       <td>{v.effectiveNumber??"—"}</td>
-       <td>{v.needsReview?"À vérifier":v.isActive?"Active":"Inactive"}</td>
-       <td><AdminIconButton name="pencil-square" label={"Modifier "+v.name} onClick={()=>setChannelEditor(v)}/></td>
-      </tr>)}
+      {view==="channels"&&(visible as Channel[]).map(v=>{
+       const isoCode=countryCodes.get(v.countryId)?.toLowerCase()??"";
+       return <tr key={v.id}>
+        <td><div className="d-flex align-items-center gap-3" style={{minHeight:52}}>
+         {v.logoUrl&&<img src={v.logoUrl} alt="" loading="lazy"
+          style={{height:52,width:80,objectFit:"contain",flexShrink:0}}
+          onError={e=>{e.currentTarget.style.visibility="hidden";}}/>}
+         <span>{v.name}</span>
+        </div></td>
+        <td><div className="d-flex align-items-center gap-2">
+         {isoCode&&<img src={`/country-flags/w160/${isoCode}.png`} alt="" loading="lazy"
+          style={{width:32,height:22,objectFit:"contain",flexShrink:0}}/>}
+         <span>{region(countryCodes.get(v.countryId)??"",locale,countryNames)}</span>
+        </div></td>
+        <td>{v.effectiveNumber??"—"}</td>
+        <td>{v.needsReview?"À vérifier":v.isActive?"Active":"Inactive"}</td>
+        <td><AdminIconButton name="pencil-square" label={"Modifier "+v.name} onClick={()=>setChannelEditor(v)}/></td>
+       </tr>;
+      })}
       {view==="sources"&&(visible as Source[]).map((v,i)=><tr key={v.id+":"+(v.countryId??i)}>
        <td>{v.name}</td><td>{v.format}</td>
        <td>{v.geographicScope==="COUNTRY"
