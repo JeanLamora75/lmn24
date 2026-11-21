@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
  assertMappingReview, assertPriorityUniqueness, canRepublish, filterPublishableEpg,
- isPublicSourceAddress, sourcePriorityOrder, validateEpgSourceUrl, type SourceRights,
+ EPG_FETCH_LIMITS, isPublicSourceAddress, sourcePriorityOrder, validateEpgSourceUrl, type SourceRights,
 } from "./tv-epg-source-policy";
 
 const rights: SourceRights = {
@@ -38,6 +38,12 @@ describe("SCRUM-116 EPG rights and source policy",()=>{
      .toThrow();
    expect(()=>assertMappingReview({sourceId:"s",externalId:"epg.2",channelId:"ch",variantId:"v",status:"VERIFIED"}))
      .not.toThrow();
+ });
+ it("keeps explicit bounded limits for large XMLTV and compressed transport",()=>{
+   expect(EPG_FETCH_LIMITS.maxCompressedBytes).toBe(24*1024*1024);
+   expect(EPG_FETCH_LIMITS.maxExpandedBytes).toBe(96*1024*1024);
+   expect(EPG_FETCH_LIMITS.timeoutMs).toBe(30_000);
+   expect(EPG_FETCH_LIMITS.maxRedirects).toBe(0);
  });
  it("refuses SSRF URL schemes, credentials, IP literals and internal DNS zones",()=>{
    expect(validateEpgSourceUrl("https://example.org/epg.xml").hostname).toBe("example.org");
