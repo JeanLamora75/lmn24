@@ -30,7 +30,9 @@ export async function downloadEpgSource(rawUrl:string,format:EpgFormat):Promise<
     const answers=await lookup(current.hostname,{all:true,verbatim:true})
       .catch(error=>{throw safePhaseError(error,"EPG_DNS_LOOKUP_FAILED");});
     const publicIPv4=answers.find(a=>a.family===4&&isPublicSourceAddress(a.address));
-    if(!publicIPv4 || answers.some(a=>!isPublicSourceAddress(a.address)))
+    // Only IPv4 is used by the pinned socket. Ignore AAAA records safely:
+    // an unused public IPv6 must not prevent fetching from a dual-stack CDN.
+    if(!publicIPv4 || answers.some(a=>a.family===4&&!isPublicSourceAddress(a.address)))
       throw new Error("EPG_DNS_NON_PUBLIC");
     const request=current.protocol==="https:"?httpsRequest:httpRequest;
     const response=await new Promise<{status:number;location?:string;body?:Buffer}>((resolve,reject)=>{
