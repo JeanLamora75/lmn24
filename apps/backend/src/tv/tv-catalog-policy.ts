@@ -106,3 +106,10 @@ export function assertOfficialUrl(raw: string | null): string | null {
   }
   return url.href;
 }
+
+/** Only generated, immutable local icon files may be referenced as a local logo. */
+export function assertTvLogoUrl(raw:string|null):string|null{
+ if(raw===null||raw.trim()==="")return null;
+ if(/^\/tv-icons\/[a-f0-9]{64}\.(png|jpg|webp)$/.test(raw))return raw;
+ return assertOfficialUrl(raw);
+}
