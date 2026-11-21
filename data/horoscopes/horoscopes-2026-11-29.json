@@ -1,0 +1,1049 @@
+{
+  "date": "2026-11-29",
+  "generatedAt": "2026-11-21T01:32:46.498898+01:00",
+  "timezone": "Europe/Paris",
+  "astronomy": {
+    "validationStatus": "PARTIAL",
+    "source": "CosmyDay",
+    "sourceUrl": "https://api.cosmyday.com/",
+    "attribution": "Données astronomiques : CosmyDay — https://cosmyday.com (utilisation avec attribution requise).",
+    "requestedDateTime": "2026-11-29T12:00:00+01:00",
+    "requestedTimezone": "Europe/Paris",
+    "requestedUtc": "2026-11-29T11:00:00+00:00",
+    "calculationParameters": {
+      "year": 2026,
+      "month": 11,
+      "day": 29,
+      "hour": 12,
+      "minute": 0,
+      "lat": 48.8566,
+      "lon": 2.3522
+    },
+    "confirmedParameters": [
+      "Paramètres effectivement envoyés : date 2026-11-29, heure locale 12:00, latitude 48.8566, longitude 2.3522",
+      "Documentation fournisseur : /natal interprète l’heure comme locale aux coordonnées et résout le fuseau",
+      "Documentation méthodologique fournisseur : astrologie occidentale tropicale et calcul Swiss Ephemeris",
+      "Réponse identifiable reçue avec positions, signes, longitudes, vitesses et rétrogradations"
+    ],
+    "unconfirmedParameters": [
+      "Horodatage effectif absent de la réponse",
+      "Référentiel géocentrique non déclaré explicitement dans la réponse",
+      "Positions non comparées à une seconde éphéméride indépendante"
+    ],
+    "responseConfirmedDateTime": null,
+    "validationNotes": "La requête a été envoyée pour 12:00 heure locale de Paris, correspondant explicitement à 11:00 UTC le 29 novembre 2026. La documentation établit la convention horaire locale et la méthodologie tropicale. La réponse ne répète pas l’instant calculé ni le référentiel géocentrique; sans vérification indépendante des positions, le niveau reste PARTIAL. Les aspects LMN24 sont recalculés arithmétiquement avec les orbes V4.1; cette cohérence ne constitue pas une validation indépendante.",
+    "editorialMode": "astronomical",
+    "referenceVersion": "LMN24 technical V4.1",
+    "editorialVersion": "LMN24 V5 — Horoscope Premium",
+    "validationChecks": {
+      "providerResponseRetrieved": true,
+      "requiredBodiesPresent": true,
+      "longitudeRangesChecked": true,
+      "signIndexConsistencyChecked": true,
+      "retrogradeSpeedConsistencyChecked": true,
+      "aspectArithmeticChecked": true,
+      "independentEphemerisVerification": false
+    },
+    "interpretationRules": {
+      "zodiac": "Western tropical, confirmed by provider methodology documentation",
+      "coordinatePreference": "Geocentric preferred; not explicitly confirmed in response",
+      "solarMethod": "Whole-sign solar sectors used as a documented symbolic editorial method, without individual natal claim",
+      "majorAspects": {
+        "conjunction": {
+          "angle": 0,
+          "orb": 8
+        },
+        "sextile": {
+          "angle": 60,
+          "orb": 4
+        },
+        "square": {
+          "angle": 90,
+          "orb": 6
+        },
+        "trine": {
+          "angle": 120,
+          "orb": 6
+        },
+        "opposition": {
+          "angle": 180,
+          "orb": 8
+        }
+      }
+    },
+    "languageVariants": {
+      "en": "en-GB",
+      "pt": "pt-PT"
+    },
+    "historyNotes": "Quatorze journées précédentes, du 15 au 28 novembre 2026, consultées pour les thèmes, structures, ouvertures, chutes et répétitions.",
+    "ephemerisPath": "data/astrology/ephemeris/astrology-2026-11-29.json",
+    "editorialReview": {
+      "reference": "LMN24 V5 — Horoscope Premium",
+      "frenchPassCompleted": true,
+      "internationalPassCompleted": true,
+      "assessment": "Appréciation éditoriale subjective; contrôles techniques séparés."
+    }
+  },
+  "horoscopes": [
+    {
+      "date": "2026-11-29",
+      "sign": "aries",
+      "language": "fr",
+      "general": "Un feu joueur cherche sa scène, sans forcément réclamer la première place. Entre une idée créative, une sortie ou un défi léger, votre courage retrouve le goût du plaisir. L’enthousiasme peut toutefois pousser à promettre davantage que le moment ne contient. La vigilance tient dans cette impatience joyeuse. Un geste spontané suffit à relancer l’atmosphère, surtout s’il laisse aux autres leur propre éclat. La journée vous ressemble lorsqu’elle devient audacieuse sans se prendre au sérieux : une étincelle bien lancée vaut mieux qu’un grand brasier mal dirigé.",
+      "love": "Le désir aime l’allure franche et le rire qui désarme. Une complicité peut gagner en chaleur autour d’un jeu, d’une invitation ou d’un aveu léger. L’intensité charme davantage lorsqu’elle n’occupe pas toute la scène.",
+      "work": "Votre initiative apporte de l’élan à une mission devenue trop sage. Une proposition créative retient l’attention si elle garde un point d’appui concret. Le leadership se montre ici dans l’enthousiasme partagé, pas dans la conquête solitaire.",
+      "finance": "Loisirs et envies brillantes sollicitent volontiers le portefeuille. Le plaisir conserve toute sa saveur lorsque le prix ne devient pas un trophée. Une dépense choisie pour l’expérience vécue paraît plus juste qu’un symbole destiné à impressionner.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aries",
+      "language": "en",
+      "general": "Visible ambition gives the day its distinctive pulse — A practical scene may reveal how much room this theme already occupies in your choices — Your courage brings movement, yet impatience with detours deserves attention — The atmosphere is neither a promise nor a warning — it is an invitation to notice where desire meets reality — A measured gesture can change the whole composition — By evening, clarity matters more than spectacle, and the most convincing direction is the one that still feels alive after the first excitement — The day carries one private image — a copper arrow above the city — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your courage can be warm without becoming insistent, while a subtle response adds intrigue — Around visible ambition, impatience with detours is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, visible ambition.",
+      "work": "At work, visible ambition asks for a form others can understand — Your courage gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where impatience with detours might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, impatience with detours.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with visible ambition may be legitimate, though impatience with detours can make it look urgent — Your courage supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, courage.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aries",
+      "language": "de",
+      "general": "Sichtbarer ehrgeiz gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre Mut bringt Bewegung, doch Ungeduld mit Umwegen verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — ein Kupferpfeil über der Stadt — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre Mut darf warm sein, ohne zu drängen — rund um sichtbarer Ehrgeiz verliert Ungeduld mit Umwegen durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, sichtbarer Ehrgeiz.",
+      "work": "Im Beruf sucht sichtbarer Ehrgeiz eine verständliche Form — Ihre Mut verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass Ungeduld mit Umwegen der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, Ungeduld mit Umwegen.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um sichtbarer Ehrgeiz kann berechtigt sein, während Ungeduld mit Umwegen ihn dringlicher erscheinen lässt — Ihre Mut hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, Mut.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aries",
+      "language": "es",
+      "general": "Una ambición visible da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su valor aporta movimiento, aunque la impaciencia ante los rodeos merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — una flecha de cobre sobre la ciudad — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su valor puede ser cálida sin insistir — alrededor de una ambición visible, un gesto sutil aligera la impaciencia ante los rodeos y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, una ambición visible.",
+      "work": "En el trabajo, una ambición visible busca una forma comprensible — Su valor da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que la impaciencia ante los rodeos le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, la impaciencia ante los rodeos.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con una ambición visible puede ser legítimo, aunque la impaciencia ante los rodeos lo haga parecer urgente — Su valor reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, valor.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aries",
+      "language": "it",
+      "general": "Un’ambizione visibile dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra coraggio porta movimento, mentre l’impazienza davanti alle deviazioni merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — una freccia di rame sopra la città — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra coraggio può essere calda senza insistere — intorno a un’ambizione visibile, un gesto sottile attenua l’impazienza davanti alle deviazioni e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, un’ambizione visibile.",
+      "work": "Nel lavoro, un’ambizione visibile cerca una forma comprensibile — La vostra coraggio dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a l’impazienza davanti alle deviazioni di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, l’impazienza davanti alle deviazioni.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a un’ambizione visibile può essere legittimo, sebbene l’impazienza davanti alle deviazioni lo faccia sembrare urgente — La vostra coraggio tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, coraggio.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aries",
+      "language": "pt",
+      "general": "Uma ambição visível dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua coragem traz movimento, embora a impaciência perante desvios mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — uma seta de cobre sobre a cidade — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua coragem pode ser calorosa sem insistir — em torno de uma ambição visível, um gesto subtil atenua a impaciência perante desvios e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, uma ambição visível.",
+      "work": "No trabalho, uma ambição visível procura uma forma compreensível — A sua coragem dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que a impaciência perante desvios lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, a impaciência perante desvios.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a uma ambição visível pode ser legítimo, embora a impaciência perante desvios o faça parecer urgente — A sua coragem reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, coragem.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aries",
+      "language": "ru",
+      "general": "Заметная амбиция задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша смелость создаёт движение, однако важно заметить нетерпение перед обходными путями — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — медная стрела над городом — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша смелость согревает без давления — вокруг темы «заметная амбиция» тонкий жест смягчает нетерпение перед обходными путями и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, заметная амбиция.",
+      "work": "В работе тема «заметная амбиция» ищет понятную форму — Ваша смелость придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «нетерпение перед обходными путями» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, нетерпение перед обходными путями.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «заметная амбиция», оправданно, хотя нетерпение перед обходными путями создаёт срочность — Ваша смелость соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, смелость.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aries",
+      "language": "nl",
+      "general": "Zichtbare ambitie geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je moed brengt beweging, terwijl ongeduld bij omwegen aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — een koperen pijl boven de stad — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je moed mag warm zijn zonder aan te dringen — rond zichtbare ambitie verzacht een subtiel gebaar ongeduld bij omwegen en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, zichtbare ambitie.",
+      "work": "Op het werk zoekt zichtbare ambitie een begrijpelijke vorm — Je moed geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat ongeduld bij omwegen de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, ongeduld bij omwegen.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond zichtbare ambitie kan terecht zijn, al doet ongeduld bij omwegen haar dringend lijken — Je moed houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, moed.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "taurus",
+      "language": "fr",
+      "general": "La maison intérieure change doucement de lumière. Une conversation familiale, un objet déplacé ou une habitude domestique révèle ce qui vous rassure vraiment. Votre stabilité offre un refuge précieux, à condition de ne pas transformer chaque nouveauté en intrusion. La vigilance concerne cette fidélité aux formes anciennes quand le fond, lui, demande déjà autre chose. Quelques ajustements suffisent pour rendre l’atmosphère plus vivante. Le confort n’est pas un musée : aujourd’hui, il ressemble plutôt à une table solide où de nouvelles histoires peuvent enfin prendre place.",
+      "love": "La tendresse se nourrit de familiarité, de chaleur et d’un détail presque domestique. Vous goûtez la présence qui n’a rien à prouver. Une émotion plus ancienne peut affleurer, non pour peser, mais pour donner au lien une profondeur douce.",
+      "work": "Votre sens pratique protège l’équipe contre les emballements inutiles. Une question de base, de moyens ou de continuité réclame votre regard. L’ambition avance mieux lorsque le terrain est accueillant, stable et assez souple pour évoluer.",
+      "finance": "Les dépenses liées au foyer attirent l’attention, entre besoin réel et désir d’embellir. La qualité demeure votre boussole, sans imposer le luxe. Un choix durable peut apporter davantage de satisfaction qu’une accumulation de petites compensations.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "taurus",
+      "language": "en",
+      "general": "Something shifts around shared trust, quietly at first and then with unmistakable colour — In conversation, work or a private decision, your practical steadiness finds a fresh angle — The delicate point is the wish to control what is shared — it can blur an otherwise elegant impulse — No grand conclusion is required — Let the day reveal its texture through one concrete situation — What remains afterwards may be modest, but it has the rare quality of belonging fully to you — The day carries one private image — a velvet key turning slowly — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your practical steadiness can be warm without becoming insistent, while a subtle response adds intrigue — Around shared trust, the wish to control what is shared is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, shared trust.",
+      "work": "At work, shared trust asks for a form others can understand — Your practical steadiness gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where the wish to control what is shared might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, the wish to control what is shared.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with shared trust may be legitimate, though the wish to control what is shared can make it look urgent — Your practical steadiness supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, practical steadiness.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "taurus",
+      "language": "de",
+      "general": "Geteiltes vertrauen gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre praktische Beständigkeit bringt Bewegung, doch der Wunsch, Geteiltes zu kontrollieren verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — ein Samtschlüssel dreht sich langsam — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre praktische Beständigkeit darf warm sein, ohne zu drängen — rund um geteiltes Vertrauen verliert der Wunsch, Geteiltes zu kontrollieren durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, geteiltes Vertrauen.",
+      "work": "Im Beruf sucht geteiltes Vertrauen eine verständliche Form — Ihre praktische Beständigkeit verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass der Wunsch, Geteiltes zu kontrollieren der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, der Wunsch, Geteiltes zu kontrollieren.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um geteiltes Vertrauen kann berechtigt sein, während der Wunsch, Geteiltes zu kontrollieren ihn dringlicher erscheinen lässt — Ihre praktische Beständigkeit hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, praktische Beständigkeit.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "taurus",
+      "language": "es",
+      "general": "La confianza compartida da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su estabilidad práctica aporta movimiento, aunque el deseo de controlar lo compartido merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — una llave de terciopelo que gira despacio — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su estabilidad práctica puede ser cálida sin insistir — alrededor de la confianza compartida, un gesto sutil aligera el deseo de controlar lo compartido y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, la confianza compartida.",
+      "work": "En el trabajo, la confianza compartida busca una forma comprensible — Su estabilidad práctica da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que el deseo de controlar lo compartido le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, el deseo de controlar lo compartido.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con la confianza compartida puede ser legítimo, aunque el deseo de controlar lo compartido lo haga parecer urgente — Su estabilidad práctica reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, estabilidad práctica.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "taurus",
+      "language": "it",
+      "general": "La fiducia condivisa dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra stabilità concreta porta movimento, mentre il desiderio di controllare ciò che si condivide merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — una chiave di velluto gira piano — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra stabilità concreta può essere calda senza insistere — intorno a la fiducia condivisa, un gesto sottile attenua il desiderio di controllare ciò che si condivide e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, la fiducia condivisa.",
+      "work": "Nel lavoro, la fiducia condivisa cerca una forma comprensibile — La vostra stabilità concreta dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a il desiderio di controllare ciò che si condivide di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, il desiderio di controllare ciò che si condivide.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a la fiducia condivisa può essere legittimo, sebbene il desiderio di controllare ciò che si condivide lo faccia sembrare urgente — La vostra stabilità concreta tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, stabilità concreta.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "taurus",
+      "language": "pt",
+      "general": "A confiança partilhada dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua estabilidade prática traz movimento, embora a vontade de controlar o que é partilhado mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — uma chave de veludo roda devagar — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua estabilidade prática pode ser calorosa sem insistir — em torno de a confiança partilhada, um gesto subtil atenua a vontade de controlar o que é partilhado e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, a confiança partilhada.",
+      "work": "No trabalho, a confiança partilhada procura uma forma compreensível — A sua estabilidade prática dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que a vontade de controlar o que é partilhado lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, a vontade de controlar o que é partilhado.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a a confiança partilhada pode ser legítimo, embora a vontade de controlar o que é partilhado o faça parecer urgente — A sua estabilidade prática reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, estabilidade prática.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "taurus",
+      "language": "ru",
+      "general": "Разделённое доверие задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша практическая устойчивость создаёт движение, однако важно заметить желание контролировать общее — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — бархатный ключ медленно поворачивается — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша практическая устойчивость согревает без давления — вокруг темы «разделённое доверие» тонкий жест смягчает желание контролировать общее и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, разделённое доверие.",
+      "work": "В работе тема «разделённое доверие» ищет понятную форму — Ваша практическая устойчивость придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «желание контролировать общее» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, желание контролировать общее.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «разделённое доверие», оправданно, хотя желание контролировать общее создаёт срочность — Ваша практическая устойчивость соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, практическая устойчивость.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "taurus",
+      "language": "nl",
+      "general": "Gedeeld vertrouwen geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je praktische standvastigheid brengt beweging, terwijl de wens om het gedeelde te beheersen aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — een fluwelen sleutel draait langzaam — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je praktische standvastigheid mag warm zijn zonder aan te dringen — rond gedeeld vertrouwen verzacht een subtiel gebaar de wens om het gedeelde te beheersen en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, gedeeld vertrouwen.",
+      "work": "Op het werk zoekt gedeeld vertrouwen een begrijpelijke vorm — Je praktische standvastigheid geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat de wens om het gedeelde te beheersen de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, de wens om het gedeelde te beheersen.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond gedeeld vertrouwen kan terecht zijn, al doet de wens om het gedeelde te beheersen haar dringend lijken — Je praktische standvastigheid houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, praktische standvastigheid.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "gemini",
+      "language": "fr",
+      "general": "Les mots courent vite, mais certains savent aussi danser. Un message, un déplacement court ou une rencontre de voisinage ouvre une piste imprévue, idéale pour votre curiosité. Vous reliez les idées avec brio ; la vigilance apparaît lorsque l’esprit saute déjà à la conclusion suivante. Une question bien posée peut enrichir davantage la journée qu’une réponse brillante. L’atmosphère reste légère, mobile, presque malicieuse. Gardez une place pour ce qui résiste au résumé : c’est souvent là que commence la conversation dont vous vous souviendrez.",
+      "love": "La séduction passe par une phrase vive, un sous-entendu élégant ou un rire partagé. Vous appréciez les liens qui stimulent sans épuiser. L’attirance devient plus savoureuse lorsqu’un peu de mystère survit à la conversation la plus pétillante.",
+      "work": "Une information circule et change l’angle d’un dossier. Votre agilité permet d’en tirer une piste originale, surtout au contact d’un interlocuteur réactif. La reconnaissance vient moins du volume des idées que de leur liaison juste.",
+      "finance": "Une offre séduisante joue sur votre curiosité. Comparer peut devenir un jeu, tant que l’achat ne sert pas seulement à rompre l’ennui. La meilleure affaire conserve son intérêt une fois le charme du premier clic dissipé.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "gemini",
+      "language": "en",
+      "general": "An unexpected dialogue gives the day its distinctive pulse — A practical scene may reveal how much room this theme already occupies in your choices — Your curiosity brings movement, yet the urge to answer too quickly deserves attention — The atmosphere is neither a promise nor a warning — it is an invitation to notice where desire meets reality — A measured gesture can change the whole composition — By evening, clarity matters more than spectacle, and the most convincing direction is the one that still feels alive after the first excitement — The day carries one private image — two birds changing their song — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your curiosity can be warm without becoming insistent, while a subtle response adds intrigue — Around an unexpected dialogue, the urge to answer too quickly is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, an unexpected dialogue.",
+      "work": "At work, an unexpected dialogue asks for a form others can understand — Your curiosity gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where the urge to answer too quickly might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, the urge to answer too quickly.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with an unexpected dialogue may be legitimate, though the urge to answer too quickly can make it look urgent — Your curiosity supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, curiosity.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "gemini",
+      "language": "de",
+      "general": "Ein unerwarteter dialog gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre Neugier bringt Bewegung, doch der Drang zur schnellen Antwort verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — zwei Vögel wechseln ihr Lied — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre Neugier darf warm sein, ohne zu drängen — rund um ein unerwarteter Dialog verliert der Drang zur schnellen Antwort durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, ein unerwarteter Dialog.",
+      "work": "Im Beruf sucht ein unerwarteter Dialog eine verständliche Form — Ihre Neugier verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass der Drang zur schnellen Antwort der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, der Drang zur schnellen Antwort.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um ein unerwarteter Dialog kann berechtigt sein, während der Drang zur schnellen Antwort ihn dringlicher erscheinen lässt — Ihre Neugier hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, Neugier.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "gemini",
+      "language": "es",
+      "general": "Un diálogo inesperado da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su curiosidad aporta movimiento, aunque la prisa por responder merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — dos pájaros que cambian de canción — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su curiosidad puede ser cálida sin insistir — alrededor de un diálogo inesperado, un gesto sutil aligera la prisa por responder y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, un diálogo inesperado.",
+      "work": "En el trabajo, un diálogo inesperado busca una forma comprensible — Su curiosidad da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que la prisa por responder le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, la prisa por responder.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con un diálogo inesperado puede ser legítimo, aunque la prisa por responder lo haga parecer urgente — Su curiosidad reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, curiosidad.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "gemini",
+      "language": "it",
+      "general": "Un dialogo inatteso dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra curiosità porta movimento, mentre la fretta di rispondere merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — due uccelli cambiano il loro canto — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra curiosità può essere calda senza insistere — intorno a un dialogo inatteso, un gesto sottile attenua la fretta di rispondere e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, un dialogo inatteso.",
+      "work": "Nel lavoro, un dialogo inatteso cerca una forma comprensibile — La vostra curiosità dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a la fretta di rispondere di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, la fretta di rispondere.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a un dialogo inatteso può essere legittimo, sebbene la fretta di rispondere lo faccia sembrare urgente — La vostra curiosità tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, curiosità.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "gemini",
+      "language": "pt",
+      "general": "Um diálogo inesperado dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua curiosidade traz movimento, embora a pressa de responder mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — duas aves mudam de canto — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua curiosidade pode ser calorosa sem insistir — em torno de um diálogo inesperado, um gesto subtil atenua a pressa de responder e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, um diálogo inesperado.",
+      "work": "No trabalho, um diálogo inesperado procura uma forma compreensível — A sua curiosidade dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que a pressa de responder lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, a pressa de responder.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a um diálogo inesperado pode ser legítimo, embora a pressa de responder o faça parecer urgente — A sua curiosidade reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, curiosidade.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "gemini",
+      "language": "ru",
+      "general": "Неожиданный диалог задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша любопытство создаёт движение, однако важно заметить поспешный ответ — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — две птицы меняют песню — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша любопытство согревает без давления — вокруг темы «неожиданный диалог» тонкий жест смягчает поспешный ответ и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, неожиданный диалог.",
+      "work": "В работе тема «неожиданный диалог» ищет понятную форму — Ваша любопытство придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «поспешный ответ» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, поспешный ответ.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «неожиданный диалог», оправданно, хотя поспешный ответ создаёт срочность — Ваша любопытство соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, любопытство.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "gemini",
+      "language": "nl",
+      "general": "Een onverwachte dialoog geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je nieuwsgierigheid brengt beweging, terwijl de haast om te antwoorden aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — twee vogels veranderen van lied — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je nieuwsgierigheid mag warm zijn zonder aan te dringen — rond een onverwachte dialoog verzacht een subtiel gebaar de haast om te antwoorden en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, een onverwachte dialoog.",
+      "work": "Op het werk zoekt een onverwachte dialoog een begrijpelijke vorm — Je nieuwsgierigheid geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat de haast om te antwoorden de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, de haast om te antwoorden.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond een onverwachte dialoog kan terecht zijn, al doet de haast om te antwoorden haar dringend lijken — Je nieuwsgierigheid houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, nieuwsgierigheid.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "cancer",
+      "language": "fr",
+      "general": "La valeur ne se mesure pas toujours au bruit qu’elle fait. Une question d’argent, de talent ou de reconnaissance touche votre sensibilité et réveille le désir d’être considéré avec justesse. Vous savez protéger l’essentiel, pourtant l’humeur peut colorer un prix ou une décision. La vigilance tient dans ce mélange. Un échange simple remet les proportions en place sans refroidir l’envie. La journée gagne en assurance quand vous cessez de négocier votre légitimité intérieure : ce qui vous appartient vraiment n’a pas besoin d’un écrin démesuré.",
+      "love": "Un besoin de sécurité affective cherche une forme chaleureuse, jamais pesante. Les gestes constants touchent davantage que les déclarations spectaculaires. Vous percevez vite la différence entre être rassuré et être retenu ; cette nuance rend la tendresse plus libre.",
+      "work": "Votre contribution mérite un contour plus visible. Une compétence familière peut prendre une valeur nouvelle si elle est nommée clairement. L’ambition n’a rien d’agressif ici : elle consiste à ne plus laisser votre savoir-faire dans l’ombre.",
+      "finance": "Le rapport à l’argent reflète l’humeur et le besoin de sécurité. Une envie de confort reste légitime, sans devenir un rempart. La marge la plus précieuse est peut-être celle qui protège demain tout en laissant respirer aujourd’hui.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "cancer",
+      "language": "en",
+      "general": "Something shifts around the rhythm of everyday life, quietly at first and then with unmistakable colour — In conversation, work or a private decision, your sensitivity finds a fresh angle — The delicate point is the habit of carrying everyone — it can blur an otherwise elegant impulse — No grand conclusion is required — Let the day reveal its texture through one concrete situation — What remains afterwards may be modest, but it has the rare quality of belonging fully to you — The day carries one private image — lamplight across a busy kitchen — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your sensitivity can be warm without becoming insistent, while a subtle response adds intrigue — Around the rhythm of everyday life, the habit of carrying everyone is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, the rhythm of everyday life.",
+      "work": "At work, the rhythm of everyday life asks for a form others can understand — Your sensitivity gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where the habit of carrying everyone might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, the habit of carrying everyone.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with the rhythm of everyday life may be legitimate, though the habit of carrying everyone can make it look urgent — Your sensitivity supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, sensitivity.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "cancer",
+      "language": "de",
+      "general": "Der rhythmus des alltags gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre Feingefühl bringt Bewegung, doch die Gewohnheit, alles zu tragen verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — Lampenlicht über einer belebten Küche — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre Feingefühl darf warm sein, ohne zu drängen — rund um der Rhythmus des Alltags verliert die Gewohnheit, alles zu tragen durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, der Rhythmus des Alltags.",
+      "work": "Im Beruf sucht der Rhythmus des Alltags eine verständliche Form — Ihre Feingefühl verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass die Gewohnheit, alles zu tragen der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, die Gewohnheit, alles zu tragen.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um der Rhythmus des Alltags kann berechtigt sein, während die Gewohnheit, alles zu tragen ihn dringlicher erscheinen lässt — Ihre Feingefühl hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, Feingefühl.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "cancer",
+      "language": "es",
+      "general": "El ritmo cotidiano da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su sensibilidad aporta movimiento, aunque la costumbre de cargar con todo merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — luz de lámpara en una cocina activa — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su sensibilidad puede ser cálida sin insistir — alrededor de el ritmo cotidiano, un gesto sutil aligera la costumbre de cargar con todo y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, el ritmo cotidiano.",
+      "work": "En el trabajo, el ritmo cotidiano busca una forma comprensible — Su sensibilidad da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que la costumbre de cargar con todo le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, la costumbre de cargar con todo.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con el ritmo cotidiano puede ser legítimo, aunque la costumbre de cargar con todo lo haga parecer urgente — Su sensibilidad reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, sensibilidad.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "cancer",
+      "language": "it",
+      "general": "Il ritmo quotidiano dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra sensibilità porta movimento, mentre l’abitudine di portare tutto merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — luce di lampada in una cucina viva — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra sensibilità può essere calda senza insistere — intorno a il ritmo quotidiano, un gesto sottile attenua l’abitudine di portare tutto e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, il ritmo quotidiano.",
+      "work": "Nel lavoro, il ritmo quotidiano cerca una forma comprensibile — La vostra sensibilità dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a l’abitudine di portare tutto di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, l’abitudine di portare tutto.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a il ritmo quotidiano può essere legittimo, sebbene l’abitudine di portare tutto lo faccia sembrare urgente — La vostra sensibilità tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, sensibilità.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "cancer",
+      "language": "pt",
+      "general": "O ritmo quotidiano dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua sensibilidade traz movimento, embora o hábito de carregar tudo mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — luz de candeeiro numa cozinha viva — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua sensibilidade pode ser calorosa sem insistir — em torno de o ritmo quotidiano, um gesto subtil atenua o hábito de carregar tudo e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, o ritmo quotidiano.",
+      "work": "No trabalho, o ritmo quotidiano procura uma forma compreensível — A sua sensibilidade dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que o hábito de carregar tudo lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, o hábito de carregar tudo.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a o ritmo quotidiano pode ser legítimo, embora o hábito de carregar tudo o faça parecer urgente — A sua sensibilidade reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, sensibilidade.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "cancer",
+      "language": "ru",
+      "general": "Ритм повседневности задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша чуткость создаёт движение, однако важно заметить привычку нести всё — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — свет лампы в оживлённой кухне — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша чуткость согревает без давления — вокруг темы «ритм повседневности» тонкий жест смягчает привычку нести всё и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, ритм повседневности.",
+      "work": "В работе тема «ритм повседневности» ищет понятную форму — Ваша чуткость придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «привычку нести всё» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, привычку нести всё.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «ритм повседневности», оправданно, хотя привычку нести всё создаёт срочность — Ваша чуткость соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, чуткость.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "cancer",
+      "language": "nl",
+      "general": "Het ritme van alledag geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je gevoeligheid brengt beweging, terwijl de gewoonte alles te dragen aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — lamplicht over een levendige keuken — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je gevoeligheid mag warm zijn zonder aan te dringen — rond het ritme van alledag verzacht een subtiel gebaar de gewoonte alles te dragen en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, het ritme van alledag.",
+      "work": "Op het werk zoekt het ritme van alledag een begrijpelijke vorm — Je gevoeligheid geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat de gewoonte alles te dragen de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, de gewoonte alles te dragen.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond het ritme van alledag kan terecht zijn, al doet de gewoonte alles te dragen haar dringend lijken — Je gevoeligheid houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, gevoeligheid.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "leo",
+      "language": "fr",
+      "general": "Quelque chose se redresse dans votre allure, comme si la journée ajustait spontanément sa lumière à votre présence. L’élan personnel, la créativité et le désir d’être entendu trouvent un terrain chaleureux. Le risque serait de confondre visibilité et obligation de briller sans pause. Une humeur plus tendre traverse aussi la scène. Elle ne diminue pas votre panache ; elle lui donne du relief. Un choix assumé peut marquer les esprits sans discours solennel. Le vrai luxe consiste aujourd’hui à occuper votre place avec naturel, puis à laisser respirer le décor.",
+      "love": "Le charme rayonne avec une franchise presque solaire, mais le cœur réclame aussi une attention sincère. Une présence qui vous regarde sans vous flatter touche juste. La romance gagne en intensité lorsqu’elle accueille votre fierté comme votre douceur.",
+      "work": "Votre présence donne du relief à une proposition ou à une collaboration. La reconnaissance paraît possible lorsque le talent rencontre une écoute réelle. Un partenaire exigeant peut affiner l’idée sans éteindre la signature qui la rend mémorable.",
+      "finance": "L’envie de célébrer ou de soigner votre image se fait sentir. Le beau a sa place, tant qu’il ne devient pas une preuve de valeur. Une dépense choisie avec goût peut suffire à créer l’éclat recherché.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "leo",
+      "language": "en",
+      "general": "Creative pleasure gives the day its distinctive pulse — A practical scene may reveal how much room this theme already occupies in your choices — Your generosity brings movement, yet pride faced with imperfect details deserves attention — The atmosphere is neither a promise nor a warning — it is an invitation to notice where desire meets reality — A measured gesture can change the whole composition — By evening, clarity matters more than spectacle, and the most convincing direction is the one that still feels alive after the first excitement — The day carries one private image — gold paint beside a carpenter’s bench — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your generosity can be warm without becoming insistent, while a subtle response adds intrigue — Around creative pleasure, pride faced with imperfect details is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, creative pleasure.",
+      "work": "At work, creative pleasure asks for a form others can understand — Your generosity gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where pride faced with imperfect details might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, pride faced with imperfect details.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with creative pleasure may be legitimate, though pride faced with imperfect details can make it look urgent — Your generosity supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, generosity.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "leo",
+      "language": "de",
+      "general": "Kreative freude gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre Großzügigkeit bringt Bewegung, doch Stolz angesichts unvollkommener Details verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — Goldfarbe neben der Werkbank — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre Großzügigkeit darf warm sein, ohne zu drängen — rund um kreative Freude verliert Stolz angesichts unvollkommener Details durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, kreative Freude.",
+      "work": "Im Beruf sucht kreative Freude eine verständliche Form — Ihre Großzügigkeit verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass Stolz angesichts unvollkommener Details der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, Stolz angesichts unvollkommener Details.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um kreative Freude kann berechtigt sein, während Stolz angesichts unvollkommener Details ihn dringlicher erscheinen lässt — Ihre Großzügigkeit hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, Großzügigkeit.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "leo",
+      "language": "es",
+      "general": "El placer creativo da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su generosidad aporta movimiento, aunque el orgullo ante detalles imperfectos merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — pintura dorada junto al banco de trabajo — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su generosidad puede ser cálida sin insistir — alrededor de el placer creativo, un gesto sutil aligera el orgullo ante detalles imperfectos y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, el placer creativo.",
+      "work": "En el trabajo, el placer creativo busca una forma comprensible — Su generosidad da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que el orgullo ante detalles imperfectos le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, el orgullo ante detalles imperfectos.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con el placer creativo puede ser legítimo, aunque el orgullo ante detalles imperfectos lo haga parecer urgente — Su generosidad reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, generosidad.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "leo",
+      "language": "it",
+      "general": "Il piacere creativo dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra generosità porta movimento, mentre l’orgoglio davanti ai dettagli imperfetti merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — vernice dorata accanto al banco — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra generosità può essere calda senza insistere — intorno a il piacere creativo, un gesto sottile attenua l’orgoglio davanti ai dettagli imperfetti e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, il piacere creativo.",
+      "work": "Nel lavoro, il piacere creativo cerca una forma comprensibile — La vostra generosità dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a l’orgoglio davanti ai dettagli imperfetti di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, l’orgoglio davanti ai dettagli imperfetti.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a il piacere creativo può essere legittimo, sebbene l’orgoglio davanti ai dettagli imperfetti lo faccia sembrare urgente — La vostra generosità tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, generosità.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "leo",
+      "language": "pt",
+      "general": "O prazer criativo dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua generosidade traz movimento, embora o orgulho diante de pormenores imperfeitos mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — tinta dourada junto à bancada — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua generosidade pode ser calorosa sem insistir — em torno de o prazer criativo, um gesto subtil atenua o orgulho diante de pormenores imperfeitos e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, o prazer criativo.",
+      "work": "No trabalho, o prazer criativo procura uma forma compreensível — A sua generosidade dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que o orgulho diante de pormenores imperfeitos lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, o orgulho diante de pormenores imperfeitos.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a o prazer criativo pode ser legítimo, embora o orgulho diante de pormenores imperfeitos o faça parecer urgente — A sua generosidade reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, generosidade.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "leo",
+      "language": "ru",
+      "general": "Творческое удовольствие задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша щедрость создаёт движение, однако важно заметить гордость перед несовершенной деталью — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — золотая краска рядом с верстаком — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша щедрость согревает без давления — вокруг темы «творческое удовольствие» тонкий жест смягчает гордость перед несовершенной деталью и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, творческое удовольствие.",
+      "work": "В работе тема «творческое удовольствие» ищет понятную форму — Ваша щедрость придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «гордость перед несовершенной деталью» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, гордость перед несовершенной деталью.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «творческое удовольствие», оправданно, хотя гордость перед несовершенной деталью создаёт срочность — Ваша щедрость соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, щедрость.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "leo",
+      "language": "nl",
+      "general": "Creatief plezier geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je gulheid brengt beweging, terwijl trots tegenover onvolmaakte details aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — goudverf naast de werkbank — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je gulheid mag warm zijn zonder aan te dringen — rond creatief plezier verzacht een subtiel gebaar trots tegenover onvolmaakte details en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, creatief plezier.",
+      "work": "Op het werk zoekt creatief plezier een begrijpelijke vorm — Je gulheid geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat trots tegenover onvolmaakte details de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, trots tegenover onvolmaakte details.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond creatief plezier kan terecht zijn, al doet trots tegenover onvolmaakte details haar dringend lijken — Je gulheid houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, gulheid.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "virgo",
+      "language": "fr",
+      "general": "Les coulisses ont leur propre musique, plus discrète mais étonnamment précise. Une fatigue légère, un souvenir ou une intuition vous invite à réduire le bruit autour d’une décision. Votre esprit d’analyse voudrait tout expliquer ; certaines impressions demandent seulement un peu d’espace. La vigilance concerne la tendance à transformer le repos en nouvelle mission à réussir. Une heure moins remplie peut rendre le reste beaucoup plus net. La journée ne vous éloigne pas du réel : elle nettoie la vitre, afin que demain apparaisse sans les traces d’hier.",
+      "love": "La sensibilité se fait pudique, attirée par les liens qui respectent le silence. Une tendresse sans programme peut apaiser bien des tensions. Vous n’avez pas besoin de tout comprendre pour reconnaître la présence qui vous fait du bien.",
+      "work": "Une réflexion en retrait prépare une décision professionnelle plus fine. Votre précision demeure active, même loin de la scène. Une idée encore fragile gagne à mûrir avant de rencontrer les commentaires et les exigences du collectif.",
+      "finance": "Les dépenses invisibles ou compensatoires méritent un regard calme. Rien n’impose une austérité soudaine ; il s’agit de retrouver la raison d’un achat. La sobriété peut alors ressembler à de l’espace, non à une punition.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "virgo",
+      "language": "en",
+      "general": "Something shifts around personal presence, quietly at first and then with unmistakable colour — In conversation, work or a private decision, your precision finds a fresh angle — The delicate point is perfectionism disguised as preparation — it can blur an otherwise elegant impulse — No grand conclusion is required — Let the day reveal its texture through one concrete situation — What remains afterwards may be modest, but it has the rare quality of belonging fully to you — The day carries one private image — a clear signature on fresh paper — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your precision can be warm without becoming insistent, while a subtle response adds intrigue — Around personal presence, perfectionism disguised as preparation is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, personal presence.",
+      "work": "At work, personal presence asks for a form others can understand — Your precision gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where perfectionism disguised as preparation might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, perfectionism disguised as preparation.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with personal presence may be legitimate, though perfectionism disguised as preparation can make it look urgent — Your precision supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, precision.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "virgo",
+      "language": "de",
+      "general": "Persönliche präsenz gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre Genauigkeit bringt Bewegung, doch als Vorbereitung verkleideter Perfektionismus verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — eine klare Unterschrift auf frischem Papier — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre Genauigkeit darf warm sein, ohne zu drängen — rund um persönliche Präsenz verliert als Vorbereitung verkleideter Perfektionismus durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, persönliche Präsenz.",
+      "work": "Im Beruf sucht persönliche Präsenz eine verständliche Form — Ihre Genauigkeit verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass als Vorbereitung verkleideter Perfektionismus der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, als Vorbereitung verkleideter Perfektionismus.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um persönliche Präsenz kann berechtigt sein, während als Vorbereitung verkleideter Perfektionismus ihn dringlicher erscheinen lässt — Ihre Genauigkeit hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, Genauigkeit.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "virgo",
+      "language": "es",
+      "general": "La presencia personal da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su precisión aporta movimiento, aunque el perfeccionismo disfrazado de preparación merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — una firma clara sobre papel nuevo — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su precisión puede ser cálida sin insistir — alrededor de la presencia personal, un gesto sutil aligera el perfeccionismo disfrazado de preparación y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, la presencia personal.",
+      "work": "En el trabajo, la presencia personal busca una forma comprensible — Su precisión da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que el perfeccionismo disfrazado de preparación le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, el perfeccionismo disfrazado de preparación.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con la presencia personal puede ser legítimo, aunque el perfeccionismo disfrazado de preparación lo haga parecer urgente — Su precisión reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, precisión.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "virgo",
+      "language": "it",
+      "general": "La presenza personale dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra precisione porta movimento, mentre il perfezionismo travestito da preparazione merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — una firma chiara su carta nuova — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra precisione può essere calda senza insistere — intorno a la presenza personale, un gesto sottile attenua il perfezionismo travestito da preparazione e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, la presenza personale.",
+      "work": "Nel lavoro, la presenza personale cerca una forma comprensibile — La vostra precisione dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a il perfezionismo travestito da preparazione di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, il perfezionismo travestito da preparazione.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a la presenza personale può essere legittimo, sebbene il perfezionismo travestito da preparazione lo faccia sembrare urgente — La vostra precisione tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, precisione.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "virgo",
+      "language": "pt",
+      "general": "A presença pessoal dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua precisão traz movimento, embora o perfeccionismo disfarçado de preparação mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — uma assinatura nítida em papel novo — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua precisão pode ser calorosa sem insistir — em torno de a presença pessoal, um gesto subtil atenua o perfeccionismo disfarçado de preparação e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, a presença pessoal.",
+      "work": "No trabalho, a presença pessoal procura uma forma compreensível — A sua precisão dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que o perfeccionismo disfarçado de preparação lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, o perfeccionismo disfarçado de preparação.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a a presença pessoal pode ser legítimo, embora o perfeccionismo disfarçado de preparação o faça parecer urgente — A sua precisão reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, precisão.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "virgo",
+      "language": "ru",
+      "general": "Личное присутствие задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша точность создаёт движение, однако важно заметить перфекционизм под видом подготовки — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — ясная подпись на свежей бумаге — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша точность согревает без давления — вокруг темы «личное присутствие» тонкий жест смягчает перфекционизм под видом подготовки и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, личное присутствие.",
+      "work": "В работе тема «личное присутствие» ищет понятную форму — Ваша точность придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «перфекционизм под видом подготовки» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, перфекционизм под видом подготовки.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «личное присутствие», оправданно, хотя перфекционизм под видом подготовки создаёт срочность — Ваша точность соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, точность.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "virgo",
+      "language": "nl",
+      "general": "Persoonlijke aanwezigheid geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je nauwkeurigheid brengt beweging, terwijl perfectionisme vermomd als voorbereiding aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — een heldere handtekening op vers papier — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je nauwkeurigheid mag warm zijn zonder aan te dringen — rond persoonlijke aanwezigheid verzacht een subtiel gebaar perfectionisme vermomd als voorbereiding en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, persoonlijke aanwezigheid.",
+      "work": "Op het werk zoekt persoonlijke aanwezigheid een begrijpelijke vorm — Je nauwkeurigheid geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat perfectionisme vermomd als voorbereiding de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, perfectionisme vermomd als voorbereiding.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond persoonlijke aanwezigheid kan terecht zijn, al doet perfectionisme vermomd als voorbereiding haar dringend lijken — Je nauwkeurigheid houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, nauwkeurigheid.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "libra",
+      "language": "fr",
+      "general": "Le cercle s’élargit et l’air devient plus vif. Une invitation, une amitié ou un projet commun réveille votre talent pour relier des sensibilités différentes. Vous aimez l’harmonie, mais la journée ne réclame pas un accord parfait : elle préfère une composition vivante, avec ses contrastes. La vigilance tient dans le réflexe de lisser une voix trop originale, y compris la vôtre. L’élégance collective naît lorsque chacun garde sa couleur. Une idée partagée peut alors dépasser les bonnes intentions et prendre la forme d’un vrai rendez-vous.",
+      "love": "L’amitié et le désir se frôlent dans une atmosphère légère. Vous appréciez les liens où la complicité précède les grands mots. Une conversation entourée d’autres visages peut révéler une chaleur plus intime, sans forcer le scénario.",
+      "work": "Un réseau, une équipe ou un contact élargit la perspective professionnelle. Votre diplomatie facilite les rapprochements sans effacer les différences. La proposition gagne en ambition dès qu’elle cesse de vouloir plaire à tout le monde.",
+      "finance": "Un projet collectif ou une sortie partagée attire le budget. La générosité reste charmante lorsqu’elle ne prend pas seule toute la note. Une dépense commune peut avoir du sens si l’enthousiasme s’accompagne d’un cadre équitable.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "libra",
+      "language": "en",
+      "general": "A quiet inner space gives the day its distinctive pulse — A practical scene may reveal how much room this theme already occupies in your choices — Your diplomacy brings movement, yet the need for immediate approval deserves attention — The atmosphere is neither a promise nor a warning — it is an invitation to notice where desire meets reality — A measured gesture can change the whole composition — By evening, clarity matters more than spectacle, and the most convincing direction is the one that still feels alive after the first excitement — The day carries one private image — a curtain breathing before dawn — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your diplomacy can be warm without becoming insistent, while a subtle response adds intrigue — Around a quiet inner space, the need for immediate approval is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, a quiet inner space.",
+      "work": "At work, a quiet inner space asks for a form others can understand — Your diplomacy gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where the need for immediate approval might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, the need for immediate approval.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with a quiet inner space may be legitimate, though the need for immediate approval can make it look urgent — Your diplomacy supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, diplomacy.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "libra",
+      "language": "de",
+      "general": "Ein stiller innenraum gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre Diplomatie bringt Bewegung, doch das Bedürfnis nach sofortiger Zustimmung verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — ein Vorhang atmet vor der Dämmerung — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre Diplomatie darf warm sein, ohne zu drängen — rund um ein stiller Innenraum verliert das Bedürfnis nach sofortiger Zustimmung durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, ein stiller Innenraum.",
+      "work": "Im Beruf sucht ein stiller Innenraum eine verständliche Form — Ihre Diplomatie verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass das Bedürfnis nach sofortiger Zustimmung der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, das Bedürfnis nach sofortiger Zustimmung.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um ein stiller Innenraum kann berechtigt sein, während das Bedürfnis nach sofortiger Zustimmung ihn dringlicher erscheinen lässt — Ihre Diplomatie hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, Diplomatie.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "libra",
+      "language": "es",
+      "general": "Un espacio interior sereno da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su diplomacia aporta movimiento, aunque la necesidad de aprobación inmediata merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — una cortina que respira antes del alba — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su diplomacia puede ser cálida sin insistir — alrededor de un espacio interior sereno, un gesto sutil aligera la necesidad de aprobación inmediata y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, un espacio interior sereno.",
+      "work": "En el trabajo, un espacio interior sereno busca una forma comprensible — Su diplomacia da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que la necesidad de aprobación inmediata le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, la necesidad de aprobación inmediata.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con un espacio interior sereno puede ser legítimo, aunque la necesidad de aprobación inmediata lo haga parecer urgente — Su diplomacia reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, diplomacia.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "libra",
+      "language": "it",
+      "general": "Uno spazio interiore quieto dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra diplomazia porta movimento, mentre il bisogno di approvazione immediata merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — una tenda respira prima dell’alba — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra diplomazia può essere calda senza insistere — intorno a uno spazio interiore quieto, un gesto sottile attenua il bisogno di approvazione immediata e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, uno spazio interiore quieto.",
+      "work": "Nel lavoro, uno spazio interiore quieto cerca una forma comprensibile — La vostra diplomazia dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a il bisogno di approvazione immediata di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, il bisogno di approvazione immediata.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a uno spazio interiore quieto può essere legittimo, sebbene il bisogno di approvazione immediata lo faccia sembrare urgente — La vostra diplomazia tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, diplomazia.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "libra",
+      "language": "pt",
+      "general": "Um espaço interior tranquilo dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua diplomacia traz movimento, embora a necessidade de aprovação imediata mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — uma cortina respira antes da aurora — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua diplomacia pode ser calorosa sem insistir — em torno de um espaço interior tranquilo, um gesto subtil atenua a necessidade de aprovação imediata e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, um espaço interior tranquilo.",
+      "work": "No trabalho, um espaço interior tranquilo procura uma forma compreensível — A sua diplomacia dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que a necessidade de aprovação imediata lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, a necessidade de aprovação imediata.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a um espaço interior tranquilo pode ser legítimo, embora a necessidade de aprovação imediata o faça parecer urgente — A sua diplomacia reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, diplomacia.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "libra",
+      "language": "ru",
+      "general": "Тихое внутреннее пространство задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша дипломатичность создаёт движение, однако важно заметить потребность в немедленном одобрении — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — занавес дышит перед рассветом — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша дипломатичность согревает без давления — вокруг темы «тихое внутреннее пространство» тонкий жест смягчает потребность в немедленном одобрении и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, тихое внутреннее пространство.",
+      "work": "В работе тема «тихое внутреннее пространство» ищет понятную форму — Ваша дипломатичность придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «потребность в немедленном одобрении» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, потребность в немедленном одобрении.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «тихое внутреннее пространство», оправданно, хотя потребность в немедленном одобрении создаёт срочность — Ваша дипломатичность соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, дипломатичность.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "libra",
+      "language": "nl",
+      "general": "Een stille binnenruimte geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je diplomatie brengt beweging, terwijl de behoefte aan onmiddellijke instemming aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — een gordijn ademt voor de dageraad — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je diplomatie mag warm zijn zonder aan te dringen — rond een stille binnenruimte verzacht een subtiel gebaar de behoefte aan onmiddellijke instemming en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, een stille binnenruimte.",
+      "work": "Op het werk zoekt een stille binnenruimte een begrijpelijke vorm — Je diplomatie geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat de behoefte aan onmiddellijke instemming de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, de behoefte aan onmiddellijke instemming.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond een stille binnenruimte kan terecht zijn, al doet de behoefte aan onmiddellijke instemming haar dringend lijken — Je diplomatie houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, diplomatie.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "scorpio",
+      "language": "fr",
+      "general": "La scène publique vous attire moins pour ses lumières que pour l’influence qu’elle permet. Une responsabilité, une ambition ou une décision visible touche votre détermination et réveille un magnétisme très calme. Vous comprenez vite les rapports de force ; la vigilance consiste à ne pas lire un défi derrière chaque regard. Votre profondeur n’a rien à prouver par l’intensité permanente. Une parole sobre peut déplacer davantage qu’une stratégie complexe. La journée vous offre une hauteur intéressante : depuis là, les priorités apparaissent nettes et les anciennes rivalités soudain minuscules.",
+      "love": "Le désir s’accorde mal avec les demi-présences. Vous cherchez une chaleur entière, sans exiger pour autant toutes les réponses. Un geste loyal apaise le besoin de sonder l’autre et rend l’intimité plus profonde, presque lumineuse.",
+      "work": "Votre ambition prend une forme visible et très concentrée. Une responsabilité peut valoriser votre sang-froid autant que votre expertise. Le pouvoir d’influence grandit lorsque la stratégie sert une œuvre claire, non une rivalité silencieuse.",
+      "finance": "La réussite matérielle possède aujourd’hui une forte charge symbolique. Un achat prestigieux peut séduire, mais sa valeur réelle mérite de rester centrale. La maîtrise financière se lit dans le choix assumé, pas dans l’effet produit autour de vous.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "scorpio",
+      "language": "en",
+      "general": "Something shifts around lasting value, quietly at first and then with unmistakable colour — In conversation, work or a private decision, your determination finds a fresh angle — The delicate point is turning negotiation into a test — it can blur an otherwise elegant impulse — No grand conclusion is required — Let the day reveal its texture through one concrete situation — What remains afterwards may be modest, but it has the rare quality of belonging fully to you — The day carries one private image — a dark gem held to daylight — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your determination can be warm without becoming insistent, while a subtle response adds intrigue — Around lasting value, turning negotiation into a test is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, lasting value.",
+      "work": "At work, lasting value asks for a form others can understand — Your determination gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where turning negotiation into a test might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, turning negotiation into a test.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with lasting value may be legitimate, though turning negotiation into a test can make it look urgent — Your determination supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, determination.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "scorpio",
+      "language": "de",
+      "general": "Bleibender wert gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre Entschlossenheit bringt Bewegung, doch Verhandlungen in Prüfungen zu verwandeln verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — ein dunkler Edelstein im Tageslicht — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre Entschlossenheit darf warm sein, ohne zu drängen — rund um bleibender Wert verliert Verhandlungen in Prüfungen zu verwandeln durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, bleibender Wert.",
+      "work": "Im Beruf sucht bleibender Wert eine verständliche Form — Ihre Entschlossenheit verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass Verhandlungen in Prüfungen zu verwandeln der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, Verhandlungen in Prüfungen zu verwandeln.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um bleibender Wert kann berechtigt sein, während Verhandlungen in Prüfungen zu verwandeln ihn dringlicher erscheinen lässt — Ihre Entschlossenheit hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, Entschlossenheit.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "scorpio",
+      "language": "es",
+      "general": "El valor duradero da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su determinación aporta movimiento, aunque convertir la negociación en examen merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — una gema oscura bajo la luz — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su determinación puede ser cálida sin insistir — alrededor de el valor duradero, un gesto sutil aligera convertir la negociación en examen y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, el valor duradero.",
+      "work": "En el trabajo, el valor duradero busca una forma comprensible — Su determinación da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que convertir la negociación en examen le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, convertir la negociación en examen.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con el valor duradero puede ser legítimo, aunque convertir la negociación en examen lo haga parecer urgente — Su determinación reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, determinación.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "scorpio",
+      "language": "it",
+      "general": "Il valore duraturo dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra determinazione porta movimento, mentre trasformare la trattativa in una prova merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — una gemma scura nella luce — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra determinazione può essere calda senza insistere — intorno a il valore duraturo, un gesto sottile attenua trasformare la trattativa in una prova e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, il valore duraturo.",
+      "work": "Nel lavoro, il valore duraturo cerca una forma comprensibile — La vostra determinazione dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a trasformare la trattativa in una prova di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, trasformare la trattativa in una prova.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a il valore duraturo può essere legittimo, sebbene trasformare la trattativa in una prova lo faccia sembrare urgente — La vostra determinazione tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, determinazione.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "scorpio",
+      "language": "pt",
+      "general": "O valor duradouro dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua determinação traz movimento, embora transformar a negociação numa prova mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — uma gema escura à luz do dia — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua determinação pode ser calorosa sem insistir — em torno de o valor duradouro, um gesto subtil atenua transformar a negociação numa prova e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, o valor duradouro.",
+      "work": "No trabalho, o valor duradouro procura uma forma compreensível — A sua determinação dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que transformar a negociação numa prova lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, transformar a negociação numa prova.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a o valor duradouro pode ser legítimo, embora transformar a negociação numa prova o faça parecer urgente — A sua determinação reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, determinação.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "scorpio",
+      "language": "ru",
+      "general": "Долговечная ценность задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша решительность создаёт движение, однако важно заметить превращение переговоров в испытание — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — тёмный камень в дневном свете — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша решительность согревает без давления — вокруг темы «долговечная ценность» тонкий жест смягчает превращение переговоров в испытание и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, долговечная ценность.",
+      "work": "В работе тема «долговечная ценность» ищет понятную форму — Ваша решительность придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «превращение переговоров в испытание» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, превращение переговоров в испытание.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «долговечная ценность», оправданно, хотя превращение переговоров в испытание создаёт срочность — Ваша решительность соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, решительность.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "scorpio",
+      "language": "nl",
+      "general": "Blijvende waarde geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je vastberadenheid brengt beweging, terwijl onderhandelen als een beproeving aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — een donkere edelsteen in daglicht — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je vastberadenheid mag warm zijn zonder aan te dringen — rond blijvende waarde verzacht een subtiel gebaar onderhandelen als een beproeving en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, blijvende waarde.",
+      "work": "Op het werk zoekt blijvende waarde een begrijpelijke vorm — Je vastberadenheid geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat onderhandelen als een beproeving de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, onderhandelen als een beproeving.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond blijvende waarde kan terecht zijn, al doet onderhandelen als een beproeving haar dringend lijken — Je vastberadenheid houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, vastberadenheid.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "sagittarius",
+      "language": "fr",
+      "general": "L’horizon reprend sa voix, ample et impossible à confondre. Un livre, une destination ou une question de sens réveille votre goût de l’exploration. L’enthousiasme cherche déjà une route ; la vigilance concerne les certitudes trop rapides, celles qui ferment le paysage au moment même où vous vouliez l’ouvrir. Une rencontre d’idées peut déplacer votre point de vue sans diminuer votre liberté. La journée devient passionnante lorsqu’elle ne sert pas seulement à aller plus loin, mais à voir autrement. Même un détour intellectuel peut faire office de grand voyage.",
+      "love": "Le cœur respire mieux dans une relation ouverte au monde, à l’humour et aux différences. Une attirance se nourrit d’admiration autant que de désir. La chaleur grandit quand personne ne transforme la liberté en distance affective.",
+      "work": "Une vision plus large redonne du sens à l’ambition professionnelle. Formation, publication ou contact lointain colorent les perspectives. Votre élan convainc lorsque l’idée conserve assez de précision pour voyager au-delà de votre enthousiasme initial.",
+      "finance": "Voyage, culture ou apprentissage inspirent les dépenses. L’envie d’élargir votre monde n’est pas frivole, mais le budget préfère une priorité nette. Une expérience choisie avec soin peut valoir davantage qu’un programme rempli à l’excès.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "sagittarius",
+      "language": "en",
+      "general": "A wider horizon gives the day its distinctive pulse — A practical scene may reveal how much room this theme already occupies in your choices — Your freedom brings movement, yet promises larger than the first step deserves attention — The atmosphere is neither a promise nor a warning — it is an invitation to notice where desire meets reality — A measured gesture can change the whole composition — By evening, clarity matters more than spectacle, and the most convincing direction is the one that still feels alive after the first excitement — The day carries one private image — a road unfolding beyond the station — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your freedom can be warm without becoming insistent, while a subtle response adds intrigue — Around a wider horizon, promises larger than the first step is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, a wider horizon.",
+      "work": "At work, a wider horizon asks for a form others can understand — Your freedom gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where promises larger than the first step might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, promises larger than the first step.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with a wider horizon may be legitimate, though promises larger than the first step can make it look urgent — Your freedom supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, freedom.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "sagittarius",
+      "language": "de",
+      "general": "Ein weiterer horizont gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre Freiheit bringt Bewegung, doch Versprechen größer als der erste Schritt verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — eine Straße öffnet sich hinter dem Bahnhof — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre Freiheit darf warm sein, ohne zu drängen — rund um ein weiterer Horizont verliert Versprechen größer als der erste Schritt durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, ein weiterer Horizont.",
+      "work": "Im Beruf sucht ein weiterer Horizont eine verständliche Form — Ihre Freiheit verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass Versprechen größer als der erste Schritt der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, Versprechen größer als der erste Schritt.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um ein weiterer Horizont kann berechtigt sein, während Versprechen größer als der erste Schritt ihn dringlicher erscheinen lässt — Ihre Freiheit hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, Freiheit.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "sagittarius",
+      "language": "es",
+      "general": "Un horizonte más amplio da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su libertad aporta movimiento, aunque promesas mayores que el primer paso merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — un camino abierto tras la estación — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su libertad puede ser cálida sin insistir — alrededor de un horizonte más amplio, un gesto sutil aligera promesas mayores que el primer paso y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, un horizonte más amplio.",
+      "work": "En el trabajo, un horizonte más amplio busca una forma comprensible — Su libertad da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que promesas mayores que el primer paso le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, promesas mayores que el primer paso.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con un horizonte más amplio puede ser legítimo, aunque promesas mayores que el primer paso lo haga parecer urgente — Su libertad reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, libertad.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "sagittarius",
+      "language": "it",
+      "general": "Un orizzonte più ampio dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra libertà porta movimento, mentre promesse più grandi del primo passo merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — una strada si apre oltre la stazione — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra libertà può essere calda senza insistere — intorno a un orizzonte più ampio, un gesto sottile attenua promesse più grandi del primo passo e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, un orizzonte più ampio.",
+      "work": "Nel lavoro, un orizzonte più ampio cerca una forma comprensibile — La vostra libertà dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a promesse più grandi del primo passo di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, promesse più grandi del primo passo.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a un orizzonte più ampio può essere legittimo, sebbene promesse più grandi del primo passo lo faccia sembrare urgente — La vostra libertà tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, libertà.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "sagittarius",
+      "language": "pt",
+      "general": "Um horizonte mais amplo dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua liberdade traz movimento, embora promessas maiores do que o primeiro passo mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — uma estrada abre-se depois da estação — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua liberdade pode ser calorosa sem insistir — em torno de um horizonte mais amplo, um gesto subtil atenua promessas maiores do que o primeiro passo e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, um horizonte mais amplo.",
+      "work": "No trabalho, um horizonte mais amplo procura uma forma compreensível — A sua liberdade dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que promessas maiores do que o primeiro passo lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, promessas maiores do que o primeiro passo.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a um horizonte mais amplo pode ser legítimo, embora promessas maiores do que o primeiro passo o faça parecer urgente — A sua liberdade reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, liberdade.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "sagittarius",
+      "language": "ru",
+      "general": "Широкий горизонт задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша свобода создаёт движение, однако важно заметить обещания больше первого шага — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — дорога раскрывается за вокзалом — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша свобода согревает без давления — вокруг темы «широкий горизонт» тонкий жест смягчает обещания больше первого шага и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, широкий горизонт.",
+      "work": "В работе тема «широкий горизонт» ищет понятную форму — Ваша свобода придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «обещания больше первого шага» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, обещания больше первого шага.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «широкий горизонт», оправданно, хотя обещания больше первого шага создаёт срочность — Ваша свобода соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, свобода.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "sagittarius",
+      "language": "nl",
+      "general": "Een ruimere horizon geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je vrijheid brengt beweging, terwijl beloften groter dan de eerste stap aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — een weg ontvouwt zich achter het station — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je vrijheid mag warm zijn zonder aan te dringen — rond een ruimere horizon verzacht een subtiel gebaar beloften groter dan de eerste stap en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, een ruimere horizon.",
+      "work": "Op het werk zoekt een ruimere horizon een begrijpelijke vorm — Je vrijheid geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat beloften groter dan de eerste stap de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, beloften groter dan de eerste stap.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond een ruimere horizon kan terecht zijn, al doet beloften groter dan de eerste stap haar dringend lijken — Je vrijheid houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, vrijheid.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "capricorn",
+      "language": "fr",
+      "general": "Sous la maîtrise habituelle, une question de confiance remue des eaux plus profondes. Partager une ressource, une responsabilité ou une confidence vous oblige à regarder ce qui ne se règle pas par la seule discipline. Vous avancez avec sérieux ; la vigilance tient dans le besoin de tout sécuriser avant d’accepter la moindre dépendance. Un accord imparfait peut pourtant devenir solide grâce à une loyauté claire. La journée ne fragilise pas vos fondations. Elle ajoute une porte à la forteresse, et cette ouverture pourrait bien en augmenter la valeur.",
+      "love": "L’intimité demande moins de contrôle et davantage de présence. Vous êtes sensible aux liens fiables, capables d’accueillir une émotion dense sans la dramatiser. Une confidence mesurée peut rapprocher les cœurs plus sûrement qu’une promesse solennelle.",
+      "work": "Une responsabilité partagée révèle les forces réelles d’une collaboration. Votre rigueur sécurise le cadre, tandis qu’un partenaire apporte une ressource inattendue. L’ambition avance lorsque la confiance devient une méthode, pas un saut dans l’inconnu.",
+      "finance": "Argent commun, engagement ou projet à long terme occupent l’esprit. La prudence reste utile sans fermer toute négociation. Un accord lisible protège mieux vos intérêts qu’une position dure entretenue uniquement par crainte de dépendre.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "capricorn",
+      "language": "en",
+      "general": "Something shifts around rest and perspective, quietly at first and then with unmistakable colour — In conversation, work or a private decision, your discipline finds a fresh angle — The delicate point is guilt around slowing down — it can blur an otherwise elegant impulse — No grand conclusion is required — Let the day reveal its texture through one concrete situation — What remains afterwards may be modest, but it has the rare quality of belonging fully to you — The day carries one private image — a mountain path hidden by mist — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your discipline can be warm without becoming insistent, while a subtle response adds intrigue — Around rest and perspective, guilt around slowing down is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, rest and perspective.",
+      "work": "At work, rest and perspective asks for a form others can understand — Your discipline gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where guilt around slowing down might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, guilt around slowing down.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with rest and perspective may be legitimate, though guilt around slowing down can make it look urgent — Your discipline supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, discipline.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "capricorn",
+      "language": "de",
+      "general": "Ruhe und perspektive gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre Disziplin bringt Bewegung, doch Schuldgefühle beim Innehalten verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — ein Bergpfad liegt im Nebel — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre Disziplin darf warm sein, ohne zu drängen — rund um Ruhe und Perspektive verliert Schuldgefühle beim Innehalten durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, Ruhe und Perspektive.",
+      "work": "Im Beruf sucht Ruhe und Perspektive eine verständliche Form — Ihre Disziplin verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass Schuldgefühle beim Innehalten der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, Schuldgefühle beim Innehalten.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um Ruhe und Perspektive kann berechtigt sein, während Schuldgefühle beim Innehalten ihn dringlicher erscheinen lässt — Ihre Disziplin hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, Disziplin.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "capricorn",
+      "language": "es",
+      "general": "El descanso y la perspectiva da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su disciplina aporta movimiento, aunque la culpa por detenerse merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — una senda de montaña entre la niebla — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su disciplina puede ser cálida sin insistir — alrededor de el descanso y la perspectiva, un gesto sutil aligera la culpa por detenerse y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, el descanso y la perspectiva.",
+      "work": "En el trabajo, el descanso y la perspectiva busca una forma comprensible — Su disciplina da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que la culpa por detenerse le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, la culpa por detenerse.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con el descanso y la perspectiva puede ser legítimo, aunque la culpa por detenerse lo haga parecer urgente — Su disciplina reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, disciplina.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "capricorn",
+      "language": "it",
+      "general": "Il riposo e la prospettiva dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra disciplina porta movimento, mentre il senso di colpa nel rallentare merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — un sentiero di montagna nella nebbia — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra disciplina può essere calda senza insistere — intorno a il riposo e la prospettiva, un gesto sottile attenua il senso di colpa nel rallentare e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, il riposo e la prospettiva.",
+      "work": "Nel lavoro, il riposo e la prospettiva cerca una forma comprensibile — La vostra disciplina dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a il senso di colpa nel rallentare di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, il senso di colpa nel rallentare.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a il riposo e la prospettiva può essere legittimo, sebbene il senso di colpa nel rallentare lo faccia sembrare urgente — La vostra disciplina tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, disciplina.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "capricorn",
+      "language": "pt",
+      "general": "O repouso e a perspetiva dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua disciplina traz movimento, embora a culpa por abrandar mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — um caminho de montanha entre a névoa — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua disciplina pode ser calorosa sem insistir — em torno de o repouso e a perspetiva, um gesto subtil atenua a culpa por abrandar e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, o repouso e a perspetiva.",
+      "work": "No trabalho, o repouso e a perspetiva procura uma forma compreensível — A sua disciplina dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que a culpa por abrandar lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, a culpa por abrandar.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a o repouso e a perspetiva pode ser legítimo, embora a culpa por abrandar o faça parecer urgente — A sua disciplina reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, disciplina.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "capricorn",
+      "language": "ru",
+      "general": "Отдых и перспектива задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша дисциплина создаёт движение, однако важно заметить вину за остановку — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — горная тропа скрывается в тумане — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша дисциплина согревает без давления — вокруг темы «отдых и перспектива» тонкий жест смягчает вину за остановку и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, отдых и перспектива.",
+      "work": "В работе тема «отдых и перспектива» ищет понятную форму — Ваша дисциплина придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «вину за остановку» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, вину за остановку.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «отдых и перспектива», оправданно, хотя вину за остановку создаёт срочность — Ваша дисциплина соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, дисциплина.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "capricorn",
+      "language": "nl",
+      "general": "Rust en perspectief geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je discipline brengt beweging, terwijl schuldgevoel bij vertragen aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — een bergpad verdwijnt in de mist — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je discipline mag warm zijn zonder aan te dringen — rond rust en perspectief verzacht een subtiel gebaar schuldgevoel bij vertragen en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, rust en perspectief.",
+      "work": "Op het werk zoekt rust en perspectief een begrijpelijke vorm — Je discipline geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat schuldgevoel bij vertragen de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, schuldgevoel bij vertragen.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond rust en perspectief kan terecht zijn, al doet schuldgevoel bij vertragen haar dringend lijken — Je discipline houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, discipline.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aquarius",
+      "language": "fr",
+      "general": "Le face-à-face devient un miroir mobile, jamais tout à fait fidèle et pourtant révélateur. Une relation, une alliance ou une conversation vous montre comment votre indépendance rencontre celle des autres. Vous aimez inventer vos propres règles ; la vigilance apparaît lorsque la différence devient une armure automatique. Une personne peut vous surprendre précisément parce qu’elle ne cherche pas à vous ressembler. La journée gagne en chaleur sans perdre sa liberté. À deux, l’avenir n’est pas moins vaste : il possède simplement une autre perspective et davantage de fenêtres.",
+      "love": "L’attirance naît dans l’écart entre deux univers singuliers. Vous goûtez la complicité qui ne réclame aucune fusion. Une attention chaleureuse peut rendre le lien plus proche sans menacer cet espace intérieur auquel vous tenez.",
+      "work": "Une collaboration met votre originalité à l’épreuve du dialogue. Le partenaire idéal n’approuve pas tout ; il révèle les angles morts. Votre vision devient plus crédible lorsqu’elle intègre une autre intelligence sans perdre son caractère.",
+      "finance": "Un achat ou un engagement partagé mérite une règle claire. La liberté financière ne signifie pas tout décider seul. Une solution inventive peut respecter les intérêts de chacun, à condition que l’enthousiasme ne remplace pas les limites convenues.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aquarius",
+      "language": "en",
+      "general": "Collective invention gives the day its distinctive pulse — A practical scene may reveal how much room this theme already occupies in your choices — Your independence brings movement, yet defending difference before it is challenged deserves attention — The atmosphere is neither a promise nor a warning — it is an invitation to notice where desire meets reality — A measured gesture can change the whole composition — By evening, clarity matters more than spectacle, and the most convincing direction is the one that still feels alive after the first excitement — The day carries one private image — a workshop filled with open windows — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your independence can be warm without becoming insistent, while a subtle response adds intrigue — Around collective invention, defending difference before it is challenged is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, collective invention.",
+      "work": "At work, collective invention asks for a form others can understand — Your independence gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where defending difference before it is challenged might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, defending difference before it is challenged.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with collective invention may be legitimate, though defending difference before it is challenged can make it look urgent — Your independence supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, independence.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aquarius",
+      "language": "de",
+      "general": "Gemeinsames erfinden gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre Unabhängigkeit bringt Bewegung, doch Anderssein vor jedem Einwand zu verteidigen verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — eine Werkstatt voller offener Fenster — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre Unabhängigkeit darf warm sein, ohne zu drängen — rund um gemeinsames Erfinden verliert Anderssein vor jedem Einwand zu verteidigen durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, gemeinsames Erfinden.",
+      "work": "Im Beruf sucht gemeinsames Erfinden eine verständliche Form — Ihre Unabhängigkeit verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass Anderssein vor jedem Einwand zu verteidigen der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, Anderssein vor jedem Einwand zu verteidigen.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um gemeinsames Erfinden kann berechtigt sein, während Anderssein vor jedem Einwand zu verteidigen ihn dringlicher erscheinen lässt — Ihre Unabhängigkeit hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, Unabhängigkeit.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aquarius",
+      "language": "es",
+      "general": "La invención colectiva da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su independencia aporta movimiento, aunque defender la diferencia antes de toda crítica merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — un taller lleno de ventanas abiertas — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su independencia puede ser cálida sin insistir — alrededor de la invención colectiva, un gesto sutil aligera defender la diferencia antes de toda crítica y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, la invención colectiva.",
+      "work": "En el trabajo, la invención colectiva busca una forma comprensible — Su independencia da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que defender la diferencia antes de toda crítica le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, defender la diferencia antes de toda crítica.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con la invención colectiva puede ser legítimo, aunque defender la diferencia antes de toda crítica lo haga parecer urgente — Su independencia reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, independencia.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aquarius",
+      "language": "it",
+      "general": "L’invenzione collettiva dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra indipendenza porta movimento, mentre difendere la differenza prima di ogni critica merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — un laboratorio pieno di finestre aperte — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra indipendenza può essere calda senza insistere — intorno a l’invenzione collettiva, un gesto sottile attenua difendere la differenza prima di ogni critica e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, l’invenzione collettiva.",
+      "work": "Nel lavoro, l’invenzione collettiva cerca una forma comprensibile — La vostra indipendenza dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a difendere la differenza prima di ogni critica di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, difendere la differenza prima di ogni critica.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a l’invenzione collettiva può essere legittimo, sebbene difendere la differenza prima di ogni critica lo faccia sembrare urgente — La vostra indipendenza tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, indipendenza.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aquarius",
+      "language": "pt",
+      "general": "A invenção coletiva dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua independência traz movimento, embora defender a diferença antes de qualquer crítica mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — uma oficina cheia de janelas abertas — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua independência pode ser calorosa sem insistir — em torno de a invenção coletiva, um gesto subtil atenua defender a diferença antes de qualquer crítica e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, a invenção coletiva.",
+      "work": "No trabalho, a invenção coletiva procura uma forma compreensível — A sua independência dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que defender a diferença antes de qualquer crítica lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, defender a diferença antes de qualquer crítica.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a a invenção coletiva pode ser legítimo, embora defender a diferença antes de qualquer crítica o faça parecer urgente — A sua independência reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, independência.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aquarius",
+      "language": "ru",
+      "general": "Коллективное изобретение задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша независимость создаёт движение, однако важно заметить защиту отличия до всякой критики — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — мастерская полна открытых окон — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша независимость согревает без давления — вокруг темы «коллективное изобретение» тонкий жест смягчает защиту отличия до всякой критики и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, коллективное изобретение.",
+      "work": "В работе тема «коллективное изобретение» ищет понятную форму — Ваша независимость придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «защиту отличия до всякой критики» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, защиту отличия до всякой критики.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «коллективное изобретение», оправданно, хотя защиту отличия до всякой критики создаёт срочность — Ваша независимость соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, независимость.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "aquarius",
+      "language": "nl",
+      "general": "Collectieve verbeelding geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je onafhankelijkheid brengt beweging, terwijl verschil verdedigen vóór er kritiek is aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — een atelier vol open ramen — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je onafhankelijkheid mag warm zijn zonder aan te dringen — rond collectieve verbeelding verzacht een subtiel gebaar verschil verdedigen vóór er kritiek is en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, collectieve verbeelding.",
+      "work": "Op het werk zoekt collectieve verbeelding een begrijpelijke vorm — Je onafhankelijkheid geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat verschil verdedigen vóór er kritiek is de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, verschil verdedigen vóór er kritiek is.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond collectieve verbeelding kan terecht zijn, al doet verschil verdedigen vóór er kritiek is haar dringend lijken — Je onafhankelijkheid houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, onafhankelijkheid.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "pisces",
+      "language": "fr",
+      "general": "Le quotidien prend des couleurs de fresque dès que vous regardez autrement ses détails. Une tâche répétitive, un rythme de travail ou une habitude de soin appelle votre imagination sans réclamer de bouleversement spectaculaire. Votre empathie capte vite l’ambiance et pourrait absorber la fatigue alentour. La vigilance se situe là. Un geste simple remet du mouvement dans la journée, comme une fenêtre ouverte opportunément. L’inspiration ne vit pas seulement dans les grands rêves : elle sait aussi plier les serviettes, répondre aux messages et laisser une trace de beauté.",
+      "love": "La tendresse se glisse dans les gestes ordinaires et les attentions sans mise en scène. Vous percevez les humeurs avant les mots. Le lien reste plus doux lorsque le soin circule, au lieu de reposer toujours sur votre sensibilité.",
+      "work": "Votre imagination apporte de la grâce à une mission concrète. Une amélioration discrète peut transformer l’atmosphère d’une équipe ou la qualité d’un résultat. L’efficacité devient alors vivante, loin des méthodes rigides et des automatismes sans âme.",
+      "finance": "Les petites dépenses liées au confort quotidien s’additionnent facilement. L’envie de douceur reste compréhensible, sans devenir une brume autour du budget. Un plaisir choisi consciemment conserve mieux sa magie que plusieurs achats oubliés aussitôt.",
+      "disclaimer": "Contenu astrologique proposé à des fins de divertissement."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "pisces",
+      "language": "en",
+      "general": "Something shifts around a public vocation, quietly at first and then with unmistakable colour — In conversation, work or a private decision, your empathy finds a fresh angle — The delicate point is absorbing other people’s expectations — it can blur an otherwise elegant impulse — No grand conclusion is required — Let the day reveal its texture through one concrete situation — What remains afterwards may be modest, but it has the rare quality of belonging fully to you — The day carries one private image — a river finding a stone channel — Sunday gives this private image a warmer edge and a more personal rhythm.",
+      "love": "Affection responds to sincerity rather than performance — Your empathy can be warm without becoming insistent, while a subtle response adds intrigue — Around a public vocation, absorbing other people’s expectations is softened by a gesture that leaves both people room to breathe and remain themselves — Affection keeps its sparkle when tenderness is allowed to remain unhurried, a public vocation.",
+      "work": "At work, a public vocation asks for a form others can understand — Your empathy gives the proposal character — precision keeps it credible — A useful exchange may refine the idea, especially where absorbing other people’s expectations might otherwise blur its originality or personal signature — Professional energy gains character through a bold but generous exchange, absorbing other people’s expectations.",
+      "finance": "Money reflects priorities as much as arithmetic — A desire connected with a public vocation may be legitimate, though absorbing other people’s expectations can make it look urgent — Your empathy supports a choice that keeps pleasure, usefulness and tomorrow in the same picture — Material desires look clearer once pleasure and lasting use share the frame, empathy.",
+      "disclaimer": "Astrological content provided for entertainment purposes."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "pisces",
+      "language": "de",
+      "general": "Eine öffentliche berufung gibt dem Tag seinen eigenen Pulsschlag — Eine konkrete Situation zeigt, wie viel Raum dieses Thema bereits in Ihren Entscheidungen einnimmt — Ihre Empathie bringt Bewegung, doch fremde Erwartungen aufzunehmen verdient Aufmerksamkeit — Die Stimmung ist weder Versprechen noch Warnung, sondern ein feiner Hinweis darauf, wo Wunsch und Wirklichkeit einander berühren — Eine maßvolle Geste verändert womöglich das ganze Bild — Am Abend zählt Klarheit mehr als Wirkung, und überzeugend bleibt die Richtung, die nach der ersten Begeisterung noch lebendig wirkt — Ein persönliches Bild begleitet den Tag — ein Fluss findet sein steinernes Bett — Der Sonntag gibt diesem persönlichen Bild Wärme und einen eigenen Rhythmus.",
+      "love": "Zuneigung antwortet auf Aufrichtigkeit statt Inszenierung — Ihre Empathie darf warm sein, ohne zu drängen — rund um eine öffentliche Berufung verliert fremde Erwartungen aufzunehmen durch eine feine Geste an Schärfe — So bleibt beiden Menschen Luft und Eigenart — Gefühle behalten ihren Glanz, wenn Zärtlichkeit ohne Eile wachsen darf, eine öffentliche Berufung.",
+      "work": "Im Beruf sucht eine öffentliche Berufung eine verständliche Form — Ihre Empathie verleiht dem Vorschlag Charakter, Genauigkeit macht ihn glaubwürdig — Ein sachlicher Austausch verhindert, dass fremde Erwartungen aufzunehmen der Idee Originalität oder persönliche Handschrift nimmt — Berufliche Energie gewinnt durch einen mutigen und großzügigen Austausch, fremde Erwartungen aufzunehmen.",
+      "finance": "Geld spiegelt Prioritäten ebenso wie Zahlen — Ein Wunsch rund um eine öffentliche Berufung kann berechtigt sein, während fremde Erwartungen aufzunehmen ihn dringlicher erscheinen lässt — Ihre Empathie hält Vergnügen, Nutzen und den morgigen Tag in einem Bild — Materielle Wünsche werden klarer, wenn Freude und dauerhafter Nutzen zusammenfinden, Empathie.",
+      "disclaimer": "Astrologische Inhalte dienen der Unterhaltung."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "pisces",
+      "language": "es",
+      "general": "Una vocación pública da al día un pulso singular — Una situación concreta muestra cuánto espacio ocupa ya este tema en sus decisiones — Su empatía aporta movimiento, aunque absorber las expectativas ajenas merece atención — El ambiente no promete ni amenaza — invita a observar dónde se encuentran deseo y realidad — Un gesto medido puede cambiar toda la composición — Al caer la tarde, la claridad pesa más que el efecto, y convence la dirección que sigue viva después del entusiasmo inicial — El día guarda una imagen privada — un río que encuentra un cauce de piedra — El domingo aporta a esta imagen íntima más calor y un ritmo muy personal.",
+      "love": "El afecto responde mejor a la sinceridad que a la puesta en escena — Su empatía puede ser cálida sin insistir — alrededor de una vocación pública, un gesto sutil aligera absorber las expectativas ajenas y deja respirar a ambas personas — El afecto conserva su brillo cuando la ternura puede avanzar sin prisa, una vocación pública.",
+      "work": "En el trabajo, una vocación pública busca una forma comprensible — Su empatía da carácter a la propuesta y la precisión la vuelve creíble — Un intercambio útil evita que absorber las expectativas ajenas le quite originalidad o una firma claramente personal — La energía profesional gana carácter mediante un intercambio audaz y generoso, absorber las expectativas ajenas.",
+      "finance": "El dinero refleja prioridades además de cifras — Un deseo relacionado con una vocación pública puede ser legítimo, aunque absorber las expectativas ajenas lo haga parecer urgente — Su empatía reúne placer, utilidad y mañana en la misma imagen — Los deseos materiales se aclaran cuando placer y utilidad duradera comparten la escena, empatía.",
+      "disclaimer": "Contenido astrológico ofrecido con fines de entretenimiento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "pisces",
+      "language": "it",
+      "general": "Una vocazione pubblica dà alla giornata un ritmo riconoscibile — Una situazione concreta mostra quanto spazio occupi già questo tema nelle vostre scelte — La vostra empatia porta movimento, mentre assorbire le attese altrui merita attenzione — L’atmosfera non promette e non minaccia — invita a osservare dove desiderio e realtà si incontrano — Un gesto misurato può cambiare l’intera composizione — Verso sera la chiarezza conta più dell’effetto, e convince la direzione che resta viva dopo il primo entusiasmo — La giornata custodisce un’immagine privata — un fiume trova un letto di pietra — La domenica dona a questa immagine privata più calore e un ritmo personale.",
+      "love": "L’affetto risponde alla sincerità più che alla messa in scena — La vostra empatia può essere calda senza insistere — intorno a una vocazione pubblica, un gesto sottile attenua assorbire le attese altrui e lascia respirare entrambi — L’affetto conserva il suo splendore quando la tenerezza può avanzare senza fretta, una vocazione pubblica.",
+      "work": "Nel lavoro, una vocazione pubblica cerca una forma comprensibile — La vostra empatia dà carattere alla proposta e la precisione la rende credibile — Uno scambio utile impedisce a assorbire le attese altrui di toglierle originalità o firma personale — L’energia professionale acquista carattere in uno scambio audace e generoso, assorbire le attese altrui.",
+      "finance": "Il denaro riflette priorità oltre che cifre — Un desiderio legato a una vocazione pubblica può essere legittimo, sebbene assorbire le attese altrui lo faccia sembrare urgente — La vostra empatia tiene piacere, utilità e domani nella stessa immagine — I desideri materiali diventano chiari quando piacere e utilità durevole condividono la scena, empatia.",
+      "disclaimer": "Contenuto astrologico proposto a scopo di intrattenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "pisces",
+      "language": "pt",
+      "general": "Uma vocação pública dá ao dia um pulso muito próprio — Uma situação concreta mostra quanto espaço este tema já ocupa nas suas escolhas — A sua empatia traz movimento, embora absorver as expectativas dos outros mereça atenção — O ambiente não promete nem ameaça — convida a observar onde desejo e realidade se encontram — Um gesto medido pode mudar toda a composição — Ao fim da tarde, a clareza conta mais do que o efeito, e convence a direção que continua viva depois do primeiro entusiasmo — O dia guarda uma imagem íntima — um rio encontra um leito de pedra — O domingo dá a esta imagem íntima mais calor e um ritmo muito pessoal.",
+      "love": "O afeto responde melhor à sinceridade do que à encenação — A sua empatia pode ser calorosa sem insistir — em torno de uma vocação pública, um gesto subtil atenua absorver as expectativas dos outros e deixa ambas as pessoas respirar — O afeto conserva o brilho quando a ternura pode avançar sem pressa, uma vocação pública.",
+      "work": "No trabalho, uma vocação pública procura uma forma compreensível — A sua empatia dá caráter à proposta e a precisão torna-a credível — Uma troca útil impede que absorver as expectativas dos outros lhe retire originalidade ou assinatura pessoal — A energia profissional ganha caráter numa troca audaz e generosa, absorver as expectativas dos outros.",
+      "finance": "O dinheiro reflete prioridades além de números — Um desejo ligado a uma vocação pública pode ser legítimo, embora absorver as expectativas dos outros o faça parecer urgente — A sua empatia reúne prazer, utilidade e amanhã na mesma imagem — Os desejos materiais tornam-se claros quando prazer e utilidade duradoura partilham a cena, empatia.",
+      "disclaimer": "Conteúdo astrológico proposto para fins de entretenimento."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "pisces",
+      "language": "ru",
+      "general": "Публичное призвание задаёт дню узнаваемый ритм — Конкретная ситуация показывает, сколько места эта тема уже занимает в ваших решениях — Ваша эмпатия создаёт движение, однако важно заметить чужие ожидания, принятые за свои — Атмосфера ничего не обещает и не пугает — она позволяет увидеть встречу желания с реальностью — Один точный жест способен изменить всю композицию — К вечеру ясность важнее внешнего эффекта, а убедительным остаётся направление, которое живо и после первого воодушевления — У дня есть личный образ — река находит каменное русло — Воскресенье придаёт этому личному образу тепло и собственный ритм.",
+      "love": "Чувство охотнее отвечает на искренность, чем на спектакль — Ваша эмпатия согревает без давления — вокруг темы «публичное призвание» тонкий жест смягчает чужие ожидания, принятые за свои и оставляет обоим право быть собой — Чувство сохраняет блеск, когда нежности не приходится спешить, публичное призвание.",
+      "work": "В работе тема «публичное призвание» ищет понятную форму — Ваша эмпатия придаёт предложению характер, а точность — убедительность — Полезный разговор не позволяет теме «чужие ожидания, принятые за свои» отнять оригинальность и личный почерк — Рабочая энергия обретает характер в смелом и великодушном обмене, чужие ожидания, принятые за свои.",
+      "finance": "Деньги отражают не только цифры, но и приоритеты — Желание, связанное с темой «публичное призвание», оправданно, хотя чужие ожидания, принятые за свои создаёт срочность — Ваша эмпатия соединяет удовольствие, пользу и завтрашний день — Материальные желания яснее, когда удовольствие соединяется с долгой пользой, эмпатия.",
+      "disclaimer": "Астрологический контент предлагается в развлекательных целях."
+    },
+    {
+      "date": "2026-11-29",
+      "sign": "pisces",
+      "language": "nl",
+      "general": "Een publieke roeping geeft de dag een herkenbare hartslag — Een concrete situatie toont hoeveel ruimte dit thema al in je keuzes inneemt — Je empathie brengt beweging, terwijl verwachtingen van anderen overnemen aandacht verdient — De sfeer belooft niets en waarschuwt evenmin — ze laat zien waar verlangen en werkelijkheid elkaar raken — Een afgemeten gebaar kan de hele compositie veranderen — Tegen de avond telt helderheid meer dan effect, en overtuigt vooral de richting die na het eerste enthousiasme nog levend aanvoelt — De dag bewaart één persoonlijk beeld — een rivier vindt een stenen bedding — De zondag geeft dit persoonlijke beeld warmte en een heel eigen ritme.",
+      "love": "Genegenheid reageert sterker op oprechtheid dan op vertoon — Je empathie mag warm zijn zonder aan te dringen — rond een publieke roeping verzacht een subtiel gebaar verwachtingen van anderen overnemen en laat het beide mensen lucht — Genegenheid houdt haar glans wanneer tederheid geen haast hoeft te maken, een publieke roeping.",
+      "work": "Op het werk zoekt een publieke roeping een begrijpelijke vorm — Je empathie geeft het voorstel karakter en nauwkeurigheid maakt het geloofwaardig — Een nuttige uitwisseling voorkomt dat verwachtingen van anderen overnemen de originaliteit of persoonlijke signatuur wegneemt — Professionele energie krijgt karakter door een moedige en royale uitwisseling, verwachtingen van anderen overnemen.",
+      "finance": "Geld weerspiegelt prioriteiten naast cijfers — Een wens rond een publieke roeping kan terecht zijn, al doet verwachtingen van anderen overnemen haar dringend lijken — Je empathie houdt plezier, bruikbaarheid en morgen in hetzelfde beeld — Materiële verlangens worden helder zodra plezier en blijvend nut samenkomen, empathie.",
+      "disclaimer": "Astrologische inhoud aangeboden voor amusementsdoeleinden."
+    }
+  ]
+}
