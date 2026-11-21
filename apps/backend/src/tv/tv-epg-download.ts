@@ -21,44 +21,64 @@ function safePhaseError(error:unknown,otherwise:string):Error {
  * This function is deliberately not exposed via HTTP until SCRUM-117.
  */
 export async function downloadEpgSource(rawUrl:string,format:EpgFormat):Promise<Buffer> {
-  const url=validateEpgSourceUrl(rawUrl);
-  const answers=await lookup(url.hostname,{all:true,verbatim:true})
-    .catch(error=>{throw safePhaseError(error,"EPG_DNS_LOOKUP_FAILED");});
-  const publicIPv4=answers.find(a=>a.family===4 && isPublicSourceAddress(a.address));
-  if(!publicIPv4 || answers.some(a=>!isPublicSourceAddress(a.address)))
-    throw new Error("EPG source address is not exclusively public IPv4");
-  const request=url.protocol==="https:"?httpsRequest:httpRequest;
-  const compressed=await new Promise<Buffer>((resolve,reject)=>{
-    const req=request(url,{
-      method:"GET",timeout:EPG_FETCH_LIMITS.timeoutMs,
-      // Explicit family:4 disables Node's automatic family-selection path
-      // and prevents an array-style lookup response being requested for a
-      // single SSRF-validated and pinned public IPv4 address.
-      family:4,
-      headers:{"accept":"application/xml,application/json,application/octet-stream","accept-encoding":"identity"},
-      lookup:(_hostname,_options,callback)=>callback(null,publicIPv4.address,4),
-    },res=>{
-      res.on("aborted",()=>reject(new Error("EPG_HTTP_TRANSFER_FAILED")));
-      const status=res.statusCode??0;
-      if(status!==200){res.resume();reject(new Error("EPG source returned HTTP "+status));return;}
-      const encoding=String(res.headers["content-encoding"]??"identity").toLowerCase();
-      if(encoding!=="identity"){res.destroy();reject(new Error("Unexpected content encoding"));return;}
-      const chunks:Buffer[]=[];
-      let total=0;
-      res.on("data",(chunk:Buffer)=>{
-        total+=chunk.length;
-        if(total>EPG_FETCH_LIMITS.maxCompressedBytes){
-          req.destroy(new Error("EPG source exceeds download size limit"));return;
+  // Resolve and validate each host before connecting to its pinned public IPv4.
+  // Use the IP for the socket but retain the original hostname for HTTPS SNI,
+  // certificate verification and Host: this avoids custom DNS lookup issues.
+  let current=validateEpgSourceUrl(rawUrl);
+  let compressed:Buffer|undefined;
+  for(let redirects=0;redirects<=EPG_FETCH_LIMITS.maxRedirects;redirects++){
+    const answers=await lookup(current.hostname,{all:true,verbatim:true})
+      .catch(error=>{throw safePhaseError(error,"EPG_DNS_LOOKUP_FAILED");});
+    const publicIPv4=answers.find(a=>a.family===4&&isPublicSourceAddress(a.address));
+    if(!publicIPv4 || answers.some(a=>!isPublicSourceAddress(a.address)))
+      throw new Error("EPG_DNS_NON_PUBLIC");
+    const request=current.protocol==="https:"?httpsRequest:httpRequest;
+    const response=await new Promise<{status:number;location?:string;body?:Buffer}>((resolve,reject)=>{
+      const req=request({
+        protocol:current.protocol,hostname:publicIPv4.address,
+        port:current.port?Number(current.port):undefined,
+        path:current.pathname+current.search,
+        method:"GET",timeout:EPG_FETCH_LIMITS.timeoutMs,
+        // TLS verifies the original public domain, never the pinned IP.
+        ...(current.protocol==="https:"?{servername:current.hostname}:{}),
+        headers:{host:current.host,accept:"application/xml,application/json,application/octet-stream",
+          "accept-encoding":"identity"},
+      },res=>{
+        const status=res.statusCode??0;
+        if([301,302,303,307,308].includes(status)){
+          const location=res.headers.location;
+          res.resume();
+          resolve({status,location});return;
         }
-        chunks.push(chunk);
+        if(status!==200){res.resume();reject(new Error("EPG source returned HTTP "+status));return;}
+        const encoding=String(res.headers["content-encoding"]??"identity").toLowerCase();
+        if(encoding!=="identity"){res.resume();reject(new Error("Unexpected content encoding"));return;}
+        const chunks:Buffer[]=[];let total=0;
+        res.on("aborted",()=>reject(new Error("EPG_HTTP_TRANSFER_FAILED")));
+        res.on("data",(part:Buffer)=>{
+          total+=part.length;
+          if(total>EPG_FETCH_LIMITS.maxCompressedBytes){
+            req.destroy(new Error("EPG source exceeds download size limit"));return;
+          }
+          chunks.push(part);
+        });
+        res.on("end",()=>resolve({status,body:Buffer.concat(chunks,total)}));
+        res.on("error",error=>reject(safePhaseError(error,"EPG_HTTP_TRANSFER_FAILED")));
       });
-      res.on("end",()=>resolve(Buffer.concat(chunks,total)));
-      res.on("error",error=>reject(safePhaseError(error,"EPG_HTTP_TRANSFER_FAILED")));
-    });
-    req.on("timeout",()=>req.destroy(new Error("EPG source request timed out")));
-    req.on("error",reject);
-    req.end();
-  }).catch(error=>{throw safePhaseError(error,"EPG_HTTP_REQUEST_FAILED");});
+      req.on("timeout",()=>req.destroy(new Error("EPG source request timed out")));
+      req.on("error",reject);
+      req.end();
+    }).catch(error=>{throw safePhaseError(error,"EPG_HTTP_REQUEST_FAILED");});
+    if(response.body){compressed=response.body;break;}
+    if(!response.location||redirects===EPG_FETCH_LIMITS.maxRedirects)
+      throw new Error("EPG_HTTP_REDIRECT");
+    const next=validateEpgSourceUrl(new URL(response.location,current).toString());
+    // Never downgrade a secure source or send credentials to redirect targets.
+    if(current.protocol==="https:"&&next.protocol!=="https:")
+      throw new Error("EPG_HTTP_REDIRECT");
+    current=next;
+  }
+  if(!compressed)throw new Error("EPG_HTTP_REDIRECT");
   let expanded:Buffer;
   if(format==="XMLTV_GZIP"){
     const gunzip=Readable.from([compressed]).pipe(createGunzip());
