@@ -423,13 +423,12 @@ function SourcePrioritiesEditor({countries,locale,countryNames,onClose,onSaved}:
 }){
  const [countryId,setCountryId]=useState(countries[0]?.countryId??"");
  const [items,setItems]=useState<OrderedSource[]>([]);
- const [loading,setLoading]=useState(false);
+ const [loading,setLoading]=useState(countries.length>0);
  const [busy,setBusy]=useState(false);
  const [error,setError]=useState("");
  useEffect(()=>{
-  if(!countryId){setItems([]);return;}
+  if(!countryId)return;
   const controller=new AbortController();
-  setItems([]);setLoading(true);setError("");
   void fetch(api+"epg-sources/countries/"+countryId+"/priorities",{
    cache:"no-store",signal:controller.signal,
   }).then(async response=>{
@@ -469,7 +468,9 @@ function SourcePrioritiesEditor({countries,locale,countryNames,onClose,onSaved}:
    la couverture ; cet ordre ne remplace pas la vérification des correspondances ni des droits.</p>
   <label className="form-label" htmlFor="tv-epg-priority-country">Pays</label>
   <select id="tv-epg-priority-country" className="form-select mb-3"
-   value={countryId} disabled={busy} onChange={e=>setCountryId(e.target.value)}>
+   value={countryId} disabled={busy} onChange={e=>{
+    setCountryId(e.target.value);setItems([]);setLoading(true);setError("");
+   }}>
    {countries.map(c=><option key={c.countryId} value={c.countryId}>
     {region(c.isoCode2,locale,countryNames)}</option>)}
   </select>
