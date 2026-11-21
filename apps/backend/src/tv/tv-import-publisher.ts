@@ -119,9 +119,10 @@ export async function publishTvRevision(lease:TvWriterLease,input:PublishInput):
       const permitted=await client.query<{allowed:boolean}>(
         `SELECT EXISTS (
           SELECT 1 FROM public.tv_source s
-          JOIN public.tv_source_country sc ON sc.source_id=s.id
-          WHERE s.id=$1::uuid AND sc.country_id=$2::uuid
-            AND s.is_active AND sc.is_active
+          LEFT JOIN public.tv_source_country sc ON sc.source_id=s.id
+            AND sc.country_id=$2::uuid
+          WHERE s.id=$1::uuid
+            AND s.is_active AND (sc.source_id IS NULL OR sc.is_active)
             AND s.programme_rights_status='APPROVED'
             AND nullif(btrim(s.programme_rights_reference),'') IS NOT NULL
         ) AS allowed`,[row.sourceId,input.countryId]);
