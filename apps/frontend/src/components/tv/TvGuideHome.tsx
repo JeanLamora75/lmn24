@@ -45,10 +45,8 @@ function TvCard({item,locale,mode,tab,countryIso2,nowMs}:{
   :item.variant?.timeZone??"UTC";
  const image=safeProgrammeImage(a?.imageUrl??null);
  const channelHref=`/${locale}/tv/channels/${encodeURIComponent(item.channel.id)}?country=${countryIso2}`;
- // SCRUM-120 will implement channel and airing detail routes. Until then
- // no false link to an unavailable page is rendered.
- const channelLinkAvailable=false;
- const airingLinkAvailable=false;
+ const programmeHref=a&&item.variant?
+  `/${locale}/tv/airings/${encodeURIComponent(a.id)}`:null;
  const live=tab==="NOW"&&a&&nowMs!==null&&Date.parse(a.startsAt)<=nowMs&&nowMs<Date.parse(a.endsAt);
  const progress=live&&a?Math.max(0,Math.min(100,
   100*((nowMs??0)-Date.parse(a.startsAt))/(Date.parse(a.endsAt)-Date.parse(a.startsAt)))):null;
@@ -63,14 +61,12 @@ function TvCard({item,locale,mode,tab,countryIso2,nowMs}:{
    <span className={styles.channelNumber} aria-label={`${copy.channelNumber} ${item.channel.number}`}>{item.channel.number}</span>
   </div>
   <div className={styles.cardBody}>
-   <div className={styles.channelName}>{channelLinkAvailable
-    ?<Link href={channelHref}>{item.channel.name}</Link>
-    :item.channel.name}</div>
+   <div className={styles.channelName}><Link href={channelHref}>{item.channel.name}</Link></div>
    {a&&item.programmeState==="AVAILABLE"
     ?<>
       <span className={styles.time}>{formatBroadcast(a.startsAt,zone,locale)}</span>
       <h2 className={styles.programmeTitle}>
-       {airingLinkAvailable?<Link href={`/${locale}/tv/airings/${a.id}`}>{a.title}</Link>:a.title}
+       {programmeHref?<Link href={programmeHref}>{a.title}</Link>:a.title}
       </h2>
       <div className={styles.metadata}>{[a.category,duration(a.startsAt,a.endsAt)].filter(Boolean).join(" · ")}</div>
       {progress!==null&&<div className={styles.progress} role="progressbar"
