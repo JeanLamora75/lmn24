@@ -53,6 +53,18 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
    logoUrl:"https://example.org/logo.png",websiteUrl:"https://example.org/",
   });
  });
+ it("retains distinct alternative icons without repeating identical URLs",async()=>{
+  const xml='<tv><channel id="demo">'
+   +'<icon src="https://example.org/clear-192.png"/>'
+   +'<icon src="https://example.org/clear-192.png"/>'
+   +'<icon src="https://example.org/actual.png"/>'
+   +'<display-name>Demo</display-name></channel></tv>';
+  const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
+  expect(decoded.channels?.[0]).toMatchObject({
+   logoUrl:"https://example.org/clear-192.png",
+   logoUrls:["https://example.org/clear-192.png","https://example.org/actual.png"],
+  });
+ });
  it("maps lowercase country attribute from a worldwide Teleonline channel",async()=>{
   const xml='<tv><channel id="Canal.Discovery.World.Latinoamérica.ar" country="ar">'
    +'<display-name>Canal Discovery</display-name></channel>'
