@@ -157,11 +157,12 @@ export class TvImportRunsService {
       const current=await tx.$queryRaw<Array<{id:string;status:string}>>`
         SELECT id,status FROM public.tv_import_run WHERE id=${id}::uuid FOR UPDATE
       `;
-      if(!current.length)throw new NotFoundException("TV import run not found");
-      if(current[0].status==="RUNNING")throw new ConflictException("TV_IMPORT_RUNNING_CANNOT_DELETE");
+      const row=current[0];
+      if(!row)throw new NotFoundException("TV import run not found");
+      if(row.status==="RUNNING")throw new ConflictException("TV_IMPORT_RUNNING_CANNOT_DELETE");
       // A queued job has no completed work: physically remove it so a worker
       // cannot claim it after it disappears from the UI.
-      if(current[0].status==="QUEUED"){
+      if(row.status==="QUEUED"){
         await tx.$executeRaw`
           DELETE FROM public.tv_import_run WHERE id=${id}::uuid AND status='QUEUED'
         `;
