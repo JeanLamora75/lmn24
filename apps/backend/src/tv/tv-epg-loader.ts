@@ -3,6 +3,7 @@ import type {TvWriterLease} from "./tv-import-publisher";
 import {TvImportLeaseLostError} from "./tv-import-publisher";
 import {downloadEpgSource} from "./tv-epg-download";
 import {cacheTvIcon} from "./tv-icon-storage";
+import {selectXmltvLogos} from "./tv-logo-policy";
 import {decodeEpgBuffer} from "./tv-epg-decoder";
 import {localDayBounds} from "./tv-import-time";
 import type {ValidatedEpgLoader,EpgDayBatch,ScopeResult} from "./tv-import-worker";
@@ -116,20 +117,33 @@ export function createVerifiedDbEpgLoader(
       // Cache local channel icons before entering the database transaction.
       // Missing or invalid icons do not prevent importing channel identities.
       const iconMap=new Map<string,string>();
-      const declaredIds=(decoded.channels??[]).map(c=>c.externalId);
-      const stored=declaredIds.length?await db.query<{external_id:string}>(`
-        SELECT m.external_id
+      const declared=decoded.channels??[];
+      const {chosen,rejected}=selectXmltvLogos(declared);
+      const declaredIds=declared.map(c=>c.externalId);
+      // A rejected cached URL is untrusted only for this source. Match its
+      // hashed cache path exactly; never touch independently uploaded logos.
+      const rejectedLocalPaths=[...rejected].flatMap(url=>{
+       const hash=createHash("sha256").update("remote:"+url).digest("hex");
+       return ["png","jpg","webp"].map(ext=>"/tv-icons/"+hash+"."+ext);
+      });
+      const stored=declaredIds.length?await db.query<{external_id:string;logo_url:string}>(`
+        SELECT m.external_id,c.logo_url
         FROM public.tv_channel_external_id m
         JOIN public.tv_channel c ON c.id=m.channel_id
         WHERE m.source_id=$1::uuid AND m.external_id=ANY($2::text[])
           AND c.logo_url LIKE '/tv-icons/%'`,[row.sourceId,declaredIds]):{rows:[]};
-      const alreadyLocal=new Set(stored.rows.map(x=>x.external_id));
-      const remoteIcons=(decoded.channels??[]).filter(c=>!!c.logoUrl&&!alreadyLocal.has(c.externalId));
+      const alreadyLocal=new Set(stored.rows.filter(x=>!rejectedLocalPaths.includes(x.logo_url))
+       .map(x=>x.external_id));
+      const remoteIcons=declared.filter(ch=>chosen.has(ch.externalId)&&!alreadyLocal.has(ch.externalId));
       for(let offset=0;offset<remoteIcons.length;offset+=12){
        if(signal.aborted)throw new TvImportLeaseLostError();
-       await Promise.all(remoteIcons.slice(offset,offset+12).map(async c=>{
-        const local=await cacheTvIcon(c.logoUrl!);
-        if(local)iconMap.set(c.externalId,local);
+       await Promise.all(remoteIcons.slice(offset,offset+12).map(async ch=>{
+        const urls=ch.logoUrls??(ch.logoUrl?[ch.logoUrl]:[]);
+        for(const url of urls){
+         if(rejected.has(url))continue;
+         const local=await cacheTvIcon(url);
+         if(local){iconMap.set(ch.externalId,local);break;}
+        }
        }));
       }
       stage="MAPPING";
@@ -168,6 +182,17 @@ export function createVerifiedDbEpgLoader(
             AND m.mapping_status='PENDING_REVIEW' AND m.channel_id IS NULL
             AND c.slug='epg-'||replace($1::text,'-','')||'-'||md5(m.external_id)
             AND m.external_id=ANY($2::text[])`,[row.sourceId,externalIds]);
+        // Remove only proven generic provider-cache associations from this
+        // imported source. Do not delete image files or touch manual uploads.
+        if(rejectedLocalPaths.length){
+         await db.query(`
+           UPDATE public.tv_channel c SET logo_url=NULL
+           FROM public.tv_channel_external_id m
+           WHERE m.source_id=$1::uuid AND m.channel_id=c.id
+             AND m.external_id=ANY($2::text[])
+             AND c.logo_url=ANY($3::text[])`,
+           [row.sourceId,declaredIds,rejectedLocalPaths]);
+        }
         // Refresh only empty catalogue logos. Never overwrite an administrator
         // edited logo, and never affect programme artwork or publishing.
         await db.query(`
