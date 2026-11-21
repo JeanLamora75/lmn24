@@ -202,6 +202,12 @@ CREATE TABLE IF NOT EXISTS public.tv_source (
   source_url TEXT NOT NULL,
   format VARCHAR(16) NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
+  geographic_scope VARCHAR(8) NOT NULL DEFAULT 'GLOBAL',
+  scope_country_id UUID REFERENCES public.tv_country(country_id) ON DELETE RESTRICT,
+  CONSTRAINT tv_source_geographic_scope_valid CHECK (
+    (geographic_scope='GLOBAL' AND scope_country_id IS NULL) OR
+    (geographic_scope='COUNTRY' AND scope_country_id IS NOT NULL)
+  ),
   rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
   rights_reference TEXT,
   programme_rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
