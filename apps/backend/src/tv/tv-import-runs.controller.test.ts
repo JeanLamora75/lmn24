@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { AuthService } from "../auth/auth.service";
 import { TvImportRunsService } from "./tv-import-runs.service";
 import { TvImportRunsController } from "./tv-import-runs.controller";
+import { TvImportExecutionService } from "./tv-import-execution.service";
 
 const request={headers:{cookie:"lmn24_session=test"}};
 const id="c7000000-0000-4000-8000-000000000001";
@@ -13,12 +14,15 @@ function setup(role:"ADMIN"|"EDITOR"|null,enabled=false){
  const getEvents=vi.fn().mockResolvedValue([]);
  const retryFailed=vi.fn().mockResolvedValue({id,retried:1});
  const service={create,getRun,getEvents,retryFailed,listRuns} as unknown as TvImportRunsService;
+ const startDiscovery=vi.fn().mockResolvedValue({id,status:"STARTED",mode:"DISCOVERY"});
+ const readiness=vi.fn().mockReturnValue({ready:false,mode:"DISCOVERY",missingFlags:["TV_EPG_NETWORK_ENABLED"],publicPublication:false});
+ const execution={startDiscovery,readiness} as unknown as TvImportExecutionService;
  const auth={getUserFromSession:vi.fn().mockResolvedValue(role?{role}:null)} as unknown as AuthService;
  const config={get:(key:string)=>{
   if(key==="TV_IMPORTS_ENABLED"||key==="TV_CATALOG_ADMIN_ENABLED")return enabled?"true":"false";
   return undefined;
  }} as unknown as ConfigService;
- return {controller:new TvImportRunsController(auth,service,config),create,getRun,getEvents,retryFailed,listRuns};
+ return {controller:new TvImportRunsController(auth,service,config,execution),create,getRun,getEvents,retryFailed,listRuns,startDiscovery,readiness};
 }
 describe("SCRUM-117 protected import orchestration",()=>{
  it("never reads/writes import data for anonymous users",async()=>{
@@ -32,6 +36,29 @@ describe("SCRUM-117 protected import orchestration",()=>{
   const admin=setup("ADMIN");
   await expect(admin.controller.retry(request,id)).rejects.toMatchObject({status:503});
   expect(admin.retryFailed).not.toHaveBeenCalled();
+ });
+ it("execution endpoint is admin-only, validates UUID and discovery mode",async()=>{
+  const anon=setup(null,true);
+  await expect(anon.controller.execute(request,id,{mode:"DISCOVERY"}))
+   .rejects.toMatchObject({status:401});
+  expect(anon.startDiscovery).not.toHaveBeenCalled();
+  const editor=setup("EDITOR",true);
+  await expect(editor.controller.executionStatus(request)).rejects.toMatchObject({status:403});
+  await expect(editor.controller.execute(request,id,{mode:"DISCOVERY"}))
+   .rejects.toMatchObject({status:403});
+  expect(editor.startDiscovery).not.toHaveBeenCalled();
+  const admin=setup("ADMIN",true);
+  await expect(admin.controller.execute(request,"bad",{mode:"DISCOVERY"}))
+   .rejects.toMatchObject({status:400});
+  await expect(admin.controller.execute(request,id,{mode:"PUBLISH"}))
+   .rejects.toMatchObject({status:400});
+  await expect(admin.controller.execute(request,id,{})).rejects.toMatchObject({status:400});
+  await expect(admin.controller.execute(request,id,{mode:"DISCOVERY"}))
+   .resolves.toMatchObject({status:"STARTED",mode:"DISCOVERY"});
+  expect(admin.startDiscovery).toHaveBeenCalledWith(id);
+  await expect(admin.controller.executionStatus(request)).resolves.toMatchObject({
+   ready:false,publicPublication:false,
+  });
  });
  it("enforces days 1..7 and UUID, cannot enable automatic trigger via request",async()=>{
   const s=setup("ADMIN",true);
