@@ -250,7 +250,7 @@ function ChannelCreateEditor({countries,locale,onClose,onSaved}:{countries:Count
     <span className="form-check-label">À vérifier (masquée du public)</span></label>
    <ChannelUrlInputs values={urls} onChange={setUrls}/>
    <p className="text-body-secondary mt-3">Une chaîne nouvelle est inactive et à vérifier par défaut.</p>
-   {countries.length===0&&<p className="alert alert-warning">Configurez d'abord un pays dans l'onglet Pays.</p>}
+   {countries.length===0&&<p className="alert alert-warning">Configurez d&apos;abord un pays dans l&apos;onglet Pays.</p>}
    {error&&<p role="alert" className="alert alert-danger">{error}</p>}
    <div className="d-flex justify-content-end gap-2">
     <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Annuler</button>
