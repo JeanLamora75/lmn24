@@ -73,4 +73,13 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
   expect(loaded.days).toEqual([]);
   expect(loaded.scopeResults.every(s=>s.outcome==="ERROR")).toBe(true);
  });
+})  const lease=({client:{query},ownerToken:"owner",signal:new AbortController().signal,
+    release:vi.fn()} as unknown) as TvWriterLease;
+  const transport=vi.fn(async()=>{throw new Error("Upstream failure");});
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+    transport,attest:noCoverageAttested,now:new Date("2026-11-21T12:00:00Z")});
+  const loaded=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  expect(loaded.days).toEqual([]);
+  expect(loaded.scopeResults.every(s=>s.outcome==="ERROR")).toBe(true);
+ });
 });
