@@ -7,7 +7,12 @@ export type EpgFailureCode =
  "EPG_TIMEOUT"|"EPG_SIZE_LIMIT"|"EPG_XMLTV_INVALID"|
  "EPG_NO_PROGRAMMES"|"EPG_DATABASE_WRITE"|"EPG_SOURCE_UNAVAILABLE"|
  "EPG_TLS_ERROR"|"EPG_CONNECTION_ERROR"|"EPG_GZIP_INVALID"|
- "EPG_CONTENT_ENCODING_INVALID";
+ "EPG_CONTENT_ENCODING_INVALID"|
+ "EPG_DOWNLOAD_UNEXPECTED"|"EPG_DECODE_UNEXPECTED"|
+ "EPG_URL_INVALID"|"EPG_DNS_NON_PUBLIC"|"EPG_FORMAT_MISMATCH"|
+ "EPG_XMLTV_TIME_INVALID"|"EPG_XMLTV_ITEM_INVALID"|
+ "EPG_STREAM_INTERRUPTED"|"EPG_SIZE_COMPRESSED"|"EPG_SIZE_EXPANDED"|
+ "EPG_PROGRAMME_LIMIT";
 
 export const EPG_FAILURE_CODES:ReadonlySet<string>=new Set<EpgFailureCode>([
  "EPG_HTTP_404","EPG_HTTP_403","EPG_HTTP_429","EPG_HTTP_5XX",
@@ -15,6 +20,10 @@ export const EPG_FAILURE_CODES:ReadonlySet<string>=new Set<EpgFailureCode>([
  "EPG_SIZE_LIMIT","EPG_XMLTV_INVALID","EPG_NO_PROGRAMMES",
  "EPG_DATABASE_WRITE","EPG_SOURCE_UNAVAILABLE","EPG_TLS_ERROR",
  "EPG_CONNECTION_ERROR","EPG_GZIP_INVALID","EPG_CONTENT_ENCODING_INVALID",
+ "EPG_DOWNLOAD_UNEXPECTED","EPG_DECODE_UNEXPECTED",
+ "EPG_URL_INVALID","EPG_DNS_NON_PUBLIC","EPG_FORMAT_MISMATCH",
+ "EPG_XMLTV_TIME_INVALID","EPG_XMLTV_ITEM_INVALID","EPG_STREAM_INTERRUPTED",
+ "EPG_SIZE_COMPRESSED","EPG_SIZE_EXPANDED","EPG_PROGRAMME_LIMIT",
 ]);
 
 function details(error:unknown):{message:string;code:string}{
@@ -34,8 +43,19 @@ export function classifyEpgFailure(error:unknown,stage:"DOWNLOAD"|"DECODE"|"MAPP
  // shared-source promise boundary. Never erase an already sanitized code.
  if(EPG_FAILURE_CODES.has(message.trim()))return message.trim() as EpgFailureCode;
  if(/No EPG emissions/.test(message))return "EPG_NO_PROGRAMMES";
- if(/size limit|exceeds|payload too large|too large|programme limit/i.test(message))
-  return "EPG_SIZE_LIMIT";
+ if(/EPG source exceeds download size limit/i.test(message))return "EPG_SIZE_COMPRESSED";
+ if(/Expanded EPG exceeds size limit|EPG payload too large/i.test(message))return "EPG_SIZE_EXPANDED";
+ if(/XMLTV programme limit/i.test(message))return "EPG_PROGRAMME_LIMIT";
+ if(/size limit|exceeds|too large/i.test(message))return "EPG_SIZE_LIMIT";
+ if(/Unsafe EPG source URL|Invalid EPG source URL|Non-public EPG source host|EPG source URL too long/i.test(message))
+  return "EPG_URL_INVALID";
+ if(/source address is not exclusively public IPv4/i.test(message))return "EPG_DNS_NON_PUBLIC";
+ if(/XMLTV timestamp|Invalid XMLTV calendar time|Invalid EPG timestamp|Invalid EPG duration/i.test(message))
+  return "EPG_XMLTV_TIME_INVALID";
+ if(/Incomplete XMLTV item|Malformed XMLTV programme|Missing EPG identity/i.test(message))
+  return "EPG_XMLTV_ITEM_INVALID";
+ if(/Invalid XMLTV document|Invalid XMLTV root/i.test(message))
+  return "EPG_FORMAT_MISMATCH";
  if(stage==="DECODE")return "EPG_XMLTV_INVALID";
  const status=/EPG source returned HTTP (\d{3})/.exec(message);
  if(status){
@@ -57,7 +77,9 @@ export function classifyEpgFailure(error:unknown,stage:"DOWNLOAD"|"DECODE"|"MAPP
   return "EPG_GZIP_INVALID";
  if(/CERT_|ERR_TLS_|ERR_SSL_|UNABLE_TO_VERIFY_LEAF_SIGNATURE|SELF_SIGNED_CERT|DEPTH_ZERO_SELF_SIGNED_CERT|CERT_HAS_EXPIRED|certificate|TLS handshake/i.test(message+" "+code))
   return "EPG_TLS_ERROR";
+ if(/ERR_STREAM_PREMATURE_CLOSE|ERR_STREAM_DESTROYED|ERR_SOCKET_CLOSED|aborted|premature close/i.test(message+" "+code))
+  return "EPG_STREAM_INTERRUPTED";
  if(/ECONNRESET|ECONNREFUSED|EPIPE|EHOSTUNREACH|ENETUNREACH|UND_ERR_SOCKET|socket hang up/i.test(message+" "+code))
   return "EPG_CONNECTION_ERROR";
- return "EPG_SOURCE_UNAVAILABLE";
+ return "EPG_DOWNLOAD_UNEXPECTED";
 }
