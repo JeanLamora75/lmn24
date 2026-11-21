@@ -102,9 +102,22 @@ describe("SCRUM-116 ADMIN EPG source security",()=>{
   const s=setup("ADMIN");
   await expect(s.c.create(request,{
    name:"EPG",sourceUrl:"https://epg.example.org/feed.xml",format:"XMLTV",
-   isActive:false,rights:{...rights,image:right("APPROVED")},
+   isActive:false,geographicScope:"GLOBAL",scopeCountryId:null,
+   rights:{...rights,image:right("APPROVED")},
   })).resolves.toEqual({id:"test"});
   expect(s.createSource).toHaveBeenCalledTimes(1);
+  await expect(s.c.create(request,{
+   name:"France EPG",sourceUrl:"https://epg.example.org/fr.xml",format:"XMLTV",
+   isActive:true,geographicScope:"COUNTRY",scopeCountryId:id,rights,
+  })).resolves.toEqual({id:"test"});
+  await expect(s.c.create(request,{
+   name:"Invalid source",sourceUrl:"https://epg.example.org/fr.xml",format:"XMLTV",
+   isActive:true,geographicScope:"COUNTRY",scopeCountryId:null,rights,
+  })).rejects.toMatchObject({status:400});
+  await expect(s.c.create(request,{
+   name:"Invalid global",sourceUrl:"https://epg.example.org/fr.xml",format:"XMLTV",
+   isActive:true,geographicScope:"GLOBAL",scopeCountryId:id,rights,
+  })).rejects.toMatchObject({status:400});
   await expect(s.c.updateRights(request,id,{
    ...rights,programme:right("APPROVED"),
   })).resolves.toEqual({id:"test"});
