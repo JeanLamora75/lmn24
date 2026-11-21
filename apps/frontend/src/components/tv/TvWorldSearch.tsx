@@ -7,7 +7,7 @@ import styles from "./tv-world-search.module.css";
 type Channel={id:string;countryIso2:string;number:number;name:string;logoUrl:string|null};
 type Programme={id:string;variantId:string;countryIso2:string;channelId:string;channelName:string;
  number:number;title:string;startsAt:string;endsAt:string;timeZone:string};
-type Section<T>={status:"OK"|"ERROR";items:T[];hasNext:boolean;total?:number};
+type Section<T>={status:"OK"|"ERROR"|"SKIPPED";items:T[];hasNext:boolean;total?:number};
 type Response={query:string;status:"OK"|"PARTIAL";channels:Section<Channel>;
  programmes:Section<Programme>};
 type SectionName="channels"|"programmes";
@@ -28,7 +28,7 @@ const messages={
 function parseSection<T>(input:unknown):input is Section<T>{
  if(!input||typeof input!=="object")return false;
  const v=input as Partial<Section<T>>;
- return (v.status==="OK"||v.status==="ERROR")&&Array.isArray(v.items)
+ return (v.status==="OK"||v.status==="ERROR"||v.status==="SKIPPED")&&Array.isArray(v.items)
   &&typeof v.hasNext==="boolean";
 }
 function validResult(raw:unknown):raw is Response{
@@ -64,7 +64,7 @@ export function TvWorldSearch({locale}:{locale:TvLocale}){
   const controller=new AbortController();
   const id=++requestId.current;
   const params=new URLSearchParams({q:query,channelsPage:String(pages.channels),
-   programmesPage:String(pages.programmes),pageSize:"30"});
+   programmesPage:String(pages.programmes),pageSize:"30",section:loading??"all"});
   fetch("/api/public/tv/search?"+params.toString(),{cache:"no-store",signal:controller.signal})
    .then(async response=>{
     if(!response.ok)throw new Error("request");
@@ -73,16 +73,23 @@ export function TvWorldSearch({locale}:{locale:TvLocale}){
     return value;
    }).then(value=>{
     if(controller.signal.aborted||requestId.current!==id)return;
-    setData(value);
+    setData(previous=>({
+      ...value,
+      channels:value.channels.status==="SKIPPED"?(previous?.channels??value.channels):value.channels,
+      programmes:value.programmes.status==="SKIPPED"?(previous?.programmes??value.programmes):value.programmes,
+    }));
     setItems(previous=>({
-     channels:pages.channels===1?value.channels.items:
+     channels:value.channels.status==="SKIPPED"?previous.channels:pages.channels===1?value.channels.items:
       [...previous.channels,...value.channels.items.filter(row=>
        !previous.channels.some(old=>old.id===row.id&&old.countryIso2===row.countryIso2))],
-     programmes:pages.programmes===1?value.programmes.items:
+     programmes:value.programmes.status==="SKIPPED"?previous.programmes:pages.programmes===1?value.programmes.items:
       [...previous.programmes,...value.programmes.items.filter(row=>
        !previous.programmes.some(old=>old.id===row.id&&old.variantId===row.variantId))],
     }));
-    setErrors({channels:value.channels.status==="ERROR",programmes:value.programmes.status==="ERROR"});
+    setErrors(previous=>({
+      channels:value.channels.status==="SKIPPED"?previous.channels:value.channels.status==="ERROR",
+      programmes:value.programmes.status==="SKIPPED"?previous.programmes:value.programmes.status==="ERROR",
+    }));
    }).catch(()=>{
     if(!controller.signal.aborted&&requestId.current===id){
      setErrors({channels:true,programmes:true});
