@@ -391,8 +391,9 @@ function ImportEditor({countries,locale,onClose,onSaved}:{countries:Country[];lo
     {[1,2,3,4,5,6,7].map(x=><option key={x} value={x}>{x}</option>)}
    </select>
    <p className="text-body-secondary">{eligible.length} pays concernés.
-    L’import manuel d’un pays inactif est autorisé. Les sources réellement utilisables
-    et leurs droits sont contrôlés au serveur avant mise en file.</p>
+    L’import manuel d’un pays inactif est autorisé. Toutes les sources EPG actives
+    sont prises en compte sans rattachement préalable aux pays ; les droits sont
+    vérifiés avant toute publication et les correspondances inconnues restent à valider.</p>
    {eligible.length===0&&<p className="alert alert-warning">Aucun pays éligible.</p>}
    {error&&<p role="alert" className="alert alert-danger">{error}</p>}
    <div className="d-flex gap-2 justify-content-end">
@@ -506,7 +507,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
       <input className="form-control" type="search" value={filter}
        onChange={e=>{setFilter(e.target.value);setPage(1);}}/>
      </label>
-     {view!=="countries"&&view!=="imports"&&<label className="col-12 col-md-4">Pays
+     {view==="channels"&&<label className="col-12 col-md-4">Pays
       <select className="form-select" value={country} onChange={e=>{setCountry(e.target.value);setPage(1);}}>
        <option value="">Tous les pays</option>{countries.map(c=>
         <option key={c.countryId} value={c.countryId}>{region(c.isoCode2,locale)}</option>)}
@@ -536,13 +537,14 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     </div>
    </AdminDataPanel>
   </>}
-  {(view==="countries"||view==="channels"||view==="sources"||view==="imports")&&!loading&&!error&&
+  {view==="sources"&&<p className="text-body-secondary">L'activation d'une source EPG s'applique à tout son flux, sans rattachement obligatoire à un pays. Les pays et chaînes inconnus restent à vérifier avant publication.</p>}
+   {(view==="countries"||view==="channels"||view==="sources"||view==="imports")&&!loading&&!error&&
    <AdminDataPanel label={"Liste "+LABELS[view]}>
     <div className="table-responsive"><table className="table table-hover align-middle mb-0">
      <thead><tr>
       {view==="countries"&&<><th>Pays</th><th>Statut</th><th>Fuseau IANA</th><th>Chaînes actives / total</th><th>Couverture</th><th>Actions</th></>}
       {view==="channels"&&<><th>Chaîne</th><th>Pays</th><th>N°</th><th>Statut</th><th>Actions</th></>}
-      {view==="sources"&&<><th>Source</th><th>Format</th><th>Pays / priorité</th><th>Droits programmes</th><th>Statut</th><th>Actions</th></>}
+      {view==="sources"&&<><th>Source</th><th>Format</th><th>Périmètre</th><th>Droits programmes</th><th>Statut</th><th>Actions</th></>}
       {view==="imports"&&<><th>Date</th><th>Déclencheur</th><th>Jours</th><th>État</th><th>Périmètres</th><th>Actions</th></>}
      </tr></thead><tbody>
       {view==="countries"&&(visible as Country[]).map(v=><tr key={v.countryId}>
@@ -559,7 +561,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
       </tr>)}
       {view==="sources"&&(visible as Source[]).map((v,i)=><tr key={v.id+":"+(v.countryId??i)}>
        <td>{v.name}</td><td>{v.format}</td>
-       <td>{v.countryId?region(countryCodes.get(v.countryId)??"",locale):"Non associée"} {v.priority??""}</td>
+       <td>{v.countryId?("Exception : "+region(countryCodes.get(v.countryId)??"",locale)+(v.priority?" · priorité "+v.priority:"")):"Globale"}</td>
        <td>{v.programmeRightsStatus}</td><td>{v.isActive?"Active":"Inactive"}</td>
        <td><AdminIconButton name="pencil-square" label={"Modifier "+v.name} onClick={()=>setSourceEditor(v)}/></td>
       </tr>)}
