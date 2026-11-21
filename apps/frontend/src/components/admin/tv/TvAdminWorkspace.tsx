@@ -569,20 +569,18 @@ function EpgDiscoveryInbox({countries,onImported}:{
  const [error,setError]=useState("");
  const [selected,setSelected]=useState<string[]>([]);
  const [countryId,setCountryId]=useState("");
- const [countryFilter,setCountryFilter]=useState("UNCLASSIFIED");
- const [confirmed,setConfirmed]=useState(false);
  const [saving,setSaving]=useState(false);
  const [feedback,setFeedback]=useState("");
  const [refresh,setRefresh]=useState(0);
  async function importSelected(){
-  if(saving||!countryId||!selected.length||!confirmed)return;
+  if(saving||!countryId||!selected.length)return;
   setSaving(true);setError("");setFeedback("");
   try{
    const result=await request<{created:number;existing:number}>(
     "epg-sources/discoveries/import","POST",{countryId,mappingIds:selected});
    setFeedback((result.created+result.existing)+" chaînes rattachées au pays, "+
-    "inactives et à vérifier. Les correspondances EPG restent à valider.");
-   setSelected([]);setConfirmed(false);setRefresh(x=>x+1);onImported();
+    "inactives. Elles sont désormais visibles dans Chaînes avec le pays choisi.");
+   setSelected([]);setRefresh(x=>x+1);onImported();
   }catch(err){setError((err as Error).message);}
   finally{setSaving(false);}
  }
@@ -599,7 +597,7 @@ function EpgDiscoveryInbox({countries,onImported}:{
   }).catch(err=>{if(!controller.signal.aborted)setError((err as Error).message);})
    .finally(()=>{if(!controller.signal.aborted)setLoading(false);});
   return ()=>controller.abort();
- },[page,query,refresh,countryFilter]);
+ },[page,query,refresh]);
  return <AdminDataPanel label="Chaînes EPG découvertes — à classer">
   <div className="p-3">
    <p className="text-body-secondary">
@@ -638,7 +636,7 @@ function EpgDiscoveryInbox({countries,onImported}:{
       </select>
      </label>
      <button className="btn btn-primary" type="button"
-      disabled={saving||!selected.length||!countryId||!confirmed}
+      disabled={saving||!selected.length||!countryId}
       onClick={()=>void importSelected()}>
       {saving?"Association…":"Associer "+selected.length+" chaînes au pays (inactives)"}
      </button>
@@ -650,6 +648,46 @@ function EpgDiscoveryInbox({countries,onImported}:{
       des chaînes nationales gratuites diffusées par voie hertzienne dans
       le pays choisi. Aucun rattachement n’est déduit du nom seul.</span>
     </label>
+    <p className="small text-body-secondary">L’association géographique
+     reste inactive et à vérifier ; aucune grille n’est publiée.</p>
+    <table className="table table-hover align-middle">
+     <thead><tr>
+      <th><input type="checkbox" aria-label="Sélectionner toutes les chaînes visibles"
+       checked={items.length>0&&items.every(x=>selected.includes(x.id))}
+       onChange={e=>setSelected(e.target.checked
+        ?[...new Set([...selected,...items.map(x=>x.id)])]
+        :selected.filter(id=>!items.some(x=>x.id===id)))} /></th>
+      <th>Chaîne et identifiant EPG</th><th>Source</th><th>Pays</th>
+     </tr></thead>
+     <tbody>{items.map(item=><tr key={item.id}>
+      <td><input type="checkbox" aria-label={"Sélectionner "+item.externalId}
+       checked={selected.includes(item.id)}
+       onChange={e=>setSelected(previous=>e.target.checked
+        ?[...previous,item.id]:previous.filter(id=>id!==item.id))}/></td>
+      <td><strong>{item.channelName??item.externalId}</strong><div><code>{item.externalId}</code></div></td><td>{item.sourceName}</td>
+      <td>À vérifier</td>
+      <td><button type="button" className="btn btn-sm btn-outline-primary"
+       onClick={()=>onReview(item)}>Examiner la chaîne</button></td>
+     </tr>)}</tbody>
+    </table>
+    {!items.length&&<p>Aucune chaîne EPG en attente dans cette sélection.</p>}
+    <div className="d-flex justify-content-between align-items-center">
+     <span className="small text-body-secondary">Page {page} / {Math.max(1,Math.ceil(total/50))}</span>
+     <div className="d-flex gap-2">
+      <button className="btn btn-sm btn-outline-secondary" type="button"
+       disabled={page===1} onClick={()=>{setSelected([]);setPage(x=>x-1);}}>Précédent</button>
+      <button className="btn btn-sm btn-outline-secondary" type="button"
+       disabled={page*50>=total} onClick={()=>{setSelected([]);setPage(x=>x+1);}}>Suivant</button>
+     </div>
+    </div>
+   </div>}
+  </div>
+ </AdminDataPanel>;
+}    <p className="text-body-secondary">
+     Seules les chaînes dont le pays est inconnu figurent ici.
+     Celles dont le pays provient du flux EPG ou de la configuration
+     de la source sont déjà associées : elles figurent dans « Chaînes ».
+    </p>
     <p className="small text-body-secondary">L’association géographique
      reste inactive et à vérifier ; aucune grille n’est publiée.</p>
     <table className="table table-hover align-middle">
@@ -685,7 +723,16 @@ function EpgDiscoveryInbox({countries,onImported}:{
    </div>}
   </div>
  </AdminDataPanel>;
-}
+}    <p className="text-body-secondary">
+     Seules les chaînes dont le pays est inconnu figurent ici.
+     Celles dont le pays provient du flux EPG ou de la configuration
+     de la source sont déjà associées : elles figurent dans « Chaînes ».
+    </p>
+     <p className="small text-body-secondary">
+      Le pays choisi sera attribué aux chaînes sélectionnées.
+      Les chaînes restent inactives ; aucune grille n’est publiée.
+     </p>
+
 function ImportEditor({countries,locale,countryNames,onClose,onSaved}:{countries:Country[];locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:(id:string)=>void}){
  const [country,setCountry]=useState("");const [days,setDays]=useState(7);
  const [mode,setMode]=useState<"DISCOVERY"|"STAGING">("DISCOVERY");
