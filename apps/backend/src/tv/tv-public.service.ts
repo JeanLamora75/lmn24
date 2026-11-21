@@ -267,7 +267,6 @@ export class TvPublicService {
     const exactNumber=numeric!==null&&numeric<=2147483647n?Number(numeric):null;
     const pageSize=args.pageSize;
     const from=args.now??new Date();
-    const to=new Date(from.getTime()+8*86400000);
     const channels=async()=>{
       if(digits&&exactNumber===null)return {status:"OK" as const,items:[],hasNext:false};
       const rows=await this.db.prisma.$queryRaw<Array<{
@@ -318,7 +317,9 @@ export class TvPublicService {
           AND cc.is_active AND NOT cc.needs_review AND tc.is_active AND c.is_active
           AND src.is_active AND src.programme_rights_status='APPROVED'
           AND nullif(btrim(src.programme_rights_reference),'') IS NOT NULL
-          AND a.starts_at >= ${from}::timestamptz AND a.starts_at < ${to}::timestamptz
+          AND (a.starts_at AT TIME ZONE v.timezone)::date BETWEEN
+            (${from}::timestamptz AT TIME ZONE v.timezone)::date
+            AND ((${from}::timestamptz AT TIME ZONE v.timezone)::date + 6)
           AND (CASE WHEN ${digits}::boolean THEN
             COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)=${exactNumber}
             ELSE translate(lower(ch.name),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy') LIKE '%'||translate(lower(${query}),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy')||'%'
