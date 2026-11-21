@@ -9,15 +9,16 @@ const id="c7000000-0000-4000-8000-000000000001";
 function setup(role:"ADMIN"|"EDITOR"|null,enabled=false){
  const create=vi.fn().mockResolvedValue({id,status:"QUEUED",scopeCount:2});
  const getRun=vi.fn().mockResolvedValue({id,status:"QUEUED"});
+ const listRuns=vi.fn().mockResolvedValue({items:[],pagination:{page:1,pageSize:20,total:0,totalPages:0}});
  const getEvents=vi.fn().mockResolvedValue([]);
  const retryFailed=vi.fn().mockResolvedValue({id,retried:1});
- const service={create,getRun,getEvents,retryFailed} as unknown as TvImportRunsService;
+ const service={create,getRun,getEvents,retryFailed,listRuns} as unknown as TvImportRunsService;
  const auth={getUserFromSession:vi.fn().mockResolvedValue(role?{role}:null)} as unknown as AuthService;
  const config={get:(key:string)=>{
   if(key==="TV_IMPORTS_ENABLED"||key==="TV_CATALOG_ADMIN_ENABLED")return enabled?"true":"false";
   return undefined;
  }} as unknown as ConfigService;
- return {controller:new TvImportRunsController(auth,service,config),create,getRun,getEvents,retryFailed};
+ return {controller:new TvImportRunsController(auth,service,config),create,getRun,getEvents,retryFailed,listRuns};
 }
 describe("SCRUM-117 protected import orchestration",()=>{
  it("never reads/writes import data for anonymous users",async()=>{
@@ -51,4 +52,19 @@ describe("SCRUM-117 protected import orchestration",()=>{
   await expect(s.controller.events(request,id)).resolves.toEqual({items:[]});
   await expect(s.controller.retry(request,id)).resolves.toMatchObject({retried:1});
  });
+ it("SCRUM-122 denies import history to unauthorized users and validates page limits",async()=>{
+  const anonymous=setup(null,true);
+  await expect(anonymous.controller.list(request)).rejects.toMatchObject({status:401});
+  expect(anonymous.listRuns).not.toHaveBeenCalled();
+  const editor=setup("EDITOR",true);
+  await expect(editor.controller.list(request)).rejects.toMatchObject({status:403});
+  const disabled=setup("ADMIN",false);
+  await expect(disabled.controller.list(request)).rejects.toMatchObject({status:503});
+  const authorized=setup("ADMIN",true);
+  await expect(authorized.controller.list(request,"0")).rejects.toMatchObject({status:400});
+  await expect(authorized.controller.list(request,"1","101")).rejects.toMatchObject({status:400});
+  await expect(authorized.controller.list(request,"2","15")).resolves.toMatchObject({items:[]});
+  expect(authorized.listRuns).toHaveBeenCalledWith(2,15);
+ });
+
 });
