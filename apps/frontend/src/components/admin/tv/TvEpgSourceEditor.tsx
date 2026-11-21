@@ -2,7 +2,7 @@
 import {useState} from "react";
 import styles from "@/app/admin/(protected)/tv/tv-admin.module.css";
 export type TvEpgSource={
- id:string;name:string;sourceUrl:string;format:string;isActive:boolean;
+ id:string;name:string;sourceUrl:string;format:string;isActive:boolean;version:string;
  programmeRightsStatus:string;programmeRightsReference:string|null;
  synopsisRightsStatus:string;synopsisRightsReference:string|null;
  imageRightsStatus:string;imageRightsReference:string|null;
@@ -36,9 +36,9 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
    setNotice(message);onSaved();
   }catch(e){setError((e as Error).message);}finally{setBusy(false);}
  }
- const saveRights=()=>save("rights",Object.fromEntries(rightKeys.map(k=>[k,{
+ const saveRights=()=>save("rights",{...Object.fromEntries(rightKeys.map(k=>[k,{
   status:rights[k].status,reference:rights[k].reference.trim()||null,
- }])),"Droits enregistrés.");
+ }])),expectedVersion:item.version},"Droits enregistrés.");
  return <div className={styles.dialogBackdrop}>
   <div role="dialog" aria-modal="true" aria-labelledby="tv-epg-edit-title"
    className={styles.dialog} onKeyDown={e=>{if(e.key==="Escape")onClose();}}>
@@ -61,7 +61,7 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
      checked={active} onChange={e=>setActive(e.target.checked)}/>
      <span className="form-check-label">Source active</span></label>
     <button type="button" className="btn btn-primary mt-3" disabled={busy||!name.trim()||!url.trim()}
-     onClick={()=>void save("configuration",{name,sourceUrl:url,format,isActive:active},
+     onClick={()=>void save("configuration",{name,sourceUrl:url,format,isActive:active,expectedVersion:item.version},
       "Configuration enregistrée.")}>Enregistrer la configuration</button>
    </fieldset>
    <fieldset>
