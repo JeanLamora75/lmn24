@@ -82,7 +82,13 @@ describe("SCRUM-116 ADMIN EPG source security",()=>{
   const admin=setup("ADMIN");
   await expect(admin.c.listDiscoveries(request,"1",""))
    .resolves.toEqual({total:1,items:[]});
-  expect(admin.listPendingDiscoveries).toHaveBeenCalledWith(50,0,"");
+  expect(admin.listPendingDiscoveries).toHaveBeenCalledWith(50,0,"",null);
+  await expect(admin.c.listDiscoveries(request,"1","","a1000000-0000-4000-8000-000000000001"))
+   .resolves.toEqual({total:1,items:[]});
+  expect(admin.listPendingDiscoveries).toHaveBeenLastCalledWith(
+   50,0,"","a1000000-0000-4000-8000-000000000001");
+  await expect(admin.c.listDiscoveries(request,"1","","bad"))
+   .rejects.toMatchObject({status:400});
   for(const body of [{mappingIds:[id]},{countryId:id,mappingIds:[]},
     {countryId:id,mappingIds:[id,id]},{countryId:"invalid",mappingIds:[id]}]){
    await expect(admin.c.importDiscoveries(request,body))
