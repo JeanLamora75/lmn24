@@ -345,21 +345,15 @@ function SourceEditor({onClose,onSaved}:{onClose:()=>void;onSaved:()=>void}){
    <label className="form-check mt-3"><input type="checkbox" className="form-check-input" checked={active}
     onChange={e=>setActive(e.target.checked)}/><span className="form-check-label">Source active</span></label>
    <fieldset className="mt-3"><legend className="fs-6 fw-bold">Droits par type de contenu</legend>
+    <p className="small text-body-secondary">Aucun justificatif n'est requis pour enregistrer votre décision. La republication demeure soumise à des contrôles distincts.</p>
     {rights.map(key=><div key={key} className="mb-2">
-     <label className="form-label text-capitalize" htmlFor={"rights-"+key}>{key}</label>
-     <div className={styles.formGrid}>
-      <select id={"rights-"+key} className="form-select" value={rightsData[key].status}
-       onChange={e=>setRightsData(old=>({...old,[key]:{...old[key],status:e.target.value}}))}>
-       {["UNREVIEWED","APPROVED","REJECTED","EXPIRED"].map(v=><option key={v}>{v}</option>)}
-      </select>
-      <input className="form-control" aria-label={"Justificatif "+key} placeholder="Référence de droits"
-       required={rightsData[key].status==="APPROVED"} maxLength={2048}
-       value={rightsData[key].reference}
-       onChange={e=>setRightsData(old=>({...old,[key]:{...old[key],reference:e.target.value}}))}/>
-     </div>
+     <label className="form-label text-capitalize" htmlFor={"rights-"+key}>{key==="programme"?"Programmes":key==="synopsis"?"Synopsis":key==="image"?"Images":"Logos"}</label>
+     <select id={"rights-"+key} className="form-select" value={rightsData[key].status}
+      onChange={e=>setRightsData(old=>({...old,[key]:{...old[key],status:e.target.value}}))}>
+      {[{value:"UNREVIEWED",label:"À vérifier"},{value:"APPROVED",label:"Autorisé"},{value:"REJECTED",label:"Non autorisé"},{value:"EXPIRED",label:"Expiré"}].map(v=><option key={v.value} value={v.value}>{v.label}</option>)}
+     </select>
     </div>)}
    </fieldset>
-   <p className="small text-body-secondary">La source reste non approuvée pour toute famille sans justificatif. La validation serveur contrôle également l’URL.</p>
    {error&&<p className="alert alert-danger" role="alert">{error}</p>}
    <div className="d-flex justify-content-end gap-2">
     <button className="btn btn-outline-secondary" type="button" onClick={onClose}>Annuler</button>
