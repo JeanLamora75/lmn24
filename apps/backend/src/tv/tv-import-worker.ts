@@ -1,6 +1,7 @@
 import { Client } from "pg";
 import { acquireTvWriterLease,publishTvRevision, type ValidatedAirings } from "./tv-import-publisher";
 import { deriveRunStatus,mergeAirings,type AiringCandidate,type Coverage } from "./tv-import-policy";
+import { recoverAbandonedTvRuns } from "./tv-import-recovery";
 
 /** Input comes ONLY from a vetted decoder + verified channel mapping.
  * The downloader/decoders are NOT wired to the worker until approved.
@@ -39,6 +40,8 @@ export async function processQueuedTvRun(
  const lease=await acquireTvWriterLease(connectionString);
  const db=lease.client;
  try{
+   // New exclusive owner first finalizes abandoned RUNNING rows.
+   await recoverAbandonedTvRuns(lease);
    const started=await db.query(
      `UPDATE public.tv_import_run SET status='RUNNING',started_at=now()
       WHERE id=$1::uuid AND status='QUEUED' RETURNING id`,[runId]);
