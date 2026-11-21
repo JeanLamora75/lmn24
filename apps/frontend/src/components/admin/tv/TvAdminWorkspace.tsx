@@ -1,5 +1,6 @@
 "use client";
-import {useEffect,useMemo,useState} from "react";
+import {useEffect,useMemo,useRef,useState} from "react";
+import {mergeSocialDiscovery, SOCIAL_KEYS, SOCIAL_LABELS, type SocialKey, type SocialLinkValues} from "@/lib/source-social-discovery";
 import {useRouter} from "next/navigation";
 import {TvTranslationPanel} from "./TvTranslationPanel";
 import {TvEpgSourceEditor} from "./TvEpgSourceEditor";
@@ -110,7 +111,80 @@ function initialChannelUrls(item?:Channel):ChannelUrls{
  return Object.fromEntries(channelUrlFields.map(({key})=>[key,item?.[key]??""])) as ChannelUrls;
 }
 function ChannelUrlInputs({values,onChange}:{values:ChannelUrls;onChange:(next:ChannelUrls)=>void}){
+ const [discovering,setDiscovering]=useState(false);
+ const [notice,setNotice]=useState("");
+ const [conflicts,setConflicts]=useState<Partial<SocialLinkValues>>({});
+ const latest=useRef(values);
+ latest.current=values;
+ const router=useRouter();
+ async function discover(){
+  if(discovering)return;
+  const websiteUrl=latest.current.websiteUrl.trim();
+  if(!websiteUrl){
+   setNotice("Renseignez d’abord l’URL du site officiel.");
+   return;
+  }
+  try{
+   const url=new URL(websiteUrl);
+   if(!["https:","http:"].includes(url.protocol))throw new Error();
+  }catch{
+   setNotice("Renseignez une URL HTTP ou HTTPS valide.");
+   return;
+  }
+  setDiscovering(true);setNotice("");setConflicts({});
+  try{
+   const response=await fetch("/api/admin/sources/social-links/discover",{
+    method:"POST",cache:"no-store",headers:{"content-type":"application/json"},
+    body:JSON.stringify({websiteUrl}),
+   });
+   if(response.status===401){router.replace("/admin/login");return;}
+   if(!response.ok){
+    const body=await response.json().catch(()=>null) as {message?:string|string[]}|null;
+    throw new Error(typeof body?.message==="string"?body.message:
+     "Impossible de rechercher les réseaux sociaux sur ce site.");
+   }
+   const raw=await response.json() as Partial<Record<SocialKey,unknown>>;
+   const discovered={} as SocialLinkValues;
+   for(const key of SOCIAL_KEYS){
+    const value=raw[key];
+    if(value!==null&&value!==undefined&&typeof value!=="string")
+     throw new Error("Réponse de découverte invalide.");
+    discovered[key]=typeof value==="string"?value:null;
+   }
+   if(latest.current.websiteUrl.trim()!==websiteUrl){
+    setNotice("L’URL du site a changé : relancez la recherche.");
+    return;
+   }
+   const current=latest.current;
+   const previous=Object.fromEntries(SOCIAL_KEYS.map(key=>[key,current[key]||null])) as SocialLinkValues;
+   const result=mergeSocialDiscovery(previous,discovered);
+   onChange({...current,...Object.fromEntries(SOCIAL_KEYS.map(key=>[key,result.next[key]??""]))});
+   setConflicts(result.conflicts);
+   setNotice(result.found===0?"Aucun réseau social trouvé sur ce site.":
+    result.added+" lien(s) ajouté(s), "+Object.keys(result.conflicts).length+
+    " conflit(s). Les liens existants ont été conservés.");
+  }catch(error){
+   setNotice(error instanceof Error?error.message:"La recherche des réseaux sociaux a échoué.");
+  }finally{setDiscovering(false);}
+ }
  return <fieldset className="mt-3"><legend className="fs-6 fw-bold">Liens officiels et réseaux sociaux</legend>
+  <div className="mb-3 d-flex flex-wrap align-items-center gap-2">
+   <button type="button" className="btn btn-outline-primary" disabled={discovering}
+    onClick={()=>void discover()}>{discovering?"Recherche en cours…":"Réseaux sociaux"}</button>
+   <span className="small text-body-secondary">Recherche les comptes officiels à partir du site renseigné, sans enregistrement automatique.</span>
+  </div>
+  {notice&&<p role="status" className="alert alert-info">{notice}</p>}
+  {SOCIAL_KEYS.some(key=>Boolean(conflicts[key]))&&<div className="alert alert-warning">
+   <p>Des liens sont déjà renseignés. Choisissez ceux à remplacer :</p>
+   {SOCIAL_KEYS.filter(key=>Boolean(conflicts[key])).map(key=><div key={key} className="mb-2">
+    <span>{SOCIAL_LABELS[key]} : {conflicts[key]}</span>{" "}
+    <button type="button" className="btn btn-sm btn-outline-primary" onClick={()=>{
+     const value=conflicts[key];if(!value)return;
+     onChange({...latest.current,[key]:value});
+     setConflicts(previous=>{const next={...previous};delete next[key];return next;});
+    }}>Remplacer</button>
+   </div>)}
+  </div>}
   <div className="row g-3">
    {channelUrlFields.map(({key,label})=><label key={key} className="col-12 col-md-6">{label}
     <input type="url" className="form-control" maxLength={2048} value={values[key]}
