@@ -53,7 +53,7 @@ export class TvImportRunsController {
   await this.authorize(request);
   const parsed=importRequest.safeParse(body);
   if(!parsed.success)throw new BadRequestException("Invalid TV import request");
-  return this.runs.create({...parsed.data,trigger:"MANUAL"});
+  return this.execution.launchManualImport(parsed.data);
  }
  @Get("execution-status")
  @Header("Cache-Control","no-store")
