@@ -203,6 +203,10 @@ export class TvCatalogController {
       };
       if(code.startsWith("TV_ICON_"))
        throw new BadRequestException(messages[code]??"Le logo n’a pas pu être téléchargé. Vérifiez son URL et son format.");
+      const networkCode=error instanceof Error&&"code" in error
+       ?String((error as Error&{code?:unknown}).code??""):"";
+      if(["ENOTFOUND","EAI_AGAIN","ECONNRESET","ECONNREFUSED","ETIMEDOUT","EPIPE"].includes(networkCode))
+       throw new BadRequestException("Connexion au fournisseur d’image impossible ("+networkCode+"). Vérifiez l’URL ou réessayez.");
       throw error;
     }
   }
