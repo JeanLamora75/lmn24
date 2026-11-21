@@ -70,6 +70,22 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
   expect(query.mock.calls.some(c=>c[0].includes("FROM public.tv_schedule_current"))).toBe(false);
   expect(attest).not.toHaveBeenCalled();
  });
+ it("stages licensed, verified programmes privately and never creates schedule days",async()=>{
+  const {lease,transport,query}=setup();
+  const attest=vi.fn(async()=>[]);
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+   transport,attest,stagingOnly:true,now:new Date("2026-11-21T12:00:00Z"),
+  });
+  const loaded=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  expect(loaded.days).toEqual([]);
+  expect(loaded.scopeResults).toEqual([
+   {scopeId:"s1",outcome:"SUCCESS",message:"PROGRAMMES_STAGED"},
+   {scopeId:"s2",outcome:"SUCCESS",message:"DISCOVERY_ONLY"},
+  ]);
+  expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_programme"))).toBe(true);
+  expect(query.mock.calls.some(c=>c[0].includes("FROM public.tv_schedule_current"))).toBe(false);
+  expect(attest).not.toHaveBeenCalled();
+ });
  it("reuses each global source acquisition across multiple country partitions",async()=>{
   const {lease,transport}=setup();
   const loader=createVerifiedDbEpgLoader(lease,"run",{
