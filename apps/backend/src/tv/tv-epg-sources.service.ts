@@ -82,6 +82,33 @@ export class TvEpgSourcesService {
     return rows;
   }
 
+  async updateSourceConfiguration(sourceId:string,input:{
+    name:string;sourceUrl:string;format:EpgFormat;isActive:boolean;
+  }) {
+    await this.requireSchema();
+    const url=validateEpgSourceUrl(input.sourceUrl).toString();
+    const rows=await this.database.prisma.$queryRaw<Array<{id:string}>>`
+      UPDATE public.tv_source
+      SET name=${input.name},source_url=${url},format=${input.format},is_active=${input.isActive}
+      WHERE id=${sourceId}::uuid RETURNING id
+    `;
+    if(!rows.length)throw new NotFoundException("EPG source not found");
+    return rows[0];
+  }
+
+  async listMappings(sourceId:string){
+    await this.requireSchema();
+    return this.database.prisma.$queryRaw`
+      SELECT m.id,m.source_id AS "sourceId",m.external_id AS "externalId",
+        m.mapping_status AS "status",m.channel_id AS "channelId",
+        m.variant_id AS "variantId",c.name AS "channelName"
+      FROM public.tv_channel_external_id m
+      LEFT JOIN public.tv_channel c ON c.id=m.channel_id
+      WHERE m.source_id=${sourceId}::uuid
+      ORDER BY m.mapping_status,m.external_id,m.id LIMIT 1000
+    `;
+  }
+
   async setRights(sourceId:string, rights:SourceRightsInput) {
     await this.requireSchema();
     for(const family of ["programme","synopsis","image","logo"] as const) {
