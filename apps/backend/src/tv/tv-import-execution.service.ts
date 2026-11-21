@@ -61,7 +61,7 @@ export class TvImportExecutionService {
   if(!this.readiness().ready)throw new ServiceUnavailableException(
    "TV_SOURCE_USE_NOT_QUALIFIED: retry execution unavailable");
   const next=await this.runs.retryFailed(originalRunId);
-  const execution=await this.startDiscovery(next.id);
+  const execution=await this.startRun(next.id,next.mode??"DISCOVERY");
   return {...execution,fromRunId:originalRunId,retried:next.retried};
  }
  async startDiscovery(runId:string){return this.startRun(runId,"DISCOVERY");}
