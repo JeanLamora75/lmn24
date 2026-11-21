@@ -6,6 +6,7 @@ import { assertImportDays,deriveRunStatus,failedScopeIds } from "./tv-import-pol
 
 export type ImportRequest = {
   trigger:"MANUAL"|"AUTOMATIC";days:number;countryId?:string|undefined;
+  mode?:"DISCOVERY"|"STAGING";
 };
 /** Admin orchestration only: no automatic external EPG download, or publishing,
  * until SCRUM-114 schema and SCRUM-117 ingestion integration are approved.
@@ -93,6 +94,12 @@ export class TvImportRunsService {
         INSERT INTO public.tv_import_event(run_id,level,event_type,message)
         VALUES(${id}::uuid,'INFO','QUEUED','EPG import queued for isolated processing')
       `;
+      if(input.mode==="STAGING"){
+        await tx.$executeRaw`
+          INSERT INTO public.tv_import_event(run_id,level,event_type,message)
+          VALUES(${id}::uuid,'INFO','RUN_MODE_STAGING','Private programme staging; no public schedule')
+        `;
+      }
       return {id,status:"QUEUED" as const,scopeCount:counts[0].n};
     });
   }
@@ -101,7 +108,7 @@ export class TvImportRunsService {
    * clicks "Lancer un import" again. Never duplicate an existing QUEUED run.
    * An already-started run is not reusable.
    */
-  async findQueuedManual(input:{days:number;countryId?:string|undefined}):
+  async findQueuedManual(input:{days:number;countryId?:string|undefined;mode?:"DISCOVERY"|"STAGING"}):
    Promise<{id:string}|null>{
     await this.requireSchema();
     assertImportDays(input.days);
@@ -116,6 +123,10 @@ export class TvImportRunsService {
       GROUP BY r.id
       HAVING count(DISTINCT scope.country_id)=1
          AND min(scope.country_id::text)=${input.countryId}::text
+         AND bool_or(EXISTS (
+           SELECT 1 FROM public.tv_import_event e
+           WHERE e.run_id=r.id AND e.event_type='RUN_MODE_STAGING'
+         ))=${input.mode==="STAGING"}
       ORDER BY r.created_at DESC LIMIT 1
     `;
     return rows[0]??null;
@@ -248,6 +259,11 @@ export class TvImportRunsService {
       if(!original[0])throw new NotFoundException("TV import run not found");
       if(!["SUCCESS","PARTIAL","ERROR","INTERRUPTED"].includes(original[0].status))
         throw new ConflictException("TV import run is not finished");
+      const staged=await tx.$queryRaw<Array<{present:boolean}>>`
+        SELECT EXISTS(SELECT 1 FROM public.tv_import_event
+          WHERE run_id=${id}::uuid AND event_type='RUN_MODE_STAGING') AS present
+      `;
+      const mode=staged[0]?.present?"STAGING" as const:"DISCOVERY" as const;
       const scopes=await tx.$queryRaw<Array<{id:string;countryId:string;sourceId:string|null;status:string}>>`
         SELECT id,country_id AS "countryId",source_id AS "sourceId",status
         FROM public.tv_import_scope WHERE run_id=${id}::uuid FOR UPDATE
@@ -280,7 +296,13 @@ export class TvImportRunsService {
         INSERT INTO public.tv_import_event(run_id,level,event_type,message)
         VALUES(${nextId}::uuid,'INFO','RETRY_QUEUED','Only failed previous import scopes queued')
       `;
-      return {id:nextId,fromRunId:id,retried:failedIds.length};
+      if(mode==="STAGING"){
+        await tx.$executeRaw`
+          INSERT INTO public.tv_import_event(run_id,level,event_type,message)
+          VALUES(${nextId}::uuid,'INFO','RUN_MODE_STAGING','Private programme staging; no public schedule')
+        `;
+      }
+      return {id:nextId,fromRunId:id,retried:failedIds.length,mode};
     });
   }
   async finishRun(id:string) {
