@@ -237,7 +237,19 @@ export class TvImportRunsService {
         status,attempts,error_message AS "errorMessage"
       FROM public.tv_import_scope WHERE run_id=${id}::uuid ORDER BY country_id,source_id,id
     `;
-    return {...rows[0],scopes};
+    const drafts=await this.database.prisma.$queryRaw<Array<{
+      draftDays:number;draftAirings:number;draftProgrammes:number;
+    }>>`
+      SELECT count(DISTINCT r.id)::int AS "draftDays",
+        count(a.id)::int AS "draftAirings",
+        count(DISTINCT a.programme_id)::int AS "draftProgrammes"
+      FROM public.tv_schedule_revision r
+      LEFT JOIN public.tv_airing a ON a.revision_id=r.id
+      WHERE r.run_id=${id}::uuid AND r.status='STAGING'
+    `;
+    return {...rows[0],scopes,privateDrafts:drafts[0]??{
+      draftDays:0,draftAirings:0,draftProgrammes:0,
+    }};
   }
   async getEvents(id:string){
     await this.requireSchema();
