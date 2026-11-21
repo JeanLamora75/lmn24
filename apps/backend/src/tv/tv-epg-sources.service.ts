@@ -171,8 +171,9 @@ export class TvEpgSourcesService {
     return {total:total[0]?.count??0,items};
   }
 
-  async listMappings(sourceId:string){
+  async listMappings(sourceId:string,search=""){
     await this.requireSchema();
+    const term=search.trim().slice(0,120);
     return this.database.prisma.$queryRaw`
       SELECT m.id,m.source_id AS "sourceId",m.external_id AS "externalId",
         m.mapping_status AS "status",m.channel_id AS "channelId",
@@ -180,6 +181,7 @@ export class TvEpgSourcesService {
       FROM public.tv_channel_external_id m
       LEFT JOIN public.tv_channel c ON c.id=m.channel_id
       WHERE m.source_id=${sourceId}::uuid
+        AND (${term}='' OR m.external_id ILIKE '%' || ${term} || '%')
       ORDER BY m.mapping_status,m.external_id,m.id LIMIT 1000
     `;
   }
