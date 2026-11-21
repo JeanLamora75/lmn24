@@ -13,6 +13,7 @@ const fixture=Buffer.from(JSON.stringify({programmes:[{
 }]}));
 function setup(){
  const query=vi.fn(async(sql:string,_params?:unknown[])=>{
+  void _params;
   if(sql.includes("SELECT requested_days"))return {rows:[{requested_days:7}]};
   if(sql.includes("FROM public.tv_import_scope scope"))return {rows:[
    {scopeId:"s1",sourceId,sourceUrl:"https://example.org/feed.json",format:"JSON",priority:1,
