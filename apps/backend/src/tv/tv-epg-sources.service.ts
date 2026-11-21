@@ -171,6 +171,85 @@ export class TvEpgSourcesService {
     return {total:total[0]?.count??0,items};
   }
 
+  /** Explicitly import selected discovered identifiers into one country.
+   * Creates inactive, review-required catalogue entries and an IANA variant;
+   * never assigns numbers, verifies mappings or publishes TV programmes.
+   * The administrator chooses a country because global feeds cannot be
+   * automatically and safely classified geographically.
+   */
+  async importDiscoveredChannels(countryId:string,mappingIds:string[]){
+    await this.requireSchema();
+    return this.database.prisma.$transaction(async tx=>{
+      const countries=await tx.$queryRaw<Array<{timezone:string}>>`
+        SELECT reference_timezone AS timezone FROM public.tv_country
+        WHERE country_id=${countryId}::uuid LIMIT 1
+      `;
+      const timezone=countries[0]?.timezone;
+      if(!timezone)throw new NotFoundException("TV country not configured");
+      let created=0,existing=0;
+      for(const mappingId of mappingIds){
+        const rows=await tx.$queryRaw<Array<{
+          externalId:string;channelId:string|null;status:string;
+        }>>`
+          SELECT external_id AS "externalId",channel_id AS "channelId",
+            mapping_status AS status
+          FROM public.tv_channel_external_id
+          WHERE id=${mappingId}::uuid FOR UPDATE
+        `;
+        const mapping=rows[0];
+        if(!mapping||mapping.status!=="PENDING_REVIEW")
+          throw new ConflictException("EPG_MAPPING_NOT_PENDING");
+        if(mapping.channelId){existing++;continue;}
+        const name=mapping.externalId.trim().slice(0,255)||"Chaîne EPG à identifier";
+        const slug="epg-"+mappingId.replaceAll("-","").toLowerCase();
+        const channel=await tx.$queryRaw<Array<{id:string}>>`
+          INSERT INTO public.tv_channel(slug,name)
+          VALUES(${slug},${name})
+          ON CONFLICT(slug) DO UPDATE SET slug=EXCLUDED.slug
+          RETURNING id
+        `;
+        const channelId=channel[0]?.id;
+        if(!channelId)throw new ConflictException("TV_CHANNEL_CREATION_FAILED");
+        const links=await tx.$queryRaw<Array<{id:string}>>`
+          INSERT INTO public.tv_channel_country(channel_id,country_id,
+            is_active,needs_review)
+          VALUES(${channelId}::uuid,${countryId}::uuid,FALSE,TRUE)
+          ON CONFLICT(channel_id,country_id) DO UPDATE
+            SET channel_id=EXCLUDED.channel_id
+          RETURNING id
+        `;
+        const associationId=links[0]?.id;
+        if(!associationId)throw new ConflictException("TV_COUNTRY_LINK_FAILED");
+        const variants=await tx.$queryRaw<Array<{id:string}>>`
+          INSERT INTO public.tv_channel_variant(channel_id,code,name,timezone)
+          VALUES(${channelId}::uuid,'epg-main',${name},${timezone})
+          ON CONFLICT(channel_id,code) DO UPDATE SET code=EXCLUDED.code
+          RETURNING id
+        `;
+        const variantId=variants[0]?.id;
+        if(!variantId)throw new ConflictException("TV_VARIANT_CREATION_FAILED");
+        await tx.$executeRaw`
+          INSERT INTO public.tv_variant_country(variant_id,channel_country_id,channel_id)
+          VALUES(${variantId}::uuid,${associationId}::uuid,${channelId}::uuid)
+          ON CONFLICT(variant_id,channel_country_id) DO NOTHING
+        `;
+        await tx.$executeRaw`
+          UPDATE public.tv_channel_country
+          SET default_variant_id=${variantId}::uuid
+          WHERE id=${associationId}::uuid AND default_variant_id IS NULL
+        `;
+        // Reserve the channel for manual review without marking it VERIFIED.
+        await tx.$executeRaw`
+          UPDATE public.tv_channel_external_id
+          SET channel_id=${channelId}::uuid
+          WHERE id=${mappingId}::uuid AND mapping_status='PENDING_REVIEW'
+        `;
+        created++;
+      }
+      return {created,existing,requiresReview:true,published:0};
+    });
+  }
+
   async listMappings(sourceId:string,search=""){
     await this.requireSchema();
     const term=search.trim().slice(0,120);
