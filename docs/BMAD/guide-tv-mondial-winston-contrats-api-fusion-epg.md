@@ -294,3 +294,16 @@ Le verrou global du parser actuel limite potentiellement tous les traitements du
 - **Propriétaire LMN24** : aucun GO de publication n'a été donné. Même une CI verte n'autorise aucune exposition publique.
 
 **Cette note est une spécification. Aucun développement, import ni requête web externe n'a été lancé.**
+
+
+---
+
+## Mise à jour validée — 21/11/2026 — GTV-EPG-GLOBAL-01
+
+**Cet arbitrage prévaut sur toute mention antérieure imposant une source EPG par pays.** Une source EPG est mondiale par défaut : création et activation sans association géographique obligatoire, inspection de son flux entier et conservation des IDs externes inconnus en `PENDING_REVIEW`. Une ligne facultative dans `tv_source_country` ne vaut qu'exception nationale explicite (priorité ou désactivation) et ne constitue plus une liste blanche.
+
+Les imports restent partitionnés par pays/variante/date **au stade publication**, pas au stade téléchargement. Chaque source est téléchargée et décodée une seule fois par worker/run, même lorsqu'elle alimente plusieurs pays. La source ne sera publiée que si droits programmes approuvés et justifiés, mapping vérifié, attestation de couverture et protections transactionnelles existantes. Les pays ne pouvant être établis de manière fiable restent à vérifier ; ne pas en déduire une publication automatique.
+
+**Transition technique :** le schéma candidat des 19 tables est conservé ; `tv_import_scope.country_id` reste obligatoire pour le traitement/publication national. La découverte indépendante des pays sans aucun pays TV configuré requiert une itération/migration ultérieure ; aucun drapeau réseau ni public n'a été ouvert automatiquement.
+
+Référence normative : [BMAD — Décision de collecte EPG globale](./guide-tv-mondial-epg-collecte-globale-decision-2026-11-21.md). Traces Jira : [SCRUM-116](https://lmn24.atlassian.net/browse/SCRUM-116), [SCRUM-117](https://lmn24.atlassian.net/browse/SCRUM-117), [SCRUM-122](https://lmn24.atlassian.net/browse/SCRUM-122).
