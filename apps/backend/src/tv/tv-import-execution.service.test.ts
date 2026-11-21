@@ -50,8 +50,9 @@ describe("Admin manual discovery worker dispatch",()=>{
   expect(mock.run).toHaveBeenCalledWith(expect.objectContaining({
    runId,discoveryOnly:true,attest:expect.any(Function),
   }));
-  const args=mock.run.mock.calls[0][0] as {attest:(a:unknown)=>Promise<unknown[]>};
-  await expect(args.attest({})).resolves.toEqual([]);
+  const args=mock.run.mock.calls.at(0)?.[0] as {attest:(a:unknown)=>Promise<unknown[]>}|undefined;
+  expect(args).toBeDefined();
+  await expect(args?.attest({})).resolves.toEqual([]);
  });
  it("rejects repeated clicks while one worker is running",async()=>{
   let complete:((value:unknown)=>void)|undefined;
