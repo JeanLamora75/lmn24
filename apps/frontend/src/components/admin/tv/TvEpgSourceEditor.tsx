@@ -109,6 +109,10 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
      {diagnostic&&<div role="status" className={diagnostic.ok?"alert alert-success mt-2":"alert alert-warning mt-2"}>
       <strong>{diagnostic.ok?"Connexion et analyse réussies":"Échec du test de connexion"}</strong>
       <div>Étape : {diagnostic.stage} · Code : {diagnostic.code??"OK"} · Durée : {diagnostic.elapsedMs} ms</div>
+      {diagnostic.code==="EPG_XML_SECURITY_REJECTED"&&<div>Le fichier contient une déclaration DOCTYPE ou ENTITY interdite. La connexion peut avoir réussi ; c’est le contrôle du XML qui bloque.</div>}
+      {diagnostic.code==="EPG_TLS_HOSTNAME_MISMATCH"&&<div>Le certificat TLS reçu ne correspond pas au nom de domaine du fournisseur.</div>}
+      {diagnostic.code==="EPG_NODE_ARGUMENT_INVALID"&&<div>Le moteur HTTP Node.js a rejeté un paramètre de la requête.</div>}
+      {diagnostic.code==="EPG_JSON_INVALID"&&<div>Le contenu obtenu n’est pas un document JSON valide pour le format configuré.</div>}
       {diagnostic.bytes!==null&&<div>Fichier décompressé : {diagnostic.bytes.toLocaleString("fr-FR")} octets</div>}
       {diagnostic.ok&&<div>{diagnostic.channels?.toLocaleString("fr-FR")} chaînes · {diagnostic.programmes?.toLocaleString("fr-FR")} émissions</div>}
      </div>}
