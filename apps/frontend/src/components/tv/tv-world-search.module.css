@@ -1,0 +1,15 @@
+.page{max-width:1100px;margin:0 auto;padding:32px 16px;color:var(--bs-body-color)}
+.page h1{font-size:clamp(1.7rem,3vw,2.4rem);font-weight:750}
+.page h2{font-size:1.35rem;font-weight:700}
+.form{margin:24px 0}.form label{font-weight:650;display:block;margin-bottom:8px}
+.controls{display:flex;flex-wrap:wrap;gap:8px}.controls input{flex:1 1 220px;min-width:0}
+.controls button{min-height:44px}
+.section{margin-top:28px;padding-top:16px;border-top:1px solid var(--bs-border-color)}
+.list{list-style:none;padding:0;margin:14px 0}
+.result{display:flex;justify-content:space-between;gap:12px;align-items:center;
+ padding:14px;margin-bottom:8px;border:1px solid var(--bs-border-color);
+ border-radius:12px;background:var(--bs-tertiary-bg);overflow-wrap:anywhere}
+.result div{min-width:0;display:flex;flex-direction:column;gap:4px}
+.result a{flex-shrink:0}.result small{color:var(--bs-secondary-color)}
+.page :is(input,button,a):focus-visible{outline:3px solid var(--bs-primary);outline-offset:2px}
+@media(max-width:400px){.result{align-items:flex-start;flex-direction:column}.controls button{flex:1}}
