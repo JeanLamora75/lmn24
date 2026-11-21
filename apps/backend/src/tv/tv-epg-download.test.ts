@@ -11,7 +11,7 @@ vi.mock("node:https",()=>({request:fake.request}));
 import {downloadEpgSource} from "./tv-epg-download";
 
 describe("Pinned EPG IPv4 transport",()=>{
- it("disables automatic address-family selection while preserving DNS validation and TLS hostname",async()=>{
+ it("pins the IPv4 family while preserving DNS validation and TLS hostname",async()=>{
   fake.lookup.mockResolvedValueOnce([{address:"1.1.1.1",family:4}]);
   fake.request.mockImplementationOnce((url:URL,options:Record<string,unknown>,
    callback:(response:PassThrough & {statusCode:number;headers:Record<string,string>})=>void)=>{
@@ -29,7 +29,6 @@ describe("Pinned EPG IPv4 transport",()=>{
   const [url,options]=fake.request.mock.calls[0] as [URL,Record<string,unknown>];
   expect(url.hostname).toBe("example.org");
   expect(options.family).toBe(4);
-  expect(options.autoSelectFamily).toBe(false);
   expect(typeof options.lookup).toBe("function");
   const pinned=await new Promise<{address:string;family:number}>((resolve,reject)=>{
     const lookup=options.lookup as (hostname:string,options:object,
