@@ -15,5 +15,5 @@ export default async function ProtectedAdminLayout({ children }: Props) {
     redirect("/admin/login");
   }
 
-  return <AdminShell>{children}</AdminShell>;
+  return <AdminShell tvAdmin={session.role === "ADMIN"}>{children}</AdminShell>;
 }
