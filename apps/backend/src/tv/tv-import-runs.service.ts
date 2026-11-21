@@ -1,0 +1,146 @@
+import {
+  ConflictException, Injectable, NotFoundException, ServiceUnavailableException,
+} from "@nestjs/common";
+import { DatabaseService } from "../database/database.service";
+import { assertImportDays,deriveRunStatus,failedScopeIds } from "./tv-import-policy";
+
+export type ImportRequest = {
+  trigger:"MANUAL"|"AUTOMATIC";days:number;countryId?:string|undefined;
+};
+/** Admin orchestration only: no automatic external EPG download, or publishing,
+ * until SCRUM-114 schema and SCRUM-117 ingestion integration are approved.
+ */
+@Injectable()
+export class TvImportRunsService {
+  constructor(private readonly database:DatabaseService){}
+  private async requireSchema():Promise<void>{
+    const rows=await this.database.prisma.$queryRaw<Array<{ok:boolean}>>`
+      SELECT to_regclass('public.tv_import_run') IS NOT NULL
+        AND to_regclass('public.tv_import_scope') IS NOT NULL
+        AND to_regclass('public.tv_import_event') IS NOT NULL AS ok
+    `;
+    if(!rows[0]?.ok)throw new ServiceUnavailableException("TV import tables are not installed");
+  }
+  async create(input:ImportRequest){
+    await this.requireSchema();
+    assertImportDays(input.days);
+    return this.database.prisma.$transaction(async tx=>{
+      const countries=await tx.$queryRaw<Array<{countryId:string}>>`
+        SELECT country_id AS "countryId" FROM public.tv_country
+        WHERE (${input.countryId??null}::uuid IS NULL AND is_active=TRUE)
+          OR (${input.countryId??null}::uuid IS NOT NULL
+            AND country_id=${input.countryId??null}::uuid
+            AND (${input.trigger}='MANUAL' OR is_active=TRUE))
+        ORDER BY country_id
+      `;
+      if(countries.length===0)throw new NotFoundException("No eligible TV countries");
+      const run=await tx.$queryRaw<Array<{id:string}>>`
+        INSERT INTO public.tv_import_run(trigger,requested_days,status)
+        VALUES(${input.trigger},${input.days},'QUEUED') RETURNING id
+      `;
+      const id=run[0]?.id;
+      if(!id)throw new Error("TV import run creation failed");
+      for(const c of countries) {
+        // Queue each active source, preserving a scope even when one upstream fails.
+        // A manual country selection may be inactive; its sources need explicit enablement.
+        const sources=await tx.$queryRaw<Array<{sourceId:string}>>`
+          SELECT sc.source_id AS "sourceId" FROM public.tv_source_country sc
+          JOIN public.tv_source s ON s.id=sc.source_id
+          WHERE sc.country_id=${c.countryId}::uuid AND sc.is_active AND s.is_active
+          ORDER BY sc.priority,sc.source_id
+        `;
+        for(const s of sources){
+          await tx.$executeRaw`
+            INSERT INTO public.tv_import_scope(run_id,country_id,source_id,status)
+            VALUES(${id}::uuid,${c.countryId}::uuid,${s.sourceId}::uuid,'QUEUED')
+          `;
+        }
+      }
+      const counts=await tx.$queryRaw<Array<{n:number}>>`
+        SELECT count(*)::int AS n FROM public.tv_import_scope WHERE run_id=${id}::uuid
+      `;
+      if(!counts[0]?.n)throw new ConflictException("No enabled EPG sources for requested countries");
+      await tx.$executeRaw`
+        INSERT INTO public.tv_import_event(run_id,level,event_type,message)
+        VALUES(${id}::uuid,'INFO','QUEUED','EPG import queued for isolated processing')
+      `;
+      return {id,status:"QUEUED" as const,scopeCount:counts[0].n};
+    });
+  }
+  async getRun(id:string){
+    await this.requireSchema();
+    const rows=await this.database.prisma.$queryRaw<Array<{id:string;status:string}>>`
+      SELECT id,trigger,requested_days AS "requestedDays",status,
+        started_at AS "startedAt",finished_at AS "finishedAt",created_at AS "createdAt"
+      FROM public.tv_import_run WHERE id=${id}::uuid
+    `;
+    if(!rows.length)throw new NotFoundException("TV import run not found");
+    const scopes=await this.database.prisma.$queryRaw<Array<{id:string;status:string}>>`
+      SELECT id,country_id AS "countryId",source_id AS "sourceId",
+        status,attempts,error_message AS "errorMessage"
+      FROM public.tv_import_scope WHERE run_id=${id}::uuid ORDER BY country_id,source_id,id
+    `;
+    return {...rows[0],scopes};
+  }
+  async getEvents(id:string){
+    await this.requireSchema();
+    return this.database.prisma.$queryRaw`
+      SELECT e.id,e.scope_id AS "scopeId",e.occurred_at AS "occurredAt",
+        e.level,e.event_type AS "eventType",e.message
+      FROM public.tv_import_event e WHERE e.run_id=${id}::uuid
+      ORDER BY e.occurred_at DESC,e.id DESC LIMIT 200
+    `;
+  }
+  /** Copy only failed scopes to a NEW run; never reset successful history. */
+  async retryFailed(id:string){
+    await this.requireSchema();
+    return this.database.prisma.$transaction(async tx=>{
+      const original=await tx.$queryRaw<Array<{trigger:string;requestedDays:number;status:string}>>`
+        SELECT trigger,requested_days AS "requestedDays",status FROM public.tv_import_run
+        WHERE id=${id}::uuid FOR UPDATE
+      `;
+      if(!original[0])throw new NotFoundException("TV import run not found");
+      if(!["SUCCESS","PARTIAL","ERROR","INTERRUPTED"].includes(original[0].status))
+        throw new ConflictException("TV import run is not finished");
+      const scopes=await tx.$queryRaw<Array<{id:string;countryId:string;sourceId:string|null;status:string}>>`
+        SELECT id,country_id AS "countryId",source_id AS "sourceId",status
+        FROM public.tv_import_scope WHERE run_id=${id}::uuid FOR UPDATE
+      `;
+      const failedIds=failedScopeIds(scopes);
+      if(!failedIds.length)throw new ConflictException("No failed scopes to retry");
+      const run=await tx.$queryRaw<Array<{id:string}>>`
+        INSERT INTO public.tv_import_run(trigger,requested_days,status)
+        VALUES('MANUAL',${original[0].requestedDays},'QUEUED') RETURNING id
+      `;
+      const nextId=run[0]?.id;
+      if(!nextId)throw new Error("Failed to create retry");
+      for(const s of scopes.filter(s=>failedIds.includes(s.id))){
+        await tx.$executeRaw`
+          INSERT INTO public.tv_import_scope(run_id,country_id,source_id,status)
+          VALUES(${nextId}::uuid,${s.countryId}::uuid,${s.sourceId}::uuid,'QUEUED')
+        `;
+      }
+      await tx.$executeRaw`
+        INSERT INTO public.tv_import_event(run_id,level,event_type,message)
+        VALUES(${nextId}::uuid,'INFO','RETRY_QUEUED','Only failed previous import scopes queued')
+      `;
+      return {id:nextId,fromRunId:id,retried:failedIds.length};
+    });
+  }
+  async finishRun(id:string) {
+    await this.requireSchema();
+    return this.database.prisma.$transaction(async tx=>{
+      const scopes=await tx.$queryRaw<Array<{status:"SUCCESS"|"ERROR"|"INTERRUPTED"|"QUEUED"|"RUNNING"}>>`
+        SELECT status FROM public.tv_import_scope WHERE run_id=${id}::uuid FOR UPDATE
+      `;
+      if(!scopes.length || scopes.some(s=>!["SUCCESS","ERROR","INTERRUPTED"].includes(s.status)))
+        throw new ConflictException("Unfinished import scopes");
+      const status=deriveRunStatus(scopes.map(s=>s.status as "SUCCESS"|"ERROR"|"INTERRUPTED"));
+      await tx.$executeRaw`
+        UPDATE public.tv_import_run SET status=${status},finished_at=now()
+        WHERE id=${id}::uuid AND status IN ('QUEUED','RUNNING')
+      `;
+      return {id,status};
+    });
+  }
+}
