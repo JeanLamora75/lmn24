@@ -147,6 +147,25 @@ export class TvImportRunsService {
     });
   }
 
+  /** Delete a still-queued manual import. One atomic statement ensures a worker
+   * cannot claim RUNNING concurrently with removal. Scope and event rows cascade;
+   * already-started runs retain their audit/history and cannot be deleted here.
+   */
+  async cancelQueued(id:string):Promise<{id:string;deleted:true}>{
+    await this.requireSchema();
+    const deleted=await this.database.prisma.$queryRaw<Array<{id:string}>>`
+      DELETE FROM public.tv_import_run
+      WHERE id=${id}::uuid AND status='QUEUED' AND trigger='MANUAL'
+      RETURNING id
+    `;
+    if(deleted.length)return {id,deleted:true};
+    const current=await this.database.prisma.$queryRaw<Array<{status:string;trigger:string}>>`
+      SELECT status,trigger FROM public.tv_import_run WHERE id=${id}::uuid
+    `;
+    if(!current.length)throw new NotFoundException("TV import run not found");
+    throw new ConflictException("TV_IMPORT_CANNOT_DELETE_STARTED_OR_AUTOMATIC");
+  }
+
   /** Bounded audit history; absent metrics remain absent, not fake zeroes. */
   async listRuns(page:number,pageSize:number){
     await this.requireSchema();
