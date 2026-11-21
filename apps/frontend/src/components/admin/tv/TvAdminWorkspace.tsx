@@ -579,7 +579,7 @@ function EpgDiscoveryInbox({countries,onReview,onImported}:{
     la correspondance avant l’import des programmes.
    </p>
    <form className="d-flex flex-wrap gap-2 mb-3" onSubmit={e=>{
-    e.preventDefault();setPage(1);setQuery(search);
+    e.preventDefault();setPage(1);setSelected([]);setQuery(search);
    }}>
     <input className="form-control" style={{maxWidth:380}} type="search"
      aria-label="Rechercher une chaîne EPG découverte"
@@ -633,9 +633,9 @@ function EpgDiscoveryInbox({countries,onReview,onImported}:{
      <span className="small text-body-secondary">Page {page} / {Math.max(1,Math.ceil(total/50))}</span>
      <div className="d-flex gap-2">
       <button className="btn btn-sm btn-outline-secondary" type="button"
-       disabled={page===1} onClick={()=>setPage(x=>x-1)}>Précédent</button>
+       disabled={page===1} onClick={()=>{setSelected([]);setPage(x=>x-1);}}>Précédent</button>
       <button className="btn btn-sm btn-outline-secondary" type="button"
-       disabled={page*50>=total} onClick={()=>setPage(x=>x+1)}>Suivant</button>
+       disabled={page*50>=total} onClick={()=>{setSelected([]);setPage(x=>x+1);}}>Suivant</button>
      </div>
     </div>
    </div>}
