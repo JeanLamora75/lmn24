@@ -19,6 +19,8 @@ export async function runAuthorizedTvImport(args:{
  connectionString:string;runId:string;
  /** A source-independent, evidence-backed verifier, not an EPG feed claim. */
  attest:AttestedCoverage;
+ /** Discovery mode writes only PENDING_REVIEW IDs; never programme/schedule rows. */
+ discoveryOnly?:boolean;
  /** Fake transport used by Murat in offline tests. */
  transport?:EpgTransport;
 }){
@@ -28,5 +30,6 @@ export async function runAuthorizedTvImport(args:{
  return processQueuedTvRun(args.connectionString,args.runId,(lease)=>
    createVerifiedDbEpgLoader(lease,args.runId,{
      transport:args.transport??networkEpgTransport,attest:args.attest,
+     discoveryOnly:args.discoveryOnly??false,
    }));
 }
