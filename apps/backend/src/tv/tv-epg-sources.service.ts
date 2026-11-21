@@ -170,6 +170,32 @@ export class TvEpgSourcesService {
     return rows[0];
   }
 
+  /** Complete per-country ordering, including globally enabled sources without
+   * an existing country-specific override. Never silently omit global sources.
+   */
+  async listCountryPriorities(countryId:string){
+    await this.requireSchema();
+    const country=await this.database.prisma.$queryRaw<Array<{id:string}>>`
+      SELECT country_id AS id FROM public.tv_country
+      WHERE country_id=${countryId}::uuid LIMIT 1
+    `;
+    if(!country.length)throw new NotFoundException("TV country not found");
+    const items=await this.database.prisma.$queryRaw<Array<{
+      sourceId:string;name:string;isActive:boolean;
+      countrySourceActive:boolean;priority:number|null;
+    }>>`
+      SELECT s.id AS "sourceId",s.name,s.is_active AS "isActive",
+        COALESCE(sc.is_active,TRUE) AS "countrySourceActive",
+        sc.priority
+      FROM public.tv_source s
+      LEFT JOIN public.tv_source_country sc
+        ON sc.source_id=s.id AND sc.country_id=${countryId}::uuid
+      ORDER BY sc.priority NULLS LAST,s.name,s.id
+      LIMIT 500
+    `;
+    return {countryId,items};
+  }
+
   /** Locks a whole country to update all priorities in one transaction. */
   async replaceCountryPriorities(countryId:string, entries:readonly SourcePriority[]) {
     await this.requireSchema();
