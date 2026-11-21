@@ -11,7 +11,7 @@ import {useAdminSessionFilter} from "@/lib/admin-session-filters";
 import styles from "@/app/admin/(protected)/tv/tv-admin.module.css";
 import {loadTvCountryNames,tvCountryName,type TvCountryNames} from "@/lib/tv-country-names";
 
-export type TvView="overview"|"countries"|"channels"|"sources"|"imports"|"translations"|"statistics";
+export type TvView="overview"|"countries"|"channels"|"sources"|"imports"|"translations"|"statistics"|"associations";
 type Country={countryId:string;isoCode2:string;referenceTimezone:string;isActive:boolean;
  channelCount:number;approvedChannelCount:number;version:string};
 type Channel={id:string;countryId:string;channelId:string;slug:string;name:string;
@@ -70,7 +70,7 @@ function importDiagnostic(value:string):string{
  return explanation?explanation+" [Code : "+value+"]":value;
 }
 const LABELS:Record<TvView,string>={
- overview:"Vue d'ensemble",countries:"Pays",channels:"Chaînes",
+ overview:"Vue d'ensemble",countries:"Pays",channels:"Chaînes",associations:"Associations EPG",
  sources:"Sources EPG",imports:"Imports",translations:"Traductions",statistics:"Statistiques",
 };
 const api="/api/admin/tv/";
@@ -556,9 +556,9 @@ function SourcePrioritiesEditor({countries,locale,countryNames,onClose,onSaved}:
  </Modal>;
 }
 type PendingDiscovery={id:string;sourceId:string;sourceName:string;externalId:string;channelId:string|null;channelName:string|null};
-function EpgDiscoveryInbox({countries,onReview,onImported}:{
+function EpgDiscoveryInbox({countries,onImported}:{
  countries:{id:string;name:string}[];
- onReview:(item:PendingDiscovery)=>void;onImported:()=>void;
+ onImported:()=>void;
 }){
  const [search,setSearch]=useState("");
  const [query,setQuery]=useState("");
@@ -915,14 +915,10 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     </div>
    </AdminDataPanel>
   </>}
-  {view==="channels"&&!loading&&!error&&
+  {view==="associations"&&!loading&&!error&&
    <EpgDiscoveryInbox countries={sortedCountries.map(c=>({
     id:c.countryId,name:region(c.isoCode2,locale,countryNames),
-   }))} onImported={()=>setReload(x=>x+1)} onReview={item=>{
-    const source=sources.find(x=>x.id===item.sourceId);
-    if(!source){setError("Source EPG introuvable. Actualise la page.");return;}
-    setReviewExternalId(item.externalId);setSourceEditor(source);
-   }}/>}
+   }))} onImported={()=>setReload(x=>x+1)}/>}
   {view==="sources"&&<p className="text-body-secondary">Chaque source couvre soit un pays, soit plusieurs pays (Globale). Le pays configuré est affiché dans la colonne Périmètre. Utilisez « Ordre des sources » pour définir les priorités par pays. Les chaînes inconnues restent à vérifier avant publication.</p>}
    {(view==="countries"||view==="channels"||view==="sources"||view==="imports")&&!loading&&!error&&
    <AdminDataPanel label={"Liste "+LABELS[view]}>
@@ -998,13 +994,12 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   {countryEditor&&<CountryEditor item={countryEditor} locale={locale} countryNames={countryNames} onClose={()=>setCountryEditor(null)} onSaved={saved}/>}
   {channelEditor&&<ChannelEditor item={channelEditor} onClose={()=>setChannelEditor(null)} onSaved={saved}/>}
   {sourceEditor&&<TvEpgSourceEditor item={sourceEditor}
-    initialMappingSearch={reviewExternalId}
     channels={channels.map(ch=>({id:ch.channelId,name:ch.name,countryId:ch.countryId,
      countryLabel:region(countryCodes.get(ch.countryId)??"",locale,countryNames),
      defaultVariantId:ch.defaultVariantId}))}
     countries={sortedCountries.map(c=>({id:c.countryId,
      name:region(c.isoCode2,locale,countryNames),timezone:c.referenceTimezone,code:c.isoCode2}))}
-    onClose={()=>{setSourceEditor(null);setReviewExternalId("");}} onSaved={saved}/>}
+    onClose={()=>setSourceEditor(null)} onSaved={saved}/>}
   {dialog==="priorities"&&<SourcePrioritiesEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
   {dialog==="channel"&&<ChannelCreateEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
    {dialog==="source"&&<SourceEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
