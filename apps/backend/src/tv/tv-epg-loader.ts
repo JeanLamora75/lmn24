@@ -117,6 +117,46 @@ export function createVerifiedDbEpgLoader(
           SELECT $1::uuid,ids.external_id,'PENDING_REVIEW'
           FROM unnest($2::text[]) AS ids(external_id)
           ON CONFLICT(source_id,external_id) DO NOTHING`,[row.sourceId,externalIds]);
+        // The global XMLTV feed does not imply a country. Automatically create
+        // inactive, review-required channel identities WITHOUT a national
+        // association; never associate all its IDs with the run's country.
+        // Preserve verified/manual mappings and existing catalogue identities.
+        const channelNames=new Map((decoded.channels??[]).map(c=>[c.externalId,c.name]));
+        const names=externalIds.map(id=>channelNames.get(id)?.trim().slice(0,255)||id.slice(0,255));
+        await db.query(`
+          INSERT INTO public.tv_channel(slug,name)
+          SELECT 'epg-'||replace($1::text,'-','')||'-'||md5(incoming.external_id),
+                 incoming.display_name
+          FROM unnest($2::text[],$3::text[]) AS incoming(external_id,display_name)
+          JOIN public.tv_channel_external_id m
+            ON m.source_id=$1::uuid AND m.external_id=incoming.external_id
+          WHERE m.mapping_status='PENDING_REVIEW' AND m.channel_id IS NULL
+          ON CONFLICT(slug) DO NOTHING`,[row.sourceId,externalIds,names]);
+        await db.query(`
+          UPDATE public.tv_channel_external_id m SET channel_id=c.id
+          FROM public.tv_channel c
+          WHERE m.source_id=$1::uuid
+            AND m.mapping_status='PENDING_REVIEW' AND m.channel_id IS NULL
+            AND c.slug='epg-'||replace($1::text,'-','')||'-'||md5(m.external_id)
+            AND m.external_id=ANY($2::text[])`,[row.sourceId,externalIds]);
+        // Explicit ISO country metadata is provisional: create an inactive
+        // national association flagged for review, never publish on this basis.
+        const geographic=(decoded.channels??[]).filter(c=>c.countryIso2&&
+          externalIds.includes(c.externalId));
+        if(geographic.length){
+          await db.query(`
+            INSERT INTO public.tv_channel_country(channel_id,country_id,is_active,needs_review)
+            SELECT m.channel_id,t.country_id,FALSE,TRUE
+            FROM unnest($1::text[],$2::text[]) AS hint(external_id,iso2)
+            JOIN public.tv_channel_external_id m
+              ON m.source_id=$3::uuid AND m.external_id=hint.external_id
+            JOIN public.country c ON upper(c.iso_code2)=hint.iso2
+            JOIN public.tv_country t ON t.country_id=c.id
+            WHERE m.channel_id IS NOT NULL AND m.mapping_status='PENDING_REVIEW'
+            ON CONFLICT(channel_id,country_id) DO NOTHING`,
+            [geographic.map(c=>c.externalId),geographic.map(c=>c.countryIso2),
+              row.sourceId]);
+        }
         if(signal.aborted)throw new TvImportLeaseLostError();
         await db.query("COMMIT");
       }catch(error){
