@@ -26,8 +26,9 @@ function setup(overrides:Record<string,string>={},status="QUEUED"){
  const getRun=vi.fn().mockResolvedValue({id:runId,status,scopes:[]});
  const findQueuedManual=vi.fn().mockResolvedValue(null);
  const create=vi.fn().mockResolvedValue({id:runId,status:"QUEUED",scopeCount:1});
- const runs={getRun,findQueuedManual,create} as unknown as TvImportRunsService;
- return {service:new TvImportExecutionService(config,runs),getRun,findQueuedManual,create};
+ const retryFailed=vi.fn().mockResolvedValue({id:runId,retried:1});
+ const runs={getRun,findQueuedManual,create,retryFailed} as unknown as TvImportRunsService;
+ return {service:new TvImportExecutionService(config,runs),getRun,findQueuedManual,create,retryFailed};
 }
 beforeEach(()=>{mock.run.mockReset();mock.run.mockResolvedValue({status:"SUCCESS"});});
 
@@ -56,6 +57,20 @@ describe("Admin manual discovery worker dispatch",()=>{
     .resolves.toMatchObject({status:"STARTED",mode:"DISCOVERY"});
    expect(mock.run).toHaveBeenCalledOnce();
   }finally{process.env.NODE_ENV=previous;}
+ });
+ it("retries only failed scopes and immediately dispatches worker",async()=>{
+  const s=setup();
+  await expect(s.service.retryFailedImport(runId)).resolves.toMatchObject({
+   status:"STARTED",mode:"DISCOVERY",retried:1,fromRunId:runId,
+  });
+  expect(s.retryFailed).toHaveBeenCalledWith(runId);
+  expect(mock.run).toHaveBeenCalledOnce();
+ });
+ it("does not queue a retry if source execution is not allowed",async()=>{
+  const s=setup({TV_EPG_NETWORK_ENABLED:"false"});
+  await expect(s.service.retryFailedImport(runId)).rejects.toMatchObject({status:503});
+  expect(s.retryFailed).not.toHaveBeenCalled();
+  expect(mock.run).not.toHaveBeenCalled();
  });
  it("one click starts import, without leaving a merely queued success",async()=>{
   const s=setup();
