@@ -220,15 +220,15 @@ export class TvEpgSourcesService {
         const mapping=rows[0];
         if(!mapping||mapping.status!=="PENDING_REVIEW")
           throw new ConflictException("EPG_MAPPING_NOT_PENDING");
-        if(mapping.channelId){existing++;continue;}
         const name=mapping.externalId.trim().slice(0,255)||"Chaîne EPG à identifier";
         const slug="epg-"+mappingId.replaceAll("-","").toLowerCase();
-        const channel=await tx.$queryRaw<Array<{id:string}>>`
-          INSERT INTO public.tv_channel(slug,name)
-          VALUES(${slug},${name})
-          ON CONFLICT(slug) DO UPDATE SET slug=EXCLUDED.slug
-          RETURNING id
-        `;
+        const channel=mapping.channelId?[{id:mapping.channelId}]:
+          await tx.$queryRaw<Array<{id:string}>>`
+            INSERT INTO public.tv_channel(slug,name)
+            VALUES(${slug},${name})
+            ON CONFLICT(slug) DO UPDATE SET slug=EXCLUDED.slug
+            RETURNING id
+          `;
         const channelId=channel[0]?.id;
         if(!channelId)throw new ConflictException("TV_CHANNEL_CREATION_FAILED");
         const links=await tx.$queryRaw<Array<{id:string}>>`
@@ -265,7 +265,7 @@ export class TvEpgSourcesService {
           SET channel_id=${channelId}::uuid
           WHERE id=${mappingId}::uuid AND mapping_status='PENDING_REVIEW'
         `;
-        created++;
+        if(mapping.channelId)existing++;else created++;
       }
       return {created,existing,requiresReview:true,published:0};
     });
