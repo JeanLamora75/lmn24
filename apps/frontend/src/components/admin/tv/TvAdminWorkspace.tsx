@@ -931,6 +931,12 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [channelEditor,setChannelEditor]=useState<Channel|null>(null);
  const [sourceEditor,setSourceEditor]=useState<Source|null>(null);
  const [filter,setFilter]=useAdminSessionFilter("tv-"+view,"search","");
+ const [serverChannelSearch,setServerChannelSearch]=useState("");
+ useEffect(()=>{
+  if(view!=="channels")return;
+  const timeout=setTimeout(()=>setServerChannelSearch(filter.trim().slice(0,120)),250);
+  return ()=>clearTimeout(timeout);
+ },[filter,view]);
  const [country,setCountry]=useAdminSessionFilter("tv-"+view,"country","");
  const [status,setStatus]=useAdminSessionFilter("tv-"+view,"status","all");
  const [page,setPage]=useAdminSessionFilter("tv-"+view,"page",1);
@@ -947,13 +953,18 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     const paths:{[key:string]:string}={
      countries:"catalog/countries",channels:"catalog/channels",sources:"epg-sources",
      imports:"import-runs?page=1&pageSize=100"};
+    const channelRequest="catalog/channels"+(country||serverChannelSearch
+     ?"?"+new URLSearchParams({
+      ...(country?{countryId:country}:{}),
+      ...(serverChannelSearch?{search:serverChannelSearch}:{})
+     }).toString():"");
     const requested=view==="overview"||view==="statistics"?
      ["catalog/countries","catalog/channels","epg-sources","import-runs?page=1&pageSize=100"]:
      view==="translations"?["catalog/channels"]:
       (view==="sources"||view==="channels"||view==="associations")
        ?["epg-sources","catalog/countries",
-         ...(view==="associations"?[]:[view==="channels"&&country
-           ?"catalog/channels?countryId="+country:"catalog/channels"])] :
+         ...(view==="associations"?[]:[view==="channels"
+           ?channelRequest:"catalog/channels"])] :
      view==="imports"?["import-runs?page=1&pageSize=100","catalog/countries","epg-sources"]:
      [paths[view]??"catalog/countries","catalog/countries"];
     const unique=[...new Set(requested)];
@@ -974,7 +985,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    finally{if(!abort.signal.aborted)setLoading(false);}
   }
   void load();return ()=>abort.abort();
- },[view,reload,router,country]);
+ },[view,reload,router,country,serverChannelSearch]);
  async function openRun(id:string){
   setSelectedRun(id);setDetail(null);setEvents([]);
   try{
@@ -1029,10 +1040,14 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   const normal=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
   const pool=view==="countries"?sortedCountries:view==="channels"?channels:view==="sources"?sources:runs;
   return pool.filter(item=>{
-   const displayedCountry=view==="countries"&&"isoCode2" in item
-    ?region(item.isoCode2,locale,countryNames):"";
-   const joined=normal(JSON.stringify(item)+" "+displayedCountry);
-   if(filter&&!joined.includes(normal(filter.trim())))return false;
+   const searchTerm=normal(filter.trim());
+   if(searchTerm){
+    const searchable=view==="channels"?(item as Channel).name
+     :view==="countries"?region((item as Country).isoCode2,locale,countryNames)+" "+(item as Country).isoCode2
+     :view==="sources"?(item as Source).name
+     :String((item as ImportRun).createdAt)+" "+(item as ImportRun).status+" "+(item as ImportRun).trigger;
+    if(!normal(searchable).includes(searchTerm))return false;
+   }
    if(country&&("countryId" in item)&&item.countryId!==country)return false;
    if(status==="active"&&("isActive" in item)&&!item.isActive)return false;
    if(status==="inactive"&&("isActive" in item)&&item.isActive)return false;
