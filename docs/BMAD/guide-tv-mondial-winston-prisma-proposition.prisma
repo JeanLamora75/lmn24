@@ -110,6 +110,14 @@ model TvSource {
   isActive Boolean @default(false) @map("is_active")
   rightsStatus String @default("UNREVIEWED") @map("rights_status") @db.VarChar(20)
   rightsReference String? @map("rights_reference") @db.Text
+  programmeRightsStatus String @default("UNREVIEWED") @map("programme_rights_status") @db.VarChar(20)
+  programmeRightsReference String? @map("programme_rights_reference") @db.Text
+  synopsisRightsStatus String @default("UNREVIEWED") @map("synopsis_rights_status") @db.VarChar(20)
+  synopsisRightsReference String? @map("synopsis_rights_reference") @db.Text
+  imageRightsStatus String @default("UNREVIEWED") @map("image_rights_status") @db.VarChar(20)
+  imageRightsReference String? @map("image_rights_reference") @db.Text
+  logoRightsStatus String @default("UNREVIEWED") @map("logo_rights_status") @db.VarChar(20)
+  logoRightsReference String? @map("logo_rights_reference") @db.Text
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   countries TvSourceCountry[]
   externalIds TvChannelExternalId[]
