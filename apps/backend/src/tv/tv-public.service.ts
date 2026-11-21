@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, ServiceUnavailableException } from "@nestjs/common";
 import { DatabaseService } from "../database/database.service";
 import { localDayBounds } from "./tv-import-time";
+import { classifyTvWorldQuery } from "./tv-world-search-policy";
 import {
   assertTvDay,gapsInDay,stateForChannel,todayInZone,
   type TvAiring,type TvPublicTab,type CoverageEvidence,TV_LANGUAGES,
@@ -261,10 +262,7 @@ export class TvPublicService {
   /** SCRUM-121: independent search sections. No data is fabricated from missing EPG. */
   async worldSearch(args:{q:string;channelsPage:number;programmesPage:number;pageSize:number;section?:"all"|"channels"|"programmes";now?:Date}){
     await this.requireSchema();
-    const query=args.q.trim();
-    const digits=/^[0-9]+$/.test(query);
-    const numeric=digits?BigInt(query):null;
-    const exactNumber=numeric!==null&&numeric<=2147483647n?Number(numeric):null;
+    const {query,numeric:digits,number:exactNumber}=classifyTvWorldQuery(args.q);
     const pageSize=args.pageSize;
     const from=args.now??new Date();
     const channels=async()=>{
