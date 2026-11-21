@@ -142,7 +142,8 @@ CREATE TABLE IF NOT EXISTS public.tv_source_country (
   priority INTEGER NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY(source_id,country_id),
-  CONSTRAINT tv_source_priority_positive CHECK(priority > 0)
+  CONSTRAINT tv_source_priority_positive CHECK(priority > 0),
+  CONSTRAINT tv_source_country_priority_unique UNIQUE(country_id,priority)
 );
 CREATE INDEX IF NOT EXISTS idx_tv_source_country_priority
   ON public.tv_source_country(country_id,is_active,priority);
