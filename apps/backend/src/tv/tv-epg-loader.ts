@@ -184,7 +184,6 @@ export function createVerifiedDbEpgLoader(
                 ?p.imageUrl:null]);
           await db.query("COMMIT");
         }catch(err){await db.query("ROLLBACK").catch(()=>undefined);throw err;}
-        if(options.stagingOnly)continue;
         for(let n=0;n<days;n++){
           const localDate=addCalendarDays(today,n);
           const {startMs,endMs}=localDayBounds(localDate,mapping.timezone);
@@ -200,7 +199,7 @@ export function createVerifiedDbEpgLoader(
               countryId,variantId:mapping.variantId,localDate,
               dayStartMs:startMs,dayEndMs:endMs,
               expectedRevisionId:current.rows[0]?.revision_id??null,
-              candidates:[],coverage:[],
+              candidates:[],coverage:[],privateStaging:options.stagingOnly??false,
             };
             staged.set(key,created);
             group=created;
@@ -217,12 +216,6 @@ export function createVerifiedDbEpgLoader(
         results.push({scopeId:row.scopeId,outcome:"SUCCESS",
           message:options.stagingOnly?"MAPPINGS_REQUIRED":"DISCOVERY_ONLY"});continue;
       }
-      if(options.stagingOnly){
-        // Programmes are private catalogue records. Never create, stage, or
-        // publish schedule revisions in this mode; public GO remains separate.
-        results.push({scopeId:row.scopeId,outcome:"SUCCESS",message:"PROGRAMMES_STAGED"});
-        continue;
-      }
       // Only commit candidates of a completely decoded and mapped scope;
       // a partially failed source must never contaminate a published grid.
       for(const [key,entry] of staged){
@@ -231,7 +224,8 @@ export function createVerifiedDbEpgLoader(
           (existing.candidates as AiringCandidate[]).push(...entry.candidates);
         }else groups.set(key,entry);
       }
-      results.push({scopeId:row.scopeId,outcome:"SUCCESS"});
+      results.push({scopeId:row.scopeId,outcome:"SUCCESS",
+        ...(options.stagingOnly?{message:"PROGRAMMES_STAGED"}:{})});
     }catch(error){
       if(signal.aborted)throw new TvImportLeaseLostError();
       // Only a finite, reviewed diagnostic code crosses into the run history.
@@ -244,6 +238,7 @@ export function createVerifiedDbEpgLoader(
     if(!matched.has(scopeId))results.push({scopeId,outcome:"ERROR",message:"EPG_SOURCE_UNAVAILABLE"});
   }
   for(const group of groups.values()){
+    if(group.privateStaging)continue; // No unverified coverage assertions for drafts.
     const associated=[...new Set(group.candidates.map(c=>c.sourceId))];
     const verified:Coverage[]=[];
     for(const sourceId of associated){
