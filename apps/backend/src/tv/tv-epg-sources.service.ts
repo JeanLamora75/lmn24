@@ -7,7 +7,6 @@ import {
   type RightsDecision, type RightsFamily, type EpgFormat, type SourcePriority,
   type ExternalMapping,
 } from "./tv-epg-source-policy";
-import { Prisma } from "@lmn24/database";
 
 export type SourceRightsInput = Record<RightsFamily, RightsDecision>;
 export type SourceInput = {
@@ -113,10 +112,19 @@ export class TvEpgSourcesService {
         SELECT country_id AS id FROM public.tv_country WHERE country_id=${countryId}::uuid FOR UPDATE
       `;
       if(!countries.length) throw new NotFoundException("TV country not found");
-      // Omitted sources are not deleted: reprioritizing must preserve catalog.
-      // Allocate temporary unique priority space to avoid collisions during swaps.
+      // Reprioritization must cover the complete country assignment set.
+      // This avoids leaving omitted sources with unbounded temporary priorities.
+      const assigned=await tx.$queryRaw<Array<{sourceId:string}>>`
+        SELECT source_id AS "sourceId" FROM public.tv_source_country
+        WHERE country_id=${countryId}::uuid FOR UPDATE
+      `;
+      const requested=new Set(entries.map(e=>e.sourceId));
+      if(assigned.some(e=>!requested.has(e.sourceId))) {
+        throw new ConflictException("Include all existing country sources when reprioritizing");
+      }
+      // Move existing priorities out of the target range atomically.
       await tx.$executeRaw`
-        UPDATE public.tv_source_country SET priority=priority+1000000
+        UPDATE public.tv_source_country SET priority=priority+200000
         WHERE country_id=${countryId}::uuid
       `;
       for(const e of entries) {
