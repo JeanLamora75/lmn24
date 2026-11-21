@@ -2,6 +2,7 @@ import {createHash} from "node:crypto";
 import type {TvWriterLease} from "./tv-import-publisher";
 import {TvImportLeaseLostError} from "./tv-import-publisher";
 import {downloadEpgSource} from "./tv-epg-download";
+import {cacheTvIcon} from "./tv-icon-storage";
 import {decodeEpgBuffer} from "./tv-epg-decoder";
 import {localDayBounds} from "./tv-import-time";
 import type {ValidatedEpgLoader,EpgDayBatch,ScopeResult} from "./tv-import-worker";
@@ -112,6 +113,17 @@ export function createVerifiedDbEpgLoader(
       const externalIds=[...new Set([...decoded.programmes.map(p=>p.externalChannelId),
         ...(decoded.channels??[]).map(c=>c.externalId)])];
       if(signal.aborted)throw new TvImportLeaseLostError();
+      // Cache local channel icons before entering the database transaction.
+      // Missing or invalid icons do not prevent importing channel identities.
+      const iconMap=new Map<string,string>();
+      const remoteIcons=(decoded.channels??[]).filter(c=>!!c.logoUrl);
+      for(let offset=0;offset<remoteIcons.length;offset+=12){
+       if(signal.aborted)throw new TvImportLeaseLostError();
+       await Promise.all(remoteIcons.slice(offset,offset+12).map(async c=>{
+        const local=await cacheTvIcon(c.logoUrl!);
+        if(local)iconMap.set(c.externalId,local);
+       }));
+      }
       stage="MAPPING";
       await db.query("BEGIN");
       try{
@@ -128,8 +140,7 @@ export function createVerifiedDbEpgLoader(
         // Preserve verified/manual mappings and existing catalogue identities.
         const channelNames=new Map((decoded.channels??[]).map(c=>[c.externalId,c.name]));
         const names=externalIds.map(id=>channelNames.get(id)?.trim().slice(0,255)||id.slice(0,255));
-        const channelLogos=new Map((decoded.channels??[]).map(c=>[c.externalId,c.logoUrl]));
-        const logos=externalIds.map(id=>channelLogos.get(id)??null);
+        const logos=externalIds.map(id=>iconMap.get(id)??null);
         await db.query(`
           INSERT INTO public.tv_channel(slug,name,logo_url)
           SELECT 'epg-'||replace($1::text,'-','')||'-'||md5(incoming.external_id),
