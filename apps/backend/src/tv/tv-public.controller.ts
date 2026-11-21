@@ -67,9 +67,11 @@ export class TvPublicController {
     this.released();
     this.parse(countryQuery,query);
     const countries=await this.service.countries();
+    const locale=query && typeof query==="object" && "locale" in query
+      &&typeof query.locale==="string" &&query.locale!=="all"?query.locale:"fr";
+    const display=new Intl.DisplayNames([locale],{type:"region"});
     return {items:countries.map(c=>({countryIso2:c.isoCode2,
-      // Country display names are localized by the UI using Intl.DisplayNames.
-      label:c.isoCode2,referenceTimeZone:c.referenceTimeZone})),
+      label:display.of(c.isoCode2)??c.isoCode2,referenceTimeZone:c.referenceTimeZone})),
       languages:this.service.responseLanguages(),
       datePolicy:{daysAhead:7,reference:"COUNTRY_TIME_ZONE"}};
   }
