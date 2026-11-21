@@ -76,6 +76,8 @@ export class TvImportRunsService {
           LEFT JOIN public.tv_source_country sc ON sc.source_id=s.id
             AND sc.country_id=${c.countryId}::uuid
           WHERE s.is_active
+            AND (s.geographic_scope='GLOBAL' OR
+                 (s.geographic_scope='COUNTRY' AND s.scope_country_id=${c.countryId}::uuid))
             AND (sc.source_id IS NULL OR sc.is_active)
           ORDER BY sc.priority NULLS LAST,s.id
         `;
