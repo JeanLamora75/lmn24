@@ -2,6 +2,7 @@
 import {useEffect,useMemo,useState,type FormEvent} from "react";
 import {useRouter} from "next/navigation";
 import {TvTranslationPanel} from "./TvTranslationPanel";
+import {TvEpgSourceEditor} from "./TvEpgSourceEditor";
 import {AdminPageHeading,AdminFilterPanel,AdminDataPanel} from "@/components/admin/AdminWorkspace";
 import {AdminPagination} from "@/components/admin/AdminPagination";
 import {AdminIconButton} from "@/components/admin/AdminIcon";
@@ -237,6 +238,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [dialog,setDialog]=useState<"source"|"import"|null>(null);
  const [countryEditor,setCountryEditor]=useState<Country|null>(null);
  const [channelEditor,setChannelEditor]=useState<Channel|null>(null);
+ const [sourceEditor,setSourceEditor]=useState<Source|null>(null);
  const [filter,setFilter]=useAdminSessionFilter("tv-"+view,"search","");
  const [country,setCountry]=useAdminSessionFilter("tv-"+view,"country","");
  const [status,setStatus]=useAdminSessionFilter("tv-"+view,"status","all");
@@ -283,7 +285,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    setDetail(d);setEvents(e.items);
   }catch(err){setError((err as Error).message);}
  }
- function saved(){setDialog(null);setCountryEditor(null);setChannelEditor(null);setReload(v=>v+1);}
+ function saved(){setDialog(null);setCountryEditor(null);setChannelEditor(null);setSourceEditor(null);setReload(v=>v+1);}
  const countryCodes=useMemo(()=>new Map(countries.map(c=>[c.countryId,c.isoCode2])),[countries]);
  const filtered=useMemo(()=>{
   const normal=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
@@ -353,7 +355,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
      <thead><tr>
       {view==="countries"&&<><th>Pays</th><th>Statut</th><th>Fuseau IANA</th><th>Chaînes actives / total</th><th>Couverture</th><th>Actions</th></>}
       {view==="channels"&&<><th>Chaîne</th><th>Pays</th><th>N°</th><th>Statut</th><th>Actions</th></>}
-      {view==="sources"&&<><th>Source</th><th>Format</th><th>Pays / priorité</th><th>Droits programmes</th><th>Statut</th></>}
+      {view==="sources"&&<><th>Source</th><th>Format</th><th>Pays / priorité</th><th>Droits programmes</th><th>Statut</th><th>Actions</th></>}
       {view==="imports"&&<><th>Date</th><th>Déclencheur</th><th>Jours</th><th>État</th><th>Périmètres</th><th>Actions</th></>}
      </tr></thead><tbody>
       {view==="countries"&&(visible as Country[]).map(v=><tr key={v.countryId}>
@@ -372,6 +374,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
        <td>{v.name}</td><td>{v.format}</td>
        <td>{v.countryId?region(countryCodes.get(v.countryId)??""):"Non associée"} {v.priority??""}</td>
        <td>{v.programmeRightsStatus}</td><td>{v.isActive?"Active":"Inactive"}</td>
+       <td><AdminIconButton name="pencil-square" label={"Modifier "+v.name} onClick={()=>setSourceEditor(v)}/></td>
       </tr>)}
       {view==="imports"&&(visible as ImportRun[]).map(v=><tr key={v.id}>
        <td>{new Date(v.createdAt).toLocaleString("fr-FR")}</td>
@@ -403,6 +406,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   {view==="translations"&&!loading&&!error&&<TvTranslationPanel channels={channels}/>}
   {countryEditor&&<CountryEditor item={countryEditor} onClose={()=>setCountryEditor(null)} onSaved={saved}/>}
   {channelEditor&&<ChannelEditor item={channelEditor} onClose={()=>setChannelEditor(null)} onSaved={saved}/>}
+  {sourceEditor&&<TvEpgSourceEditor item={sourceEditor} onClose={()=>setSourceEditor(null)} onSaved={saved}/>}
   {dialog==="source"&&<SourceEditor onClose={()=>setDialog(null)} onSaved={saved}/>}
   {dialog==="import"&&<ImportEditor countries={countries} onClose={()=>setDialog(null)}
    onSaved={id=>{saved();void openRun(id);setNotice("Import mis en file d’attente.");}}/>}
