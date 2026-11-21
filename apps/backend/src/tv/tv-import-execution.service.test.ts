@@ -54,6 +54,17 @@ describe("Admin manual discovery worker dispatch",()=>{
   expect(args).toBeDefined();
   await expect(args?.attest({})).resolves.toEqual([]);
  });
+ it("rejects two simultaneous requests before either DB status lookup finishes",async()=>{
+  let unblock:((row:{id:string;status:string})=>void)|undefined;
+  const s=setup();
+  s.getRun.mockImplementation(()=>new Promise(resolve=>{unblock=resolve;}));
+  const first=s.service.startDiscovery(runId);
+  await expect(s.service.startDiscovery(runId)).rejects.toMatchObject({status:409});
+  expect(s.getRun).toHaveBeenCalledOnce();
+  unblock?.({id:runId,status:"QUEUED"});
+  await expect(first).resolves.toMatchObject({status:"STARTED"});
+  expect(mock.run).toHaveBeenCalledOnce();
+ });
  it("rejects repeated clicks while one worker is running",async()=>{
   let complete:((value:unknown)=>void)|undefined;
   mock.run.mockImplementation(()=>new Promise(resolve=>{complete=resolve;}));
