@@ -41,16 +41,20 @@ export async function runAuthorizedTvImport(args:{
  attest:AttestedCoverage;
  /** Discovery mode writes only PENDING_REVIEW IDs; never programme/schedule rows. */
  discoveryOnly?:boolean;
+ /** Persist licensed verified programmes in private catalogue only. */
+ stagingOnly?:boolean;
  /** Fake transport used by Murat in offline tests. */
  transport?:EpgTransport;
 }){
  if(!tvEpgExecutionApproved(args.env)
-   &&!(args.discoveryOnly&&tvLocalDiscoveryApproved(args.env,args.connectionString))){
+   &&!((args.discoveryOnly||args.stagingOnly)
+     &&tvLocalDiscoveryApproved(args.env,args.connectionString))){
    throw new ServiceUnavailableException("TV EPG execution disabled until separately approved");
  }
  return processQueuedTvRun(args.connectionString,args.runId,(lease)=>
    createVerifiedDbEpgLoader(lease,args.runId,{
      transport:args.transport??networkEpgTransport,attest:args.attest,
      discoveryOnly:args.discoveryOnly??false,
+     stagingOnly:args.stagingOnly??false,
    }));
 }
