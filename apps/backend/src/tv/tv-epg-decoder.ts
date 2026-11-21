@@ -18,7 +18,24 @@ export type EpgCoverageClaim = {
   /** Claim is untrusted until source licence/coverage independently verified. */
   verified:boolean;
 };
-export type EpgChannel={externalId:string;name:string;countryIso2:string|null;logoUrl:string|null};
+export type EpgChannel={externalId:string;name:string;countryIso2:string|null;logoUrl:string|null;websiteUrl:string|null};
+/** Some XMLTV suppliers accidentally concatenate their own base URL with
+ * the real logo URL. Use the last explicit http(s) URL, never prepend a host.
+ * The icon cache still validates DNS/public addresses before downloading.
+ */
+export function xmltvHttpUrl(raw:string,repairConcatenated=false):string|null{
+ const value=raw.trim();
+ if(!value||value.length>2048)return null;
+ const candidates=repairConcatenated?value.match(/https?:\/\//gi):null;
+ const last=candidates&&candidates.length>1
+  ?Math.max(value.lastIndexOf("https://"),value.lastIndexOf("http://")):0;
+ try{
+  const url=new URL(value.slice(last));
+  if(!["http:","https:"].includes(url.protocol)||url.username||url.password||!url.hostname)
+   return null;
+  return url.toString().slice(0,2048);
+ }catch{return null;}
+}
 export type EpgDecoded = {programmes:EpgProgramme[];coverage:EpgCoverageClaim[];
  channels?:EpgChannel[];skippedInvalidDuration?:number};
 
@@ -99,7 +116,7 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   const results:EpgProgramme[]=[];
   const channels:EpgChannel[]=[];
   let currentChannel:EpgChannel|null=null;
-  let channelField:"display-name"|"country"|null=null;
+  let channelField:"display-name"|"country"|"url"|null=null;
   let channelText="";
   let displayNameCaptured=false;
   let skippedInvalidDuration=0;
@@ -118,24 +135,18 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
     }
     if(depth===2 && node.name==="channel"){
       const externalId=node.attributes.id?.trim().slice(0,500)??"";
-      currentChannel=externalId?{externalId,name:externalId,countryIso2:null,logoUrl:null}:null;
+      currentChannel=externalId?{externalId,name:externalId,countryIso2:null,logoUrl:null,websiteUrl:null}:null;
       displayNameCaptured=false;
       const raw=node.attributes.country?.trim().toUpperCase();
       if(currentChannel&&raw&&/^[A-Z]{2}$/.test(raw))currentChannel.countryIso2=raw;
       return;
     }
     if(currentChannel&&depth===3&&node.name==="icon"&&!currentChannel.logoUrl){
-      const value=node.attributes.src?.trim()??"";
-      if(value.length<=2048){
-        try{
-          const url=new URL(value);
-          if(url.protocol==="https:"||url.protocol==="http:")
-            currentChannel.logoUrl=url.toString();
-        }catch{/* Invalid upstream channel logo is ignored. */}
-      }
+      const logo=xmltvHttpUrl(node.attributes.src??"",true);
+      if(logo)currentChannel.logoUrl=logo;
       return;
     }
-    if(currentChannel&&depth===3&&(node.name==="display-name"||node.name==="country")){
+    if(currentChannel&&depth===3&&(node.name==="display-name"||node.name==="country"||node.name==="url")){
       channelField=node.name;channelText="";
       return;
     }
@@ -180,6 +191,8 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
         currentChannel.name=value.slice(0,255);
         displayNameCaptured=true;
       }
+      if(channelField==="url"&&!currentChannel.websiteUrl)
+        currentChannel.websiteUrl=xmltvHttpUrl(value);
       if(channelField==="country"&&/^[A-Z]{2}$/i.test(value))
         currentChannel.countryIso2=value.toUpperCase();
       channelField=null;channelText="";
