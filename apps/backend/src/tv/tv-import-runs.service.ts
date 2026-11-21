@@ -64,13 +64,16 @@ export class TvImportRunsService {
       const id=run[0]?.id;
       if(!id)throw new Error("TV import run creation failed");
       for(const c of countries) {
-        // Queue each active source, preserving a scope even when one upstream fails.
-        // A manual country selection may be inactive; its sources need explicit enablement.
+        // Active EPG sources are global by default. A legacy country row is only
+        // an optional explicit override (disable/priority), never required.
+        // Per-country scopes are downstream publication partitions, not collection filters.
         const sources=await tx.$queryRaw<Array<{sourceId:string}>>`
-          SELECT sc.source_id AS "sourceId" FROM public.tv_source_country sc
-          JOIN public.tv_source s ON s.id=sc.source_id
-          WHERE sc.country_id=${c.countryId}::uuid AND sc.is_active AND s.is_active
-          ORDER BY sc.priority,sc.source_id
+          SELECT s.id AS "sourceId" FROM public.tv_source s
+          LEFT JOIN public.tv_source_country sc ON sc.source_id=s.id
+            AND sc.country_id=${c.countryId}::uuid
+          WHERE s.is_active
+            AND (sc.source_id IS NULL OR sc.is_active)
+          ORDER BY sc.priority NULLS LAST,s.id
         `;
         for(const s of sources){
           await tx.$executeRaw`
@@ -82,7 +85,7 @@ export class TvImportRunsService {
       const counts=await tx.$queryRaw<Array<{n:number}>>`
         SELECT count(*)::int AS n FROM public.tv_import_scope WHERE run_id=${id}::uuid
       `;
-      if(!counts[0]?.n)throw new ConflictException("No enabled EPG sources for requested countries");
+      if(!counts[0]?.n)throw new ConflictException("No enabled global EPG sources for requested countries");
       await tx.$executeRaw`
         INSERT INTO public.tv_import_event(run_id,level,event_type,message)
         VALUES(${id}::uuid,'INFO','QUEUED','EPG import queued for isolated processing')
