@@ -109,6 +109,8 @@ async function request<T>(path:string,method="GET",payload?:unknown):Promise<T>{
     ?"Aucune source EPG active pour ce pays. Activez une source qualifiée avant de lancer un import."
     :path==="import-runs"&&method==="POST"&&code==="TV_IMPORT_SCOPE_BUSY"
     ?"Un import est déjà en attente ou en cours pour ce pays."
+    :path.includes("/icon/import")&&code
+    ?code
     :messageFor(response.status)+" (HTTP "+response.status+").";
   throw Object.assign(new Error(reason),{status:response.status});
  }
