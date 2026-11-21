@@ -12,3 +12,7 @@
 .dialog h2{font-size:1.3rem}.formGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .formGrid label{min-width:0}.formGrid input,.formGrid select{width:100%}
 @media(max-width:576px){.formGrid{grid-template-columns:1fr}.navigation a{flex:1 1 auto;justify-content:center}}
+
+/* Keep a permanent logo slot, using the admin sidebar's exact background. */
+.channelLogoSlot{width:88px;height:56px;flex:0 0 88px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#17263d;border-radius:6px}
+.channelLogoImage{display:block;width:100%;height:100%;object-fit:contain;padding:3px}
