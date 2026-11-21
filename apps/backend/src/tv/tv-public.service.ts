@@ -56,9 +56,9 @@ export class TvPublicService {
     const rows=await this.db.prisma.$queryRaw<ChannelRow[]>`
       SELECT cc.id,cc.channel_id AS "channelId",ch.name,
         COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)::int AS number,
-        CASE WHEN s.logo_rights_status='APPROVED'
-           AND nullif(btrim(s.logo_rights_reference),'') IS NOT NULL
-          THEN ch.logo_url ELSE NULL END AS "logoUrl",
+        -- No provenance binding for imported channel logos in the 19-table
+        -- candidate: do not assign unrelated source rights to a logo.
+        NULL::text AS "logoUrl",
         cc.country_id AS "countryId",trim(c.iso_code2) AS "countryIso2",
         tc.reference_timezone AS "referenceTimeZone",
         cc.default_variant_id AS "defaultVariantId",
@@ -74,15 +74,6 @@ export class TvPublicService {
         ORDER BY CASE WHEN v.id=cc.default_variant_id THEN 0 ELSE 1 END,
           v.code,v.id LIMIT 1
       ) selected ON TRUE
-      LEFT JOIN LATERAL (
-        SELECT src.logo_rights_status,src.logo_rights_reference
-        FROM public.tv_source_country sc
-        JOIN public.tv_source src ON src.id=sc.source_id
-        WHERE sc.country_id=cc.country_id AND sc.is_active AND src.is_active
-          AND src.logo_rights_status='APPROVED'
-          AND nullif(btrim(src.logo_rights_reference),'') IS NOT NULL
-        ORDER BY sc.priority,src.id LIMIT 1
-      ) s ON TRUE
       WHERE cc.country_id=${country.id}::uuid AND tc.is_active AND c.is_active
         AND cc.is_active AND NOT cc.needs_review
         AND COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) IS NOT NULL
