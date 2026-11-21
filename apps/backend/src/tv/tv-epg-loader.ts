@@ -131,7 +131,7 @@ export function createVerifiedDbEpgLoader(
         FROM public.tv_channel_external_id m
         JOIN public.tv_channel c ON c.id=m.channel_id
         WHERE m.source_id=$1::uuid AND m.external_id=ANY($2::text[])
-          AND c.logo_url LIKE '/tv-icons/%'`,[row.sourceId,declaredIds]):{rows:[]};
+          AND (c.logo_url LIKE '/tv-icons/%' OR c.logo_url='')`,[row.sourceId,declaredIds]):{rows:[]};
       const alreadyLocal=new Set(stored.rows.filter(x=>!rejectedLocalPaths.includes(x.logo_url))
        .map(x=>x.external_id));
       const remoteIcons=declared.filter(ch=>chosen.has(ch.externalId)&&!alreadyLocal.has(ch.externalId));
@@ -201,7 +201,7 @@ export function createVerifiedDbEpgLoader(
           JOIN unnest($2::text[],$3::text[]) AS incoming(external_id,logo_url)
             ON incoming.external_id=m.external_id
           WHERE m.source_id=$1::uuid AND m.channel_id=c.id
-            AND (c.logo_url IS NULL OR c.logo_url NOT LIKE '/tv-icons/%')
+            AND (c.logo_url IS NULL OR (c.logo_url <> '' AND c.logo_url NOT LIKE '/tv-icons/%'))
             AND incoming.logo_url IS NOT NULL`,
           [row.sourceId,externalIds,logos]);
         // Import the upstream channel website only when no website has
