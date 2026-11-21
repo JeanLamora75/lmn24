@@ -101,6 +101,7 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   let currentChannel:EpgChannel|null=null;
   let channelField:"display-name"|"country"|null=null;
   let channelText="";
+  let displayNameCaptured=false;
   let skippedInvalidDuration=0;
   let depth=0,rootSeen=false,programme:({
     channel:string;externalId:string;start:string;end:string;
@@ -118,6 +119,7 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
     if(depth===2 && node.name==="channel"){
       const externalId=node.attributes.id?.trim().slice(0,500)??"";
       currentChannel=externalId?{externalId,name:externalId,countryIso2:null,logoUrl:null}:null;
+      displayNameCaptured=false;
       const raw=node.attributes.country?.trim().toUpperCase();
       if(currentChannel&&raw&&/^[A-Z]{2}$/.test(raw))currentChannel.countryIso2=raw;
       return;
@@ -174,8 +176,10 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   sax.onclosetag=(name)=>{
     if(currentChannel&&channelField===name&&depth===3){
       const value=channelText.trim();
-      if(channelField==="display-name"&&value&&currentChannel.name===currentChannel.externalId)
+      if(channelField==="display-name"&&value&&!displayNameCaptured){
         currentChannel.name=value.slice(0,255);
+        displayNameCaptured=true;
+      }
       if(channelField==="country"&&/^[A-Z]{2}$/i.test(value))
         currentChannel.countryIso2=value.toUpperCase();
       channelField=null;channelText="";
