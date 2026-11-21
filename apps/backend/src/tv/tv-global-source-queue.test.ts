@@ -22,6 +22,10 @@ describe("Guide TV — sources EPG actives globalement (SCRUM-116/117)",()=>{
   const service=new TvImportRunsService({prisma} as unknown as DatabaseService);
   const result=await service.create({trigger:"MANUAL",days:7});
   expect(result).toMatchObject({status:"QUEUED",scopeCount:1});
+  // pg_advisory_xact_lock returns a PostgreSQL void value; the result selected
+  // through Prisma must instead be a supported integer while retaining the lock.
+  expect(sqlSeen.some(sql=>sql.includes("SELECT 1::int AS locked FROM pg_advisory_xact_lock(241024,87)"))).toBe(true);
+  expect(sqlSeen.some(sql=>sql.includes("SELECT pg_advisory_xact_lock(241024,87)"))).toBe(false);
   expect(execute).toHaveBeenCalledTimes(2); // one source scope + one audit event
   const selection=sqlSeen.find(s=>s.includes("SELECT s.id AS"));
   expect(selection).toContain("LEFT JOIN public.tv_source_country");
