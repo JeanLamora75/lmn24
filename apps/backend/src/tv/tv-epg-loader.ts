@@ -21,6 +21,7 @@ export const noCoverageAttested:AttestedCoverage=async()=>[];
 export type EpgTransport=(url:string,format:EpgFormat)=>Promise<Buffer>;
 export const networkEpgTransport:EpgTransport=downloadEpgSource;
 type Scope={scopeId:string;sourceId:string;sourceUrl:string;format:EpgFormat;priority:number;
+ geographicScope:"GLOBAL"|"COUNTRY";scopeCountryId:string|null;
  programmeRightsStatus:string;programmeRightsReference:string|null;
  synopsisRightsStatus:string;synopsisRightsReference:string|null;
  imageRightsStatus:string;imageRightsReference:string|null;};
@@ -77,6 +78,7 @@ export function createVerifiedDbEpgLoader(
   const rows=await db.query<Scope>(`
     SELECT scope.id AS "scopeId",s.id AS "sourceId",s.source_url AS "sourceUrl",
       s.format,s.name AS "_sourceName",COALESCE(sc.priority,2147483647) AS priority,
+      s.geographic_scope AS "geographicScope",s.scope_country_id AS "scopeCountryId",
       s.programme_rights_status AS "programmeRightsStatus",
       s.programme_rights_reference AS "programmeRightsReference",
       s.synopsis_rights_status AS "synopsisRightsStatus",
@@ -90,6 +92,8 @@ export function createVerifiedDbEpgLoader(
     WHERE scope.run_id=$1::uuid AND scope.country_id=$2::uuid
       AND scope.id::text=ANY($3::text[])
       AND scope.status='QUEUED' AND s.is_active
+      AND (s.geographic_scope='GLOBAL' OR (s.geographic_scope='COUNTRY'
+        AND s.scope_country_id=scope.country_id))
       AND (sc.source_id IS NULL OR sc.is_active)
     ORDER BY sc.priority NULLS LAST,s.id`,[runId,countryId,[...scopeIds]]);
   const groups=new Map<string,EpgDayBatch>();
@@ -141,21 +145,36 @@ export function createVerifiedDbEpgLoader(
             AND m.external_id=ANY($2::text[])`,[row.sourceId,externalIds]);
         // Explicit ISO country metadata is provisional: create an inactive
         // national association flagged for review, never publish on this basis.
-        const geographic=(decoded.channels??[]).filter(c=>c.countryIso2&&
-          externalIds.includes(c.externalId));
-        if(geographic.length){
+        if(row.geographicScope==="COUNTRY"){
+          // An administrator explicitly assigned this entire source to one
+          // country. Link all of its discovered IDs, not the active run country.
           await db.query(`
             INSERT INTO public.tv_channel_country(channel_id,country_id,is_active,needs_review)
-            SELECT m.channel_id,t.country_id,FALSE,TRUE
-            FROM unnest($1::text[],$2::text[]) AS hint(external_id,iso2)
-            JOIN public.tv_channel_external_id m
-              ON m.source_id=$3::uuid AND m.external_id=hint.external_id
-            JOIN public.country c ON upper(c.iso_code2)=hint.iso2
-            JOIN public.tv_country t ON t.country_id=c.id
-            WHERE m.channel_id IS NOT NULL AND m.mapping_status='PENDING_REVIEW'
+            SELECT m.channel_id,$3::uuid,FALSE,TRUE
+            FROM public.tv_channel_external_id m
+            WHERE m.source_id=$1::uuid AND m.external_id=ANY($2::text[])
+              AND m.channel_id IS NOT NULL AND m.mapping_status='PENDING_REVIEW'
             ON CONFLICT(channel_id,country_id) DO NOTHING`,
-            [geographic.map(c=>c.externalId),geographic.map(c=>c.countryIso2),
-              row.sourceId]);
+            [row.sourceId,externalIds,row.scopeCountryId]);
+        }else{
+          // Global source: ONLY explicit per-channel ISO 3166-1 country
+          // metadata counts. Missing/unknown country remains unclassified.
+          const geographic=(decoded.channels??[]).filter(c=>c.countryIso2&&
+            externalIds.includes(c.externalId));
+          if(geographic.length){
+            await db.query(`
+              INSERT INTO public.tv_channel_country(channel_id,country_id,is_active,needs_review)
+              SELECT m.channel_id,t.country_id,FALSE,TRUE
+              FROM unnest($1::text[],$2::text[]) AS hint(external_id,iso2)
+              JOIN public.tv_channel_external_id m
+                ON m.source_id=$3::uuid AND m.external_id=hint.external_id
+              JOIN public.country c ON upper(c.iso_code2)=hint.iso2
+              JOIN public.tv_country t ON t.country_id=c.id
+              WHERE m.channel_id IS NOT NULL AND m.mapping_status='PENDING_REVIEW'
+              ON CONFLICT(channel_id,country_id) DO NOTHING`,
+              [geographic.map(c=>c.externalId),
+               geographic.map(c=>c.countryIso2),row.sourceId]);
+          }
         }
         if(signal.aborted)throw new TvImportLeaseLostError();
         await db.query("COMMIT");
