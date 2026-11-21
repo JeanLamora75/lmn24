@@ -13,7 +13,8 @@ function setup(role:"ADMIN"|"EDITOR"|null,enabled=false){
  const listRuns=vi.fn().mockResolvedValue({items:[],pagination:{page:1,pageSize:20,total:0,totalPages:0}});
  const getEvents=vi.fn().mockResolvedValue([]);
  const retryFailed=vi.fn().mockResolvedValue({id,retried:1});
- const service={create,getRun,getEvents,retryFailed,listRuns} as unknown as TvImportRunsService;
+ const cancelQueued=vi.fn().mockResolvedValue({id,deleted:true});
+ const service={create,getRun,getEvents,retryFailed,listRuns,cancelQueued} as unknown as TvImportRunsService;
  const startDiscovery=vi.fn().mockResolvedValue({id,status:"STARTED",mode:"DISCOVERY"});
  const readiness=vi.fn().mockReturnValue({ready:false,mode:"DISCOVERY",missingFlags:["TV_EPG_NETWORK_ENABLED"],publicPublication:false});
  const launchManualImport=vi.fn().mockResolvedValue({id,status:"STARTED",mode:"DISCOVERY"});
@@ -23,7 +24,7 @@ function setup(role:"ADMIN"|"EDITOR"|null,enabled=false){
   if(key==="TV_IMPORTS_ENABLED"||key==="TV_CATALOG_ADMIN_ENABLED")return enabled?"true":"false";
   return undefined;
  }} as unknown as ConfigService;
- return {controller:new TvImportRunsController(auth,service,config,execution),create,getRun,getEvents,retryFailed,listRuns,startDiscovery,readiness,launchManualImport};
+ return {controller:new TvImportRunsController(auth,service,config,execution),create,getRun,getEvents,retryFailed,listRuns,cancelQueued,startDiscovery,readiness,launchManualImport};
 }
 describe("SCRUM-117 protected import orchestration",()=>{
  it("never reads/writes import data for anonymous users",async()=>{
@@ -60,6 +61,18 @@ describe("SCRUM-117 protected import orchestration",()=>{
   await expect(admin.controller.executionStatus(request)).resolves.toMatchObject({
    ready:false,publicPublication:false,
   });
+ });
+ it("deletes only authorized queued manual imports through admin endpoint",async()=>{
+  const anonymous=setup(null,true);
+  await expect(anonymous.controller.cancel(request,id)).rejects.toMatchObject({status:401});
+  expect(anonymous.cancelQueued).not.toHaveBeenCalled();
+  const editor=setup("EDITOR",true);
+  await expect(editor.controller.cancel(request,id)).rejects.toMatchObject({status:403});
+  expect(editor.cancelQueued).not.toHaveBeenCalled();
+  const admin=setup("ADMIN",true);
+  await expect(admin.controller.cancel(request,"invalid")).rejects.toMatchObject({status:400});
+  await expect(admin.controller.cancel(request,id)).resolves.toEqual({id,deleted:true});
+  expect(admin.cancelQueued).toHaveBeenCalledExactlyOnceWith(id);
  });
  it("enforces days 1..7 and UUID, cannot enable automatic trigger via request",async()=>{
   const s=setup("ADMIN",true);
