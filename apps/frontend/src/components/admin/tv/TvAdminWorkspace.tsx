@@ -10,6 +10,7 @@ import {AdminIconButton} from "@/components/admin/AdminIcon";
 import {useAdminSessionFilter} from "@/lib/admin-session-filters";
 import styles from "@/app/admin/(protected)/tv/tv-admin.module.css";
 import {loadTvCountryNames,tvCountryName,type TvCountryNames} from "@/lib/tv-country-names";
+import {TvSortableHeader,sortTvRows,nextTvSort,type TvSortState} from "./TvSortableHeader";
 
 export type TvView="overview"|"countries"|"channels"|"sources"|"imports"|"translations"|"statistics"|"associations";
 type Country={countryId:string;isoCode2:string;referenceTimezone:string;isActive:boolean;
@@ -793,6 +794,8 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [country,setCountry]=useAdminSessionFilter("tv-"+view,"country","");
  const [status,setStatus]=useAdminSessionFilter("tv-"+view,"status","all");
  const [page,setPage]=useAdminSessionFilter("tv-"+view,"page",1);
+ const [sort,setSort]=useState<TvSortState>(null);
+ const toggleSort=(key:string)=>{setSort(current=>nextTvSort(current,key));setPage(1);};
  const [selectedRun,setSelectedRun]=useState("");
  const [deletingRun,setDeletingRun]=useState("");
  useEffect(()=>{
@@ -896,8 +899,53 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    return true;
   });
  },[view,sortedCountries,channels,sources,runs,filter,country,status,locale,countryNames]);
- const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
- const visible=filtered.slice((Math.min(page,pages)-1)*PAGE_SIZE,Math.min(page,pages)*PAGE_SIZE);
+ const sortedRows=useMemo(()=>sortTvRows(filtered,sort,(item,key)=>{
+  if(view==="countries"){
+   const v=item as Country;
+   switch(key){
+    case "name":return region(v.isoCode2,locale,countryNames);
+    case "iso":return v.isoCode2;
+    case "status":return v.isActive;
+    case "timezone":return v.referenceTimezone;
+    case "channels":return v.approvedChannelCount;
+    case "coverage":return null;
+   }
+  }
+  if(view==="channels"){
+   const v=item as Channel;
+   switch(key){
+    case "name":return v.name;
+    case "country":return region(countryCodes.get(v.countryId)??"",locale,countryNames);
+    case "number":return v.effectiveNumber;
+    case "status":return v.needsReview?"À vérifier":v.isActive?"Active":"Inactive";
+   }
+  }
+  if(view==="sources"){
+   const v=item as Source;
+   switch(key){
+    case "name":return v.name;
+    case "format":return v.format;
+    case "scope":return v.geographicScope==="COUNTRY"
+     ?region(countryCodes.get(v.scopeCountryId??"")??"",locale,countryNames)
+     :v.countryId?"Globale · "+region(countryCodes.get(v.countryId)??"",locale,countryNames):"Globale";
+    case "rights":return v.programmeRightsStatus;
+    case "status":return v.isActive;
+   }
+  }
+  if(view==="imports"){
+   const v=item as ImportRun;
+   switch(key){
+    case "date":return new Date(v.createdAt).getTime();
+    case "trigger":return v.trigger;
+    case "days":return v.requestedDays;
+    case "status":return v.status;
+    case "scope":return v.scopeCount;
+   }
+  }
+  return null;
+ },locale),[filtered,sort,view,locale,countryNames,countryCodes]);
+ const pages=Math.max(1,Math.ceil(sortedRows.length/PAGE_SIZE));
+ const visible=sortedRows.slice((Math.min(page,pages)-1)*PAGE_SIZE,Math.min(page,pages)*PAGE_SIZE);
  const action=view==="channels"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("channel")}>Ajouter une chaîne</button>
    :view==="sources"?<div className="d-flex flex-wrap gap-2"><button className="btn btn-outline-primary" type="button" onClick={()=>setDialog("priorities")}>Ordre des sources</button><button className="btn btn-primary" type="button" onClick={()=>setDialog("source")}>Ajouter une source EPG</button></div>
   :view==="imports"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("import")}>Lancer un import</button>:undefined;
@@ -955,10 +1003,10 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    <AdminDataPanel label={"Liste "+LABELS[view]}>
     <div className="table-responsive"><table className="table table-hover align-middle mb-0">
      <thead><tr>
-      {view==="countries"&&<><th>Pays</th><th>ISO 2</th><th>Statut</th><th>Fuseau IANA</th><th>Chaînes actives / total</th><th>Couverture</th><th>Actions</th></>}
-      {view==="channels"&&<><th>Chaîne</th><th>Pays</th><th>N°</th><th>Statut</th><th>Actions</th></>}
-      {view==="sources"&&<><th>Source</th><th>Format</th><th>Périmètre</th><th>Droits programmes</th><th>Statut</th><th>Actions</th></>}
-      {view==="imports"&&<><th>Date</th><th>Déclencheur</th><th>Jours</th><th>État</th><th>Périmètres</th><th>Actions</th></>}
+      {view==="countries"&&<><TvSortableHeader label="Pays" sortKey="name" sort={sort} onSort={toggleSort}/><TvSortableHeader label="ISO 2" sortKey="iso" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Statut" sortKey="status" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Fuseau IANA" sortKey="timezone" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Chaînes actives / total" sortKey="channels" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Couverture" sortKey="coverage" sort={sort} onSort={toggleSort}/><th>Actions</th></>
+      {view==="channels"&&<><TvSortableHeader label="Chaîne" sortKey="name" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Pays" sortKey="country" sort={sort} onSort={toggleSort}/><TvSortableHeader label="N°" sortKey="number" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Statut" sortKey="status" sort={sort} onSort={toggleSort}/><th>Actions</th></>
+      {view==="sources"&&<><TvSortableHeader label="Source" sortKey="name" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Format" sortKey="format" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Périmètre" sortKey="scope" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Droits programmes" sortKey="rights" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Statut" sortKey="status" sort={sort} onSort={toggleSort}/><th>Actions</th></>
+      {view==="imports"&&<><TvSortableHeader label="Date" sortKey="date" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Déclencheur" sortKey="trigger" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Jours" sortKey="days" sort={sort} onSort={toggleSort}/><TvSortableHeader label="État" sortKey="status" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Périmètres" sortKey="scope" sort={sort} onSort={toggleSort}/><th>Actions</th></>
      </tr></thead><tbody>
       {view==="countries"&&(visible as Country[]).map(v=><tr key={v.countryId}>
        <td>{region(v.isoCode2,locale,countryNames)}</td><td>{v.isoCode2}</td>
