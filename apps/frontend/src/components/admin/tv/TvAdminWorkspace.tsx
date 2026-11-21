@@ -639,10 +639,8 @@ export function TvAdminWorkspace({view}:{view:TvView}){
        <td><div className="d-flex gap-2 align-items-center">
         <AdminIconButton name="eye" label="Voir le détail" onClick={()=>void openRun(v.id)}/>
         {v.status!=="RUNNING"&&
-         <button type="button" className="btn btn-outline-danger btn-sm"
-          disabled={!!deletingRun} onClick={()=>void deleteImport(v.id)}>
-          {deletingRun===v.id?"Suppression…":"Supprimer"}
-         </button>}
+         <AdminIconButton name="trash" label="Supprimer cet import" variant="outline-danger"
+          disabled={!!deletingRun} onClick={()=>void deleteImport(v.id)}/>} 
        </div></td>
       </tr>)}
      </tbody></table></div>
