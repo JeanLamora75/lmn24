@@ -27,6 +27,18 @@ export class TvImportRunsService {
     return this.database.prisma.$transaction(async tx=>{
       // Serialize queue creation across processes (distinct from parser lease).
       await tx.$queryRaw`SELECT pg_advisory_xact_lock(241024,87)`;
+      // One automatic run per UTC calendar day, even if it has completed.
+      // Checked under the same PostgreSQL queue-advisory lock as enqueue.
+      if(input.trigger==="AUTOMATIC"){
+        const existing=await tx.$queryRaw<Array<{id:string;status:string}>>`
+          SELECT id,status FROM public.tv_import_run
+          WHERE trigger='AUTOMATIC'
+            AND created_at >= date_trunc('day',now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'
+            AND created_at < (date_trunc('day',now() AT TIME ZONE 'UTC')+interval '1 day') AT TIME ZONE 'UTC'
+          ORDER BY created_at DESC LIMIT 1
+        `;
+        if(existing[0])return {id:existing[0].id,status:existing[0].status,scopeCount:0,alreadyScheduled:true};
+      }
       const countries=await tx.$queryRaw<Array<{countryId:string}>>`
         SELECT country_id AS "countryId" FROM public.tv_country
         WHERE (${input.countryId??null}::uuid IS NULL AND is_active=TRUE)
