@@ -77,7 +77,7 @@ describe("SCRUM-118 public TV HTTP controllers and embargo",()=>{
   await expect(s.controller.search({q:"002",channelsPage:"2",programmesPage:"3"}))
    .resolves.toMatchObject({status:"OK"});
   expect(s.worldSearch).toHaveBeenCalledWith({
-   q:"002",channelsPage:2,programmesPage:3,pageSize:30,
+   q:"002",section:"all",channelsPage:2,programmesPage:3,pageSize:30,
   });
   await expect(s.controller.search({q:"   "})).rejects.toMatchObject({status:400});
   await expect(s.controller.search({q:"2",pageSize:"500"})).rejects.toMatchObject({status:400});
