@@ -651,7 +651,7 @@ function EpgDiscoveryInbox({countries,onImported}:{
  const [feedback,setFeedback]=useState("");
  const [refresh,setRefresh]=useState(0);
  const [sort,setSort]=useState<TvSortState>(null);
- const [expandedChannelGroups,setExpandedChannelGroups]=useState<string[]>([]);
+
  const toggleSort=(key:string)=>{setSort(current=>nextTvSort(current,key));setPage(1);setSelected([]);};
  async function importSelected(){
   if(saving||!countryId||!selected.length)return;
@@ -839,6 +839,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [status,setStatus]=useAdminSessionFilter("tv-"+view,"status","all");
  const [page,setPage]=useAdminSessionFilter("tv-"+view,"page",1);
  const [sort,setSort]=useState<TvSortState>(null);
+ const [expandedChannelGroups,setExpandedChannelGroups]=useState<string[]>([]);
  const toggleSort=(key:string)=>{setSort(current=>nextTvSort(current,key));setPage(1);};
  const [selectedRun,setSelectedRun]=useState("");
  const [deletingRun,setDeletingRun]=useState("");
