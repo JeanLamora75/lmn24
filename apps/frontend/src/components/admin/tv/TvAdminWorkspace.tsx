@@ -9,6 +9,7 @@ import {AdminPagination} from "@/components/admin/AdminPagination";
 import {AdminIconButton} from "@/components/admin/AdminIcon";
 import {useAdminSessionFilter} from "@/lib/admin-session-filters";
 import styles from "@/app/admin/(protected)/tv/tv-admin.module.css";
+import {loadTvCountryNames,tvCountryName,type TvCountryNames} from "@/lib/tv-country-names";
 
 export type TvView="overview"|"countries"|"channels"|"sources"|"imports"|"translations"|"statistics";
 type Country={countryId:string;isoCode2:string;referenceTimezone:string;isActive:boolean;
@@ -36,8 +37,9 @@ const api="/api/admin/tv/";
 const PAGE_SIZE=20;
 const timezoneOptions=(()=>{try{return Intl.supportedValuesOf("timeZone");}
  catch{return ["Europe/Paris","Europe/London","America/New_York","Asia/Tokyo","UTC"];}})();
-function region(iso:string, locale:string){try{return new Intl.DisplayNames([locale,"fr"],{type:"region"}).of(iso)??iso;}
- catch{return iso;}}
+function region(iso:string,locale:string,countryNames:TvCountryNames){
+ return tvCountryName(iso,locale,countryNames);
+}
 function messageFor(status:number):string{
  if(status===401)return "Votre session a expiré. Reconnectez-vous.";
  if(status===403)return "Accès réservé aux administrateurs.";
@@ -65,13 +67,13 @@ function Modal({title,children,onClose}:{title:string;children:React.ReactNode;o
   </div>
  </div>;
 }
-function CountryEditor({item,locale,onClose,onSaved}:{item:Country;locale:string;onClose:()=>void;onSaved:()=>void}){
+function CountryEditor({item,locale,countryNames,onClose,onSaved}:{item:Country;locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:()=>void}){
  const [active,setActive]=useState(item.isActive);
  const [zone,setZone]=useState(item.referenceTimezone);
  const [busy,setBusy]=useState(false);
  const [error,setError]=useState("");
  const options=timezoneOptions.includes(zone)?timezoneOptions:[zone,...timezoneOptions];
- return <Modal title={"Paramètres TV — "+region(item.isoCode2,locale)} onClose={onClose}>
+ return <Modal title={"Paramètres TV — "+region(item.isoCode2,locale,countryNames)} onClose={onClose}>
   <form onSubmit={async e=>{e.preventDefault();if(busy)return;
     setBusy(true);setError("");
     try{await request("catalog/countries/"+item.countryId,"PUT",{
@@ -196,7 +198,7 @@ function ChannelUrlInputs({values,onChange}:{values:ChannelUrls;onChange:(next:C
 function channelUrlPayload(values:ChannelUrls){
  return Object.fromEntries(channelUrlFields.map(({key})=>[key,values[key].trim()||null]));
 }
-function ChannelCreateEditor({countries,locale,onClose,onSaved}:{countries:Country[];locale:string;onClose:()=>void;onSaved:()=>void}){
+function ChannelCreateEditor({countries,locale,countryNames,onClose,onSaved}:{countries:Country[];locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:()=>void}){
  const [countryId,setCountryId]=useState(countries[0]?.countryId??"");
  const [name,setName]=useState("");
  const [slug,setSlug]=useState("");
@@ -230,7 +232,7 @@ function ChannelCreateEditor({countries,locale,onClose,onSaved}:{countries:Count
    <label className="form-label" htmlFor="tv-create-country">Pays</label>
    <select id="tv-create-country" className="form-select mb-3" value={countryId}
     required onChange={e=>setCountryId(e.target.value)}>
-    {countries.map(c=><option key={c.countryId} value={c.countryId}>{region(c.isoCode2,locale)}</option>)}
+    {countries.map(c=><option key={c.countryId} value={c.countryId}>{region(c.isoCode2,locale,countryNames)}</option>)}
    </select>
    <label className="form-label" htmlFor="tv-create-name">Nom de la chaîne</label>
    <input id="tv-create-name" className="form-control mb-3" required maxLength={255}
@@ -366,7 +368,7 @@ function SourceEditor({onClose,onSaved}:{onClose:()=>void;onSaved:()=>void}){
   </form>
  </Modal>;
 }
-function ImportEditor({countries,locale,onClose,onSaved}:{countries:Country[];locale:string;onClose:()=>void;onSaved:(id:string)=>void}){
+function ImportEditor({countries,locale,countryNames,onClose,onSaved}:{countries:Country[];locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:(id:string)=>void}){
  const [country,setCountry]=useState("");const [days,setDays]=useState(7);
  const [busy,setBusy]=useState(false);const [error,setError]=useState("");
  const eligible=country?countries.filter(c=>c.countryId===country):countries.filter(c=>c.isActive);
@@ -383,7 +385,7 @@ function ImportEditor({countries,locale,onClose,onSaved}:{countries:Country[];lo
     onChange={e=>setCountry(e.target.value)}>
     <option value="">Tous les pays TV actifs</option>
     {countries.map(x=><option key={x.countryId} value={x.countryId}>
-     {region(x.isoCode2,locale)}{x.isActive?"":" (inactif)"}</option>)}
+     {region(x.isoCode2,locale,countryNames)}{x.isActive?"":" (inactif)"}</option>)}
    </select>
    <label className="form-label" htmlFor="tv-import-days">Nombre de jours</label>
    <select id="tv-import-days" className="form-select mb-3" value={days}
@@ -407,6 +409,7 @@ function ImportEditor({countries,locale,onClose,onSaved}:{countries:Country[];lo
 export function TvAdminWorkspace({view}:{view:TvView}){
  const router=useRouter();
  const [locale,setLocale]=useState("fr");
+ const [countryNames,setCountryNames]=useState<TvCountryNames>({});
  useEffect(()=>{
   const syncLocale=()=>setLocale(document.documentElement.lang||"fr");
   syncLocale();
@@ -414,6 +417,14 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   observer.observe(document.documentElement,{attributes:true,attributeFilter:["lang"]});
   return ()=>observer.disconnect();
  },[]);
+ useEffect(()=>{
+  let current=true;
+  // Locale changes can race: never apply a previous dictionary to the new locale.
+  void loadTvCountryNames(locale).then(names=>{
+   if(current)setCountryNames(names);
+  }).catch(()=>{if(current)setCountryNames({});});
+  return ()=>{current=false;};
+ },[locale]);
  const [countries,setCountries]=useState<Country[]>([]);
  const [channels,setChannels]=useState<Channel[]>([]);
  const [sources,setSources]=useState<Source[]>([]);
@@ -510,7 +521,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
      {view==="channels"&&<label className="col-12 col-md-4">Pays
       <select className="form-select" value={country} onChange={e=>{setCountry(e.target.value);setPage(1);}}>
        <option value="">Tous les pays</option>{countries.map(c=>
-        <option key={c.countryId} value={c.countryId}>{region(c.isoCode2,locale)}</option>)}
+        <option key={c.countryId} value={c.countryId}>{region(c.isoCode2,locale,countryNames)}</option>)}
       </select></label>}
      {view!=="imports"&&<label className="col-12 col-md-4">Statut
       <select className="form-select" value={status} onChange={e=>{setStatus(e.target.value);setPage(1);}}>
@@ -548,20 +559,20 @@ export function TvAdminWorkspace({view}:{view:TvView}){
       {view==="imports"&&<><th>Date</th><th>Déclencheur</th><th>Jours</th><th>État</th><th>Périmètres</th><th>Actions</th></>}
      </tr></thead><tbody>
       {view==="countries"&&(visible as Country[]).map(v=><tr key={v.countryId}>
-       <td>{region(v.isoCode2,locale)} ({v.isoCode2})</td>
+       <td>{region(v.isoCode2,locale,countryNames)} ({v.isoCode2})</td>
        <td>{v.isActive?"Actif":"Inactif"}</td><td>{v.referenceTimezone}</td>
        <td>{v.approvedChannelCount} / {v.channelCount}</td><td>Inconnue</td>
-       <td><AdminIconButton name="pencil-square" label={"Modifier "+region(v.isoCode2,locale)} onClick={()=>setCountryEditor(v)}/></td>
+       <td><AdminIconButton name="pencil-square" label={"Modifier "+region(v.isoCode2,locale,countryNames)} onClick={()=>setCountryEditor(v)}/></td>
       </tr>)}
       {view==="channels"&&(visible as Channel[]).map(v=><tr key={v.id}>
-       <td>{v.name}</td><td>{region(countryCodes.get(v.countryId)??"",locale)}</td>
+       <td>{v.name}</td><td>{region(countryCodes.get(v.countryId)??"",locale,countryNames)}</td>
        <td>{v.effectiveNumber??"—"}</td>
        <td>{v.needsReview?"À vérifier":v.isActive?"Active":"Inactive"}</td>
        <td><AdminIconButton name="pencil-square" label={"Modifier "+v.name} onClick={()=>setChannelEditor(v)}/></td>
       </tr>)}
       {view==="sources"&&(visible as Source[]).map((v,i)=><tr key={v.id+":"+(v.countryId??i)}>
        <td>{v.name}</td><td>{v.format}</td>
-       <td>{v.countryId?("Exception : "+region(countryCodes.get(v.countryId)??"",locale)+(v.priority?" · priorité "+v.priority:"")):"Globale"}</td>
+       <td>{v.countryId?("Exception : "+region(countryCodes.get(v.countryId)??"",locale,countryNames)+(v.priority?" · priorité "+v.priority:"")):"Globale"}</td>
        <td>{v.programmeRightsStatus}</td><td>{v.isActive?"Active":"Inactive"}</td>
        <td><AdminIconButton name="pencil-square" label={"Modifier "+v.name} onClick={()=>setSourceEditor(v)}/></td>
       </tr>)}
@@ -580,7 +591,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    <div className="p-3">
     <h2 className="h5">Import {selectedRun}</h2>
     {detail?<><p>Statut : {detail.status}</p><ul>
-     {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale)} · {s.status}
+     {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {s.status}
        {s.errorMessage?" — "+s.errorMessage:""}</li>)}</ul>
      {["PARTIAL","ERROR","INTERRUPTED"].includes(detail.status)&&detail.scopes.some(s=>["ERROR","INTERRUPTED"].includes(s.status))&&
       <button type="button" className="btn btn-outline-primary" onClick={async()=>{
@@ -593,12 +604,12 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    </div>
   </AdminDataPanel>}
   {view==="translations"&&!loading&&!error&&<TvTranslationPanel channels={channels}/>}
-  {countryEditor&&<CountryEditor item={countryEditor} locale={locale} onClose={()=>setCountryEditor(null)} onSaved={saved}/>}
+  {countryEditor&&<CountryEditor item={countryEditor} locale={locale} countryNames={countryNames} onClose={()=>setCountryEditor(null)} onSaved={saved}/>}
   {channelEditor&&<ChannelEditor item={channelEditor} onClose={()=>setChannelEditor(null)} onSaved={saved}/>}
   {sourceEditor&&<TvEpgSourceEditor item={sourceEditor} onClose={()=>setSourceEditor(null)} onSaved={saved}/>}
-  {dialog==="channel"&&<ChannelCreateEditor countries={countries} locale={locale} onClose={()=>setDialog(null)} onSaved={saved}/>}
+  {dialog==="channel"&&<ChannelCreateEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
    {dialog==="source"&&<SourceEditor onClose={()=>setDialog(null)} onSaved={saved}/>}
-  {dialog==="import"&&<ImportEditor countries={countries} locale={locale} onClose={()=>setDialog(null)}
+  {dialog==="import"&&<ImportEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)}
    onSaved={id=>{saved();void openRun(id);setNotice("Import mis en file d’attente.");}}/>}
  </main>;
 }
