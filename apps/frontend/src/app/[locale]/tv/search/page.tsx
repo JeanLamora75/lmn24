@@ -7,13 +7,14 @@ import {tvPublicEnabled} from "@/lib/tv-public-gate";
 import {TvWorldSearch} from "@/components/tv/TvWorldSearch";
 import {tvLocale} from "@/components/tv/tv-guide-model";
 export const dynamic="force-dynamic";
-type Props={params:Promise<{locale:string}>};
+type Props={params:Promise<{locale:string}>;searchParams:Promise<{q?:string}>};
 export async function generateMetadata():Promise<Metadata>{
  return {title:"World TV search",robots:{index:false,follow:false}};
 }
-export default async function TvWorldSearchPage({params}:Props){
+export default async function TvWorldSearchPage({params,searchParams}:Props){
  const {locale}=await params;
  if(!tvPublicEnabled()||!hasLocale(routing.locales,locale))notFound();
  setRequestLocale(locale);
- return <TvWorldSearch locale={tvLocale(locale)}/>;
+ const q=(await searchParams).q?.trim().slice(0,120)??"";
+ return <TvWorldSearch locale={tvLocale(locale)} initialQuery={q}/>;
 }
