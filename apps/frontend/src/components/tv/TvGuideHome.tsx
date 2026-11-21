@@ -231,7 +231,21 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
   <div className={styles.tabs} role="tablist" aria-label={copy.title}>
    {TV_TABS.map((value,i)=><button key={value} role="tab" id={`tv-tab-${value}`}
      type="button" aria-selected={tab===value} aria-controls="tv-tab-content"
+     tabIndex={tab===value?0:-1}
      disabled={value==="NOW"&&dayIndex!==0} onClick={()=>changeTab(value)}
+     onKeyDown={event=>{
+       const enabled=TV_TABS.filter(candidate=>candidate!=="NOW"||dayIndex===0);
+       const position=enabled.indexOf(value);
+       let next:TvTab|undefined;
+       if(event.key==="ArrowRight")next=enabled[(position+1)%enabled.length];
+       if(event.key==="ArrowLeft")next=enabled[(position+enabled.length-1)%enabled.length];
+       if(event.key==="Home")next=enabled[0];
+       if(event.key==="End")next=enabled[enabled.length-1];
+       if(!next)return;
+       event.preventDefault();
+       changeTab(next);
+       document.getElementById("tv-tab-"+next)?.focus();
+     }}
      className={tab===value?styles.activeTab:""}>{copy.tabs[i]}</button>)}
   </div>
   <div role="status" aria-live="polite" className={styles.notice}>{notice}</div>
