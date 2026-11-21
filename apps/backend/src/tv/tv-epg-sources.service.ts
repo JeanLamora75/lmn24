@@ -141,6 +141,36 @@ export class TvEpgSourcesService {
     return rows[0];
   }
 
+  /** Discovered identifiers are not catalogue channels until reviewed and
+   * assigned to a country. Surface the inbox without assuming global feeds
+   * belong to the country of a particular import run.
+   */
+  async listPendingDiscoveries(limit:number,offset:number,search:string){
+    await this.requireSchema();
+    const term=search.trim().slice(0,120);
+    const total=await this.database.prisma.$queryRaw<Array<{count:number}>>`
+      SELECT count(*)::int AS count FROM public.tv_channel_external_id m
+      JOIN public.tv_source s ON s.id=m.source_id
+      WHERE m.mapping_status='PENDING_REVIEW'
+        AND (${term}='' OR m.external_id ILIKE '%' || ${term} || '%'
+          OR s.name ILIKE '%' || ${term} || '%')
+    `;
+    const items=await this.database.prisma.$queryRaw<Array<{
+      id:string;externalId:string;sourceId:string;sourceName:string;
+    }>>`
+      SELECT m.id,m.external_id AS "externalId",
+        m.source_id AS "sourceId",s.name AS "sourceName"
+      FROM public.tv_channel_external_id m
+      JOIN public.tv_source s ON s.id=m.source_id
+      WHERE m.mapping_status='PENDING_REVIEW'
+        AND (${term}='' OR m.external_id ILIKE '%' || ${term} || '%'
+          OR s.name ILIKE '%' || ${term} || '%')
+      ORDER BY s.name,m.external_id,m.id
+      LIMIT ${limit} OFFSET ${offset}
+    `;
+    return {total:total[0]?.count??0,items};
+  }
+
   async listMappings(sourceId:string){
     await this.requireSchema();
     return this.database.prisma.$queryRaw`
