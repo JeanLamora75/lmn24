@@ -8,6 +8,9 @@ vi.mock("./tv-import-authorized-runner",()=>({
   ["TV_CATALOG_ADMIN_ENABLED","TV_IMPORTS_ENABLED","TV_EPG_NETWORK_ENABLED",
    "TV_MIGRATION_QUALIFIED","TV_EPG_SOURCE_USE_APPROVED"]
     .every(key=>env[key]==="true"),
+ tvLocalDiscoveryApproved:(env:Record<string,string|undefined>,url:string)=>
+  env.NODE_ENV==="development"&&url.includes("@localhost:5432/lmn24")
+  &&env.TV_CATALOG_ADMIN_ENABLED==="true"&&env.TV_IMPORTS_ENABLED==="true",
  runAuthorizedTvImport:mock.run,
 }));
 import {TvImportExecutionService} from "./tv-import-execution.service";
@@ -29,6 +32,19 @@ function setup(overrides:Record<string,string>={},status="QUEUED"){
 beforeEach(()=>{mock.run.mockReset();mock.run.mockResolvedValue({status:"SUCCESS"});});
 
 describe("Admin manual discovery worker dispatch",()=>{
+ it("allows an admin-triggered local discovery without production-only flags",async()=>{
+  const s=setup({TV_EPG_NETWORK_ENABLED:"false",TV_MIGRATION_QUALIFIED:"false",
+    TV_EPG_SOURCE_USE_APPROVED:"false"});
+  // A local-development database is the only exception to production approvals.
+  const previous=process.env.NODE_ENV;
+  process.env.NODE_ENV="development";
+  try{
+   // Existing test setup uses a dummy DB name by default; no bypass permitted.
+   await expect(s.service.launchManualImport({days:1,countryId:runId}))
+    .rejects.toMatchObject({status:503});
+  }finally{process.env.NODE_ENV=previous;}
+  expect(s.create).not.toHaveBeenCalled();
+ });
  it("one click starts import, without leaving a merely queued success",async()=>{
   const s=setup();
   await expect(s.service.launchManualImport({days:1,countryId:runId}))
