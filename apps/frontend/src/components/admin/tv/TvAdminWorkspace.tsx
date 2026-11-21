@@ -745,7 +745,6 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [countryEditor,setCountryEditor]=useState<Country|null>(null);
  const [channelEditor,setChannelEditor]=useState<Channel|null>(null);
  const [sourceEditor,setSourceEditor]=useState<Source|null>(null);
- const [reviewExternalId,setReviewExternalId]=useState("");
  const [filter,setFilter]=useAdminSessionFilter("tv-"+view,"search","");
  const [country,setCountry]=useAdminSessionFilter("tv-"+view,"country","");
  const [status,setStatus]=useAdminSessionFilter("tv-"+view,"status","all");
