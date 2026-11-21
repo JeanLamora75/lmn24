@@ -172,7 +172,7 @@ type ChannelUrls=Record<ChannelUrlKey,string>;
 function initialChannelUrls(item?:Channel):ChannelUrls{
  return Object.fromEntries(channelUrlFields.map(({key})=>[key,item?.[key]??""])) as ChannelUrls;
 }
-function ChannelUrlInputs({values,onChange}:{values:ChannelUrls;onChange:(next:ChannelUrls)=>void}){
+function ChannelUrlInputs({values,onChange,hideLogo=false}:{values:ChannelUrls;onChange:(next:ChannelUrls)=>void;hideLogo?:boolean}){
  const [discovering,setDiscovering]=useState(false);
  const [notice,setNotice]=useState("");
  const [conflicts,setConflicts]=useState<Partial<SocialLinkValues>>({});
@@ -248,7 +248,7 @@ function ChannelUrlInputs({values,onChange}:{values:ChannelUrls;onChange:(next:C
    </div>)}
   </div>}
   <div className="row g-3">
-   {channelUrlFields.map(({key,label})=><label key={key} className="col-12 col-md-6">{label}
+   {channelUrlFields.filter(({key})=>!hideLogo||key!=="logoUrl").map(({key,label})=><label key={key} className="col-12 col-md-6">{label}
     <input type="url" className="form-control" maxLength={2048} value={values[key]}
      placeholder="https://" onChange={e=>onChange({...values,[key]:e.target.value})}/>
    </label>)}
@@ -448,7 +448,7 @@ function ChannelEditor({item,onClose,onSaved,page=false}:{item:Channel;onClose:(
       <input type="url" className="form-control" value={remoteLogo} placeholder="https://…/logo.png"
        onChange={e=>{setRemoteLogo(e.target.value);if(e.target.value.trim())setLogoRemoved(false);}}/>
      </label>}
-    <p className="form-text">PNG, JPEG ou WebP, maximum 1 Mo. L’image est enregistrée localement dans LMN24.</p>
+    <p className="form-text">PNG, JPEG ou WebP, maximum 1 Mo. Une seule URL suffit : LMN24 télécharge le logo et enregistre son adresse locale.</p>
     <div className="d-flex flex-wrap gap-2">
      <a target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary"
       href={"https://www.google.com/search?tbm=isch&q="+encodeURIComponent("logo "+name)}>
@@ -459,7 +459,7 @@ function ChannelEditor({item,onClose,onSaved,page=false}:{item:Channel;onClose:(
     </div>
     <p className="form-text">Vérifiez les droits de réutilisation. La recherche n’importe aucune image automatiquement.</p>
    </fieldset>
-   <ChannelUrlInputs values={urls} onChange={updated=>{setUrls(updated);if(updated.logoUrl.trim())setLogoRemoved(false);}}/>
+   <ChannelUrlInputs values={urls} hideLogo onChange={setUrls}/>
    {error&&<p role="alert" className="alert alert-danger">{error}</p>}
    <div className="d-flex gap-2 justify-content-end mt-3">
     <button className="btn btn-outline-secondary" type="button" onClick={onClose}>Annuler</button>
