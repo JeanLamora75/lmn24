@@ -86,6 +86,6 @@ export const EPG_FETCH_LIMITS = {
   // decompression bombs and uncontrolled memory use until streaming ingestion.
   maxCompressedBytes: 24*1024*1024,
   maxExpandedBytes: 96*1024*1024,
-  maxRedirects: 0, // Disabled: no redirect bypass of DNS/SSRF checks.
+  maxRedirects: 3, // Each redirect is independently URL/DNS-validated and pinned.
   timeoutMs: 30000,
 } as const;
