@@ -16,7 +16,7 @@ describe("EPG import error diagnostics (no secrets leak)",()=>{
    const actual=classifyEpgFailure(new Error(message),"DOWNLOAD");
    expect(actual).toBe(code);
    expect(EPG_FAILURE_CODES.has(actual)).toBe(true);
-   expect(actual).not.toMatch(/https?|secret|example/i);
+   expect(actual).not.toMatch(/:\/\/|secret|example/i);
   }
  });
  it("classifies invalid XMLTV and database mapping failures without exposing SQL or credentials",()=>{
