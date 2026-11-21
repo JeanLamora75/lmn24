@@ -383,8 +383,8 @@ function ChannelEditor({item,onClose,onSaved}:{item:Channel;onClose:()=>void;onS
 }
 const rights=["programme","synopsis","image","logo"] as const;
 type RightsName=typeof rights[number];
-function SourceEditor({countries,onClose,onSaved}:{
- countries:Country[];onClose:()=>void;onSaved:()=>void;
+function SourceEditor({countries,locale,countryNames,onClose,onSaved}:{
+ countries:Country[];locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:()=>void;
 }){
  const [name,setName]=useState("");const [url,setUrl]=useState("");
  const [format,setFormat]=useState("XMLTV");const [active,setActive]=useState(false);
@@ -843,6 +843,14 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   finally{setDeletingRun("");}
  }
  function saved(){setDialog(null);setCountryEditor(null);setChannelEditor(null);setSourceEditor(null);setReload(v=>v+1);}
+ // All country selectors share the same locale-aware alphabetical order.
+ const sortedCountries=useMemo(()=>{
+  const collator=new Intl.Collator(locale,{sensitivity:"base",numeric:true});
+  return [...countries].sort((a,b)=>collator.compare(
+   region(a.isoCode2,locale,countryNames),
+   region(b.isoCode2,locale,countryNames)
+  )||a.isoCode2.localeCompare(b.isoCode2));
+ },[countries,locale,countryNames]);
  const countryCodes=useMemo(()=>new Map(countries.map(c=>[c.countryId,c.isoCode2])),[countries]);
  const filtered=useMemo(()=>{
   const normal=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
@@ -908,7 +916,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    </AdminDataPanel>
   </>}
   {view==="channels"&&!loading&&!error&&
-   <EpgDiscoveryInbox countries={countries.map(c=>({
+   <EpgDiscoveryInbox countries={sortedCountries.map(c=>({
     id:c.countryId,name:region(c.isoCode2,locale,countryNames),
    }))} onImported={()=>setReload(x=>x+1)} onReview={item=>{
     const source=sources.find(x=>x.id===item.sourceId);
@@ -997,10 +1005,10 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     countries={countries.map(c=>({id:c.countryId,
      name:region(c.isoCode2,locale,countryNames),timezone:c.referenceTimezone,code:c.isoCode2}))}
     onClose={()=>{setSourceEditor(null);setReviewExternalId("");}} onSaved={saved}/>}
-  {dialog==="priorities"&&<SourcePrioritiesEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
-  {dialog==="channel"&&<ChannelCreateEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
-   {dialog==="source"&&<SourceEditor countries={countries} onClose={()=>setDialog(null)} onSaved={saved}/>}
-  {dialog==="import"&&<ImportEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)}
+  {dialog==="priorities"&&<SourcePrioritiesEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
+  {dialog==="channel"&&<ChannelCreateEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
+   {dialog==="source"&&<SourceEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
+  {dialog==="import"&&<ImportEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)}
    onSaved={id=>{saved();void openRun(id);setNotice("Import démarré : découverte des chaînes en cours. Le suivi s’actualise automatiquement.");}}/>}
  </main>;
 }
