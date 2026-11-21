@@ -1,5 +1,5 @@
 "use client";
-import {useEffect,useMemo,useState,type FormEvent} from "react";
+import {useEffect,useMemo,useState} from "react";
 import {useRouter} from "next/navigation";
 import {TvTranslationPanel} from "./TvTranslationPanel";
 import {TvEpgSourceEditor} from "./TvEpgSourceEditor";
@@ -219,7 +219,7 @@ function ImportEditor({countries,onClose,onSaved}:{countries:Country[];onClose:(
    {error&&<p role="alert" className="alert alert-danger">{error}</p>}
    <div className="d-flex gap-2 justify-content-end">
     <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Annuler</button>
-    <button type="submit" disabled={busy||eligible.length===0} className="btn btn-primary">Lancer l'import</button>
+    <button type="submit" disabled={busy||eligible.length===0} className="btn btn-primary">Lancer l&apos;import</button>
    </div>
   </form>
  </Modal>;
