@@ -37,6 +37,11 @@ export class TvTranslationAdminController{
  @Get("providers")
  @Header("Cache-Control","no-store")
  async providers(@Req() req:Req){await this.admin(req);return this.service.providers();}
+ @Post("providers")
+ @Header("Cache-Control","no-store")
+ async registerProvider(@Req() req:Req){
+  await this.admin(req);return this.service.registerLocalProvider();
+ }
  @Patch("providers/:id/select")
  @Header("Cache-Control","no-store")
  async selectProvider(@Req() req:Req,@Param("id") id:string){
