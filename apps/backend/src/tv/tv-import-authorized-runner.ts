@@ -10,7 +10,6 @@ import {processQueuedTvRun} from "./tv-import-worker";
 export function tvEpgExecutionApproved(env:Record<string,string|undefined>):boolean{
  return env.TV_CATALOG_ADMIN_ENABLED==="true"
    && env.TV_IMPORTS_ENABLED==="true"
-   && env.TV_IMPORT_AUTOMATIC_ENABLED==="true"
    && env.TV_EPG_NETWORK_ENABLED==="true"
    && env.TV_MIGRATION_QUALIFIED==="true"
    && env.TV_EPG_SOURCE_USE_APPROVED==="true";
