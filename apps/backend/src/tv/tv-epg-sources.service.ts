@@ -62,10 +62,6 @@ export class TvEpgSourcesService {
     await this.requireSchema();
     const url=validateEpgSourceUrl(input.sourceUrl).toString();
     const r=input.rights;
-    for(const family of ["programme","synopsis","image","logo"] as const) {
-      if(r[family].status==="APPROVED"&&!r[family].reference?.trim())
-        throw new ConflictException("Approved rights require evidence per content family");
-    }
     const rows=await this.database.prisma.$queryRaw`
       INSERT INTO public.tv_source
       (name,source_url,format,is_active,rights_status,
@@ -89,10 +85,10 @@ export class TvEpgSourcesService {
     await this.requireSchema();
     const url=validateEpgSourceUrl(input.sourceUrl).toString();
     const rows=await this.database.prisma.$queryRaw<Array<{id:string}>>`
-      UPDATE public.tv_source
+      UPDATE public.tv_source AS s
       SET name=${input.name},source_url=${url},format=${input.format},is_active=${input.isActive}
       WHERE id=${sourceId}::uuid AND (${input.expectedVersion??null}::text IS NULL
-        OR md5(to_jsonb(public.tv_source)::text)=${input.expectedVersion??null}) RETURNING id
+        OR md5(to_jsonb(s)::text)=${input.expectedVersion??null}) RETURNING id
     `;
     if(!rows.length)throw new ConflictException("TV_CONCURRENT_EDIT");
     return rows[0];
@@ -113,19 +109,15 @@ export class TvEpgSourcesService {
 
   async setRights(sourceId:string, rights:SourceRightsInput, expectedVersion?:string) {
     await this.requireSchema();
-    for(const family of ["programme","synopsis","image","logo"] as const) {
-      if(rights[family].status==="APPROVED"&&!rights[family].reference?.trim())
-        throw new ConflictException("Approved rights require evidence");
-    }
     const r=rights;
     const rows=await this.database.prisma.$queryRaw<Array<{id:string}>>`
-      UPDATE public.tv_source SET
+      UPDATE public.tv_source AS s SET
         programme_rights_status=${r.programme.status},programme_rights_reference=${r.programme.reference},
         synopsis_rights_status=${r.synopsis.status},synopsis_rights_reference=${r.synopsis.reference},
         image_rights_status=${r.image.status},image_rights_reference=${r.image.reference},
         logo_rights_status=${r.logo.status},logo_rights_reference=${r.logo.reference}
       WHERE id=${sourceId}::uuid AND (${expectedVersion??null}::text IS NULL
-        OR md5(to_jsonb(public.tv_source)::text)=${expectedVersion??null}) RETURNING id
+        OR md5(to_jsonb(s)::text)=${expectedVersion??null}) RETURNING id
     `;
     if(!rows.length)throw new ConflictException("TV_CONCURRENT_EDIT");
     return rows[0];
