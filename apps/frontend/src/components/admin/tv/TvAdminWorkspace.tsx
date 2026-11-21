@@ -57,7 +57,9 @@ async function request<T>(path:string,method="GET",payload?:unknown):Promise<T>{
    const body=await response.json() as {message?:unknown};
    if(typeof body.message==="string")code=body.message;
   }catch{/* Proxy or upstream may return a non-JSON error. */}
-  const reason=path==="import-runs"&&method==="POST"
+  const reason=path==="import-runs"&&method==="POST"&&response.status===503
+    ?"La collecte de cette source n’est pas encore autorisée sur le serveur. Aucun import n’a été démarré."
+    :path==="import-runs"&&method==="POST"
    &&(code==="No enabled global EPG sources for requested countries"||code==="TV_NO_ACTIVE_EPG_SOURCE")
     ?"Aucune source EPG active pour ce pays. Activez une source qualifiée avant de lancer un import."
     :path==="import-runs"&&method==="POST"&&code==="TV_IMPORT_SCOPE_BUSY"
