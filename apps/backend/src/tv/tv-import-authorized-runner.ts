@@ -20,7 +20,9 @@ export function tvEpgExecutionApproved(env:Record<string,string|undefined>):bool
  */
 export function tvLocalDiscoveryApproved(env:Record<string,string|undefined>,
  connectionString:string):boolean{
- if(env.NODE_ENV!=="development"||env.TV_CATALOG_ADMIN_ENABLED!=="true"
+ // tsx watch does not set NODE_ENV; an unset value is accepted only with
+ // a loopback lmn24 DB and a public embargo. Explicit production is refused.
+ if(env.NODE_ENV==="production"||env.TV_CATALOG_ADMIN_ENABLED!=="true"
    ||env.TV_IMPORTS_ENABLED!=="true"||env.TV_PUBLIC_ENABLED==="true"
    ||env.TV_PUBLIC_RELEASE_APPROVED==="true")return false;
  try{
