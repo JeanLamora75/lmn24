@@ -26,7 +26,10 @@ export class TvImportRunsService {
     assertImportDays(input.days);
     return this.database.prisma.$transaction(async tx=>{
       // Serialize queue creation across processes (distinct from parser lease).
-      await tx.$queryRaw`SELECT pg_advisory_xact_lock(241024,87)`;
+      // PostgreSQL returns a `void` value for pg_advisory_xact_lock.
+      // Prisma cannot deserialize that result type, so project a supported integer
+      // while keeping the lock held for the full transaction.
+      await tx.$queryRaw`SELECT 1::int AS locked FROM pg_advisory_xact_lock(241024,87)`;
       // One automatic run per UTC calendar day, even if it has completed.
       // Checked under the same PostgreSQL queue-advisory lock as enqueue.
       if(input.trigger==="AUTOMATIC"){
