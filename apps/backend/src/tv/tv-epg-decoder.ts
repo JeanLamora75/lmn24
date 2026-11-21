@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { parseStringPromise } from "xml2js";
+import { Parser } from "xml2js";
 import { z } from "zod";
 import { EPG_FETCH_LIMITS, type EpgFormat } from "./tv-epg-source-policy";
 
@@ -7,12 +7,6 @@ import { EPG_FETCH_LIMITS, type EpgFormat } from "./tv-epg-source-policy";
 // A streaming decoder is still required before supporting larger feeds.
 const MAX_PROGRAMMES = 250_000;
 const MAX_CONTENT = EPG_FETCH_LIMITS.maxExpandedBytes;
-const text = (value:unknown,max=1000):string|null=>{
-  if(typeof value==="string")return value.trim().slice(0,max)||null;
-  if(Array.isArray(value))return text(value[0],max);
-  if(value && typeof value==="object" && "_" in value) return text((value as {_?:unknown})._,max);
-  return null;
-};
 export type EpgProgramme = {
   externalChannelId:string;externalProgrammeId:string;startsAt:string;endsAt:string;
   originalTitle:string;originalSynopsis:string|null;category:string|null;
@@ -79,8 +73,8 @@ const jsonRoot=z.object({
 }).strict();
 export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgDecoded>{
   if(data.byteLength>MAX_CONTENT)throw new Error("EPG payload too large");
-  const utf8=new TextDecoder("utf-8",{fatal:true}).decode(data);
   if(format==="JSON"){
+    const utf8=new TextDecoder("utf-8",{fatal:true}).decode(data);
     const parsed=jsonRoot.parse(JSON.parse(utf8) as unknown);
     return {
       programmes:parsed.programmes.map(p=>makeProgramme({
@@ -93,32 +87,82 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
       })),
     };
   }
-  if(/<!\s*(?:DOCTYPE|ENTITY)\b/i.test(utf8))throw new Error("XML declarations forbidden");
-  const document:unknown=await parseStringPromise(utf8,{
-    explicitArray:true,explicitRoot:true,trim:true,normalize:false,
-    strict:true,mergeAttrs:false,explicitCharkey:false,
-  });
-  if(!document||typeof document!=="object"||!("tv" in document))throw new Error("Invalid XMLTV root");
-  const root=(document as {tv?:unknown}).tv;
-  if(!root||typeof root!=="object")throw new Error("Invalid XMLTV contents");
-  const programmes=(root as {programme?:unknown}).programme;
-  if(!Array.isArray(programmes))return {programmes:[],coverage:[]};
-  if(programmes.length>MAX_PROGRAMMES)throw new Error("XMLTV programme limit");
+  // xml2js uses the SAX parser internally. Process its XML events directly,
+  // rather than materializing the entire <tv> document and all programme nodes.
+  // Input is fed in bounded chunks so the parser only holds one item at a time.
+  const sax=new Parser({strict:true}).saxParser;
   const results:EpgProgramme[]=[];
-  for(const raw of programmes){
-    if(!raw||typeof raw!=="object"||!("$" in raw))throw new Error("Malformed XMLTV programme");
-    const p=raw as Record<string,unknown>;
-    const attrs=p["$"] as Record<string,unknown>;
-    const channel=text(attrs.channel),start=text(attrs.start),end=text(attrs.stop);
-    const title=text(p.title);
-    if(!channel||!start||!end||!title)throw new Error("Incomplete XMLTV item");
-    const icon=Array.isArray(p.icon)?p.icon[0] as {$?:{src?:string}}|undefined:undefined;
-    results.push(makeProgramme({
-      channel,externalId:text(attrs.id)||channel+"|"+start,
-      start:parseXmltvTime(start),end:parseXmltvTime(end),title,
-      synopsis:text(p.desc,10000),category:text(p.category,120),image:icon?.$?.src,
-    }));
+  let depth=0,rootSeen=false,programme:({
+    channel:string;externalId:string;start:string;end:string;
+    title:string;synopsis:string;category:string;image:string;
+  })|null=null;
+  let capture:"title"|"desc"|"category"|null=null;
+  let captured="";
+  sax.onopentag=(node)=>{
+    depth++;
+    if(depth===1){
+      if(node.name!=="tv")throw new Error("Invalid XMLTV root");
+      rootSeen=true;
+      return;
+    }
+    if(depth===2 && node.name==="programme"){
+      const a=node.attributes;
+      const channel=a.channel?.trim()??"";
+      const start=a.start?.trim()??"";
+      programme={channel,externalId:a.id?.trim()||channel+"|"+start,
+        start,end:a.stop?.trim()??"",title:"",synopsis:"",category:"",image:""};
+      return;
+    }
+    if(programme && depth===3){
+      if(node.name==="icon"&&!programme.image)
+        programme.image=node.attributes.src?.slice(0,2048)??"";
+      if((node.name==="title"||node.name==="desc"||node.name==="category")
+         && !capture){
+        capture=node.name;
+        captured="";
+      }
+    }
+  };
+  const appendText=(value:string)=>{
+    if(!capture)return;
+    const limit=capture==="desc"?10000:capture==="category"?120:1000;
+    if(captured.length<limit)captured+=value.slice(0,limit-captured.length);
+  };
+  sax.ontext=appendText;
+  sax.oncdata=appendText;
+  sax.ondoctype=()=>{throw new Error("XML declarations forbidden");};
+  sax.onclosetag=(name)=>{
+    if(programme && capture===name && depth===3){
+      const value=captured.trim();
+      if(capture==="title"&&!programme.title)programme.title=value;
+      if(capture==="desc"&&!programme.synopsis)programme.synopsis=value;
+      if(capture==="category"&&!programme.category)programme.category=value;
+      capture=null;
+      captured="";
+    }
+    if(programme && depth===2 && name==="programme"){
+      if(!programme.channel||!programme.start||!programme.end||!programme.title)
+        throw new Error("Incomplete XMLTV item");
+      results.push(makeProgramme({
+        channel:programme.channel,externalId:programme.externalId,
+        start:parseXmltvTime(programme.start),end:parseXmltvTime(programme.end),
+        title:programme.title,synopsis:programme.synopsis,
+        category:programme.category,image:programme.image,
+      }));
+      if(results.length>MAX_PROGRAMMES)throw new Error("XMLTV programme limit");
+      programme=null;
+    }
+    depth--;
+  };
+  const decoder=new TextDecoder("utf-8",{fatal:true});
+  const chunkSize=64*1024;
+  for(let offset=0;offset<data.byteLength;offset+=chunkSize){
+    const chunk=decoder.decode(data.subarray(offset,offset+chunkSize),{stream:true});
+    sax.write(chunk);
   }
-  // XMLTV programme lists do NOT prove completeness of a day.
+  sax.write(decoder.decode());
+  sax.close();
+  if(!rootSeen||depth!==0)throw new Error("Invalid XMLTV contents");
+  // Programme records never certify whole-day coverage.
   return {programmes:results,coverage:[]};
 }
