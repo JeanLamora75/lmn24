@@ -120,9 +120,21 @@ CREATE TABLE IF NOT EXISTS public.tv_source (
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
   rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
   rights_reference TEXT,
+  programme_rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
+  programme_rights_reference TEXT,
+  synopsis_rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
+  synopsis_rights_reference TEXT,
+  image_rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
+  image_rights_reference TEXT,
+  logo_rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
+  logo_rights_reference TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   CONSTRAINT tv_source_format CHECK (format IN ('XMLTV','XMLTV_GZIP','JSON')),
-  CONSTRAINT tv_source_rights CHECK (rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED'))
+  CONSTRAINT tv_source_rights CHECK (rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED')),
+  CONSTRAINT tv_source_programme_rights CHECK (programme_rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED')),
+  CONSTRAINT tv_source_synopsis_rights CHECK (synopsis_rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED')),
+  CONSTRAINT tv_source_image_rights CHECK (image_rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED')),
+  CONSTRAINT tv_source_logo_rights CHECK (logo_rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED'))
 );
 CREATE TABLE IF NOT EXISTS public.tv_source_country (
   source_id UUID NOT NULL REFERENCES public.tv_source(id) ON DELETE CASCADE,
