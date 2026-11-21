@@ -259,7 +259,7 @@ export class TvPublicService {
   responseLanguages(){return [...TV_LANGUAGES];}
 
   /** SCRUM-121: independent search sections. No data is fabricated from missing EPG. */
-  async worldSearch(args:{q:string;channelsPage:number;programmesPage:number;pageSize:number;now?:Date}){
+  async worldSearch(args:{q:string;channelsPage:number;programmesPage:number;pageSize:number;section?:"all"|"channels"|"programmes";now?:Date}){
     await this.requireSchema();
     const query=args.q.trim();
     const digits=/^[0-9]+$/.test(query);
@@ -331,10 +331,13 @@ export class TvPublicService {
         endsAt:new Date(row.endsAt).toISOString(),
       })),hasNext:rows.length>pageSize};
     };
-    const [c,p]=await Promise.allSettled([channels(),programmes()]);
+    const [c,p]=await Promise.allSettled([
+      args.section==="programmes"?Promise.resolve(null):channels(),
+      args.section==="channels"?Promise.resolve(null):programmes(),
+    ]);
     return {query,status:c.status==="fulfilled"&&p.status==="fulfilled"?"OK":"PARTIAL",
-      channels:c.status==="fulfilled"?c.value:{status:"ERROR",items:[],hasNext:false},
-      programmes:p.status==="fulfilled"?p.value:{status:"ERROR",items:[],hasNext:false},
+      channels:c.status==="fulfilled"?(c.value??{status:"SKIPPED",items:[],hasNext:false}):{status:"ERROR",items:[],hasNext:false},
+      programmes:p.status==="fulfilled"?(p.value??{status:"SKIPPED",items:[],hasNext:false}):{status:"ERROR",items:[],hasNext:false},
       pagination:{channelsPage:args.channelsPage,programmesPage:args.programmesPage,pageSize}};
   }
 }
