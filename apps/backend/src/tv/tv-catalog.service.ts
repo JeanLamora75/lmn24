@@ -3,7 +3,7 @@ import {
 } from "@nestjs/common";
 import { DatabaseService } from "../database/database.service";
 import { assertIanaZone, assertOfficialUrl,assertTvLogoUrl } from "./tv-catalog-policy";
-import {saveUploadedTvIcon,validateUploadedIcon,cacheTvIcon} from "./tv-icon-storage";
+import {saveUploadedTvIcon,validateUploadedIcon,importTvIconFromUrl} from "./tv-icon-storage";
 
 /** This module intentionally uses bound SQL parameters: TV schema is still a candidate,
  * and must NOT be appended to the canonical Prisma schema before SCRUM-114 approval.
@@ -273,8 +273,7 @@ export class TvCatalogService {
       SELECT id FROM public.tv_channel WHERE id=${channelId}::uuid
     `;
     if(!rows.length)throw new NotFoundException("TV channel not found");
-    const logoUrl=await cacheTvIcon(remoteUrl);
-    if(!logoUrl)throw new Error("TV_ICON_REMOTE_UNAVAILABLE");
+    const logoUrl=await importTvIconFromUrl(remoteUrl);
     await this.database.prisma.$executeRaw`
       UPDATE public.tv_channel SET logo_url=${logoUrl} WHERE id=${channelId}::uuid
     `;
