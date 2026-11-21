@@ -13,7 +13,9 @@ export type EpgFailureCode =
  "EPG_XMLTV_TIME_INVALID"|"EPG_XMLTV_ITEM_INVALID"|
  "EPG_STREAM_INTERRUPTED"|"EPG_SIZE_COMPRESSED"|"EPG_SIZE_EXPANDED"|
  "EPG_PROGRAMME_LIMIT"|"EPG_DNS_LOOKUP_FAILED"|
- "EPG_HTTP_REQUEST_FAILED"|"EPG_HTTP_TRANSFER_FAILED"|"EPG_GZIP_PROCESS_FAILED";
+ "EPG_HTTP_REQUEST_FAILED"|"EPG_HTTP_TRANSFER_FAILED"|"EPG_GZIP_PROCESS_FAILED"|
+ "EPG_XML_SECURITY_REJECTED"|"EPG_TLS_HOSTNAME_MISMATCH"|
+ "EPG_NODE_ARGUMENT_INVALID"|"EPG_JSON_INVALID";
 
 export const EPG_FAILURE_CODES:ReadonlySet<string>=new Set<EpgFailureCode>([
  "EPG_HTTP_404","EPG_HTTP_403","EPG_HTTP_429","EPG_HTTP_5XX",
@@ -26,7 +28,8 @@ export const EPG_FAILURE_CODES:ReadonlySet<string>=new Set<EpgFailureCode>([
  "EPG_XMLTV_TIME_INVALID","EPG_XMLTV_ITEM_INVALID","EPG_STREAM_INTERRUPTED",
  "EPG_SIZE_COMPRESSED","EPG_SIZE_EXPANDED","EPG_PROGRAMME_LIMIT",
  "EPG_DNS_LOOKUP_FAILED","EPG_HTTP_REQUEST_FAILED","EPG_HTTP_TRANSFER_FAILED",
- "EPG_GZIP_PROCESS_FAILED",
+ "EPG_GZIP_PROCESS_FAILED","EPG_XML_SECURITY_REJECTED",
+ "EPG_TLS_HOSTNAME_MISMATCH","EPG_NODE_ARGUMENT_INVALID","EPG_JSON_INVALID",
 ]);
 
 function details(error:unknown):{message:string;code:string}{
@@ -57,6 +60,8 @@ export function classifyEpgFailure(error:unknown,stage:"DOWNLOAD"|"DECODE"|"MAPP
   return "EPG_XMLTV_TIME_INVALID";
  if(/Incomplete XMLTV item|Malformed XMLTV programme|Missing EPG identity/i.test(message))
   return "EPG_XMLTV_ITEM_INVALID";
+ if(/External XML entities and document types are prohibited|XML declarations forbidden/i.test(message))
+  return "EPG_XML_SECURITY_REJECTED";
  if(/Invalid XMLTV document|Invalid XMLTV root/i.test(message))
   return "EPG_FORMAT_MISMATCH";
  if(stage==="DECODE")return "EPG_XMLTV_INVALID";
@@ -78,6 +83,10 @@ export function classifyEpgFailure(error:unknown,stage:"DOWNLOAD"|"DECODE"|"MAPP
   return "EPG_CONTENT_ENCODING_INVALID";
  if(/incorrect header check|invalid distance|invalid block type|unexpected end of file|Z_DATA_ERROR|Z_BUF_ERROR|Z_STREAM_ERROR|gzip/i.test(message+" "+code))
   return "EPG_GZIP_INVALID";
+ if(/ERR_TLS_CERT_ALTNAME_INVALID/i.test(message+" "+code))
+  return "EPG_TLS_HOSTNAME_MISMATCH";
+ if(/ERR_INVALID_ARG_TYPE|ERR_INVALID_ARG_VALUE|ERR_INVALID_PROTOCOL|ERR_INVALID_URL/i.test(message+" "+code))
+  return "EPG_NODE_ARGUMENT_INVALID";
  if(/CERT_|ERR_TLS_|ERR_SSL_|UNABLE_TO_VERIFY_LEAF_SIGNATURE|SELF_SIGNED_CERT|DEPTH_ZERO_SELF_SIGNED_CERT|CERT_HAS_EXPIRED|certificate|TLS handshake/i.test(message+" "+code))
   return "EPG_TLS_ERROR";
  if(/ERR_STREAM_PREMATURE_CLOSE|ERR_STREAM_DESTROYED|ERR_SOCKET_CLOSED|aborted|premature close/i.test(message+" "+code))
