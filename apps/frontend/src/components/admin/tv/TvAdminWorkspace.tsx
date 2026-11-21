@@ -473,6 +473,92 @@ function ChannelEditor({item,onClose,onSaved,page=false}:{item:Channel;onClose:(
   <div className="card p-3 p-md-4">{form}</div>
  </main>:<Modal title={"Modifier la chaîne — "+item.name} onClose={onClose}>{form}</Modal>;
 }
+/** Fast catalogue edits keep all remaining association fields unchanged.
+ * Existing concurrency and national-number constraints are enforced by the API.
+ */
+function ChannelQuickControls({item,onSaved}:{item:Channel;onSaved:()=>void}){
+ const [editing,setEditing]=useState(false);
+ const [number,setNumber]=useState(item.effectiveNumber===null?"":String(item.effectiveNumber));
+ const [pending,setPending]=useState(false);
+ const [error,setError]=useState("");
+ const [active,setActive]=useState(item.isActive);
+ const [currentNumber,setCurrentNumber]=useState(item.effectiveNumber);
+ useEffect(()=>{
+  setActive(item.isActive);
+  setCurrentNumber(item.effectiveNumber);
+  if(!editing)setNumber(item.effectiveNumber===null?"":String(item.effectiveNumber));
+ },[item.isActive,item.effectiveNumber,item.version,editing]);
+ async function update(nextActive:boolean,nextManual:number|null){
+  if(pending)return false;
+  const effective=nextManual??item.officialNumber??item.assignedNumber;
+  if(nextActive&&effective===null){
+   setError("Attribuez un numéro avant d’activer cette chaîne.");
+   return false;
+  }
+  setPending(true);setError("");
+  try{
+   await request("catalog/associations/"+item.id,"PATCH",{
+    isActive:nextActive,needsReview:item.needsReview,manualNumber:nextManual,
+    officialNumber:item.officialNumber,assignedNumber:item.assignedNumber,
+    defaultVariantId:item.defaultVariantId,expectedVersion:item.version,
+   });
+   setActive(nextActive);
+   setCurrentNumber(effective);
+   setEditing(false);
+   onSaved();
+   return true;
+  }catch(e){
+   setError((e as Error).message);
+   return false;
+  }finally{setPending(false);}
+ }
+ function saveNumber(){
+  const raw=number.trim();
+  const next=raw===""?null:Number(raw);
+  if(next!==null&&(!Number.isInteger(next)||next<1||next>2147483647)){
+   setError("Saisissez un numéro entier compris entre 1 et 2 147 483 647.");
+   return;
+  }
+  void update(active,next);
+ }
+ return <>
+  <td>
+   {editing?<div className="d-flex align-items-center gap-1">
+    <input autoFocus type="number" min={1} max={2147483647}
+     className="form-control form-control-sm" style={{width:100}}
+     aria-label={"Numéro de "+item.name} value={number} disabled={pending}
+     onChange={e=>setNumber(e.target.value)}
+     onKeyDown={e=>{
+      if(e.key==="Enter"){e.preventDefault();saveNumber();}
+      if(e.key==="Escape"){setEditing(false);setError("");}
+     }}/>
+    <button type="button" className="btn btn-sm btn-outline-primary" disabled={pending}
+     title="Enregistrer le numéro" aria-label="Enregistrer le numéro"
+     onClick={saveNumber}>✓</button>
+    <button type="button" className="btn btn-sm btn-outline-secondary" disabled={pending}
+     title="Annuler" aria-label="Annuler la saisie du numéro"
+     onClick={()=>{setEditing(false);setError("");}}>×</button>
+   </div>:<button type="button" className="btn btn-sm btn-link text-body text-decoration-none"
+     disabled={pending} title="Modifier le numéro"
+     aria-label={"Modifier le numéro de "+item.name}
+     onClick={()=>{setNumber(currentNumber===null?"":String(currentNumber));setError("");setEditing(true);}}>
+     {currentNumber??"—"} <span className="small text-secondary" aria-hidden="true">✎</span>
+    </button>}
+   {error&&<div className="small text-danger mt-1" role="alert">{error}</div>}
+  </td>
+  <td>
+   <div className="d-flex align-items-center gap-2">
+    <div className="form-check form-switch m-0">
+     <input type="checkbox" className="form-check-input" role="switch"
+      checked={active} disabled={pending}
+      aria-label={(active?"Désactiver ":"Activer ")+item.name}
+      onChange={e=>void update(e.target.checked,item.manualNumber)}/>
+    </div>
+    <span>{item.needsReview?"À vérifier":active?"Active":"Inactive"}</span>
+   </div>
+  </td>
+ </>;
+}
 const rights=["programme","synopsis","image","logo"] as const;
 type RightsName=typeof rights[number];
 function SourceEditor({countries,locale,countryNames,onClose,onSaved}:{
@@ -1110,8 +1196,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
            style={{width:32,height:22,objectFit:"contain",flexShrink:0}}/>}
           <span>{region(countryCodes.get(entry.countryId)??"",locale,countryNames)}</span>
          </div></td>
-         <td>{entry.effectiveNumber??"—"}</td>
-         <td>{entry.needsReview?"À vérifier":entry.isActive?"Active":"Inactive"}</td>
+         <ChannelQuickControls key={entry.id} item={entry} onSaved={()=>setReload(v=>v+1)}/>
          <td><AdminIconButton name="pencil-square" label={"Modifier "+entry.name}
           onClick={()=>router.push("/admin/tv/channels/"+encodeURIComponent(entry.id)+"/edit")}/></td>
         </tr>;
