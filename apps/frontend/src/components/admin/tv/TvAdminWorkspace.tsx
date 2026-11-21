@@ -324,6 +324,7 @@ function ChannelCreateEditor({countries,locale,countryNames,onClose,onSaved}:{co
       });
      }
     }
+    if(logoFile)await uploadTvChannelIcon(created.channelId,logoFile);
     onSaved();
    }catch(err){setError((err as Error).message);}finally{setBusy(false);}
   }}>
@@ -348,6 +349,7 @@ function ChannelCreateEditor({countries,locale,countryNames,onClose,onSaved}:{co
    <label className="form-check mb-3"><input type="checkbox" className="form-check-input"
     checked={review} onChange={e=>setReview(e.target.checked)}/>
     <span className="form-check-label">À vérifier (masquée du public)</span></label>
+   <ChannelLogoField url={urls.logoUrl} file={logoFile} onFile={setLogoFile}/>
    <ChannelUrlInputs values={urls} onChange={setUrls}/>
    <p className="text-body-secondary mt-3">Une chaîne nouvelle est inactive et à vérifier par défaut.</p>
    {countries.length===0&&<p className="alert alert-warning">Configurez d&apos;abord un pays dans l&apos;onglet Pays.</p>}
@@ -383,6 +385,7 @@ function ChannelEditor({item,onClose,onSaved}:{item:Channel;onClose:()=>void;onS
      officialNumber:item.officialNumber,assignedNumber:item.assignedNumber,
      defaultVariantId:item.defaultVariantId,expectedVersion:item.version,
     });
+    if(logoFile)await uploadTvChannelIcon(item.channelId,logoFile);
     onSaved();
    }catch(err){setError((err as Error).message);}finally{setBusy(false);}
   }}>
@@ -404,6 +407,7 @@ function ChannelEditor({item,onClose,onSaved}:{item:Channel;onClose:()=>void;onS
      onChange={e=>setReview(e.target.checked)}/>
     <span className="form-check-label">À vérifier (masquée du public)</span>
    </label>
+   <ChannelLogoField url={urls.logoUrl} file={logoFile} onFile={setLogoFile}/>
    <ChannelUrlInputs values={urls} onChange={setUrls}/>
    {error&&<p role="alert" className="alert alert-danger">{error}</p>}
    <div className="d-flex gap-2 justify-content-end mt-3">
