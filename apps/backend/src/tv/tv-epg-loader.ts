@@ -101,11 +101,21 @@ export function createVerifiedDbEpgLoader(
       // The feed is scanned as a whole, independent of any country assignment.
       // Unknown external IDs remain pending manual mapping, never guessed from names.
       const externalIds=[...new Set(decoded.programmes.map(p=>p.externalChannelId))];
-      for(const externalId of externalIds){
+      if(signal.aborted)throw new TvImportLeaseLostError();
+      await db.query("BEGIN");
+      try{
+        // Discover IDs atomically under the same fenced writer ownership.
+        await db.query("SELECT public.assert_parser_write_epoch($1::uuid)",[lease.ownerToken]);
         await db.query(`
           INSERT INTO public.tv_channel_external_id(source_id,external_id,mapping_status)
-          VALUES($1::uuid,$2,'PENDING_REVIEW')
-          ON CONFLICT(source_id,external_id) DO NOTHING`,[row.sourceId,externalId]);
+          SELECT $1::uuid,ids.external_id,'PENDING_REVIEW'
+          FROM unnest($2::text[]) AS ids(external_id)
+          ON CONFLICT(source_id,external_id) DO NOTHING`,[row.sourceId,externalIds]);
+        if(signal.aborted)throw new TvImportLeaseLostError();
+        await db.query("COMMIT");
+      }catch(error){
+        await db.query("ROLLBACK").catch(()=>undefined);
+        throw error;
       }
       // Acquisition is allowed before republication rights approval;
       // importing to the public programme grid is NOT.
