@@ -11,8 +11,9 @@ import { TvEpgSourcesService } from "./tv-epg-sources.service";
 
 const uuid=z.string().uuid();
 const rightsStatus=z.enum(["UNREVIEWED","APPROVED","REJECTED","EXPIRED"]);
-const right=z.object({status:rightsStatus,reference:z.string().max(2048).nullable()}).strict()
- .refine(v=>v.status!=="APPROVED"||!!v.reference?.trim(),"Rights evidence required");
+// Review status may be recorded without attaching a document. Publication remains
+// gated separately by a qualified non-empty reference and explicit public GO.
+const right=z.object({status:rightsStatus,reference:z.string().max(2048).nullable()}).strict();
 const rights=z.object({programme:right,synopsis:right,image:right,logo:right}).strict();
 const source=z.object({
  name:z.string().trim().min(1).max(255),
