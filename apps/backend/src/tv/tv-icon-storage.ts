@@ -7,7 +7,7 @@ import {lookup} from "node:dns/promises";
 import {request as httpRequest} from "node:http";
 import {request as httpsRequest} from "node:https";
 import {existsSync} from "node:fs";
-import {mkdir,readFile,writeFile} from "node:fs/promises";
+import {mkdir,writeFile} from "node:fs/promises";
 import {resolve,join} from "node:path";
 import {isPublicSourceAddress} from "./tv-epg-source-policy";
 
