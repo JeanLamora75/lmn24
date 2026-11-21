@@ -9,6 +9,7 @@ export const TV_ADMIN_VIEWS=[
  {slug:"",label:"Vue d'ensemble"},
  {slug:"countries",label:"Pays"},
  {slug:"channels",label:"Chaînes"},
+ {slug:"associations",label:"Associations EPG"},
  {slug:"sources",label:"Sources EPG"},
  {slug:"imports",label:"Imports"},
  {slug:"translations",label:"Traductions"},
