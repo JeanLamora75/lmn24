@@ -601,11 +601,9 @@ function EpgDiscoveryInbox({countries,onImported}:{
  return <AdminDataPanel label="Chaînes EPG découvertes — à classer">
   <div className="p-3">
    <p className="text-body-secondary">
-    Les fiches de chaînes sont créées automatiquement, inactives et à vérifier.
-    Une source mondiale ne prouve pas le pays de diffusion d’une chaîne.
-    Le filtre pays n’affiche que les associations géographiques déjà renseignées ;
-    les autres restent dans « Pays non déterminé ». Aucun pays étranger n’est
-    associé automatiquement à la France.
+    Seules les chaînes dont le pays n’est pas identifié apparaissent ici.
+    Pour une source nationale ou un flux global contenant l’attribut country,
+    le pays est déjà associé automatiquement et la chaîne est visible dans « Chaînes ».
    </p>
    <form className="d-flex flex-wrap gap-2 mb-3" onSubmit={e=>{
     e.preventDefault();setPage(1);setSelected([]);setQuery(search);
