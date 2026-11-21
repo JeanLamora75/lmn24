@@ -253,11 +253,42 @@ function ChannelUrlInputs({values,onChange}:{values:ChannelUrls;onChange:(next:C
 function channelUrlPayload(values:ChannelUrls){
  return Object.fromEntries(channelUrlFields.map(({key})=>[key,values[key].trim()||null]));
 }
+async function uploadTvChannelIcon(channelId:string,file:File):Promise<string>{
+ if(file.size===0||file.size>1_000_000)throw new Error("Le logo doit faire moins de 1 Mo.");
+ if(!["image/png","image/jpeg","image/webp"].includes(file.type))
+  throw new Error("Format de logo accepté : PNG, JPEG ou WebP.");
+ const base64=await new Promise<string>((resolve,reject)=>{
+  const reader=new FileReader();
+  reader.onload=()=>resolve(String(reader.result).split(",")[1]??"");
+  reader.onerror=()=>reject(new Error("Impossible de lire le logo."));
+  reader.readAsDataURL(file);
+ });
+ const result=await request<{logoUrl:string}>("catalog/channels/"+channelId+"/icon","POST",{base64});
+ return result.logoUrl;
+}
+function ChannelLogoField({url,file,onFile}:{url:string;file:File|null;
+ onFile:(value:File|null)=>void}){
+ return <div className="mb-3">
+  <label className="form-label" htmlFor="tv-channel-logo-upload">Logo de la chaîne</label>
+  {url&&<div className="mb-2 d-flex align-items-center gap-2">
+   <img src={url} width={90} height={54} alt="Logo actuel"
+    style={{objectFit:"contain"}}/>
+   <small className="text-body-secondary">Logo actuel {url.startsWith("/tv-icons/")?"(local)":"(URL externe)"}</small>
+  </div>}
+  <input className="form-control" id="tv-channel-logo-upload" type="file"
+   accept="image/png,image/jpeg,image/webp"
+   onChange={e=>onFile(e.target.files?.[0]??null)}/>
+  <small className="text-body-secondary">PNG, JPEG ou WebP · 1 Mo maximum.
+   {file?" Nouveau logo : "+file.name:""}
+  </small>
+ </div>;
+}
 function ChannelCreateEditor({countries,locale,countryNames,onClose,onSaved}:{countries:Country[];locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:()=>void}){
  const [countryId,setCountryId]=useState(countries[0]?.countryId??"");
  const [name,setName]=useState("");
  const [slug,setSlug]=useState("");
  const [urls,setUrls]=useState<ChannelUrls>(()=>initialChannelUrls());
+ const [logoFile,setLogoFile]=useState<File|null>(null);
  const [number,setNumber]=useState("");
  const [active,setActive]=useState(false);
  const [review,setReview]=useState(true);
@@ -331,6 +362,7 @@ function ChannelCreateEditor({countries,locale,countryNames,onClose,onSaved}:{co
 function ChannelEditor({item,onClose,onSaved}:{item:Channel;onClose:()=>void;onSaved:()=>void}){
  const [name,setName]=useState(item.name);
  const [urls,setUrls]=useState<ChannelUrls>(()=>initialChannelUrls(item));
+ const [logoFile,setLogoFile]=useState<File|null>(null);
  const [number,setNumber]=useState(item.manualNumber===null?"":String(item.manualNumber));
  const [active,setActive]=useState(item.isActive);
  const [review,setReview]=useState(item.needsReview);
