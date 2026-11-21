@@ -17,7 +17,7 @@ export type EpgCoverageClaim = {
   /** Claim is untrusted until source licence/coverage independently verified. */
   verified:boolean;
 };
-export type EpgDecoded = {programmes:EpgProgramme[];coverage:EpgCoverageClaim[]};
+export type EpgDecoded = {programmes:EpgProgramme[];coverage:EpgCoverageClaim[];skippedInvalidDuration?:number};
 
 const validIso=(value:string):string=>{
   if(!/^(?:19|20|21)\d\d-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-]\d\d:\d\d)$/.test(value))
@@ -92,6 +92,7 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   // Input is fed in bounded chunks so the parser only holds one item at a time.
   const sax=new Parser({strict:true}).saxParser;
   const results:EpgProgramme[]=[];
+  let skippedInvalidDuration=0;
   let depth=0,rootSeen=false,programme:({
     channel:string;externalId:string;start:string;end:string;
     title:string;synopsis:string;category:string;image:string;
@@ -148,13 +149,21 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
     if(programme && depth===2 && name==="programme"){
       if(!programme.channel||!programme.start||!programme.end||!programme.title)
         throw new Error("Incomplete XMLTV item");
-      results.push(makeProgramme({
-        channel:programme.channel,externalId:programme.externalId,
-        start:parseXmltvTime(programme.start),end:parseXmltvTime(programme.end),
-        title:programme.title,synopsis:programme.synopsis,
-        category:programme.category,image:programme.image,
-      }));
-      if(results.length>MAX_PROGRAMMES)throw new Error("XMLTV programme limit");
+      const start=parseXmltvTime(programme.start);
+      const end=parseXmltvTime(programme.end);
+      if(start===end){
+        // Some upstream guides contain placeholder events with no duration.
+        // They cannot be published; skip only these instead of rejecting
+        // every valid programme in the same XMLTV feed.
+        skippedInvalidDuration++;
+      }else{
+        results.push(makeProgramme({
+          channel:programme.channel,externalId:programme.externalId,
+          start,end,title:programme.title,synopsis:programme.synopsis,
+          category:programme.category,image:programme.image,
+        }));
+        if(results.length>MAX_PROGRAMMES)throw new Error("XMLTV programme limit");
+      }
       programme=null;
     }
     depth--;
@@ -169,5 +178,5 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   sax.close();
   if(!rootSeen||depth!==0)throw new Error("Invalid XMLTV contents");
   // Programme records never certify whole-day coverage.
-  return {programmes:results,coverage:[]};
+  return {programmes:results,coverage:[],skippedInvalidDuration};
 }
