@@ -19,7 +19,8 @@ const source=z.object({
  sourceUrl:z.string().max(2048),format:z.enum(["XMLTV","XMLTV_GZIP","JSON"]),
  isActive:z.boolean(),rights,
 }).strict();
-const sourceConfiguration=source.omit({rights:true});
+const sourceConfiguration=source.omit({rights:true}).extend({expectedVersion:z.string().min(1).max(100).optional()});
+const rightsUpdate=rights.extend({expectedVersion:z.string().min(1).max(100).optional()});
 
 const priorities=z.object({items:z.array(z.object({
  sourceId:uuid,countryId:uuid,priority:z.number().int().min(1).max(100000),
@@ -88,9 +89,10 @@ export class TvEpgSourcesController {
  @Header("Cache-Control","no-store")
  async updateRights(@Req() request:ReqLike,@Param("id") id:string,@Body() body:unknown){
    await this.assertAdmin(request);
-   const parsed=rights.safeParse(body);
+   const parsed=rightsUpdate.safeParse(body);
    if(!uuid.safeParse(id).success||!parsed.success)throw new BadRequestException("Invalid EPG rights");
-   return this.service.setRights(id,parsed.data);
+   const {expectedVersion,...families}=parsed.data;
+   return this.service.setRights(id,families,expectedVersion);
  }
  @Put("countries/:id/priorities")
  @Header("Cache-Control","no-store")
