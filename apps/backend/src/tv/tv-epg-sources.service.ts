@@ -2,6 +2,9 @@ import {
   ConflictException, Injectable, NotFoundException, ServiceUnavailableException,
 } from "@nestjs/common";
 import { DatabaseService } from "../database/database.service";
+import {downloadEpgSource} from "./tv-epg-download";
+import {decodeEpgBuffer} from "./tv-epg-decoder";
+import {classifyEpgFailure} from "./tv-epg-failure";
 import {
   assertMappingReview, assertPriorityUniqueness, validateEpgSourceUrl,
   type RightsDecision, type RightsFamily, type EpgFormat, type SourcePriority,
@@ -25,6 +28,43 @@ export class TvEpgSourcesService {
         AND to_regclass('public.tv_channel_external_id') IS NOT NULL AS present
     `;
     if(!rows[0]?.present) throw new ServiceUnavailableException("EPG catalogue not installed");
+  }
+
+  /** Explicit admin-only connectivity diagnostic for an existing source.
+   * It performs a real bounded fetch and decode but never writes TV data.
+   * Only allowlisted error codes and counts are returned, never remote content.
+   */
+  async testConnection(sourceId:string){
+    await this.requireSchema();
+    const rows=await this.database.prisma.$queryRaw<Array<{
+      sourceUrl:string;format:EpgFormat;
+    }>>`
+      SELECT source_url AS "sourceUrl",format
+      FROM public.tv_source WHERE id=${sourceId}::uuid LIMIT 1
+    `;
+    const source=rows[0];
+    if(!source)throw new NotFoundException("EPG source not found");
+    const started=Date.now();
+    let bytes=0;
+    try{
+      const data=await downloadEpgSource(source.sourceUrl,source.format);
+      bytes=data.byteLength;
+      try{
+        const decoded=await decodeEpgBuffer(data,source.format);
+        return {ok:true,stage:"COMPLETE" as const,code:null,
+          bytes,programmes:decoded.programmes.length,
+          channels:new Set(decoded.programmes.map(p=>p.externalChannelId)).size,
+          elapsedMs:Date.now()-started};
+      }catch(error){
+        return {ok:false,stage:"DECODE" as const,
+          code:classifyEpgFailure(error,"DECODE"),bytes,
+          programmes:null,channels:null,elapsedMs:Date.now()-started};
+      }
+    }catch(error){
+      return {ok:false,stage:"DOWNLOAD" as const,
+        code:classifyEpgFailure(error,"DOWNLOAD"),bytes:null,
+        programmes:null,channels:null,elapsedMs:Date.now()-started};
+    }
   }
 
   async listSources(countryId?:string) {
