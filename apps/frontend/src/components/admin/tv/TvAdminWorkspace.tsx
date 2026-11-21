@@ -13,7 +13,7 @@ export type TvView="overview"|"countries"|"channels"|"sources"|"imports"|"transl
 type Country={countryId:string;isoCode2:string;referenceTimezone:string;isActive:boolean;
  channelCount:number;approvedChannelCount:number;version:string};
 type Channel={id:string;countryId:string;channelId:string;slug:string;name:string;
- websiteUrl:string|null;xUrl:string|null;facebookUrl:string|null;
+ logoUrl:string|null;websiteUrl:string|null;xUrl:string|null;facebookUrl:string|null;
  instagramUrl:string|null;youtubeUrl:string|null;officialLiveUrl:string|null;
  isActive:boolean;needsReview:boolean;effectiveNumber:number|null;manualNumber:number|null;
  officialNumber:number|null;assignedNumber:number|null;defaultVariantId:string|null;version:string};
