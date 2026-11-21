@@ -48,7 +48,7 @@ export async function downloadEpgSource(rawUrl:string,format:EpgFormat):Promise<
         if([301,302,303,307,308].includes(status)){
           const location=res.headers.location;
           res.resume();
-          resolve({status,location});return;
+          resolve(location?{status,location}:{status});return;
         }
         if(status!==200){res.resume();reject(new Error("EPG source returned HTTP "+status));return;}
         const encoding=String(res.headers["content-encoding"]??"identity").toLowerCase();
