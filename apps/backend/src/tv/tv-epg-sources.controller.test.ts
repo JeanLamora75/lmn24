@@ -32,13 +32,17 @@ describe("SCRUM-116 ADMIN EPG source security",()=>{
   await expect(s.c.list(request)).rejects.toMatchObject({status:503});
   expect(s.listSources).not.toHaveBeenCalled();
  });
- it("rejects fabricated rights approval without evidence",async()=>{
+ it("records a manually selected right status without mandatory evidence",async()=>{
   const s=setup("ADMIN");
   await expect(s.c.create(request,{
    name:"EPG",sourceUrl:"https://epg.example.org/feed.xml",format:"XMLTV",
-   isActive:true,rights:{...rights,image:right("APPROVED")},
-  })).rejects.toMatchObject({status:400});
-  expect(s.createSource).not.toHaveBeenCalled();
+   isActive:false,rights:{...rights,image:right("APPROVED")},
+  })).resolves.toEqual({id:"test"});
+  expect(s.createSource).toHaveBeenCalledTimes(1);
+  await expect(s.c.updateRights(request,id,{
+   ...rights,programme:right("APPROVED"),
+  })).resolves.toEqual({id:"test"});
+  expect(s.setRights).toHaveBeenCalledTimes(1);
  });
  it("rejects name-only matching as VERIFIED",async()=>{
   const s=setup("ADMIN");
