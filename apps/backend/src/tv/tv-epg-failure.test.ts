@@ -8,7 +8,7 @@ describe("EPG import error diagnostics (no secrets leak)",()=>{
    ["EPG source returned HTTP 429","EPG_HTTP_429"],
    ["EPG source returned HTTP 503","EPG_HTTP_5XX"],
    ["EPG source returned HTTP 302","EPG_HTTP_REDIRECT"],
-   ["EPG source exceeds download size limit","EPG_SIZE_LIMIT"],
+   ["EPG source exceeds download size limit","EPG_SIZE_COMPRESSED"],
    ["EPG source request timed out","EPG_TIMEOUT"],
    ["getaddrinfo ENOTFOUND secret.example.org","EPG_DNS_ERROR"],
   ];
@@ -21,13 +21,13 @@ describe("EPG import error diagnostics (no secrets leak)",()=>{
  });
  it("classifies invalid XMLTV and database mapping failures without exposing SQL or credentials",()=>{
   expect(classifyEpgFailure(new Error("XMLTV programme limit"),"DECODE"))
-   .toBe("EPG_SIZE_LIMIT");
+   .toBe("EPG_PROGRAMME_LIMIT");
   expect(classifyEpgFailure(new Error("Incomplete XMLTV item"),"DECODE"))
-   .toBe("EPG_XMLTV_INVALID");
+   .toBe("EPG_XMLTV_ITEM_INVALID");
   expect(classifyEpgFailure(new Error("password=secret connection failed"),"MAPPING"))
    .toBe("EPG_DATABASE_WRITE");
   expect(classifyEpgFailure(new Error("internal.url/token"),"DOWNLOAD"))
-   .toBe("EPG_SOURCE_UNAVAILABLE");
+   .toBe("EPG_DOWNLOAD_UNEXPECTED");
  });
  it("distinguishes TLS, connection, compression and HTTP encoding without leaking upstream data",()=>{
   const cases:[Error,"DOWNLOAD"|"DECODE",string][]=[
@@ -46,13 +46,30 @@ describe("EPG import error diagnostics (no secrets leak)",()=>{
    expect(actual).not.toMatch(/https:|secret|token|private/);
   }
  });
- it("keeps unknown transport failures generic and XML failures distinct",()=>{
+ it("keeps unexpected download errors stage-specific and XML failures distinct",()=>{
   expect(classifyEpgFailure(new Error("unknown https://secret.example/token"),"DOWNLOAD"))
-   .toBe("EPG_SOURCE_UNAVAILABLE");
+   .toBe("EPG_DOWNLOAD_UNEXPECTED");
   expect(classifyEpgFailure(new Error("Incomplete XMLTV item"),"DECODE"))
-   .toBe("EPG_XMLTV_INVALID");
+   .toBe("EPG_XMLTV_ITEM_INVALID");
   expect(classifyEpgFailure(new Error("XMLTV programme limit"),"DECODE"))
    .toBe("EPG_SIZE_LIMIT");
+ });
+
+ it("distinguishes exact source, size and decoder stages without leaking details",()=>{
+  const cases:[string,"DOWNLOAD"|"DECODE",string][]=[
+   ["Invalid EPG source URL","DOWNLOAD","EPG_URL_INVALID"],
+   ["EPG source address is not exclusively public IPv4","DOWNLOAD","EPG_DNS_NON_PUBLIC"],
+   ["Expanded EPG exceeds size limit","DOWNLOAD","EPG_SIZE_EXPANDED"],
+   ["Invalid XMLTV calendar time","DECODE","EPG_XMLTV_TIME_INVALID"],
+   ["Invalid XMLTV root","DECODE","EPG_FORMAT_MISMATCH"],
+   ["premature close","DOWNLOAD","EPG_STREAM_INTERRUPTED"],
+  ];
+  for(const [message,stage,expected] of cases){
+   const value=classifyEpgFailure(new Error(message),stage);
+   expect(value).toBe(expected);
+   expect(EPG_FAILURE_CODES.has(value)).toBe(true);
+  }
+  expect(classifyEpgFailure(new Error("EPG_HTTP_404"),"DOWNLOAD")).toBe("EPG_HTTP_404");
  });
 
 });
