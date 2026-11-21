@@ -6,7 +6,7 @@ import { assertImportDays,deriveRunStatus,failedScopeIds } from "./tv-import-pol
 
 export type ImportRequest = {
   trigger:"MANUAL"|"AUTOMATIC";days:number;countryId?:string|undefined;
-  mode?:"DISCOVERY"|"STAGING";
+  mode?:"DISCOVERY"|"STAGING"|undefined;
 };
 /** Admin orchestration only: no automatic external EPG download, or publishing,
  * until SCRUM-114 schema and SCRUM-117 ingestion integration are approved.
