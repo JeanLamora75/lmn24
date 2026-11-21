@@ -281,7 +281,8 @@ function ChannelCreateEditor({countries,locale,countryNames,onClose,onSaved}:{co
      if(!zone)throw new Error("Fuseau du pays indisponible : configurez d’abord ce pays.");
      const variant=await request<{variantId:string}>("catalog/variants","POST",{
       channelId:created.channelId,channelCountryId:association.id,
-      code:"main",name:name.trim(),timezone:zone,
+      code:"main-"+(countries.find(c=>c.countryId===countryId)?.isoCode2.toLowerCase()??"tv"),
+      name:name.trim(),timezone:zone,
      });
      if(n!==null||active||!review){
       await request("catalog/associations/"+association.id,"PATCH",{
