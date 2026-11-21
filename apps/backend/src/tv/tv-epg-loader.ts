@@ -47,7 +47,7 @@ async function assertOwner(lease:TvWriterLease){
  */
 export function createVerifiedDbEpgLoader(
  lease:TvWriterLease,runId:string,
- options:{transport:EpgTransport;attest:AttestedCoverage;now?:Date},
+ options:{transport:EpgTransport;attest:AttestedCoverage;now?:Date;discoveryOnly?:boolean},
 ):ValidatedEpgLoader{
  const db=lease.client;
  const now=options.now??new Date();
@@ -116,6 +116,13 @@ export function createVerifiedDbEpgLoader(
       }catch(error){
         await db.query("ROLLBACK").catch(()=>undefined);
         throw error;
+      }
+      // Administrative discovery is restricted to external IDs. Even if a source
+      // claims APPROVED rights or has verified mappings, never write programmes
+      // or schedule revisions from this mode.
+      if(options.discoveryOnly){
+        results.push({scopeId:row.scopeId,outcome:"SUCCESS",message:"DISCOVERY_ONLY"});
+        continue;
       }
       // Acquisition is allowed before republication rights approval;
       // importing to the public programme grid is NOT.
