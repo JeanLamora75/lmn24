@@ -2,7 +2,7 @@ import {randomUUID} from "node:crypto";
 import {ConflictException,Injectable,NotFoundException,ServiceUnavailableException} from "@nestjs/common";
 import {ConfigService} from "@nestjs/config";
 import {DatabaseService} from "../database/database.service";
-import {isTvLocale,retryLanguages,sanitizeTranslation,type DescriptionSnapshot,
+import {isTvLocale,retryLanguages,statusForLanguage,sanitizeTranslation,type DescriptionSnapshot,
  type AttemptSnapshot,type TvLocale} from "./tv-translation-policy";
 
 type Proposal={channelId:string;sourceLanguage:TvLocale;sourceVersion:string;
@@ -69,7 +69,6 @@ export class TvTranslationWorkflowService{
   await this.requireTables();
   const [descriptions,attempts]=await Promise.all([
    this.descriptions(channelId),this.attempts(channelId)]);
-  const {statusForLanguage}=await import("./tv-translation-policy");
   return {items:LOCALES.map(language=>({
    language,status:statusForLanguage(language,descriptions,attempts),
    description:descriptions.find(d=>d.languageCode===language)??null,
