@@ -48,6 +48,9 @@ export function TvWorldSearch({locale}:{locale:TvLocale}){
  const [errors,setErrors]=useState({channels:false,programmes:false});
  const [pending,setPending]=useState(0);
  const requestId=useRef(0);
+ useEffect(()=>{const q=new URLSearchParams(window.location.search).get("q")?.trim().slice(0,120)??"";
+  if(q){setInput(q);setQuery(q);}
+ },[]);
  const submit=(event:React.FormEvent)=>{
   event.preventDefault();
   const q=input.trim();
