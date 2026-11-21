@@ -20,6 +20,7 @@ type Channel={id:string;countryId:string;channelId:string;slug:string;name:strin
  isActive:boolean;needsReview:boolean;effectiveNumber:number|null;manualNumber:number|null;
  officialNumber:number|null;assignedNumber:number|null;defaultVariantId:string|null;version:string};
 type Source={id:string;name:string;sourceUrl:string;format:string;isActive:boolean;version:string;
+ geographicScope:"GLOBAL"|"COUNTRY";scopeCountryId:string|null;
  programmeRightsStatus:string;programmeRightsReference:string|null;
  synopsisRightsStatus:string;synopsisRightsReference:string|null;imageRightsStatus:string;
  imageRightsReference:string|null;logoRightsStatus:string;logoRightsReference:string|null;
@@ -382,9 +383,13 @@ function ChannelEditor({item,onClose,onSaved}:{item:Channel;onClose:()=>void;onS
 }
 const rights=["programme","synopsis","image","logo"] as const;
 type RightsName=typeof rights[number];
-function SourceEditor({onClose,onSaved}:{onClose:()=>void;onSaved:()=>void}){
+function SourceEditor({countries,onClose,onSaved}:{
+ countries:Country[];onClose:()=>void;onSaved:()=>void;
+}){
  const [name,setName]=useState("");const [url,setUrl]=useState("");
  const [format,setFormat]=useState("XMLTV");const [active,setActive]=useState(false);
+ const [geographicScope,setGeographicScope]=useState<"GLOBAL"|"COUNTRY">("GLOBAL");
+ const [scopeCountryId,setScopeCountryId]=useState("");
  const [rightsData,setRightsData]=useState<Record<RightsName,{status:string;reference:string}>>({
   programme:{status:"UNREVIEWED",reference:""},synopsis:{status:"UNREVIEWED",reference:""},
   image:{status:"UNREVIEWED",reference:""},logo:{status:"UNREVIEWED",reference:""},
@@ -397,7 +402,9 @@ function SourceEditor({onClose,onSaved}:{onClose:()=>void;onSaved:()=>void}){
     const rightsPayload=Object.fromEntries(rights.map(k=>[k,{
      status:rightsData[k].status,reference:rightsData[k].reference.trim()||null,
     }]));
-    await request("epg-sources","POST",{name,sourceUrl:url,format,isActive:active,rights:rightsPayload});
+    await request("epg-sources","POST",{name,sourceUrl:url,format,isActive:active,
+     geographicScope,scopeCountryId:geographicScope==="COUNTRY"?scopeCountryId:null,
+     rights:rightsPayload});
     onSaved();
    }catch(err){setError((err as Error).message);}finally{setBusy(false);}
   }}>
@@ -408,6 +415,26 @@ function SourceEditor({onClose,onSaved}:{onClose:()=>void;onSaved:()=>void}){
    </div>
    <label className="d-block mt-3">URL de collecte<input className="form-control" required type="url"
     value={url} onChange={e=>setUrl(e.target.value)}/></label>
+   <label className="d-block mt-3">Périmètre de la source
+    <select className="form-select" value={geographicScope}
+     onChange={e=>setGeographicScope(e.target.value as "GLOBAL"|"COUNTRY")}>
+     <option value="GLOBAL">Global — plusieurs pays</option>
+     <option value="COUNTRY">Un seul pays</option>
+    </select>
+   </label>
+   {geographicScope==="COUNTRY"&&<label className="d-block mt-3">Pays
+    <select className="form-select" required value={scopeCountryId}
+     onChange={e=>setScopeCountryId(e.target.value)}>
+     <option value="">Sélectionner le pays du flux</option>
+     {countries.map(c=><option key={c.countryId} value={c.countryId}>
+      {c.isoCode2}</option>)}
+    </select>
+   </label>}
+   <p className="small text-body-secondary">
+    {geographicScope==="GLOBAL"
+     ?"Le moteur utilise l’attribut country de chaque chaîne XMLTV ; sans country, la chaîne reste à classer."
+     :"Toutes les chaînes de cette source sont rattachées à ce pays et restent inactives jusqu’à validation."}
+   </p>
    <label className="form-check mt-3"><input type="checkbox" className="form-check-input" checked={active}
     onChange={e=>setActive(e.target.checked)}/><span className="form-check-label">Source active</span></label>
    <fieldset className="mt-3"><legend className="fs-6 fw-bold">Droits par type de contenu</legend>
@@ -423,7 +450,7 @@ function SourceEditor({onClose,onSaved}:{onClose:()=>void;onSaved:()=>void}){
    {error&&<p className="alert alert-danger" role="alert">{error}</p>}
    <div className="d-flex justify-content-end gap-2">
     <button className="btn btn-outline-secondary" type="button" onClick={onClose}>Annuler</button>
-    <button className="btn btn-primary" disabled={busy} type="submit">Créer</button>
+    <button className="btn btn-primary" disabled={busy||(geographicScope==="COUNTRY"&&!scopeCountryId)} type="submit">Créer</button>
    </div>
   </form>
  </Modal>;
@@ -969,7 +996,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     onClose={()=>{setSourceEditor(null);setReviewExternalId("");}} onSaved={saved}/>}
   {dialog==="priorities"&&<SourcePrioritiesEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
   {dialog==="channel"&&<ChannelCreateEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
-   {dialog==="source"&&<SourceEditor onClose={()=>setDialog(null)} onSaved={saved}/>}
+   {dialog==="source"&&<SourceEditor countries={countries} onClose={()=>setDialog(null)} onSaved={saved}/>}
   {dialog==="import"&&<ImportEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)}
    onSaved={id=>{saved();void openRun(id);setNotice("Import démarré : découverte des chaînes en cours. Le suivi s’actualise automatiquement.");}}/>}
  </main>;
