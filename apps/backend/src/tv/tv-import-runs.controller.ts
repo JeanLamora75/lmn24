@@ -8,8 +8,10 @@ import { z } from "zod";
 import { AuthService } from "../auth/auth.service";
 import { AUTH_FAILURE_MESSAGE, DEFAULT_SESSION_COOKIE_NAME } from "../auth/auth.constants";
 import { TvImportRunsService } from "./tv-import-runs.service";
+import { TvImportExecutionService } from "./tv-import-execution.service";
 
 const uuid=z.string().uuid();
+const executionRequest=z.object({mode:z.literal("DISCOVERY")}).strict();
 const importRequest=z.object({
  days:z.number().int().min(1).max(7),
  countryId:uuid.optional(),
@@ -22,7 +24,7 @@ type ReqLike={headers:Record<string,string|string[]|undefined>};
 export class TvImportRunsController {
  private readonly cookieName:string;
  constructor(private readonly auth:AuthService,private readonly runs:TvImportRunsService,
-             private readonly config:ConfigService){
+             private readonly config:ConfigService,private readonly execution:TvImportExecutionService){
   this.cookieName=config.get<string>("SESSION_COOKIE_NAME")?.trim()||DEFAULT_SESSION_COOKIE_NAME;
  }
  private async authorize(request:ReqLike):Promise<void>{
@@ -52,6 +54,21 @@ export class TvImportRunsController {
   const parsed=importRequest.safeParse(body);
   if(!parsed.success)throw new BadRequestException("Invalid TV import request");
   return this.runs.create({...parsed.data,trigger:"MANUAL"});
+ }
+ @Get("execution-status")
+ @Header("Cache-Control","no-store")
+ async executionStatus(@Req() request:ReqLike){
+  await this.authorize(request);
+  return this.execution.readiness();
+ }
+ @Post(":id/execute")
+ @Header("Cache-Control","no-store")
+ async execute(@Req() request:ReqLike,@Param("id") id:string,@Body() body:unknown){
+  await this.authorize(request);
+  const parsed=executionRequest.safeParse(body);
+  if(!uuid.safeParse(id).success||!parsed.success)
+   throw new BadRequestException("Invalid TV discovery execution request");
+  return this.execution.startDiscovery(id);
  }
  @Get(":id")
  @Header("Cache-Control","no-store")
