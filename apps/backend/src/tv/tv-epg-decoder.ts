@@ -1,10 +1,12 @@
 import { createHash } from "node:crypto";
 import { parseStringPromise } from "xml2js";
 import { z } from "zod";
-import type { EpgFormat } from "./tv-epg-source-policy";
+import { EPG_FETCH_LIMITS, type EpgFormat } from "./tv-epg-source-policy";
 
-const MAX_PROGRAMMES = 50_000;
-const MAX_CONTENT = 48 * 1024 * 1024;
+// Bounded by payload bytes and emission count; neither limit alone is sufficient.
+// A streaming decoder is still required before supporting larger feeds.
+const MAX_PROGRAMMES = 250_000;
+const MAX_CONTENT = EPG_FETCH_LIMITS.maxExpandedBytes;
 const text = (value:unknown,max=1000):string|null=>{
   if(typeof value==="string")return value.trim().slice(0,max)||null;
   if(Array.isArray(value))return text(value[0],max);
