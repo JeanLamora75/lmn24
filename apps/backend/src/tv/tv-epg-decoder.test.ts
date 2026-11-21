@@ -17,6 +17,19 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   expect(decoded.coverage).toEqual([]);
   expect(parseXmltvTime("20260329030000 +0200")).toBe("2026-03-29T01:00:00.000Z");
  });
+ it("preserves explicit XMLTV channel metadata without inventing any country",async()=>{
+  const xml='<tv>'
+   +'<channel id="fr-one"><display-name>France 1</display-name><country>FR</country></channel>'
+   +'<channel id="global"><display-name>International</display-name></channel>'
+   +'<programme channel="fr-one" start="20261121190000 +0100" stop="20261121200000 +0100"><title>News</title></programme>'
+   +'</tv>';
+  const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
+  expect(decoded.channels).toEqual([
+   {externalId:"fr-one",name:"France 1",countryIso2:"FR"},
+   {externalId:"global",name:"International",countryIso2:null},
+  ]);
+  expect(decoded.programmes).toHaveLength(1);
+ });
  it("decodes standard Teleonline XMLTV DOCTYPE without resolving external DTD",async()=>{
   const xml='<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE tv SYSTEM "xmltv.dtd">\n'
    +'<tv><programme channel="fr" start="20261121190000 +0100" stop="20261121200000 +0100">'
