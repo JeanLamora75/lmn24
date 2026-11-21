@@ -62,6 +62,23 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   expect(result.programmes[0]?.startsAt).toBe("2026-11-21T19:30:00.000Z");
   expect(result.coverage[0]?.verified).toBe(false);
  });
+ it("skips real EPGSHARE01 zero-duration programmes while preserving valid ones",async()=>{
+  const xml='<tv>'
+   +'<programme channel="France.2..fr" start="20261123201000 +0100" stop="20261123201000 +0100"><title>Disparition inquiétante</title></programme>'
+   +'<programme channel="M6.fr" start="20261121234000 +0100" stop="20261121234000 +0100"><title>NCIS : Los Angeles</title></programme>'
+   +'<programme channel="France.2..fr" start="20261121190000 +0100" stop="20261121200000 +0100"><title>Journal</title></programme>'
+   +'</tv>';
+  const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
+  expect(decoded.programmes).toHaveLength(1);
+  expect(decoded.programmes[0]?.originalTitle).toBe("Journal");
+  expect(decoded.skippedInvalidDuration).toBe(2);
+ });
+ it("continues to reject negative durations and invalid timezone offsets",async()=>{
+  const backwards='<tv><programme channel="fr" start="20261121200000 +0100" stop="20261121190000 +0100"><title>Programme</title></programme></tv>';
+  await expect(decodeEpgBuffer(Buffer.from(backwards),"XMLTV")).rejects.toThrow("Invalid EPG duration");
+  const badTime='<tv><programme channel="fr" start="20261121190000" stop="20261121200000 +0100"><title>Programme</title></programme></tv>';
+  await expect(decodeEpgBuffer(Buffer.from(badTime),"XMLTV")).rejects.toThrow("XMLTV timestamp must include timezone offset");
+ });
  it("accepts more than the former 50,000 programme ceiling in a bounded XMLTV feed",async()=>{
   const item='<programme channel="fr" start="20261121190000 +0100" stop="20261121200000 +0100"><title>Programme</title></programme>';
   const xml='<tv>'+item.repeat(50_001)+'</tv>';
