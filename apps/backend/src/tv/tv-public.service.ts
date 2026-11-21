@@ -257,4 +257,83 @@ export class TvPublicService {
       season:null,episode:null};
   }
   responseLanguages(){return [...TV_LANGUAGES];}
+
+  /** SCRUM-121: independent search sections. No data is fabricated from missing EPG. */
+  async worldSearch(args:{q:string;channelsPage:number;programmesPage:number;pageSize:number;now?:Date}){
+    await this.requireSchema();
+    const query=args.q.trim();
+    const digits=/^[0-9]+$/.test(query);
+    const numeric=digits?BigInt(query):null;
+    const exactNumber=numeric!==null&&numeric<=2147483647n?Number(numeric):null;
+    const pageSize=args.pageSize;
+    const from=args.now??new Date();
+    const to=new Date(from.getTime()+8*86400000);
+    const channels=async()=>{
+      if(digits&&exactNumber===null)return {status:"OK" as const,items:[],hasNext:false};
+      const rows=await this.db.prisma.$queryRaw<Array<{
+        id:string;countryIso2:string;number:number;name:string;logoUrl:string|null;
+      }>>`
+        SELECT cc.channel_id AS id,trim(c.iso_code2) AS "countryIso2",
+          COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)::int AS number,
+          ch.name,NULL::text AS "logoUrl"
+        FROM public.tv_channel_country cc
+        JOIN public.tv_channel ch ON ch.id=cc.channel_id
+        JOIN public.tv_country tc ON tc.country_id=cc.country_id
+        JOIN public.country c ON c.id=cc.country_id
+        WHERE cc.is_active AND NOT cc.needs_review AND tc.is_active AND c.is_active
+          AND COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) IS NOT NULL
+          AND (CASE WHEN ${digits}::boolean THEN
+            COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)=${exactNumber}
+            ELSE unaccent(lower(ch.name)) LIKE '%'||unaccent(lower(${query}))||'%' END)
+        ORDER BY c.iso_code2,number,ch.name,cc.channel_id
+        LIMIT ${pageSize+1} OFFSET ${(args.channelsPage-1)*pageSize}`;
+      return {status:"OK" as const,items:rows.slice(0,pageSize),hasNext:rows.length>pageSize};
+    };
+    const programmes=async()=>{
+      // An exclusively numeric search only matches national channel numbers.
+      // Text search never matches channel numbers as substrings.
+      if(digits&&exactNumber===null)return {status:"OK" as const,items:[],hasNext:false};
+      const rows=await this.db.prisma.$queryRaw<Array<{
+        id:string;variantId:string;countryIso2:string;channelId:string;
+        channelName:string;number:number;title:string;startsAt:Date;endsAt:Date;
+        timeZone:string;
+      }>>`
+        SELECT DISTINCT a.id,r.variant_id AS "variantId",trim(c.iso_code2) AS "countryIso2",
+          cc.channel_id AS "channelId",ch.name AS "channelName",
+          COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)::int AS number,
+          p.title,a.starts_at AS "startsAt",a.ends_at AS "endsAt",v.timezone AS "timeZone"
+        FROM public.tv_airing a
+        JOIN public.tv_schedule_revision r ON r.id=a.revision_id
+        JOIN public.tv_schedule_current cur ON cur.revision_id=r.id
+        JOIN public.tv_channel_variant v ON v.id=r.variant_id
+        JOIN public.tv_programme p ON p.id=a.programme_id
+        JOIN public.tv_source src ON src.id=a.source_id
+        JOIN public.tv_source_country sc ON sc.source_id=src.id AND sc.is_active
+        JOIN public.tv_variant_country vc ON vc.variant_id=r.variant_id
+        JOIN public.tv_channel_country cc ON cc.id=vc.channel_country_id AND cc.country_id=sc.country_id
+        JOIN public.tv_channel ch ON ch.id=cc.channel_id
+        JOIN public.tv_country tc ON tc.country_id=cc.country_id
+        JOIN public.country c ON c.id=tc.country_id
+        WHERE r.status='PUBLISHED' AND r.published_at IS NOT NULL
+          AND cc.is_active AND NOT cc.needs_review AND tc.is_active AND c.is_active
+          AND src.is_active AND src.programme_rights_status='APPROVED'
+          AND nullif(btrim(src.programme_rights_reference),'') IS NOT NULL
+          AND a.starts_at >= ${from}::timestamptz AND a.starts_at < ${to}::timestamptz
+          AND (CASE WHEN ${digits}::boolean THEN
+            COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)=${exactNumber}
+            ELSE unaccent(lower(ch.name)) LIKE '%'||unaccent(lower(${query}))||'%'
+              OR unaccent(lower(p.title)) LIKE '%'||unaccent(lower(${query}))||'%' END)
+        ORDER BY c.iso_code2,number,ch.name,a.starts_at,a.id
+        LIMIT ${pageSize+1} OFFSET ${(args.programmesPage-1)*pageSize}`;
+      return {status:"OK" as const,items:rows.slice(0,pageSize).map(row=>({
+        ...row,startsAt:new Date(row.startsAt).toISOString(),
+        endsAt:new Date(row.endsAt).toISOString(),
+      })),hasNext:rows.length>pageSize};
+    };
+    const [c,p]=await Promise.allSettled([channels(),programmes()]);
+    return {query,status:c.status==="fulfilled"&&p.status==="fulfilled"?"OK":"PARTIAL",
+      channels:c.status==="fulfilled"?c.value:{status:"ERROR",items:[],hasNext:false},
+      programmes:p.status==="fulfilled"?p.value:{status:"ERROR",items:[],hasNext:false},
+      pagination:{channelsPage:args.channelsPage,programmesPage:args.programmesPage,pageSize}};
+  }
 }
