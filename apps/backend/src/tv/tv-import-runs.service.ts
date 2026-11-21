@@ -230,7 +230,7 @@ export class TvImportRunsService {
         SELECT id,country_id AS "countryId",source_id AS "sourceId",status
         FROM public.tv_import_scope WHERE run_id=${id}::uuid FOR UPDATE
       `;
-      await tx.$queryRaw`SELECT pg_advisory_xact_lock(241024,87)`;
+      await tx.$queryRaw`SELECT 1::int AS locked FROM pg_advisory_xact_lock(241024,87)`;
       const failedIds=failedScopeIds(scopes);
       if(!failedIds.length)throw new ConflictException("No failed scopes to retry");
       const pending=await tx.$queryRaw<Array<{id:string}>>`
