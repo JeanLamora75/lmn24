@@ -284,7 +284,7 @@ export class TvPublicService {
           AND COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) IS NOT NULL
           AND (CASE WHEN ${digits}::boolean THEN
             COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)=${exactNumber}
-            ELSE unaccent(lower(ch.name)) LIKE '%'||unaccent(lower(${query}))||'%' END)
+            ELSE translate(lower(ch.name),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy') LIKE '%'||translate(lower(${query}),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy')||'%' END)
         ORDER BY c.iso_code2,number,ch.name,cc.channel_id
         LIMIT ${pageSize+1} OFFSET ${(args.channelsPage-1)*pageSize}`;
       return {status:"OK" as const,items:rows.slice(0,pageSize),hasNext:rows.length>pageSize};
@@ -321,9 +321,9 @@ export class TvPublicService {
           AND a.starts_at >= ${from}::timestamptz AND a.starts_at < ${to}::timestamptz
           AND (CASE WHEN ${digits}::boolean THEN
             COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)=${exactNumber}
-            ELSE unaccent(lower(ch.name)) LIKE '%'||unaccent(lower(${query}))||'%'
-              OR unaccent(lower(p.title)) LIKE '%'||unaccent(lower(${query}))||'%' END)
-        ORDER BY c.iso_code2,number,ch.name,a.starts_at,a.id
+            ELSE translate(lower(ch.name),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy') LIKE '%'||translate(lower(${query}),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy')||'%'
+              OR translate(lower(p.title),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy') LIKE '%'||translate(lower(${query}),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy')||'%' END)
+        ORDER BY "countryIso2",number,"channelName","startsAt",id
         LIMIT ${pageSize+1} OFFSET ${(args.programmesPage-1)*pageSize}`;
       return {status:"OK" as const,items:rows.slice(0,pageSize).map(row=>({
         ...row,startsAt:new Date(row.startsAt).toISOString(),
