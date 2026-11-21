@@ -27,7 +27,8 @@ type Source={id:string;name:string;sourceUrl:string;format:string;isActive:boole
 type ImportRun={id:string;trigger:string;requestedDays:number;status:string;createdAt:string;
  scopeCount:number;succeeded:number;failed:number};
 type ImportDetail=ImportRun&{scopes:{id:string;countryId:string;sourceId:string|null;
- status:string;attempts:number;errorMessage:string|null}[]};
+ status:string;attempts:number;errorMessage:string|null}[];
+ privateDrafts?:{draftDays:number;draftAirings:number;draftProgrammes:number}};
 type ImportEvent={id:string;occurredAt:string;eventType:string;level:string;message:string};
 const failureMessages:Record<string,string>={
  EPG_HTTP_404:"Téléchargement · HTTP 404 : fichier absent. Vérifier que la source pointe vers un fichier EPG actuel.",
@@ -794,7 +795,13 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    <div className="p-3">
     <h2 className="h5">Import {selectedRun}</h2>
     {detail?<><p>Statut : {detail.status}</p>
-
+     {detail.privateDrafts&&detail.privateDrafts.draftDays>0&&
+      <p className="alert alert-info">
+       Catalogue privé : {detail.privateDrafts.draftProgrammes.toLocaleString("fr-FR")} programmes,
+       {" "}{detail.privateDrafts.draftAirings.toLocaleString("fr-FR")} diffusions,
+       {" "}{detail.privateDrafts.draftDays.toLocaleString("fr-FR")} révisions de grille en préparation.
+       Aucune de ces révisions n’est publiée.
+      </p>}
      <ul>
      {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {sources.find(source=>source.id===s.sourceId)?.name??"Source EPG"} · {s.status}
        {s.errorMessage?" — "+importDiagnostic(s.errorMessage):""}</li>)}</ul>
