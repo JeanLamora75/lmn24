@@ -130,7 +130,12 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   };
   sax.ontext=appendText;
   sax.oncdata=appendText;
-  sax.ondoctype=()=>{throw new Error("XML declarations forbidden");};
+  // SAX does not fetch external DTDs. Only the standard XMLTV identifier
+  // is accepted; no entity definitions are allowed by download validation.
+  sax.ondoctype=(value)=>{
+    if(!/^\s*tv\s+SYSTEM\s+["']xmltv\.dtd["']\s*$/i.test(value))
+      throw new Error("EPG_XML_SECURITY_REJECTED");
+  };
   sax.onclosetag=(name)=>{
     if(programme && capture===name && depth===3){
       const value=captured.trim();
