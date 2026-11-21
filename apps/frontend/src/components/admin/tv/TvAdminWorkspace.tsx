@@ -622,6 +622,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     const requested=view==="overview"||view==="statistics"?
      ["catalog/countries","catalog/channels","epg-sources","import-runs?page=1&pageSize=100"]:
      view==="translations"?["catalog/channels"]:
+     view==="sources"?["epg-sources","catalog/countries","catalog/channels"]:
      [paths[view]??"catalog/countries","catalog/countries"];
     const unique=[...new Set(requested)];
     const responses=await Promise.all(unique.map(async name=>{
