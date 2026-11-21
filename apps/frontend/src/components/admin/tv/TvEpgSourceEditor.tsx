@@ -3,6 +3,7 @@ import {useEffect,useMemo,useState} from "react";
 import styles from "@/app/admin/(protected)/tv/tv-admin.module.css";
 export type TvEpgSource={
  id:string;name:string;sourceUrl:string;format:string;isActive:boolean;version:string;
+ geographicScope:"GLOBAL"|"COUNTRY";scopeCountryId:string|null;
  programmeRightsStatus:string;programmeRightsReference:string|null;
  synopsisRightsStatus:string;synopsisRightsReference:string|null;
  imageRightsStatus:string;imageRightsReference:string|null;
@@ -45,6 +46,8 @@ export function TvEpgSourceEditor({item,channels,countries,initialMappingSearch=
  const [url,setUrl]=useState(item.sourceUrl);
  const [format,setFormat]=useState(item.format);
  const [active,setActive]=useState(item.isActive);
+ const [geographicScope,setGeographicScope]=useState(item.geographicScope??"GLOBAL");
+ const [scopeCountryId,setScopeCountryId]=useState(item.scopeCountryId??"");
  const initial=Object.fromEntries(rightKeys.map(k=>[k,{
   status:item[(k+"RightsStatus") as keyof TvEpgSource]??"UNREVIEWED",
   reference:item[(k+"RightsReference") as keyof TvEpgSource]??"",
@@ -194,6 +197,27 @@ export function TvEpgSourceEditor({item,channels,countries,initialMappingSearch=
     </div>
     <label className="d-block mt-2">Adresse du flux<input className="form-control" type="url"
      value={url} onChange={e=>setUrl(e.target.value)}/></label>
+    <div className={styles.formGrid}>
+     <label>Périmètre du flux
+      <select className="form-select" value={geographicScope}
+       onChange={e=>setGeographicScope(e.target.value as "GLOBAL"|"COUNTRY")}>
+       <option value="GLOBAL">Global — plusieurs pays dans le flux</option>
+       <option value="COUNTRY">Un seul pays</option>
+      </select>
+     </label>
+     {geographicScope==="COUNTRY"&&<label>Pays du flux
+      <select className="form-select" value={scopeCountryId}
+       onChange={e=>setScopeCountryId(e.target.value)}>
+       <option value="">Sélectionner un pays</option>
+       {countries.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}
+      </select>
+     </label>}
+    </div>
+    <p className="small text-body-secondary">
+     {geographicScope==="GLOBAL"
+      ?"Chaque chaîne est rattachée au pays indiqué par son attribut XMLTV country. Sans cet attribut, elle reste à classer."
+      :"Toutes les chaînes découvertes dans ce flux sont rattachées au pays sélectionné, mais restent inactives et à vérifier."}
+    </p>
     <label className="form-check mt-2"><input className="form-check-input" type="checkbox"
      checked={active} onChange={e=>setActive(e.target.checked)}/>
      <span className="form-check-label">Source active</span></label>
@@ -218,8 +242,10 @@ export function TvEpgSourceEditor({item,channels,countries,initialMappingSearch=
       {diagnostic.ok&&Boolean(diagnostic.skippedInvalidDuration)&&<div>Émissions à durée nulle ignorées : {diagnostic.skippedInvalidDuration?.toLocaleString("fr-FR")}</div>}
      </div>}
     </div>
-    <button type="button" className="btn btn-primary mt-3" disabled={busy||!name.trim()||!url.trim()}
-     onClick={()=>void save("configuration",{name,sourceUrl:url,format,isActive:active,expectedVersion:item.version},
+    <button type="button" className="btn btn-primary mt-3" disabled={busy||!name.trim()||!url.trim()||(geographicScope==="COUNTRY"&&!scopeCountryId)}
+     onClick={()=>void save("configuration",{name,sourceUrl:url,format,isActive:active,
+       geographicScope,scopeCountryId:geographicScope==="COUNTRY"?scopeCountryId:null,
+       expectedVersion:item.version},
       "Configuration enregistrée.")}>Enregistrer la configuration</button>
    </fieldset>
    <fieldset>
