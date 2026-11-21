@@ -2,6 +2,7 @@ import { Client } from "pg";
 import { acquireTvWriterLease,publishTvRevision, type ValidatedAirings, type TvWriterLease } from "./tv-import-publisher";
 import { deriveRunStatus,mergeAirings,type AiringCandidate,type Coverage } from "./tv-import-policy";
 import { recoverAbandonedTvRuns } from "./tv-import-recovery";
+import {EPG_FAILURE_CODES} from "./tv-epg-failure";
 
 /** Input comes ONLY from a vetted decoder + verified channel mapping.
  * The downloader/decoders are NOT wired to the worker until approved.
@@ -83,17 +84,19 @@ export async function processQueuedTvRun(
        }
        for(const r of loaded.scopeResults){
          const status=r.outcome;
+         const diagnostic=status==="ERROR"&&r.message&&EPG_FAILURE_CODES.has(r.message)
+          ?r.message:"EPG_SOURCE_UNAVAILABLE";
          statuses.set(r.scopeId,status);
          await db.query(
            `UPDATE public.tv_import_scope
             SET status=$1,attempts=attempts+1,error_message=$2
             WHERE id=$3::uuid AND run_id=$4::uuid`,
-           [status,status==="SUCCESS"?null:"EPG scope failed, source retained for retry",r.scopeId,runId]);
+           [status,status==="SUCCESS"?null:diagnostic,r.scopeId,runId]);
          const discoveryOnly=status==="SUCCESS"&&r.message==="DISCOVERY_ONLY";
          await event(db,runId,r.scopeId,status==="SUCCESS"?"INFO":"WARN",
            discoveryOnly?"SCOPE_SCANNED":status==="SUCCESS"?"SCOPE_SUCCESS":"SCOPE_FAILED",
            discoveryOnly?"Source scanned; unknown mappings await review, no programmes published":
-           status==="SUCCESS"?"Imported verified scope":"Scope failed; previous data preserved");
+           status==="SUCCESS"?"Imported verified scope":diagnostic);
        }
      }catch(e){
        const reason=safeMessage(e);
