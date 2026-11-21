@@ -24,8 +24,15 @@ function setup(status:string|null){
  return {service,statements,raw,execute,transaction};
 }
 describe("Hide completed TV imports from administration",()=>{
- it.each(["QUEUED","SUCCESS","PARTIAL","ERROR","INTERRUPTED"])(
-  "archives %s using an audit tombstone without removing TV data",async(status)=>{
+ it("physically removes QUEUED imports so no worker can execute them",async()=>{
+  const s=setup("QUEUED");
+  await expect(s.service.deleteImport(id)).resolves.toEqual({id,deleted:true});
+  expect(s.execute).toHaveBeenCalledOnce();
+  const sql=s.statements.find(statement=>statement.includes("DELETE FROM public.tv_import_run"));
+  expect(sql).toContain("status='QUEUED'");
+ });
+ it.each(["SUCCESS","PARTIAL","ERROR","INTERRUPTED"])(
+  "removes %s from administration through an audit tombstone",async(status)=>{
    const s=setup(status);
    await expect(s.service.deleteImport(id)).resolves.toEqual({id,deleted:true});
    expect(s.execute).toHaveBeenCalledOnce();
