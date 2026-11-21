@@ -97,9 +97,9 @@ export function createVerifiedDbEpgLoader(
   const matched=new Set<string>();
   for(const row of rows.rows){
     matched.add(row.scopeId);
+    let stage:"DOWNLOAD"|"MAPPING"="DOWNLOAD";
     try{
       const staged=new Map<string,EpgDayBatch>();
-      let stage:"DOWNLOAD"|"MAPPING"="DOWNLOAD";
       if(signal.aborted)throw new TvImportLeaseLostError();
       const decoded=await acquire(row.sourceId,row.sourceUrl,row.format);
       if(!decoded.programmes.length)throw new Error("No EPG emissions");
