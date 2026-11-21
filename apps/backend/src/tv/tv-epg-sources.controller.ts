@@ -88,6 +88,20 @@ export class TvEpgSourcesController {
    return this.service.testConnection(id);
  }
 
+ @Post("discoveries/import")
+ @Header("Cache-Control","no-store")
+ async importDiscoveries(@Req() request:ReqLike,@Body() body:unknown){
+   await this.assertAdmin(request);
+   const parsed=z.object({
+     countryId:uuid,
+     mappingIds:z.array(uuid).min(1).max(50),
+   }).strict().safeParse(body);
+   if(!parsed.success||new Set(parsed.data.mappingIds).size!==parsed.data.mappingIds.length)
+     throw new BadRequestException("Invalid discovered channel selection");
+   return this.service.importDiscoveredChannels(
+     parsed.data.countryId,parsed.data.mappingIds);
+ }
+
  @Get("discoveries")
  @Header("Cache-Control","no-store")
  async listDiscoveries(@Req() request:ReqLike,
