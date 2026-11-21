@@ -108,7 +108,7 @@ export class TvImportRunsService {
    * clicks "Lancer un import" again. Never duplicate an existing QUEUED run.
    * An already-started run is not reusable.
    */
-  async findQueuedManual(input:{days:number;countryId?:string|undefined;mode?:"DISCOVERY"|"STAGING"}):
+  async findQueuedManual(input:{days:number;countryId?:string|undefined;mode?:"DISCOVERY"|"STAGING"|undefined}):
    Promise<{id:string}|null>{
     await this.requireSchema();
     assertImportDays(input.days);
