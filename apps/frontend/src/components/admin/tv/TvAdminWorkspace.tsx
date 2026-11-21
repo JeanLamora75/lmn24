@@ -537,7 +537,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     </div>
    </AdminDataPanel>
   </>}
-  {view==="sources"&&<p className="text-body-secondary">L'activation d'une source EPG s'applique à tout son flux, sans rattachement obligatoire à un pays. Les pays et chaînes inconnus restent à vérifier avant publication.</p>}
+  {view==="sources"&&<p className="text-body-secondary">L&apos;activation d&apos;une source EPG s&apos;applique à tout son flux, sans rattachement obligatoire à un pays. Les pays et chaînes inconnus restent à vérifier avant publication.</p>}
    {(view==="countries"||view==="channels"||view==="sources"||view==="imports")&&!loading&&!error&&
    <AdminDataPanel label={"Liste "+LABELS[view]}>
     <div className="table-responsive"><table className="table table-hover align-middle mb-0">
