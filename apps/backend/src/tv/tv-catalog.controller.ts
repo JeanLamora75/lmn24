@@ -108,10 +108,12 @@ export class TvCatalogController {
 
   @Get("channels")
   @Header("Cache-Control", "no-store")
-  async listChannels(@Req() request: RequestLike, @Query("countryId") countryId?: string) {
+  async listChannels(@Req() request: RequestLike, @Query("countryId") countryId?: string,
+    @Query("search") search?: string) {
     await this.assertAdmin(request);
     if (countryId && !uuid.safeParse(countryId).success) throw new BadRequestException("Invalid country");
-    return { items: await this.catalog.listChannels(countryId) };
+    if(search && search.length>120)throw new BadRequestException("Search query too long");
+    return { items: await this.catalog.listChannels(countryId,search??"") };
   }
 
   @Get("channels/associations/:id")
