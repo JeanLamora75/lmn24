@@ -67,7 +67,7 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
    <fieldset>
     <legend className="h5">Droits de republication</legend>
     <p className="small text-body-secondary">Chaque famille de contenu exige sa propre preuve avant approbation.
-     L'enregistrement des droits est indépendant de celui de la configuration.</p>
+     L&apos;enregistrement des droits est indépendant de celui de la configuration.</p>
     {rightKeys.map(k=><div className="mb-3" key={k}>
      <label className="form-label" htmlFor={"right-"+k}>{readable[k]}</label>
      <div className={styles.formGrid}>
