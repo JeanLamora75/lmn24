@@ -45,7 +45,7 @@ export function TvTranslationPanel({channels}:{channels:Channel[]}){
  const chosenProvider=providers.find(p=>p.isSelected);
  const selectedName=channels.find(c=>c.channelId===channel)?.name??"";
  function invalidatePreview(){
-  setJob(null);setPreview(null);setAccepted([]);setPreviewError("");
+  setJob(null);setPreview(null);setAccepted([]);setPreviewError("");setPreviewBusy(false);
  }
  useEffect(()=>{
   const ctrl=new AbortController();
