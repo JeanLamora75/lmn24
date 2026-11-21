@@ -27,7 +27,7 @@ export class TvCatalogService {
     await this.requireTvTables();
     return this.database.prisma.$queryRaw`
       SELECT tc.country_id AS "countryId", c.iso_code2 AS "isoCode2",
-             tc.is_active AS "isActive", tc.reference_timezone AS "referenceTimezone",
+             tc.is_active AS "isActive", tc.reference_timezone AS "referenceTimezone", tc.updated_at::text AS version,
              count(cc.id)::int AS "channelCount",
              count(cc.id) FILTER (WHERE cc.is_active AND NOT cc.needs_review)::int AS "approvedChannelCount"
       FROM public.tv_country tc
@@ -38,7 +38,7 @@ export class TvCatalogService {
     `;
   }
 
-  async upsertCountry(countryId: string, referenceTimezone: string, isActive: boolean) {
+  async upsertCountry(countryId: string, referenceTimezone: string, isActive: boolean, expectedVersion?:string) {
     await this.requireTvTables();
     const zone = assertIanaZone(referenceTimezone);
     const existingCountry = await this.database.prisma.country.findUnique({
@@ -52,9 +52,11 @@ export class TvCatalogService {
         is_active=EXCLUDED.is_active,
         reference_timezone=EXCLUDED.reference_timezone,
         updated_at=now()
+      WHERE (${expectedVersion??null}::text IS NULL OR public.tv_country.updated_at::text=${expectedVersion??null})
       RETURNING country_id AS "countryId", is_active AS "isActive",
                 reference_timezone AS "referenceTimezone"
     `;
+    if(!Array.isArray(rows)||rows.length===0)throw new ConflictException("TV_CONCURRENT_EDIT");
     return rows;
   }
 
@@ -67,7 +69,7 @@ export class TvCatalogService {
              cc.official_number AS "officialNumber", cc.manual_number AS "manualNumber",
              cc.assigned_number AS "assignedNumber",
              COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) AS "effectiveNumber",
-             cc.default_variant_id AS "defaultVariantId"
+             cc.default_variant_id AS "defaultVariantId", cc.updated_at::text AS version
       FROM public.tv_channel_country cc JOIN public.tv_channel c ON c.id=cc.channel_id
       WHERE (${countryId ?? null}::uuid IS NULL OR cc.country_id=${countryId ?? null}::uuid)
       ORDER BY cc.country_id, COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) NULLS LAST,
@@ -114,6 +116,7 @@ export class TvCatalogService {
     isActive: boolean; needsReview: boolean;
     manualNumber: number | null; officialNumber: number | null;
     assignedNumber: number | null; defaultVariantId: string | null;
+    expectedVersion?:string;
   }) {
     await this.requireTvTables();
     // Unique index and composite default-variant FK are the final arbiter under concurrency.
@@ -124,10 +127,10 @@ export class TvCatalogService {
           manual_number=${patch.manualNumber},official_number=${patch.officialNumber},
           assigned_number=${patch.assignedNumber},default_variant_id=${patch.defaultVariantId}::uuid,
           updated_at=now()
-        WHERE id=${id}::uuid
+        WHERE id=${id}::uuid AND (${patch.expectedVersion??null}::text IS NULL OR updated_at::text=${patch.expectedVersion??null})
         RETURNING id
       `;
-      if (!rows.length) throw new NotFoundException("TV channel-country not found");
+      if (!rows.length) throw new ConflictException("TV_CONCURRENT_EDIT");
       return rows[0];
     } catch (err) {
       const code = typeof err === "object" && err !== null && "code" in err
