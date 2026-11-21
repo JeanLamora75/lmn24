@@ -704,11 +704,12 @@ function EpgDiscoveryInbox({countries,onImported}:{
   </div>
  </AdminDataPanel>;
 }
-function ImportEditor({countries,locale,countryNames,onClose,onSaved}:{countries:Country[];locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:(id:string)=>void}){
+function ImportEditor({countries,sources,locale,countryNames,onClose,onSaved}:{countries:Country[];sources:Source[];locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:(id:string)=>void}){
  const [country,setCountry]=useState("");const [days,setDays]=useState(7);
  const [mode,setMode]=useState<"DISCOVERY"|"STAGING">("DISCOVERY");
  const [busy,setBusy]=useState(false);const [error,setError]=useState("");
  const eligible=country?countries.filter(c=>c.countryId===country):countries.filter(c=>c.isActive);
+ const perCountry=eligible.map(c=>({country:c,sources:sources.filter(s=>s.isActive&&(s.geographicScope==="GLOBAL"||s.scopeCountryId===c.countryId))}));
  return <Modal title="Lancer un import EPG manuel" onClose={onClose}>
   <form onSubmit={async e=>{e.preventDefault();if(busy||eligible.length===0)return;
    setBusy(true);setError("");
@@ -735,12 +736,16 @@ function ImportEditor({countries,locale,countryNames,onClose,onSaved}:{countries
     <option value="DISCOVERY">Découvrir les identifiants des chaînes</option>
     <option value="STAGING">Importer les programmes dans le catalogue privé</option>
    </select>
-   <p className="text-body-secondary">{eligible.length} pays concernés.
+   <p className="text-body-secondary">{eligible.length} pays concernés, {new Set(perCountry.flatMap(x=>x.sources.map(s=>s.id))).size} sources distinctes potentiellement éligibles.
     {mode==="DISCOVERY"
      ?" Les identifiants des chaînes sont découverts et attendent une vérification ; aucun programme n’est enregistré."
      :" Seules les émissions de chaînes déjà associées et vérifiées, issues de sources autorisées avec une référence de droits, sont enregistrées dans le catalogue privé. Aucune grille n’est publiée."}
     {" "}Les sources actives sont prises en compte selon leur priorité par pays.</p>
-   {eligible.length===0&&<p className="alert alert-warning">Aucun pays éligible.</p>}
+   {eligible.length===0&&<p className="alert alert-warning">Aucun pays éligible : activez les pays souhaités dans Guide TV — Pays ou sélectionnez un pays précis.</p>}
+   {eligible.length>0&&<details className="mb-3"><summary>Voir les sources prévues par pays ({perCountry.reduce((n,x)=>n+x.sources.length,0)} périmètres potentiels)</summary>
+    <ul className="mt-2">{perCountry.map(x=><li key={x.country.countryId}>{region(x.country.isoCode2,locale,countryNames)} : {x.sources.length} source(s) — {x.sources.map(s=>s.name).join(", ")||"aucune"}</li>)}</ul>
+    <small className="text-body-secondary">Prévision hors éventuelles désactivations spécifiques par pays ; le suivi après lancement fait foi.</small>
+   </details>}
    {error&&<p role="alert" className="alert alert-danger">{error}</p>}
    <div className="d-flex gap-2 justify-content-end">
     <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Annuler</button>
@@ -802,6 +807,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
        ?["epg-sources","catalog/countries",
          ...(view==="associations"?[]:[view==="channels"&&country
            ?"catalog/channels?countryId="+country:"catalog/channels"])] :
+     view==="imports"?["import-runs?page=1&pageSize=100","catalog/countries","epg-sources"]:
      [paths[view]??"catalog/countries","catalog/countries"];
     const unique=[...new Set(requested)];
     const responses=await Promise.all(unique.map(async name=>{
@@ -1011,7 +1017,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
        Aucune de ces révisions n’est publiée.
       </p>}
      <ul>
-     {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {sources.find(source=>source.id===s.sourceId)?.name??"Source EPG"} · {s.status}
+     {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {sources.find(source=>source.id===s.sourceId)?.name??("Source "+(s.sourceId??"inconnue"))} · {s.status}
        {s.errorMessage?" — "+importDiagnostic(s.errorMessage):""}</li>)}</ul>
      {["PARTIAL","ERROR","INTERRUPTED"].includes(detail.status)&&detail.scopes.some(s=>["ERROR","INTERRUPTED"].includes(s.status))&&
       <button type="button" className="btn btn-outline-primary" onClick={async()=>{
@@ -1036,7 +1042,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   {dialog==="priorities"&&<SourcePrioritiesEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
   {dialog==="channel"&&<ChannelCreateEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
    {dialog==="source"&&<SourceEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
-  {dialog==="import"&&<ImportEditor countries={sortedCountries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)}
-   onSaved={id=>{saved();void openRun(id);setNotice("Import démarré : découverte des chaînes en cours. Le suivi s’actualise automatiquement.");}}/>}
+  {dialog==="import"&&<ImportEditor countries={sortedCountries} sources={sources} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)}
+   onSaved={id=>{saved();void openRun(id);setNotice("Import lancé. Le suivi affiche les sources effectivement traitées et s’actualise automatiquement.");}}/>}
  </main>;
 }
