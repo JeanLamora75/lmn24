@@ -106,12 +106,13 @@ export async function downloadEpgSource(rawUrl:string,format:EpgFormat):Promise<
   if(format==="XMLTV"||format==="XMLTV_GZIP"){
     const prefix=expanded.subarray(0,Math.min(expanded.length,2048)).toString("utf8");
     if(/<!\s*(DOCTYPE|ENTITY)\b/i.test(expanded.toString("utf8")))
-      throw new Error("External XML entities and document types are prohibited");
+      throw new Error("EPG_XML_SECURITY_REJECTED");
     if(!prefix.trimStart().startsWith("<?xml")&&!prefix.trimStart().startsWith("<tv"))
       throw new Error("Invalid XMLTV document");
   }else{
     // Validates strict JSON before ingestion, without executing any embedded data.
-    JSON.parse(expanded.toString("utf8"));
+    try{JSON.parse(expanded.toString("utf8"));}
+    catch{throw new Error("EPG_JSON_INVALID");}
   }
   return expanded;
 }
