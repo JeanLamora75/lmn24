@@ -133,7 +133,8 @@ export function createVerifiedDbEpgLoader(
       // Acquisition is allowed before republication rights approval;
       // importing to the public programme grid is NOT.
       if(row.programmeRightsStatus!=="APPROVED"||!row.programmeRightsReference?.trim()){
-        results.push({scopeId:row.scopeId,outcome:"SUCCESS",message:"DISCOVERY_ONLY"});continue;
+        results.push({scopeId:row.scopeId,outcome:"SUCCESS",
+          message:options.stagingOnly?"RIGHTS_REQUIRED":"DISCOVERY_ONLY"});continue;
       }
       let mapped=0;
       const mappedChannels=new Map<string,Mapping|null>();
@@ -213,7 +214,8 @@ export function createVerifiedDbEpgLoader(
       }
       if(!mapped){
         // No verified mapping and licensed emission inside the requested window.
-        results.push({scopeId:row.scopeId,outcome:"SUCCESS",message:"DISCOVERY_ONLY"});continue;
+        results.push({scopeId:row.scopeId,outcome:"SUCCESS",
+          message:options.stagingOnly?"MAPPINGS_REQUIRED":"DISCOVERY_ONLY"});continue;
       }
       if(options.stagingOnly){
         // Programmes are private catalogue records. Never create, stage, or
