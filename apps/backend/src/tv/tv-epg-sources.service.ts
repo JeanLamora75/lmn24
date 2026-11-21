@@ -61,8 +61,14 @@ export class TvEpgSourcesService {
           programmes:null,channels:null,elapsedMs:Date.now()-started};
       }
     }catch(error){
-      return {ok:false,stage:"DOWNLOAD" as const,
-        code:classifyEpgFailure(error,"DOWNLOAD"),bytes:null,
+      const code=classifyEpgFailure(error,"DOWNLOAD");
+      // The transport also performs decompression and guarded content
+      // validation: report the actual phase, not always "DOWNLOAD".
+      const stage=code==="EPG_GZIP_INVALID"||code==="EPG_GZIP_PROCESS_FAILED"
+        ||code==="EPG_SIZE_EXPANDED"?"DECOMPRESS"
+        :code==="EPG_XML_SECURITY_REJECTED"||code==="EPG_FORMAT_MISMATCH"
+          ||code==="EPG_JSON_INVALID"?"VALIDATE":"DOWNLOAD";
+      return {ok:false,stage,code,bytes:null,
         programmes:null,channels:null,elapsedMs:Date.now()-started};
     }
   }
