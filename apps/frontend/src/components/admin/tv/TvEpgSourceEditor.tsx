@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useMemo,useState} from "react";
 import styles from "@/app/admin/(protected)/tv/tv-admin.module.css";
+import {TvSortableHeader,sortTvRows,nextTvSort,type TvSortState} from "./TvSortableHeader";
 export type TvEpgSource={
  id:string;name:string;sourceUrl:string;format:string;isActive:boolean;version:string;
  geographicScope:"GLOBAL"|"COUNTRY";scopeCountryId:string|null;
@@ -59,6 +60,8 @@ export function TvEpgSourceEditor({item,channels,countries,initialMappingSearch=
  const [mappingSearch,setMappingSearch]=useState(initialMappingSearch);
  const [mappingStatus,setMappingStatus]=useState("PENDING_REVIEW");
  const [mappingPage,setMappingPage]=useState(1);
+ const [mappingSort,setMappingSort]=useState<TvSortState>(null);
+ const toggleMappingSort=(key:string)=>{setMappingSort(s=>nextTvSort(s,key));setMappingPage(1);};
  const [mappingBusy,setMappingBusy]=useState("");
  const [selection,setSelection]=useState<Record<string,string>>({});
  const [availableChannels,setAvailableChannels]=useState<MappingChannel[]>(channels);
@@ -84,7 +87,12 @@ export function TvEpgSourceEditor({item,channels,countries,initialMappingSearch=
   &&(!mappingSearch||[m.externalId,m.channelName??""].join(" ")
    .toLocaleLowerCase().includes(mappingSearch.toLocaleLowerCase()))),
   [mappings,mappingStatus,mappingSearch]);
- const mappingPages=Math.max(1,Math.ceil(filteredMappings.length/15));
+ const orderedMappings=useMemo(()=>sortTvRows(filteredMappings,mappingSort,(m,key)=>{
+  if(key==="external")return m.externalId;
+  if(key==="channel")return availableChannels.find(ch=>ch.id===(selection[m.id]??m.channelId))?.name??m.channelName;
+  return null;
+ }),[filteredMappings,mappingSort,availableChannels,selection]);
+ const mappingPages=Math.max(1,Math.ceil(orderedMappings.length/15));
  async function reviewMapping(mapping:MappingRow,status:"VERIFIED"|"REJECTED"){
   const channelId=selection[mapping.id]??mapping.channelId??"";
   if(status==="VERIFIED"&&!channelId){
@@ -324,8 +332,11 @@ export function TvEpgSourceEditor({item,channels,countries,initialMappingSearch=
      </p>}
      <div className="table-responsive">
       <table className="table align-middle">
-       <thead><tr><th>ID externe</th><th>Chaîne LMN24</th><th>Action</th></tr></thead>
-       <tbody>{filteredMappings.slice((mappingPage-1)*15,mappingPage*15)
+       <thead><tr>
+        <TvSortableHeader label="ID externe" sortKey="external" sort={mappingSort} onSort={toggleMappingSort}/>
+        <TvSortableHeader label="Chaîne LMN24" sortKey="channel" sort={mappingSort} onSort={toggleMappingSort}/>
+        <th>Action</th></tr></thead>
+       <tbody>{orderedMappings.slice((mappingPage-1)*15,mappingPage*15)
         .map(m=><tr key={m.id}>
          <td><code>{m.externalId}</code><div className="small text-body-secondary">{m.status}</div></td>
          <td><select className="form-select form-select-sm"
