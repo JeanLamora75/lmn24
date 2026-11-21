@@ -89,8 +89,10 @@ export async function processQueuedTvRun(
             SET status=$1,attempts=attempts+1,error_message=$2
             WHERE id=$3::uuid AND run_id=$4::uuid`,
            [status,status==="SUCCESS"?null:"EPG scope failed, source retained for retry",r.scopeId,runId]);
+         const discoveryOnly=status==="SUCCESS"&&r.message==="DISCOVERY_ONLY";
          await event(db,runId,r.scopeId,status==="SUCCESS"?"INFO":"WARN",
-           status==="SUCCESS"?"SCOPE_SUCCESS":"SCOPE_FAILED",
+           discoveryOnly?"SCOPE_SCANNED":status==="SUCCESS"?"SCOPE_SUCCESS":"SCOPE_FAILED",
+           discoveryOnly?"Source scanned; unknown mappings await review, no programmes published":
            status==="SUCCESS"?"Imported verified scope":"Scope failed; previous data preserved");
        }
      }catch(e){
