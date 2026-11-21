@@ -15,7 +15,7 @@ export async function GET(request:NextRequest,{params}:Context){
     ||x==="."||x===".."||x.includes("/"))){
    return new NextResponse("Not Found",{status:404,headers:CLOSED});
  }
- const allowed=(path.length===1&&["countries","schedule"].includes(path[0]!))
+ const allowed=(path.length===1&&["countries","schedule","search"].includes(path[0]!))
   ||(path.length===2&&path[0]==="channels")
   ||(path.length===3&&path[0]==="channels"&&path[2]==="airings")
   ||(path.length===2&&path[0]==="airings");
