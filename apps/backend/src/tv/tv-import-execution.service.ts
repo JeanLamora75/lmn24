@@ -31,12 +31,21 @@ export class TvImportExecutionService {
   if(!state.ready)throw new ServiceUnavailableException(
    "TV_DISCOVERY_EXECUTION_DISABLED: operational approvals missing");
   if(this.starting.has(runId))throw new ConflictException("TV_IMPORT_ALREADY_STARTING");
-  const current=await this.runs.getRun(runId);
-  if(current.status!=="QUEUED")throw new ConflictException("TV_IMPORT_NOT_QUEUED");
-  const connectionString=this.config.get<string>("DATABASE_URL");
-  if(!connectionString)throw new ServiceUnavailableException("TV_DATABASE_CONFIGURATION_MISSING");
-  const env=Object.fromEntries(REQUIRED_FLAGS.map(key=>[key,this.config.get<string>(key)]));
+  // Reserve the run before the first await: concurrent requests in this process
+  // must not both pass the status check. The DB writer lease protects replicas.
   this.starting.add(runId);
+  let connectionString:string;
+  try{
+   const current=await this.runs.getRun(runId);
+   if(current.status!=="QUEUED")throw new ConflictException("TV_IMPORT_NOT_QUEUED");
+   const configured=this.config.get<string>("DATABASE_URL");
+   if(!configured)throw new ServiceUnavailableException("TV_DATABASE_CONFIGURATION_MISSING");
+   connectionString=configured;
+  }catch(error){
+   this.starting.delete(runId);
+   throw error;
+  }
+  const env=Object.fromEntries(REQUIRED_FLAGS.map(key=>[key,this.config.get<string>(key)]));
   // The worker owns the database lease. Errors do not disappear into the HTTP
   // response; its transactional run status and event history remain authoritative.
   // The lease/recovery protocol handles interrupted RUNNING work.
