@@ -109,7 +109,8 @@ export function createVerifiedDbEpgLoader(
       if(!decoded.programmes.length)throw new Error("No EPG emissions");
       // The feed is scanned as a whole, independent of any country assignment.
       // Unknown external IDs remain pending manual mapping, never guessed from names.
-      const externalIds=[...new Set(decoded.programmes.map(p=>p.externalChannelId))];
+      const externalIds=[...new Set([...decoded.programmes.map(p=>p.externalChannelId),
+        ...(decoded.channels??[]).map(c=>c.externalId)])];
       if(signal.aborted)throw new TvImportLeaseLostError();
       stage="MAPPING";
       await db.query("BEGIN");
