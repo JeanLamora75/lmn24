@@ -3,6 +3,8 @@ import Link from "next/link";
 import {useCallback,useEffect,useRef,useState} from "react";
 import type {TvLocale} from "./tv-guide-model";
 import styles from "./tv-world-search.module.css";
+import {useTvCountryNames} from "@/lib/tv-country-name-hook";
+import {tvCountryName} from "@/lib/tv-country-names";
 
 type Channel={id:string;countryIso2:string;number:number;name:string;logoUrl:string|null};
 type Programme={id:string;variantId:string;countryIso2:string;channelId:string;channelName:string;
@@ -39,6 +41,7 @@ function validResult(raw:unknown):raw is Response{
 }
 export function TvWorldSearch({locale,initialQuery=""}:{locale:TvLocale;initialQuery?:string}){
  const t=locale==="fr"?messages.fr:messages.en;
+ const countryNames=useTvCountryNames(locale);
  const [input,setInput]=useState(initialQuery);
  const [query,setQuery]=useState(initialQuery);
  const [data,setData]=useState<Response|null>(null);
@@ -106,7 +109,7 @@ export function TvWorldSearch({locale,initialQuery=""}:{locale:TvLocale;initialQ
   setRequestedSection(part);
   setLoading(part);setPending(v=>v+1);
  },[]);
- const countryName=(iso:string)=>new Intl.DisplayNames([locale],{type:"region"}).of(iso)??iso;
+ const countryName=(iso:string)=>tvCountryName(iso,locale,countryNames);
  const dateLabel=(iso:string,zone:string)=>new Intl.DateTimeFormat(locale,{
   timeZone:zone,year:"numeric",month:"short",day:"numeric",
   hour:"2-digit",minute:"2-digit"}).format(new Date(iso));
