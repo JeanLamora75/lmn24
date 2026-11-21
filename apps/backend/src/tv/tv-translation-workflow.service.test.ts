@@ -66,7 +66,7 @@ describe("SCRUM-123 translation provider safety and zero-loss preview",()=>{
   expect(result.status).toBe("PARTIAL");
   expect(result.failed).toEqual(["es"]);
   expect(result.unsupported).toEqual(["nl"]);
-  expect(result.translated.en).toBe("Texte en");
+  expect(result.translated).toMatchObject({en:"Texte en"});
   expect(result.previewId).toEqual(expect.any(String));
   expect(executes).toHaveBeenCalledTimes(2);
  });
