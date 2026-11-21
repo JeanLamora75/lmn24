@@ -24,7 +24,8 @@ function respond(status:number,body:string,headers:Record<string,string>={}){
 describe("Safe pinned IPv4 EPG download",()=>{
  beforeEach(()=>vi.clearAllMocks());
  it("downloads XML over the vetted IP with correct TLS hostname, without custom DNS lookup",async()=>{
-  fake.lookup.mockResolvedValueOnce([{address:"1.1.1.1",family:4}]);
+  fake.lookup.mockResolvedValueOnce([{address:"1.1.1.1",family:4},
+   {address:"2606:4700:4700::1111",family:6}]);
   respond(200,'<?xml version="1.0"?><tv></tv>');
   const result=await downloadEpgSource("https://example.org/guide.xml","XMLTV");
   expect(result.toString("utf8")).toContain("<tv>");
