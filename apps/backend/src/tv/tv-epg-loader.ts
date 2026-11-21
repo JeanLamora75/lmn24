@@ -51,6 +51,17 @@ export function createVerifiedDbEpgLoader(
 ):ValidatedEpgLoader{
  const db=lease.client;
  const now=options.now??new Date();
+ // A global source is downloaded/decoded once per worker execution, then
+ // mapped into the independently validated national publication partitions.
+ // Rejected promises are shared too: a failing feed cannot be partially reused.
+ const decodedSources=new Map<string,ReturnType<typeof decodeEpgBuffer>>();
+ const acquire=(sourceId:string,url:string,format:EpgFormat)=>{
+  const existing=decodedSources.get(sourceId);
+  if(existing)return existing;
+  const work=options.transport(url,format).then(payload=>decodeEpgBuffer(payload,format));
+  decodedSources.set(sourceId,work);
+  return work;
+ };
  return {
  async loadCountry(countryId:string,scopeIds:readonly string[],signal:AbortSignal){
   await assertOwner(lease);
@@ -85,8 +96,7 @@ export function createVerifiedDbEpgLoader(
     try{
       const staged=new Map<string,EpgDayBatch>();
       if(signal.aborted)throw new TvImportLeaseLostError();
-      const payload=await options.transport(row.sourceUrl,row.format);
-      const decoded=await decodeEpgBuffer(payload,row.format);
+      const decoded=await acquire(row.sourceId,row.sourceUrl,row.format);
       if(!decoded.programmes.length)throw new Error("No EPG emissions");
       // The feed is scanned as a whole, independent of any country assignment.
       // Unknown external IDs remain pending manual mapping, never guessed from names.
