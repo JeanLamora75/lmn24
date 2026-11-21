@@ -31,16 +31,25 @@ export default async function TvAiringPage({params}:Props){
  const {locale,airingId}=await params;
  if(!tvPublicEnabled()||!hasLocale(routing.locales,locale)||!validTvId(airingId))notFound();
  setRequestLocale(locale);
- let airing:TvAiringDetails;
+ let airing:TvAiringDetails|null=null;
+ let retired=false;
  try{
   const response=await fetch(getBackendUrl()+"/public/tv/airings/"+
     encodeURIComponent(airingId),{cache:"no-store",signal:AbortSignal.timeout(8000)});
-  if(!response.ok)notFound();
-  const data:unknown=await response.json();
-  if(!verifiedDetail(data,airingId))notFound();
-  airing=data;
+  if(response.status===404)retired=true;
+  else if(!response.ok)notFound();
+  else {
+   const data:unknown=await response.json();
+   if(!verifiedDetail(data,airingId))notFound();
+   airing=data;
+  }
  }catch{notFound();}
  const copy=fallback(tvLocale(locale));
+ if(retired)return <main className={`container py-5 ${styles.page}`}>
+  <div role="status" className="alert alert-secondary">{copy.programmeGone}</div>
+  <Link href={`/${locale}/tv`} className="btn btn-outline-primary">{copy.back}</Link>
+ </main>;
+ if(!airing)notFound();
  const localDate=new Intl.DateTimeFormat("en-CA",{
   timeZone:airing.variantTimeZone,year:"numeric",month:"2-digit",day:"2-digit",
  }).formatToParts(new Date(airing.startsAt));
