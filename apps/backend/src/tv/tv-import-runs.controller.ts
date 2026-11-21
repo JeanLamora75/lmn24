@@ -1,6 +1,6 @@
 import {
  BadRequestException,Body,Controller,ForbiddenException,Get,Header,Param,Post,Req,
- ServiceUnavailableException,UnauthorizedException,
+ ServiceUnavailableException,UnauthorizedException,Query,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ApiExcludeController } from "@nestjs/swagger";
@@ -35,6 +35,15 @@ export class TvImportRunsController {
   if(this.config.get<string>("TV_CATALOG_ADMIN_ENABLED")!=="true"
      ||this.config.get<string>("TV_IMPORTS_ENABLED")!=="true")
     throw new ServiceUnavailableException("TV import administration is not enabled");
+ }
+ @Get()
+ @Header("Cache-Control","no-store")
+ async list(@Req() request:ReqLike,@Query("page") page?:string,@Query("pageSize") pageSize?:string){
+  await this.authorize(request);
+  const n=z.coerce.number().int().min(1).max(1000).safeParse(page??1);
+  const s=z.coerce.number().int().min(1).max(100).safeParse(pageSize??20);
+  if(!n.success||!s.success)throw new BadRequestException("Invalid TV import pagination");
+  return this.runs.listRuns(n.data,s.data);
  }
  @Post()
  @Header("Cache-Control","no-store")
