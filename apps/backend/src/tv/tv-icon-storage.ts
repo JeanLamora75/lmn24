@@ -69,7 +69,7 @@ function safeRemote(raw:string):URL{
   throw new Error("TV_ICON_REMOTE_URL_INVALID");
  return u;
 }
-async function downloadPinned(url:URL):Promise<Buffer>{
+async function downloadPinned(url:URL,redirects=0):Promise<Buffer>{
  const addresses=await lookup(url.hostname,{all:true,verbatim:true});
  const ipv4=addresses.filter(x=>x.family===4);
  if(!ipv4.length||ipv4.some(x=>!isPublicSourceAddress(x.address)))
@@ -82,10 +82,30 @@ async function downloadPinned(url:URL):Promise<Buffer>{
    port:url.port?Number(url.port):undefined,
    path:url.pathname+url.search,method:"GET",timeout:8000,
    ...(url.protocol==="https:"?{servername:url.hostname}:{}),
-   headers:{host:url.host,accept:"image/png,image/jpeg,image/webp",
+   headers:{host:url.host,accept:"image/png,image/jpeg,image/webp,*/*;q=0.5",
+    "user-agent":"LMN24-TV-Logo-Importer/1.0 (https://www.lmn24.com)",
     "accept-encoding":"identity"},
   },res=>{
-   if(res.statusCode!==200){res.resume();reject(new Error("TV_ICON_HTTP_ERROR"));return;}
+   if([301,302,303,307,308].includes(res.statusCode??0)){
+    const next=res.headers.location;
+    res.resume();
+    if(!next||redirects>=3){reject(new Error("TV_ICON_REDIRECT_LIMIT"));return;}
+    try{
+     const target=safeRemote(new URL(next,url).href);
+     if(url.protocol==="https:"&&target.protocol!=="https:")
+      throw new Error("TV_ICON_UNSAFE_REDIRECT");
+     void downloadPinned(target,redirects+1).then(resolvePromise,reject);
+    }catch{reject(new Error("TV_ICON_UNSAFE_REDIRECT"));}
+    return;
+   }
+   if(res.statusCode!==200){
+    const status=res.statusCode??0;
+    res.resume();
+    reject(new Error(status===403?"TV_ICON_HTTP_403":
+     status===404?"TV_ICON_HTTP_404":status===429?"TV_ICON_HTTP_429":
+     "TV_ICON_HTTP_ERROR"));
+    return;
+   }
    if(String(res.headers["content-encoding"]??"identity")!=="identity"){
     res.resume();reject(new Error("TV_ICON_ENCODING_INVALID"));return;
    }
@@ -116,6 +136,19 @@ export async function cacheTvIcon(remoteUrl:string):Promise<string|null>{
   const data=await downloadPinned(url);
   return await store(key,data);
  }catch{return null;} // A broken logo must not fail the entire TV import.
+}
+/** Explicit administration import returns a bounded error code rather than silently
+ * swallowing remote HTTP/transfer errors (normal EPG imports remain best effort).
+ */
+export async function importTvIconFromUrl(remoteUrl:string):Promise<string>{
+ let url:URL;
+ try{url=safeRemote(remoteUrl);}
+ catch{throw new Error("TV_ICON_REMOTE_URL_INVALID");}
+ const key="remote:"+url.href;
+ const existing=await previouslyStored(key);
+ if(existing)return existing;
+ const data=await downloadPinned(url);
+ return store(key,data);
 }
 /** Admin upload: independent of provider cache, so replacing a logo is explicit.
  * A fresh URL is used for each content revision (cache-safe, immutable asset).
