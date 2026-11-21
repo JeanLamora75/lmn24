@@ -102,10 +102,12 @@ export class TvEpgSourcesController {
 
  @Get(":id/mappings")
  @Header("Cache-Control","no-store")
- async listMappings(@Req() request:ReqLike,@Param("id") id:string){
+ async listMappings(@Req() request:ReqLike,@Param("id") id:string,
+  @Query("search") search?:string){
    await this.assertAdmin(request);
-   if(!uuid.safeParse(id).success)throw new BadRequestException("Invalid EPG source");
-   return {items:await this.service.listMappings(id)};
+   if(!uuid.safeParse(id).success||!z.string().max(120).safeParse(search??"").success)
+     throw new BadRequestException("Invalid EPG mapping query");
+   return {items:await this.service.listMappings(id,search??"")};
  }
 
  @Patch(":id/rights")
