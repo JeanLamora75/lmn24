@@ -147,23 +147,25 @@ export class TvImportRunsService {
     });
   }
 
-  /** Delete a still-queued manual import. One atomic statement ensures a worker
-   * cannot claim RUNNING concurrently with removal. Scope and event rows cascade;
-   * already-started runs retain their audit/history and cannot be deleted here.
+  /** Explicit admin deletion: an import can be removed if it is not RUNNING.
+   * The atomic status predicate prevents a race with the worker. FK constraints
+   * cascade scopes/events but preserve referenced TV schedule revisions
+   * (tv_schedule_revision.run_id is ON DELETE SET NULL).
    */
-  async cancelQueued(id:string):Promise<{id:string;deleted:true}>{
+  async deleteImport(id:string):Promise<{id:string;deleted:true}>{
     await this.requireSchema();
     const deleted=await this.database.prisma.$queryRaw<Array<{id:string}>>`
       DELETE FROM public.tv_import_run
-      WHERE id=${id}::uuid AND status='QUEUED' AND trigger='MANUAL'
+      WHERE id=${id}::uuid AND status IN
+        ('QUEUED','SUCCESS','PARTIAL','ERROR','INTERRUPTED')
       RETURNING id
     `;
     if(deleted.length)return {id,deleted:true};
-    const current=await this.database.prisma.$queryRaw<Array<{status:string;trigger:string}>>`
-      SELECT status,trigger FROM public.tv_import_run WHERE id=${id}::uuid
+    const current=await this.database.prisma.$queryRaw<Array<{status:string}>>`
+      SELECT status FROM public.tv_import_run WHERE id=${id}::uuid
     `;
     if(!current.length)throw new NotFoundException("TV import run not found");
-    throw new ConflictException("TV_IMPORT_CANNOT_DELETE_STARTED_OR_AUTOMATIC");
+    throw new ConflictException("TV_IMPORT_RUNNING_CANNOT_DELETE");
   }
 
   /** Bounded audit history; absent metrics remain absent, not fake zeroes. */
