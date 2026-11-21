@@ -94,11 +94,16 @@ export async function processQueuedTvRun(
            [status,status==="SUCCESS"?null:diagnostic,r.scopeId,runId]);
          const discoveryOnly=status==="SUCCESS"&&r.message==="DISCOVERY_ONLY";
          const staged=status==="SUCCESS"&&r.message==="PROGRAMMES_STAGED";
+         const rightsNeeded=status==="SUCCESS"&&r.message==="RIGHTS_REQUIRED";
+         const mappingsNeeded=status==="SUCCESS"&&r.message==="MAPPINGS_REQUIRED";
          await event(db,runId,r.scopeId,status==="SUCCESS"?"INFO":"WARN",
            discoveryOnly?"SCOPE_SCANNED":staged?"PROGRAMMES_STAGED":
+           rightsNeeded?"RIGHTS_REQUIRED":mappingsNeeded?"MAPPINGS_REQUIRED":
              status==="SUCCESS"?"SCOPE_SUCCESS":"SCOPE_FAILED",
            discoveryOnly?"Source scanned; unknown mappings await review, no programmes published":
            staged?"Verified, licensed programmes staged privately; no schedules published":
+           rightsNeeded?"Source requires approved programme rights and a non-empty evidence reference; no programmes staged":
+           mappingsNeeded?"No verified channel mappings in requested period; no programmes staged":
            status==="SUCCESS"?"Imported verified scope":diagnostic);
        }
      }catch(e){
