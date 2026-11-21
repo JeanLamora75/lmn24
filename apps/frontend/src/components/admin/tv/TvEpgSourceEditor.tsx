@@ -23,7 +23,7 @@ async function describeSaveError(response:Response):Promise<string>{
  try{
   const result=await response.json() as ApiErrorPayload;
   const raw=Array.isArray(result.message)?result.message.join("; "):result.message;
-  if(typeof raw==="string"&&raw.length<=300)details=raw;
+  if(response.status<500&&typeof raw==="string"&&raw.length<=300)details=raw;
  }catch{/* Some proxies return HTML or no error payload. */}
  return `${fallback} (HTTP ${response.status})${details?": "+details:""}`;
 }
