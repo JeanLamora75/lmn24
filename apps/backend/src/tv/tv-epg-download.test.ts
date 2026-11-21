@@ -37,6 +37,18 @@ describe("Safe pinned IPv4 EPG download",()=>{
   expect(options.lookup).toBeUndefined();
   expect((options.headers as Record<string,string>).host).toBe("example.org");
  });
+ it("accepts Teleonline standard XMLTV DTD and rejects untrusted entity declarations",async()=>{
+  const standard='<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE tv SYSTEM "xmltv.dtd">\n<tv></tv>';
+  fake.lookup.mockResolvedValueOnce([{address:"1.1.1.1",family:4}]);
+  respond(200,standard);
+  await expect(downloadEpgSource("https://example.org/epg.xml","XMLTV"))
+   .resolves.toEqual(Buffer.from(standard));
+
+  fake.lookup.mockResolvedValueOnce([{address:"1.1.1.1",family:4}]);
+  respond(200,'<?xml version="1.0"?><!DOCTYPE tv [<!ENTITY xx SYSTEM "file:///etc/passwd">]><tv></tv>');
+  await expect(downloadEpgSource("https://example.org/epg.xml","XMLTV"))
+   .rejects.toThrow("EPG_XML_SECURITY_REJECTED");
+ });
  it("follows an HTTPS redirect only after independently validating the new public host",async()=>{
   fake.lookup.mockResolvedValueOnce([{address:"1.1.1.1",family:4}])
    .mockResolvedValueOnce([{address:"8.8.8.8",family:4}]);
