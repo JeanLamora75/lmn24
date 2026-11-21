@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import {useRouter} from "next/navigation";
 import {useCallback,useEffect,useMemo,useState} from "react";
 import {useVisitorPreferences} from "@/components/public/VisitorPreferencesProvider";
 import {
@@ -88,6 +89,7 @@ function TvCard({item,locale,mode,tab,countryIso2,nowMs}:{
 
 export function TvGuideHome({locale}: {locale:TvLocale}){
  const copy=TV_COPY[locale];
+ const router=useRouter();
  const {preferences,ready}=useVisitorPreferences();
  const [countries,setCountries]=useState<TvCountry[]>([]);
  const [countryIso2,setCountryIso2]=useState<string|null>(null);
@@ -187,7 +189,7 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
    <h1>{copy.title}</h1><p>{copy.subtitle}</p>
   </header>
   <div className={styles.searchLine}>
-   <form onSubmit={event=>{event.preventDefault();setNotice(copy.searchSoon);}}>
+   <form onSubmit={event=>{event.preventDefault();if(search.trim())router.push(`/${locale}/tv/search?q=${encodeURIComponent(search.trim())}`);}}>
     <label className="visually-hidden" htmlFor="tv-global-search">{copy.search}</label>
     <input id="tv-global-search" className="form-control" type="search" value={search}
       onChange={event=>setSearch(event.target.value)} placeholder={copy.search} maxLength={120}/>
