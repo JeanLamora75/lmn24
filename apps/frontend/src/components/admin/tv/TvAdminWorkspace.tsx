@@ -345,7 +345,7 @@ function SourceEditor({onClose,onSaved}:{onClose:()=>void;onSaved:()=>void}){
    <label className="form-check mt-3"><input type="checkbox" className="form-check-input" checked={active}
     onChange={e=>setActive(e.target.checked)}/><span className="form-check-label">Source active</span></label>
    <fieldset className="mt-3"><legend className="fs-6 fw-bold">Droits par type de contenu</legend>
-    <p className="small text-body-secondary">Aucun justificatif n'est requis pour enregistrer votre décision. La republication demeure soumise à des contrôles distincts.</p>
+    <p className="small text-body-secondary">Aucun justificatif n&apos;est requis pour enregistrer votre décision. La republication demeure soumise à des contrôles distincts.</p>
     {rights.map(key=><div key={key} className="mb-2">
      <label className="form-label text-capitalize" htmlFor={"rights-"+key}>{key==="programme"?"Programmes":key==="synopsis"?"Synopsis":key==="image"?"Images":"Logos"}</label>
      <select id={"rights-"+key} className="form-select" value={rightsData[key].status}
