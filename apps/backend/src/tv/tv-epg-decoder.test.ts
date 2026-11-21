@@ -17,6 +17,18 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   expect(decoded.coverage).toEqual([]);
   expect(parseXmltvTime("20260329030000 +0200")).toBe("2026-03-29T01:00:00.000Z");
  });
+ it("maps lowercase country attribute from a worldwide Teleonline channel",async()=>{
+  const xml='<tv><channel id="Canal.Discovery.World.Latinoamérica.ar" country="ar">'
+   +'<display-name>Canal Discovery</display-name></channel>'
+   +'<channel id="No.Country"><display-name>Unknown</display-name></channel>'
+   +'</tv>';
+  const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
+  expect(decoded.channels).toEqual([
+   {externalId:"Canal.Discovery.World.Latinoamérica.ar",
+    name:"Canal Discovery",countryIso2:"AR"},
+   {externalId:"No.Country",name:"Unknown",countryIso2:null},
+  ]);
+ });
  it("preserves explicit XMLTV channel metadata without inventing any country",async()=>{
   const xml='<tv>'
    +'<channel id="fr-one"><display-name>France 1</display-name><country>FR</country></channel>'
