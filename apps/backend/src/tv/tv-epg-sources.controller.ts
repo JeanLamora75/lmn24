@@ -105,6 +105,13 @@ export class TvEpgSourcesController {
    const {expectedVersion,...families}=parsed.data;
    return this.service.setRights(id,families,expectedVersion);
  }
+ @Get("countries/:id/priorities")
+ @Header("Cache-Control","no-store")
+ async listCountryPriorities(@Req() request:ReqLike,@Param("id") id:string){
+   await this.assertAdmin(request);
+   if(!uuid.safeParse(id).success)throw new BadRequestException("Invalid country");
+   return this.service.listCountryPriorities(id);
+ }
  @Put("countries/:id/priorities")
  @Header("Cache-Control","no-store")
  async replacePriorities(@Req() request:ReqLike,@Param("id") id:string,@Body() body:unknown){
