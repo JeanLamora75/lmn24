@@ -60,10 +60,11 @@ export function mergeAirings(
   for(const item of sorted){
     let b:{start:number;end:number};
     try{b=bounds(item)}catch{rejected.push({fingerprint:item.fingerprint,reason:"INVALID_INTERVAL"});continue;}
-    if(b.start<dayStart || b.end>dayEnd){
-      // No invented clipping. Cross-midnight airings require separate scope normalization.
+    if (b.end <= dayStart || b.start >= dayEnd) {
       rejected.push({fingerprint:item.fingerprint,reason:"OUTSIDE_SCOPE"});continue;
     }
+    // Airings crossing civil midnight retain their TRUE UTC begin/end.
+    // Never clip their timestamps or manufacture a second broadcast.
     const key=[item.sourceId,item.externalId,item.variantId,b.start,b.end].join("|");
     if(seen.has(key)){rejected.push({fingerprint:item.fingerprint,reason:"DUPLICATE"});continue;}
     seen.add(key);
@@ -77,7 +78,9 @@ export function mergeAirings(
   selected.sort((a,b)=>Date.parse(a.startsAt)-Date.parse(b.startsAt)
     || a.fingerprint.localeCompare(b.fingerprint));
   // Completeness requires contiguous, attestable coverage; empty payload is never proof.
-  const relevant=coverage.filter(c=>c.confirmed&&c.startMs>=dayStart&&c.endMs<=dayEnd)
+  const relevant=coverage.filter(c=>c.confirmed && c.startMs < dayEnd && c.endMs > dayStart
+      && Number.isFinite(c.startMs) && Number.isFinite(c.endMs) && c.endMs>c.startMs)
+    .map(c=>({startMs:Math.max(c.startMs,dayStart),endMs:Math.min(c.endMs,dayEnd)}))
     .sort((a,b)=>a.startMs-b.startMs);
   let covered=dayStart;
   for(const c of relevant) if(c.startMs<=covered && c.endMs>covered)covered=c.endMs;
