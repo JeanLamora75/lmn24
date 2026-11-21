@@ -329,6 +329,7 @@ export class TvEpgSourcesService {
       FROM public.tv_source s
       LEFT JOIN public.tv_source_country sc
         ON sc.source_id=s.id AND sc.country_id=${countryId}::uuid
+      WHERE s.geographic_scope='GLOBAL' OR s.scope_country_id=${countryId}::uuid
       ORDER BY sc.priority NULLS LAST,s.name,s.id
       LIMIT 500
     `;
