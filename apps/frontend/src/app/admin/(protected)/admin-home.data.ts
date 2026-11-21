@@ -119,6 +119,19 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
     ],
   },
   {
+    id: "tv",
+    title: "Guide TV",
+    icon: "play-circle",
+    features: [
+      {
+        href: "/admin/tv",
+        icon: "play-circle",
+        title: "Guide TV",
+        description: "Gérer les pays, chaînes, sources EPG, imports, traductions et statistiques.",
+      },
+    ],
+  },
+  {
     id: "analysis",
     title: "Analyse et configuration",
     icon: "bar-chart",
