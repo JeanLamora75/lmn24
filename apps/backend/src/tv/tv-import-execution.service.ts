@@ -19,7 +19,7 @@ export class TvImportExecutionService {
  private readonly starting=new Set<string>();
  constructor(private readonly config:ConfigService,private readonly runs:TvImportRunsService){}
 
- private executionEnvironment(){
+ private executionEnvironment():Record<string,string|undefined>{
   return {...Object.fromEntries(REQUIRED_FLAGS.map(key=>[key,this.config.get<string>(key)])),
    NODE_ENV:process.env.NODE_ENV,
    TV_PUBLIC_ENABLED:this.config.get<string>("TV_PUBLIC_ENABLED"),
