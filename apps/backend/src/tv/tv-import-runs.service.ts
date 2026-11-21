@@ -147,25 +147,28 @@ export class TvImportRunsService {
     });
   }
 
-  /** Explicit admin deletion: an import can be removed if it is not RUNNING.
-   * The atomic status predicate prevents a race with the worker. FK constraints
-   * cascade scopes/events but preserve referenced TV schedule revisions
-   * (tv_schedule_revision.run_id is ON DELETE SET NULL).
+  /** Remove a non-running import from the admin list without deleting related
+   * schedule revisions or fighting FK/immutable provenance triggers. The existing
+   * audit event table serves as an append-only administrative tombstone.
    */
   async deleteImport(id:string):Promise<{id:string;deleted:true}>{
     await this.requireSchema();
-    const deleted=await this.database.prisma.$queryRaw<Array<{id:string}>>`
-      DELETE FROM public.tv_import_run
-      WHERE id=${id}::uuid AND status IN
-        ('QUEUED','SUCCESS','PARTIAL','ERROR','INTERRUPTED')
-      RETURNING id
-    `;
-    if(deleted.length)return {id,deleted:true};
-    const current=await this.database.prisma.$queryRaw<Array<{status:string}>>`
-      SELECT status FROM public.tv_import_run WHERE id=${id}::uuid
-    `;
-    if(!current.length)throw new NotFoundException("TV import run not found");
-    throw new ConflictException("TV_IMPORT_RUNNING_CANNOT_DELETE");
+    return this.database.prisma.$transaction(async tx=>{
+      const current=await tx.$queryRaw<Array<{id:string;status:string}>>`
+        SELECT id,status FROM public.tv_import_run WHERE id=${id}::uuid FOR UPDATE
+      `;
+      if(!current.length)throw new NotFoundException("TV import run not found");
+      if(current[0].status==="RUNNING")throw new ConflictException("TV_IMPORT_RUNNING_CANNOT_DELETE");
+      await tx.$executeRaw`
+        INSERT INTO public.tv_import_event(run_id,level,event_type,message)
+        SELECT ${id}::uuid,'INFO','ADMIN_DELETED','Removed from administration'
+        WHERE NOT EXISTS (
+          SELECT 1 FROM public.tv_import_event
+          WHERE run_id=${id}::uuid AND event_type='ADMIN_DELETED'
+        )
+      `;
+      return {id,deleted:true};
+    });
   }
 
   /** Bounded audit history; absent metrics remain absent, not fake zeroes. */
@@ -185,10 +188,14 @@ export class TvImportRunsService {
           count(s.id) FILTER (WHERE s.status='SUCCESS')::int AS succeeded,
           count(s.id) FILTER (WHERE s.status IN ('ERROR','INTERRUPTED'))::int AS failed
         FROM public.tv_import_run r LEFT JOIN public.tv_import_scope s ON s.run_id=r.id
+        WHERE NOT EXISTS (SELECT 1 FROM public.tv_import_event deleted
+          WHERE deleted.run_id=r.id AND deleted.event_type='ADMIN_DELETED')
         GROUP BY r.id ORDER BY r.created_at DESC,r.id DESC
         LIMIT ${pageSize} OFFSET ${offset}`,
       this.database.prisma.$queryRaw<Array<{total:number}>>`
-        SELECT count(*)::int AS total FROM public.tv_import_run`,
+        SELECT count(*)::int AS total FROM public.tv_import_run r
+        WHERE NOT EXISTS (SELECT 1 FROM public.tv_import_event deleted
+          WHERE deleted.run_id=r.id AND deleted.event_type='ADMIN_DELETED')`,
     ]);
     return {items,pagination:{page,pageSize,total:count[0]?.total??0,
       totalPages:Math.ceil((count[0]?.total??0)/pageSize)}};
@@ -198,7 +205,9 @@ export class TvImportRunsService {
     const rows=await this.database.prisma.$queryRaw<Array<{id:string;status:string}>>`
       SELECT id,trigger,requested_days AS "requestedDays",status,
         started_at AS "startedAt",finished_at AS "finishedAt",created_at AS "createdAt"
-      FROM public.tv_import_run WHERE id=${id}::uuid
+      FROM public.tv_import_run r WHERE r.id=${id}::uuid
+        AND NOT EXISTS (SELECT 1 FROM public.tv_import_event deleted
+          WHERE deleted.run_id=r.id AND deleted.event_type='ADMIN_DELETED')
     `;
     if(!rows.length)throw new NotFoundException("TV import run not found");
     const scopes=await this.database.prisma.$queryRaw<Array<{id:string;status:string}>>`
