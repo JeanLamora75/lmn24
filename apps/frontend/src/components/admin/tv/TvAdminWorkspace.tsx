@@ -372,6 +372,7 @@ function ChannelEditor({item,onClose,onSaved,page=false}:{item:Channel;onClose:(
  const [logoFile,setLogoFile]=useState<File|null>(null);
  const [logoMode,setLogoMode]=useState<"file"|"url">("file");
  const [remoteLogo,setRemoteLogo]=useState("");
+ const [logoRemoved,setLogoRemoved]=useState(false);
  const [number,setNumber]=useState(item.manualNumber===null?"":String(item.manualNumber));
  const [active,setActive]=useState(item.isActive);
  const [review,setReview]=useState(item.needsReview);
@@ -383,7 +384,7 @@ function ChannelEditor({item,onClose,onSaved,page=false}:{item:Channel;onClose:(
     setError("Numéro national invalide.");setBusy(false);return;
    }
    try{
-    const logoUrl=logoMode==="file"&&logoFile
+    const logoUrl=logoRemoved?"":logoMode==="file"&&logoFile
      ?await uploadTvChannelIcon(item.channelId,logoFile)
      :logoMode==="url"&&remoteLogo.trim()
       ?(await request<{logoUrl:string}>("catalog/channels/"+item.channelId+"/icon/import","POST",{url:remoteLogo.trim()})).logoUrl
@@ -419,8 +420,19 @@ function ChannelEditor({item,onClose,onSaved,page=false}:{item:Channel;onClose:(
    </label>
    <fieldset className="border rounded p-3 mb-3">
     <legend className="fs-6 float-none w-auto px-2">Source de l’image</legend>
-    {urls.logoUrl&&<div className="mb-3"><img src={urls.logoUrl} width={110} height={70}
-     alt={"Logo actuel de "+name} style={{objectFit:"contain",background:"#17263d",borderRadius:6}}/></div>}
+    {urls.logoUrl&&!logoRemoved&&<div className="mb-3 d-flex flex-wrap align-items-center gap-3">
+     <img src={urls.logoUrl} width={110} height={70}
+      alt={"Logo actuel de "+name} style={{objectFit:"contain",background:"#17263d",borderRadius:6}}/>
+     <button type="button" className="btn btn-sm btn-outline-danger" disabled={busy}
+      onClick={()=>{
+       if(!window.confirm("Supprimer le logo de cette chaîne ? La suppression sera enregistrée avec le formulaire."))return;
+       setLogoRemoved(true);setLogoFile(null);setRemoteLogo("");
+       setUrls(previous=>({...previous,logoUrl:""}));
+      }}>Supprimer le logo</button>
+    </div>}
+    {logoRemoved&&<p role="status" className="text-body-secondary small">
+     Logo retiré. L’emplacement restera vide après enregistrement, y compris lors des prochains imports EPG.
+    </p>}
     <div className="d-flex flex-wrap gap-3 mb-3">
      <label><input type="radio" name="tv-logo-source" checked={logoMode==="file"}
       onChange={()=>setLogoMode("file")}/> Fichier local</label>
@@ -430,11 +442,11 @@ function ChannelEditor({item,onClose,onSaved,page=false}:{item:Channel;onClose:(
     {logoMode==="file"
      ?<label className="form-label d-block">Choisir une image
       <input type="file" className="form-control" accept="image/png,image/jpeg,image/webp"
-       onChange={e=>setLogoFile(e.target.files?.[0]??null)}/>
+       onChange={e=>{const selected=e.target.files?.[0]??null;setLogoFile(selected);if(selected)setLogoRemoved(false);}}/>
      </label>
      :<label className="form-label d-block">URL HTTPS directe du logo
       <input type="url" className="form-control" value={remoteLogo} placeholder="https://…/logo.png"
-       onChange={e=>setRemoteLogo(e.target.value)}/>
+       onChange={e=>{setRemoteLogo(e.target.value);if(e.target.value.trim())setLogoRemoved(false);}}/>
      </label>}
     <p className="form-text">PNG, JPEG ou WebP, maximum 1 Mo. L’image est enregistrée localement dans LMN24.</p>
     <div className="d-flex flex-wrap gap-2">
@@ -447,7 +459,7 @@ function ChannelEditor({item,onClose,onSaved,page=false}:{item:Channel;onClose:(
     </div>
     <p className="form-text">Vérifiez les droits de réutilisation. La recherche n’importe aucune image automatiquement.</p>
    </fieldset>
-   <ChannelUrlInputs values={urls} onChange={setUrls}/>
+   <ChannelUrlInputs values={urls} onChange={updated=>{setUrls(updated);if(updated.logoUrl.trim())setLogoRemoved(false);}}/>
    {error&&<p role="alert" className="alert alert-danger">{error}</p>}
    <div className="d-flex gap-2 justify-content-end mt-3">
     <button className="btn btn-outline-secondary" type="button" onClick={onClose}>Annuler</button>
