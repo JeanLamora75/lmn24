@@ -15,6 +15,7 @@ const executionRequest=z.object({mode:z.literal("DISCOVERY")}).strict();
 const importRequest=z.object({
  days:z.number().int().min(1).max(7),
  countryId:uuid.optional(),
+ mode:z.enum(["DISCOVERY","STAGING"]).optional(),
 }).strict();
 type ReqLike={headers:Record<string,string|string[]|undefined>};
 
