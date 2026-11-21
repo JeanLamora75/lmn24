@@ -31,7 +31,7 @@ describe("SCRUM-117 EPG import safety",()=>{
  it("keeps the highest-priority full airing, fills genuine gaps without clipping",()=>{
   const input=[event("secondary",2,0,2),event("primary",1,1,2),
     event("secondary",2,3,1),event("secondary",2,4,1)];
-  const merged=mergeAirings(input,[{startMs:start,endMs:start+5*hour,confirmed:true}],
+  const merged=mergeAirings(input,[{startMs:start,endMs:start+5*hour,sourceId:"primary",confirmed:true}],
     start,start+5*hour);
   expect(merged.airings.map(x=>x.fingerprint)).toEqual(["primary1","secondary3","secondary4"]);
   expect(merged.rejected.some(x=>x.reason==="OVERLAP")).toBe(true);
@@ -48,10 +48,10 @@ describe("SCRUM-117 EPG import safety",()=>{
  });
  it("never replaces published grid on unknown or partial coverage",()=>{
   const a=mergeAirings([],[],start,start+hour);
-  const b=mergeAirings([],[{startMs:start,endMs:start+hour/2,confirmed:true}],start,start+hour);
+  const b=mergeAirings([],[{startMs:start,endMs:start+hour/2,sourceId:"primary",confirmed:true}],start,start+hour);
   expect(a.canReplaceExisting).toBe(false);
   expect(b.canReplaceExisting).toBe(false);
-  expect(mergeAirings([],[{startMs:start,endMs:start+hour,confirmed:true}],
+  expect(mergeAirings([],[{startMs:start,endMs:start+hour,sourceId:"primary",confirmed:true}],
     start,start+hour).canReplaceExisting).toBe(true);
  });
  it("preserves completed scopes when one country fails and retries only failures",()=>{
