@@ -75,7 +75,7 @@ export class TvImportRunsController {
  async cancel(@Req() request:ReqLike,@Param("id") id:string){
   await this.authorize(request);
   if(!uuid.safeParse(id).success)throw new BadRequestException("Invalid TV import ID");
-  return this.runs.cancelQueued(id);
+  return this.runs.deleteImport(id);
  }
  @Get(":id")
  @Header("Cache-Control","no-store")
