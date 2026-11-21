@@ -16,13 +16,14 @@ function setup(role:"ADMIN"|"EDITOR"|null,enabled=false){
  const service={create,getRun,getEvents,retryFailed,listRuns} as unknown as TvImportRunsService;
  const startDiscovery=vi.fn().mockResolvedValue({id,status:"STARTED",mode:"DISCOVERY"});
  const readiness=vi.fn().mockReturnValue({ready:false,mode:"DISCOVERY",missingFlags:["TV_EPG_NETWORK_ENABLED"],publicPublication:false});
- const execution={startDiscovery,readiness} as unknown as TvImportExecutionService;
+ const launchManualImport=vi.fn().mockResolvedValue({id,status:"STARTED",mode:"DISCOVERY"});
+ const execution={startDiscovery,readiness,launchManualImport} as unknown as TvImportExecutionService;
  const auth={getUserFromSession:vi.fn().mockResolvedValue(role?{role}:null)} as unknown as AuthService;
  const config={get:(key:string)=>{
   if(key==="TV_IMPORTS_ENABLED"||key==="TV_CATALOG_ADMIN_ENABLED")return enabled?"true":"false";
   return undefined;
  }} as unknown as ConfigService;
- return {controller:new TvImportRunsController(auth,service,config,execution),create,getRun,getEvents,retryFailed,listRuns,startDiscovery,readiness};
+ return {controller:new TvImportRunsController(auth,service,config,execution),create,getRun,getEvents,retryFailed,listRuns,startDiscovery,readiness,launchManualImport};
 }
 describe("SCRUM-117 protected import orchestration",()=>{
  it("never reads/writes import data for anonymous users",async()=>{
@@ -73,8 +74,9 @@ describe("SCRUM-117 protected import orchestration",()=>{
  });
  it("allows an authorized manual run, status, events and targeted retry",async()=>{
   const s=setup("ADMIN",true);
-  await expect(s.controller.enqueue(request,{days:7})).resolves.toMatchObject({status:"QUEUED"});
-  expect(s.create).toHaveBeenCalledWith({days:7,trigger:"MANUAL"});
+  await expect(s.controller.enqueue(request,{days:7})).resolves.toMatchObject({status:"STARTED"});
+  expect(s.launchManualImport).toHaveBeenCalledWith({days:7});
+  expect(s.create).not.toHaveBeenCalled(); // controller dispatches, never just queues
   await expect(s.controller.get(request,id)).resolves.toMatchObject({id});
   await expect(s.controller.events(request,id)).resolves.toEqual({items:[]});
   await expect(s.controller.retry(request,id)).resolves.toMatchObject({retried:1});
