@@ -21,7 +21,7 @@ function safePhaseError(error:unknown,otherwise:string):Error {
  * Redirects disabled. Never log URLs (potential secrets). No fetch on import.
  * This function is deliberately not exposed via HTTP until SCRUM-117.
  */
-export async function downloadEpgSource(rawUrl:string,format:EpgFormat):Promise<Buffer> {
+async function downloadEpgSourceOnce(rawUrl:string,format:EpgFormat):Promise<Buffer> {
   // Resolve and validate each host before connecting to its pinned public IPv4.
   // Use the IP for the socket but retain the original hostname for HTTPS SNI,
   // certificate verification and Host: this avoids custom DNS lookup issues.
@@ -116,4 +116,27 @@ export async function downloadEpgSource(rawUrl:string,format:EpgFormat):Promise<
     catch{throw new Error("EPG_JSON_INVALID");}
   }
   return expanded;
+}
+
+/** Retry only temporary transport errors. A fresh attempt revalidates DNS and
+ * every redirect, with the same SSRF, TLS, timeout and size protections.
+ * Format, security, TLS certificate and HTTP 4xx errors are never retried.
+ */
+const RETRYABLE_EPG_CODES=new Set([
+  "EPG_CONNECTION_ERROR","EPG_CONNECTION_RESET","EPG_CONNECTION_REFUSED",
+  "EPG_CONNECTION_UNREACHABLE","EPG_TIMEOUT","EPG_STREAM_INTERRUPTED",
+  "EPG_HTTP_TRANSFER_FAILED","EPG_DNS_ERROR","EPG_DNS_LOOKUP_FAILED",
+]);
+export async function downloadEpgSource(rawUrl:string,format:EpgFormat):Promise<Buffer>{
+  // Validate before any retry, including no-op rejection of unsafe addresses.
+  validateEpgSourceUrl(rawUrl);
+  for(let attempt=0;attempt<3;attempt++){
+    try{return await downloadEpgSourceOnce(rawUrl,format);}
+    catch(error){
+      const code=classifyEpgFailure(error,"DOWNLOAD");
+      if(attempt===2||!RETRYABLE_EPG_CODES.has(code))throw error;
+      await new Promise<void>(resolve=>setTimeout(resolve,250*(attempt+1)));
+    }
+  }
+  throw new Error("EPG_DOWNLOAD_UNEXPECTED");
 }
