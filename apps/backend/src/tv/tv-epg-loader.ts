@@ -85,6 +85,7 @@ export function createVerifiedDbEpgLoader(
       results.push({scopeId:row.scopeId,outcome:"ERROR"});continue;
     }
     try{
+      const staged=new Map<string,EpgDayBatch>();
       if(signal.aborted)throw new TvImportLeaseLostError();
       const payload=await options.transport(row.sourceUrl,row.format);
       const decoded=await decodeEpgBuffer(payload,row.format);
@@ -133,7 +134,7 @@ export function createVerifiedDbEpgLoader(
           const {startMs,endMs}=localDayBounds(localDate,mapping.timezone);
           if(start>=endMs||end<=startMs)continue;
           const key=mapping.variantId+":"+localDate;
-          let group=groups.get(key);
+          let group=staged.get(key);
           if(!group){
             const current=await db.query<{revision_id:string}>(`
               SELECT revision_id FROM public.tv_schedule_current
@@ -142,7 +143,7 @@ export function createVerifiedDbEpgLoader(
             group={countryId,variantId:mapping.variantId,localDate,startMs,endMs,
               expectedRevisionId:current.rows[0]?.revision_id??null,
               candidates:[],coverage:[]};
-            groups.set(key,group);
+            staged.set(key,group);
           }
           (group.candidates as AiringCandidate[]).push({
             variantId:mapping.variantId,externalId:p.externalProgrammeId,sourceId:row.sourceId,
@@ -152,6 +153,14 @@ export function createVerifiedDbEpgLoader(
         }
       }
       if(!mapped)throw new Error("All EPG mappings are pending review");
+      // Only commit candidates of a completely decoded and mapped scope;
+      // a partially failed source must never contaminate a published grid.
+      for(const [key,entry] of staged){
+        const existing=groups.get(key);
+        if(existing){
+          (existing.candidates as AiringCandidate[]).push(...entry.candidates);
+        }else groups.set(key,entry);
+      }
       results.push({scopeId:row.scopeId,outcome:"SUCCESS"});
     }catch(err){
       if(signal.aborted)throw new TvImportLeaseLostError();
