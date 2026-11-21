@@ -30,6 +30,9 @@ function details(error:unknown):{message:string;code:string}{
 export function classifyEpgFailure(error:unknown,stage:"DOWNLOAD"|"DECODE"|"MAPPING"):EpgFailureCode{
  if(stage==="MAPPING")return "EPG_DATABASE_WRITE";
  const {message,code}=details(error);
+ // The loader classifies transport/decode failures before they cross the
+ // shared-source promise boundary. Never erase an already sanitized code.
+ if(EPG_FAILURE_CODES.has(message.trim()))return message.trim() as EpgFailureCode;
  if(/No EPG emissions/.test(message))return "EPG_NO_PROGRAMMES";
  if(/size limit|exceeds|payload too large|too large|programme limit/i.test(message))
   return "EPG_SIZE_LIMIT";
