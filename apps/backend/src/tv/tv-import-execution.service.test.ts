@@ -9,7 +9,7 @@ vi.mock("./tv-import-authorized-runner",()=>({
    "TV_MIGRATION_QUALIFIED","TV_EPG_SOURCE_USE_APPROVED"]
     .every(key=>env[key]==="true"),
  tvLocalDiscoveryApproved:(env:Record<string,string|undefined>,url:string)=>
-  env.NODE_ENV==="development"&&url.includes("@localhost:5432/lmn24")
+  env.NODE_ENV!=="production"&&url.includes("@localhost:5432/lmn24")
   &&env.TV_CATALOG_ADMIN_ENABLED==="true"&&env.TV_IMPORTS_ENABLED==="true",
  runAuthorizedTvImport:mock.run,
 }));
