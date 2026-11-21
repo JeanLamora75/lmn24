@@ -25,10 +25,10 @@ export function tvLocalDiscoveryApproved(env:Record<string,string|undefined>,
    ||env.TV_PUBLIC_RELEASE_APPROVED==="true")return false;
  try{
   const db=new URL(connectionString);
-  const host=db.hostname.replace(/^\\[|\\]$/g,"").toLowerCase();
+  const host=db.hostname.toLowerCase().replaceAll("[","").replaceAll("]","");
   return ["postgres:","postgresql:"].includes(db.protocol)
    &&["localhost","127.0.0.1","::1"].includes(host)
-   &&decodeURIComponent(db.pathname.replace(/^\\//,""))==="lmn24";
+   &&decodeURIComponent(db.pathname.startsWith("/")?db.pathname.slice(1):db.pathname)==="lmn24";
  }catch{return false;}
 }
 
