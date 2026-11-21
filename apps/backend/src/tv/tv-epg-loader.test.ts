@@ -42,7 +42,7 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
    attest:noCoverageAttested,now:new Date("2026-11-21T12:00:00Z")});
   const result=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
   expect(result.scopeResults).toEqual([
-   {scopeId:"s1",outcome:"SUCCESS"},{scopeId:"s2",outcome:"SUCCESS"},
+   {scopeId:"s1",outcome:"SUCCESS"},{scopeId:"s2",outcome:"SUCCESS",message:"DISCOVERY_ONLY"},
   ]);
   expect(transport).toHaveBeenCalledTimes(2);
   expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_channel_external_id"))).toBe(true);
