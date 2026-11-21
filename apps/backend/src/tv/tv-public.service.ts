@@ -81,7 +81,9 @@ export class TvPublicService {
       LIMIT 10000`;
     return rows.sort(numberSort);
   }
-  private async publishedAirings(variantIds:readonly string[],from:number,to:number):Promise<TvAiring[]>{
+  private async publishedAirings(
+    variantIds:readonly string[],countryId:string,from:number,to:number,
+  ):Promise<TvAiring[]>{
     if(!variantIds.length)return [];
     // The current pointer is the ONLY authoritative published grid. Query
     // neighboring dates too, because a real airing can cross local midnight.
@@ -107,6 +109,7 @@ export class TvPublicService {
       JOIN public.tv_country tc ON tc.country_id=cc.country_id
       JOIN public.country c ON c.id=tc.country_id
       WHERE r.status='PUBLISHED' AND r.published_at IS NOT NULL
+        AND cc.country_id=${countryId}::uuid
         AND r.variant_id::text=ANY(${[...variantIds]}::text[])
         AND a.starts_at < ${new Date(to)}::timestamptz
         AND a.ends_at > ${new Date(from)}::timestamptz
@@ -136,7 +139,7 @@ export class TvPublicService {
     const localBounds=localDayBounds(args.localDate,country.referenceTimeZone);
     const from=Math.min(localBounds.startMs,now.getTime())-86_400_000;
     const to=Math.max(localBounds.endMs,now.getTime())+86_400_000;
-    const all=await this.publishedAirings(selected.flatMap(c=>c.variantId?[c.variantId]:[]),from,to);
+    const all=await this.publishedAirings(selected.flatMap(c=>c.variantId?[c.variantId]:[]),country.id,from,to);
     const items=selected.map(c=>{
       const state=stateForChannel({
         tab:args.tab,localDate:args.localDate,
@@ -186,7 +189,7 @@ export class TvPublicService {
     if(!variant)throw new NotFoundException("TV_NOT_FOUND");
     assertTvDay(args.localDate,variant.timeZone,args.now??new Date());
     const bounds=localDayBounds(args.localDate,variant.timeZone);
-    const all=(await this.publishedAirings([variant.id],bounds.startMs,bounds.endMs))
+    const all=(await this.publishedAirings([variant.id],country.id,bounds.startMs,bounds.endMs))
       .sort((a,b)=>Date.parse(a.startsAt)-Date.parse(b.startsAt)||a.id.localeCompare(b.id));
     const offset=(args.page-1)*args.pageSize;
     return {channelId:args.channelId,variantId:variant.id,localDate:args.localDate,
