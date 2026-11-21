@@ -38,7 +38,7 @@ BEGIN
     END IF;
     IF EXISTS (
       SELECT expected.name FROM unnest(ARRAY[
-        'tv_country_timezone_not_blank', 'tv_channel_name_nonempty', 'tv_channel_country_pair_unique', 'tv_channel_country_id_channel_unique', 'tv_channel_country_default_variant_fk', 'tv_channel_country_number_positive', 'tv_channel_country_active_number', 'tv_channel_language_format', 'tv_variant_channel_code', 'tv_variant_id_channel_unique', 'tv_variant_timezone_nonempty', 'tv_variant_country_variant_fk', 'tv_variant_country_association_fk', 'tv_source_format', 'tv_source_rights', 'tv_source_priority_positive', 'tv_external_source_id', 'tv_external_variant_channel_fk', 'tv_external_status', 'tv_external_verified_target', 'tv_external_variant_needs_channel', 'tv_description_origin', 'tv_description_nonempty', 'tv_programme_title_nonempty', 'tv_programme_season_positive', 'tv_programme_episode_positive', 'tv_import_days', 'tv_import_trigger', 'tv_import_status', 'tv_scope_status', 'tv_scope_attempts', 'tv_import_event_level', 'tv_revision_status', 'tv_revision_published_timestamp', 'tv_revision_tuple', 'tv_airing_span', 'tv_airing_revision_fp', 'tv_current_revision_unique_tuple', 'tv_current_revision_scope_fk', 'tv_provider_selected_approved', 'tv_description_provider_fk', 'tv_translation_attempt_status'
+        'tv_country_timezone_not_blank', 'tv_channel_name_nonempty', 'tv_channel_country_pair_unique', 'tv_channel_country_id_channel_unique', 'tv_channel_country_default_variant_fk', 'tv_channel_country_number_positive', 'tv_channel_country_active_number', 'tv_channel_language_format', 'tv_variant_channel_code', 'tv_variant_id_channel_unique', 'tv_variant_timezone_nonempty', 'tv_variant_country_variant_fk', 'tv_variant_country_association_fk', 'tv_source_format', 'tv_source_rights', 'tv_source_programme_rights', 'tv_source_synopsis_rights', 'tv_source_image_rights', 'tv_source_logo_rights', 'tv_source_priority_positive', 'tv_external_source_id', 'tv_external_variant_channel_fk', 'tv_external_status', 'tv_external_verified_target', 'tv_external_variant_needs_channel', 'tv_description_origin', 'tv_description_nonempty', 'tv_programme_title_nonempty', 'tv_programme_season_positive', 'tv_programme_episode_positive', 'tv_import_days', 'tv_import_trigger', 'tv_import_status', 'tv_scope_status', 'tv_scope_attempts', 'tv_import_event_level', 'tv_revision_status', 'tv_revision_published_timestamp', 'tv_revision_tuple', 'tv_airing_span', 'tv_airing_revision_fp', 'tv_current_revision_unique_tuple', 'tv_current_revision_scope_fk', 'tv_provider_selected_approved', 'tv_description_provider_fk', 'tv_translation_attempt_status'
       ]::text[]) AS expected(name)
       WHERE NOT EXISTS (
         SELECT 1 FROM pg_constraint co
@@ -204,9 +204,21 @@ CREATE TABLE IF NOT EXISTS public.tv_source (
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
   rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
   rights_reference TEXT,
+  programme_rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
+  programme_rights_reference TEXT,
+  synopsis_rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
+  synopsis_rights_reference TEXT,
+  image_rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
+  image_rights_reference TEXT,
+  logo_rights_status VARCHAR(20) NOT NULL DEFAULT 'UNREVIEWED',
+  logo_rights_reference TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   CONSTRAINT tv_source_format CHECK (format IN ('XMLTV','XMLTV_GZIP','JSON')),
-  CONSTRAINT tv_source_rights CHECK (rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED'))
+  CONSTRAINT tv_source_rights CHECK (rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED')),
+  CONSTRAINT tv_source_programme_rights CHECK (programme_rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED')),
+  CONSTRAINT tv_source_synopsis_rights CHECK (synopsis_rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED')),
+  CONSTRAINT tv_source_image_rights CHECK (image_rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED')),
+  CONSTRAINT tv_source_logo_rights CHECK (logo_rights_status IN ('UNREVIEWED','APPROVED','REJECTED','EXPIRED'))
 );
 CREATE TABLE IF NOT EXISTS public.tv_source_country (
   source_id UUID NOT NULL REFERENCES public.tv_source(id) ON DELETE CASCADE,
