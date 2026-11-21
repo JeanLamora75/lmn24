@@ -2,6 +2,7 @@
 import {useEffect,useMemo,useState} from "react";
 import {AdminDataPanel,AdminFilterPanel} from "@/components/admin/AdminWorkspace";
 import {AdminIconButton} from "@/components/admin/AdminIcon";
+import {TvSortableHeader,sortTvRows,nextTvSort,type TvSortState} from "./TvSortableHeader";
 
 type Provider={id:string;providerType:string;isActive:boolean;isSelected:boolean;
  freeApproved:boolean;rightsReviewed:boolean};
@@ -26,6 +27,16 @@ async function call<T>(path:string,method="GET",body?:unknown,signal?:AbortSigna
 }
 export function TvTranslationPanel({channels}:{channels:Channel[]}){
  const [providers,setProviders]=useState<Provider[]>([]);
+ const [providerSort,setProviderSort]=useState<TvSortState>(null);
+ const sortedProviders=useMemo(()=>sortTvRows(providers,providerSort,(p,key)=>{
+  switch(key){
+   case "name":return p.providerType;
+   case "free":return p.freeApproved;
+   case "rights":return p.rightsReviewed;
+   case "status":return p.isSelected?"Sélectionné":p.isActive?"Actif":"Inactif";
+   default:return null;
+  }
+ }),[providers,providerSort]);
  const [channel,setChannel]=useState("");
  const [descriptions,setDescriptions]=useState<Description[]>([]);
  const [statuses,setStatuses]=useState<LanguageStatus[]>([]);
@@ -138,8 +149,13 @@ export function TvTranslationPanel({channels}:{channels:Channel[]}){
      Il doit être vérifié comme totalement gratuit, sans carte bancaire ni facturation, et autorisé pour la republication.
      L’adaptateur doit être installé localement par l’exploitant. Aucun secret ni suivi de quota n’est affiché.</p>
     <div className="table-responsive"><table className="table">
-     <thead><tr><th>Fournisseur</th><th>Gratuité vérifiée</th><th>Droits</th><th>État</th><th>Action</th></tr></thead>
-     <tbody>{providers.map(p=><tr key={p.id}>
+     <thead><tr>
+      <TvSortableHeader label="Fournisseur" sortKey="name" sort={providerSort} onSort={k=>setProviderSort(s=>nextTvSort(s,k))}/>
+      <TvSortableHeader label="Gratuité vérifiée" sortKey="free" sort={providerSort} onSort={k=>setProviderSort(s=>nextTvSort(s,k))}/>
+      <TvSortableHeader label="Droits" sortKey="rights" sort={providerSort} onSort={k=>setProviderSort(s=>nextTvSort(s,k))}/>
+      <TvSortableHeader label="État" sortKey="status" sort={providerSort} onSort={k=>setProviderSort(s=>nextTvSort(s,k))}/>
+      <th>Action</th></tr></thead>
+     <tbody>{sortedProviders.map(p=><tr key={p.id}>
       <td>{p.providerType}</td><td>{p.freeApproved?"Oui":"Non"}</td>
       <td>{p.rightsReviewed?"Vérifiés":"À vérifier"}</td>
       <td>{p.isSelected?"Sélectionné":p.isActive?"Actif":"Inactif"}</td>
