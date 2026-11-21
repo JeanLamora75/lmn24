@@ -21,8 +21,13 @@ const countryUpdate = z.object({
 }).strict();
 const discovered = z.object({
   countryId: uuid, slug: z.string().trim().min(1).max(255).regex(/^[a-z0-9][a-z0-9-]*$/),
-  name: safeName, websiteUrl: z.string().nullable().optional(),
-  logoUrl: z.string().nullable().optional(),
+  name: safeName, websiteUrl: z.string().max(2048).nullable().optional(),
+  logoUrl: z.string().max(2048).nullable().optional(),
+  xUrl: z.string().max(2048).nullable().optional(),
+  facebookUrl: z.string().max(2048).nullable().optional(),
+  instagramUrl: z.string().max(2048).nullable().optional(),
+  youtubeUrl: z.string().max(2048).nullable().optional(),
+  officialLiveUrl: z.string().max(2048).nullable().optional(),
 }).strict();
 const associationUpdate = z.object({
   isActive: z.boolean(), needsReview: z.boolean(),
@@ -120,7 +125,9 @@ export class TvCatalogController {
     if (!parsed.success) throw new BadRequestException("Invalid TV channel");
     try {
       assertOfficialUrl(parsed.data.websiteUrl ?? null);
-      assertOfficialUrl(parsed.data.logoUrl ?? null);
+      for (const field of ["logoUrl","xUrl","facebookUrl","instagramUrl","youtubeUrl","officialLiveUrl"] as const) {
+        assertOfficialUrl(parsed.data[field] ?? null);
+      }
     } catch { throw new BadRequestException("Invalid official link"); }
     return this.catalog.discoverChannel(parsed.data);
   }
