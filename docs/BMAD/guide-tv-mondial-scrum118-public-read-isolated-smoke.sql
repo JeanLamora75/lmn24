@@ -2,8 +2,8 @@
 -- Disposable isolated TV PG schema ONLY, transaction rolled back.
 \set ON_ERROR_STOP on
 BEGIN;
-INSERT INTO public.country(id,iso_code2,iso_code3,slug,is_active)
-VALUES ('e1000000-0000-4000-8000-000000000001','ZZ','ZZZ','scrum118-fixture',TRUE);
+INSERT INTO public.country(id)
+VALUES ('e1000000-0000-4000-8000-000000000001');
 INSERT INTO public.tv_country(country_id,reference_timezone,is_active)
 VALUES ('e1000000-0000-4000-8000-000000000001','Europe/Paris',TRUE);
 INSERT INTO public.tv_channel(id,slug,name)
