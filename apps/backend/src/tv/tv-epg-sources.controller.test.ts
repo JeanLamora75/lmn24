@@ -8,16 +8,18 @@ const request={headers:{cookie:"lmn24_session=test"}};
 const id="a1000000-0000-4000-8000-000000000001";
 function setup(role:"ADMIN"|"EDITOR"|null,enabled=true){
  const listSources=vi.fn().mockResolvedValue([]);
+ const listPendingDiscoveries=vi.fn().mockResolvedValue({total:1,items:[]});
+ const importDiscoveredChannels=vi.fn().mockResolvedValue({created:1,existing:0,requiresReview:true,published:0});
  const listCountryPriorities=vi.fn().mockResolvedValue({countryId:id,items:[]});
  const replaceCountryPriorities=vi.fn().mockResolvedValue({countryId:id,updated:1});
  const testConnection=vi.fn().mockResolvedValue({ok:true,stage:"COMPLETE",code:null,bytes:123,programmes:1,channels:1,elapsedMs:5});
  const createSource=vi.fn().mockResolvedValue({id:"test"});
  const setRights=vi.fn().mockResolvedValue({id:"test"});
  const reviewExternalId=vi.fn().mockResolvedValue({id:"test"});
- const service={listSources,listCountryPriorities,replaceCountryPriorities,createSource,setRights,reviewExternalId,testConnection} as unknown as TvEpgSourcesService;
+ const service={listSources,listPendingDiscoveries,importDiscoveredChannels,listCountryPriorities,replaceCountryPriorities,createSource,setRights,reviewExternalId,testConnection} as unknown as TvEpgSourcesService;
  const auth={getUserFromSession:vi.fn().mockResolvedValue(role?{id:"id",role}:null)} as unknown as AuthService;
  const config={get:(name:string)=>name==="TV_CATALOG_ADMIN_ENABLED"?(enabled?"true":"false"):name==="TV_IMPORTS_ENABLED"?"true":undefined} as unknown as ConfigService;
- return {c:new TvEpgSourcesController(auth,service,config),listSources,listCountryPriorities,replaceCountryPriorities,createSource,setRights,reviewExternalId,testConnection};
+ return {c:new TvEpgSourcesController(auth,service,config),listSources,listPendingDiscoveries,importDiscoveredChannels,listCountryPriorities,replaceCountryPriorities,createSource,setRights,reviewExternalId,testConnection};
 }
 const right=(status:"UNREVIEWED"|"APPROVED"|"REJECTED"|"EXPIRED"="UNREVIEWED",reference:string|null=null)=>({status,reference});
 const rights={programme:right(),synopsis:right(),image:right(),logo:right()};
@@ -67,6 +69,28 @@ describe("SCRUM-116 ADMIN EPG source security",()=>{
   await expect(admin.c.replacePriorities(request,id,{items:[{
    sourceId:id,countryId:id,priority:0,isActive:true,
   }]})).rejects.toMatchObject({status:400});
+ });
+ it("lists pending EPG channels and restricts catalogue creation to admin with explicit country",async()=>{
+  const anon=setup(null);
+  await expect(anon.c.listDiscoveries(request,"1","")).rejects.toMatchObject({status:401});
+  await expect(anon.c.importDiscoveries(request,{countryId:id,mappingIds:[id]}))
+   .rejects.toMatchObject({status:401});
+  expect(anon.importDiscoveredChannels).not.toHaveBeenCalled();
+  const editor=setup("EDITOR");
+  await expect(editor.c.importDiscoveries(request,{countryId:id,mappingIds:[id]}))
+   .rejects.toMatchObject({status:403});
+  const admin=setup("ADMIN");
+  await expect(admin.c.listDiscoveries(request,"1",""))
+   .resolves.toEqual({total:1,items:[]});
+  expect(admin.listPendingDiscoveries).toHaveBeenCalledWith(50,0,"");
+  for(const body of [{mappingIds:[id]},{countryId:id,mappingIds:[]},
+    {countryId:id,mappingIds:[id,id]},{countryId:"invalid",mappingIds:[id]}]){
+   await expect(admin.c.importDiscoveries(request,body))
+    .rejects.toMatchObject({status:400});
+  }
+  await expect(admin.c.importDiscoveries(request,{countryId:id,mappingIds:[id]}))
+   .resolves.toMatchObject({created:1,published:0,requiresReview:true});
+  expect(admin.importDiscoveredChannels).toHaveBeenCalledWith(id,[id]);
  });
  it("records a manually selected right status without mandatory evidence",async()=>{
   const s=setup("ADMIN");
