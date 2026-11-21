@@ -54,6 +54,16 @@ export class TvImportExecutionService {
    throw error;
   }
  }
+ /** Retry exactly the failed scopes and immediately dispatch their worker.
+  * A server-side preflight prevents creating a second stranded QUEUED run.
+  */
+ async retryFailedImport(originalRunId:string){
+  if(!this.readiness().ready)throw new ServiceUnavailableException(
+   "TV_SOURCE_USE_NOT_QUALIFIED: retry execution unavailable");
+  const next=await this.runs.retryFailed(originalRunId);
+  const execution=await this.startDiscovery(next.id);
+  return {...execution,fromRunId:originalRunId,retried:next.retried};
+ }
  async startDiscovery(runId:string){
   const state=this.readiness();
   if(!state.ready)throw new ServiceUnavailableException(
