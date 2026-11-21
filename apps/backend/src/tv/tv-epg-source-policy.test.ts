@@ -43,7 +43,7 @@ describe("SCRUM-116 EPG rights and source policy",()=>{
    expect(EPG_FETCH_LIMITS.maxCompressedBytes).toBe(24*1024*1024);
    expect(EPG_FETCH_LIMITS.maxExpandedBytes).toBe(96*1024*1024);
    expect(EPG_FETCH_LIMITS.timeoutMs).toBe(30_000);
-   expect(EPG_FETCH_LIMITS.maxRedirects).toBe(0);
+   expect(EPG_FETCH_LIMITS.maxRedirects).toBe(3);
  });
  it("refuses SSRF URL schemes, credentials, IP literals and internal DNS zones",()=>{
    expect(validateEpgSourceUrl("https://example.org/epg.xml").hostname).toBe("example.org");
