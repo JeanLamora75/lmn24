@@ -19,7 +19,7 @@ La table d'association pays/source utilise désormais une contrainte `UNIQUE(cou
 
 ### Domaine/backend
 - `apps/backend/src/tv/tv-epg-source-policy.ts` : filtre de contenu publiable au niveau de chaque famille, provenance des droits obligatoire, ordre des sources par priorité et pays, interdiction de confirmer une correspondance EPG sans `channelId`, validation des URL des sources.
-- `tv-epg-sources.service.ts` : liste des sources et dernier import, création source (3 formats XMLTV, XMLTV_GZIP et JSON), mise à jour des droits, priorités transactionnelles par pays, création de proposition `PENDING_REVIEW` sur identifiant externe exact, validation/rejet explicite du mapping. Toutes les requêtes sont liées à des paramètres SQL.
+- `tv-epg-sources.service.ts` : liste des sources et dernier import, création source (3 formats XMLTV, XMLTV_GZIP et JSON), édition de sa configuration (nom, URL, format, statut) sans effacer les preuves de droits, mise à jour des droits, liste des mappings par source, priorités transactionnelles par pays, création de proposition `PENDING_REVIEW` sur identifiant externe exact, validation/rejet explicite du mapping. Toutes les requêtes sont liées à des paramètres SQL.
 - `tv-epg-sources.controller.ts` : endpoints `/admin/tv/epg-sources`, contrôle **session + rôle ADMIN** sur chaque opération, contrôle additionnel `TV_CATALOG_ADMIN_ENABLED=true` (**non activé**) et exclusion de Swagger. Aucune route publique.
 - `tv-catalog.module.ts` : intégration au module d'administration existant. Aucune interface frontend admin ajoutée : elle dépend de SCRUM-122.
 
