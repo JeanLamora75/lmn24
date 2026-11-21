@@ -27,10 +27,10 @@ type Source={id:string;name:string;sourceUrl:string;format:string;isActive:boole
  countryId:string|null;priority:number|null;lastImportStatus:string|null};
 type ImportRun={id:string;trigger:string;requestedDays:number;status:string;createdAt:string;
  scopeCount:number;succeeded:number;failed:number};
-type ImportDetail=ImportRun&{scopes:{id:string;countryId:string;sourceId:string|null;
+type ImportDetail=ImportRun&{scopes:{id:string;countryId:string;sourceId:string|null;sourceName?:string|null;
  status:string;attempts:number;errorMessage:string|null}[];
  privateDrafts?:{draftDays:number;draftAirings:number;draftProgrammes:number}};
-type ImportEvent={id:string;occurredAt:string;eventType:string;level:string;message:string};
+type ImportEvent={id:string;scopeId?:string|null;occurredAt:string;eventType:string;level:string;message:string};
 const failureMessages:Record<string,string>={
  EPG_HTTP_404:"Téléchargement · HTTP 404 : fichier absent. Vérifier que la source pointe vers un fichier EPG actuel.",
  EPG_HTTP_403:"Téléchargement · HTTP 403 : accès refusé. Vérifier les autorisations ou restrictions du fournisseur.",
@@ -1019,7 +1019,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
        Aucune de ces révisions n’est publiée.
       </p>}
      <ul>
-     {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {sources.find(source=>source.id===s.sourceId)?.name??("Source "+(s.sourceId??"inconnue"))} · {s.status}
+     {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {s.sourceName??sources.find(source=>source.id===s.sourceId)?.name??("Source "+(s.sourceId??"inconnue"))} · {s.status}
        {s.errorMessage?" — "+importDiagnostic(s.errorMessage):""}</li>)}</ul>
      {["PARTIAL","ERROR","INTERRUPTED"].includes(detail.status)&&detail.scopes.some(s=>["ERROR","INTERRUPTED"].includes(s.status))&&
       <button type="button" className="btn btn-outline-primary" onClick={async()=>{
@@ -1027,7 +1027,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
         setReload(v=>v+1);}catch(e){setError((e as Error).message);}
       }}>Relancer uniquement les échecs</button>}
      <h3 className="h6 mt-3">Journal d’événements</h3>
-     <ul>{events.map(e=><li key={e.id}>{new Date(e.occurredAt).toLocaleString("fr-FR")} · {e.level} · {e.eventType} : {importDiagnostic(e.message)}</li>)}</ul>
+     <ul>{events.map(e=>{const scope=detail.scopes.find(s=>s.id===e.scopeId);return <li key={e.id}>{new Date(e.occurredAt).toLocaleString("fr-FR")} · {e.level} · {e.eventType}{scope?" · "+region(countryCodes.get(scope.countryId)??"",locale,countryNames)+" / "+(scope.sourceName??sources.find(s=>s.id===scope.sourceId)?.name??"Source inconnue"):""} : {importDiagnostic(e.message)}</li>;})}</ul>
     </>:<p>Chargement…</p>}
    </div>
   </AdminDataPanel>}
