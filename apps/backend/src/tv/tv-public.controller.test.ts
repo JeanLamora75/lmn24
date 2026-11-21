@@ -12,12 +12,13 @@ function setup(open=false){
  const channelDetails=vi.fn().mockResolvedValue({channel:{id:UUID}});
  const channelAirings=vi.fn().mockResolvedValue({airings:[]});
  const airingDetails=vi.fn().mockResolvedValue({id:UUID});
- const service={countries,country,schedule,channelDetails,channelAirings,airingDetails,
+ const worldSearch=vi.fn().mockResolvedValue({status:"OK",channels:{status:"OK",items:[],hasNext:false},programmes:{status:"OK",items:[],hasNext:false}});
+ const service={countries,country,schedule,channelDetails,channelAirings,airingDetails,worldSearch,
   responseLanguages:()=>["fr","en"]} as unknown as TvPublicService;
  const config={get:(key:string)=>["TV_PUBLIC_ENABLED","TV_PUBLIC_RELEASE_APPROVED"].includes(key)
     ? (open?"true":"false"):undefined} as unknown as ConfigService;
  return {controller:new TvPublicController(service,config),schedule,countries,country,
-   channelDetails,channelAirings,airingDetails};
+   channelDetails,channelAirings,airingDetails,worldSearch};
 }
 describe("SCRUM-118 public TV HTTP controllers and embargo",()=>{
  it("keeps ALL routes 404 no-store before GO without touching DB",async()=>{
@@ -27,6 +28,8 @@ describe("SCRUM-118 public TV HTTP controllers and embargo",()=>{
   await expect(s.controller.channel(UUID,{country:"FR"})).rejects.toMatchObject({status:404});
   await expect(s.controller.channelAirings(UUID,{})).rejects.toMatchObject({status:404});
   await expect(s.controller.airing(UUID)).rejects.toMatchObject({status:404});
+  await expect(s.controller.search({q:"2"})).rejects.toMatchObject({status:404});
+  expect(s.worldSearch).not.toHaveBeenCalled();
   expect(s.countries).not.toHaveBeenCalled();
   expect(s.schedule).not.toHaveBeenCalled();
   expect(shouldBlockTvApi("/public/tv/schedule",{})).toBe(true);
@@ -69,4 +72,16 @@ describe("SCRUM-118 public TV HTTP controllers and embargo",()=>{
     datePolicy:{daysAhead:7,reference:"COUNTRY_TIME_ZONE"},
   });
  });
+ it("validates worldwide search fields and independent pagination",async()=>{
+  const s=setup(true);
+  await expect(s.controller.search({q:"002",channelsPage:"2",programmesPage:"3"}))
+   .resolves.toMatchObject({status:"OK"});
+  expect(s.worldSearch).toHaveBeenCalledWith({
+   q:"002",channelsPage:2,programmesPage:3,pageSize:30,
+  });
+  await expect(s.controller.search({q:"   "})).rejects.toMatchObject({status:400});
+  await expect(s.controller.search({q:"2",pageSize:"500"})).rejects.toMatchObject({status:400});
+  await expect(s.controller.search({q:"2",country:"FR"})).rejects.toMatchObject({status:400});
+ });
+
 });
