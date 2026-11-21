@@ -93,6 +93,54 @@ function CountryEditor({item,locale,onClose,onSaved}:{item:Country;locale:string
   </form>
  </Modal>;
 }
+function ChannelCreateEditor({countries,locale,onClose,onSaved}:{countries:Country[];locale:string;onClose:()=>void;onSaved:()=>void}){
+ const [countryId,setCountryId]=useState(countries[0]?.countryId??"");
+ const [name,setName]=useState("");
+ const [slug,setSlug]=useState("");
+ const [websiteUrl,setWebsiteUrl]=useState("");
+ const [logoUrl,setLogoUrl]=useState("");
+ const [busy,setBusy]=useState(false);
+ const [error,setError]=useState("");
+ return <Modal title="Ajouter une chaîne TV" onClose={onClose}>
+  <form onSubmit={async e=>{
+   e.preventDefault();if(busy)return;
+   setBusy(true);setError("");
+   try{
+    await request("catalog/channels/discover","POST",{
+     countryId,slug:slug.trim(),name:name.trim(),
+     websiteUrl:websiteUrl.trim()||null,logoUrl:logoUrl.trim()||null,
+    });
+    onSaved();
+   }catch(err){setError((err as Error).message);}finally{setBusy(false);}
+  }}>
+   <label className="form-label" htmlFor="tv-create-country">Pays</label>
+   <select id="tv-create-country" className="form-select mb-3" value={countryId}
+    required onChange={e=>setCountryId(e.target.value)}>
+    {countries.map(c=><option key={c.countryId} value={c.countryId}>{region(c.isoCode2,locale)}</option>)}
+   </select>
+   <label className="form-label" htmlFor="tv-create-name">Nom de la chaîne</label>
+   <input id="tv-create-name" className="form-control mb-3" required maxLength={255}
+    value={name} onChange={e=>setName(e.target.value)}/>
+   <label className="form-label" htmlFor="tv-create-slug">Identifiant (slug)</label>
+   <input id="tv-create-slug" className="form-control mb-3" required maxLength={255}
+    pattern="[a-z0-9][a-z0-9-]*" placeholder="exemple-tv"
+    value={slug} onChange={e=>setSlug(e.target.value.toLowerCase())}/>
+   <label className="form-label" htmlFor="tv-create-website">Site officiel (facultatif)</label>
+   <input id="tv-create-website" type="url" className="form-control mb-3" maxLength={2048}
+    value={websiteUrl} onChange={e=>setWebsiteUrl(e.target.value)}/>
+   <label className="form-label" htmlFor="tv-create-logo">URL du logo officiel (facultatif)</label>
+   <input id="tv-create-logo" type="url" className="form-control mb-3" maxLength={2048}
+    value={logoUrl} onChange={e=>setLogoUrl(e.target.value)}/>
+   <p className="text-body-secondary">La chaîne sera créée inactive et à vérifier. Le numéro national pourra être renseigné ensuite.</p>
+   {countries.length===0&&<p className="alert alert-warning">Configurez d'abord un pays dans l'onglet Pays.</p>}
+   {error&&<p role="alert" className="alert alert-danger">{error}</p>}
+   <div className="d-flex justify-content-end gap-2">
+    <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Annuler</button>
+    <button type="submit" className="btn btn-primary" disabled={busy||countries.length===0||!countryId}>Créer la chaîne</button>
+   </div>
+  </form>
+ </Modal>;
+}
 function ChannelEditor({item,onClose,onSaved}:{item:Channel;onClose:()=>void;onSaved:()=>void}){
  const [number,setNumber]=useState(item.manualNumber===null?"":String(item.manualNumber));
  const [active,setActive]=useState(item.isActive);
@@ -243,7 +291,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [events,setEvents]=useState<ImportEvent[]>([]);
  const [error,setError]=useState("");const [notice,setNotice]=useState("");
  const [loading,setLoading]=useState(true);const [reload,setReload]=useState(0);
- const [dialog,setDialog]=useState<"source"|"import"|null>(null);
+ const [dialog,setDialog]=useState<"source"|"import"|"channel"|null>(null);
  const [countryEditor,setCountryEditor]=useState<Country|null>(null);
  const [channelEditor,setChannelEditor]=useState<Channel|null>(null);
  const [sourceEditor,setSourceEditor]=useState<Source|null>(null);
@@ -310,7 +358,8 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  },[view,countries,channels,sources,runs,filter,country,status]);
  const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
  const visible=filtered.slice((Math.min(page,pages)-1)*PAGE_SIZE,Math.min(page,pages)*PAGE_SIZE);
- const action=view==="sources"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("source")}>Ajouter une source EPG</button>
+ const action=view==="channels"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("channel")}>Ajouter une chaîne</button>
+   :view==="sources"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("source")}>Ajouter une source EPG</button>
   :view==="imports"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("import")}>Lancer un import</button>:undefined;
  return <main className="container-fluid px-2 px-md-4 py-3">
   <AdminPageHeading title={"Guide TV — "+LABELS[view]}
@@ -415,7 +464,8 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   {countryEditor&&<CountryEditor item={countryEditor} locale={locale} onClose={()=>setCountryEditor(null)} onSaved={saved}/>}
   {channelEditor&&<ChannelEditor item={channelEditor} onClose={()=>setChannelEditor(null)} onSaved={saved}/>}
   {sourceEditor&&<TvEpgSourceEditor item={sourceEditor} onClose={()=>setSourceEditor(null)} onSaved={saved}/>}
-  {dialog==="source"&&<SourceEditor onClose={()=>setDialog(null)} onSaved={saved}/>}
+  {dialog==="channel"&&<ChannelCreateEditor countries={countries} locale={locale} onClose={()=>setDialog(null)} onSaved={saved}/>}
+   {dialog==="source"&&<SourceEditor onClose={()=>setDialog(null)} onSaved={saved}/>}
   {dialog==="import"&&<ImportEditor countries={countries} locale={locale} onClose={()=>setDialog(null)}
    onSaved={id=>{saved();void openRun(id);setNotice("Import mis en file d’attente.");}}/>}
  </main>;
