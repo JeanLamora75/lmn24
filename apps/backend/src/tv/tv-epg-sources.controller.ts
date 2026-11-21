@@ -105,13 +105,15 @@ export class TvEpgSourcesController {
  @Get("discoveries")
  @Header("Cache-Control","no-store")
  async listDiscoveries(@Req() request:ReqLike,
-  @Query("page") rawPage?:string,@Query("search") rawSearch?:string){
+  @Query("page") rawPage?:string,@Query("search") rawSearch?:string,
+  @Query("countryId") rawCountryId?:string){
    await this.assertAdmin(request);
    const page=z.coerce.number().int().min(1).max(10000).safeParse(rawPage??"1");
    const search=z.string().max(120).safeParse(rawSearch??"");
-   if(!page.success||!search.success)
+   const countryId=rawCountryId&&rawCountryId!=="UNCLASSIFIED"?rawCountryId:null;
+   if(!page.success||!search.success||(countryId&&!uuid.safeParse(countryId).success))
      throw new BadRequestException("Invalid EPG discovery filters");
-   return this.service.listPendingDiscoveries(50,(page.data-1)*50,search.data);
+   return this.service.listPendingDiscoveries(50,(page.data-1)*50,search.data,countryId);
  }
 
  @Get(":id/mappings")
