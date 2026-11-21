@@ -13,6 +13,8 @@ export type TvView="overview"|"countries"|"channels"|"sources"|"imports"|"transl
 type Country={countryId:string;isoCode2:string;referenceTimezone:string;isActive:boolean;
  channelCount:number;approvedChannelCount:number;version:string};
 type Channel={id:string;countryId:string;channelId:string;slug:string;name:string;
+ websiteUrl:string|null;xUrl:string|null;facebookUrl:string|null;
+ instagramUrl:string|null;youtubeUrl:string|null;officialLiveUrl:string|null;
  isActive:boolean;needsReview:boolean;effectiveNumber:number|null;manualNumber:number|null;
  officialNumber:number|null;assignedNumber:number|null;defaultVariantId:string|null;version:string};
 type Source={id:string;name:string;sourceUrl:string;format:string;isActive:boolean;version:string;
@@ -93,12 +95,41 @@ function CountryEditor({item,locale,onClose,onSaved}:{item:Country;locale:string
   </form>
  </Modal>;
 }
+const channelUrlFields=[
+ {key:"websiteUrl",label:"Site officiel"},
+ {key:"logoUrl",label:"Logo officiel"},
+ {key:"officialLiveUrl",label:"Diffusion en direct officielle"},
+ {key:"facebookUrl",label:"Facebook"},
+ {key:"instagramUrl",label:"Instagram"},
+ {key:"youtubeUrl",label:"YouTube"},
+ {key:"xUrl",label:"X / Twitter"},
+] as const;
+type ChannelUrlKey=(typeof channelUrlFields)[number]["key"];
+type ChannelUrls=Record<ChannelUrlKey,string>;
+function initialChannelUrls(item?:Channel):ChannelUrls{
+ return Object.fromEntries(channelUrlFields.map(({key})=>[key,item?.[key]??""])) as ChannelUrls;
+}
+function ChannelUrlInputs({values,onChange}:{values:ChannelUrls;onChange:(next:ChannelUrls)=>void}){
+ return <fieldset className="mt-3"><legend className="fs-6 fw-bold">Liens officiels et réseaux sociaux</legend>
+  <div className="row g-3">
+   {channelUrlFields.map(({key,label})=><label key={key} className="col-12 col-md-6">{label}
+    <input type="url" className="form-control" maxLength={2048} value={values[key]}
+     placeholder="https://" onChange={e=>onChange({...values,[key]:e.target.value})}/>
+   </label>)}
+  </div>
+ </fieldset>;
+}
+function channelUrlPayload(values:ChannelUrls){
+ return Object.fromEntries(channelUrlFields.map(({key})=>[key,values[key].trim()||null]));
+}
 function ChannelCreateEditor({countries,locale,onClose,onSaved}:{countries:Country[];locale:string;onClose:()=>void;onSaved:()=>void}){
  const [countryId,setCountryId]=useState(countries[0]?.countryId??"");
  const [name,setName]=useState("");
  const [slug,setSlug]=useState("");
- const [websiteUrl,setWebsiteUrl]=useState("");
- const [logoUrl,setLogoUrl]=useState("");
+ const [urls,setUrls]=useState<ChannelUrls>(()=>initialChannelUrls());
+ const [number,setNumber]=useState("");
+ const [active,setActive]=useState(false);
+ const [review,setReview]=useState(true);
  const [busy,setBusy]=useState(false);
  const [error,setError]=useState("");
  return <Modal title="Ajouter une chaîne TV" onClose={onClose}>
@@ -106,10 +137,19 @@ function ChannelCreateEditor({countries,locale,onClose,onSaved}:{countries:Count
    e.preventDefault();if(busy)return;
    setBusy(true);setError("");
    try{
-    await request("catalog/channels/discover","POST",{
-     countryId,slug:slug.trim(),name:name.trim(),
-     websiteUrl:websiteUrl.trim()||null,logoUrl:logoUrl.trim()||null,
+    const n=number.trim()===""?null:Number(number);
+    if(n!==null&&(!Number.isInteger(n)||n<1||n>2147483647))throw new Error("Numéro national invalide.");
+    if(active&&n===null)throw new Error("Une chaîne active nécessite un numéro national.");
+    const created=await request<{discoveredAssociations:{id:string}[]}>("catalog/channels/discover","POST",{
+     countryId,slug:slug.trim(),name:name.trim(),...channelUrlPayload(urls),
     });
+    const association=created.discoveredAssociations[0];
+    if(association&&(n!==null||active||!review)){
+     await request("catalog/associations/"+association.id,"PATCH",{
+      isActive:active,needsReview:review,manualNumber:n,
+      officialNumber:null,assignedNumber:null,defaultVariantId:null,
+     });
+    }
     onSaved();
    }catch(err){setError((err as Error).message);}finally{setBusy(false);}
   }}>
@@ -125,13 +165,17 @@ function ChannelCreateEditor({countries,locale,onClose,onSaved}:{countries:Count
    <input id="tv-create-slug" className="form-control mb-3" required maxLength={255}
     pattern="[a-z0-9][a-z0-9-]*" placeholder="exemple-tv"
     value={slug} onChange={e=>setSlug(e.target.value.toLowerCase())}/>
-   <label className="form-label" htmlFor="tv-create-website">Site officiel (facultatif)</label>
-   <input id="tv-create-website" type="url" className="form-control mb-3" maxLength={2048}
-    value={websiteUrl} onChange={e=>setWebsiteUrl(e.target.value)}/>
-   <label className="form-label" htmlFor="tv-create-logo">URL du logo officiel (facultatif)</label>
-   <input id="tv-create-logo" type="url" className="form-control mb-3" maxLength={2048}
-    value={logoUrl} onChange={e=>setLogoUrl(e.target.value)}/>
-   <p className="text-body-secondary">La chaîne sera créée inactive et à vérifier. Le numéro national pourra être renseigné ensuite.</p>
+   <label className="form-label" htmlFor="tv-create-number">Numéro national manuel (facultatif)</label>
+   <input id="tv-create-number" type="number" min={1} className="form-control mb-3"
+    value={number} onChange={e=>setNumber(e.target.value)}/>
+   <label className="form-check mb-2"><input type="checkbox" className="form-check-input"
+    checked={active} onChange={e=>setActive(e.target.checked)}/>
+    <span className="form-check-label">Active dans ce pays</span></label>
+   <label className="form-check mb-3"><input type="checkbox" className="form-check-input"
+    checked={review} onChange={e=>setReview(e.target.checked)}/>
+    <span className="form-check-label">À vérifier (masquée du public)</span></label>
+   <ChannelUrlInputs values={urls} onChange={setUrls}/>
+   <p className="text-body-secondary mt-3">Une chaîne nouvelle est inactive et à vérifier par défaut.</p>
    {countries.length===0&&<p className="alert alert-warning">Configurez d'abord un pays dans l'onglet Pays.</p>}
    {error&&<p role="alert" className="alert alert-danger">{error}</p>}
    <div className="d-flex justify-content-end gap-2">
@@ -142,27 +186,38 @@ function ChannelCreateEditor({countries,locale,onClose,onSaved}:{countries:Count
  </Modal>;
 }
 function ChannelEditor({item,onClose,onSaved}:{item:Channel;onClose:()=>void;onSaved:()=>void}){
+ const [name,setName]=useState(item.name);
+ const [urls,setUrls]=useState<ChannelUrls>(()=>initialChannelUrls(item));
  const [number,setNumber]=useState(item.manualNumber===null?"":String(item.manualNumber));
  const [active,setActive]=useState(item.isActive);
  const [review,setReview]=useState(item.needsReview);
  const [busy,setBusy]=useState(false);
  const [error,setError]=useState("");
- return <Modal title={"Diffusion — "+item.name} onClose={onClose}>
+ return <Modal title={"Modifier la chaîne — "+item.name} onClose={onClose}>
   <form onSubmit={async e=>{e.preventDefault();if(busy)return;setBusy(true);setError("");
    const n=number.trim()===""?null:Number(number);
    if(n!==null&&(!Number.isInteger(n)||n<1||n>2147483647)){
     setError("Numéro national invalide.");setBusy(false);return;
    }
-   try{await request("catalog/associations/"+item.id,"PATCH",{
-    isActive:active,needsReview:review,manualNumber:n,
-    officialNumber:item.officialNumber,assignedNumber:item.assignedNumber,
-    defaultVariantId:item.defaultVariantId,expectedVersion:item.version,
-   });onSaved();}catch(err){setError((err as Error).message);}finally{setBusy(false);}
+   try{
+    await request("catalog/channels/"+item.channelId+"/profile","PATCH",{
+     name:name.trim(),...channelUrlPayload(urls),
+    });
+    await request("catalog/associations/"+item.id,"PATCH",{
+     isActive:active,needsReview:review,manualNumber:n,
+     officialNumber:item.officialNumber,assignedNumber:item.assignedNumber,
+     defaultVariantId:item.defaultVariantId,expectedVersion:item.version,
+    });
+    onSaved();
+   }catch(err){setError((err as Error).message);}finally{setBusy(false);}
   }}>
+   <label htmlFor="tv-channel-name" className="form-label">Nom de la chaîne</label>
+   <input id="tv-channel-name" className="form-control mb-3" required maxLength={255}
+    value={name} onChange={e=>setName(e.target.value)}/>
    <p className="text-body-secondary">Numéro actuel : {item.effectiveNumber??"Non attribué"}.
     La correction manuelle prime sur les numéros importés.</p>
    <label htmlFor="tv-manual-number" className="form-label">Numéro national manuel</label>
-   <input id="tv-manual-number" type="number" min="1" className="form-control mb-3"
+   <input id="tv-manual-number" type="number" min={1} className="form-control mb-3"
     value={number} onChange={e=>setNumber(e.target.value)}/>
    <label className="form-check mb-2">
     <input type="checkbox" className="form-check-input" checked={active}
@@ -174,8 +229,9 @@ function ChannelEditor({item,onClose,onSaved}:{item:Channel;onClose:()=>void;onS
      onChange={e=>setReview(e.target.checked)}/>
     <span className="form-check-label">À vérifier (masquée du public)</span>
    </label>
+   <ChannelUrlInputs values={urls} onChange={setUrls}/>
    {error&&<p role="alert" className="alert alert-danger">{error}</p>}
-   <div className="d-flex gap-2 justify-content-end">
+   <div className="d-flex gap-2 justify-content-end mt-3">
     <button className="btn btn-outline-secondary" type="button" onClick={onClose}>Annuler</button>
     <button className="btn btn-primary" type="submit" disabled={busy}>Enregistrer</button>
    </div>
