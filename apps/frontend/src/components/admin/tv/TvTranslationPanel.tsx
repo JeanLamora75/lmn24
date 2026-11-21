@@ -10,8 +10,8 @@ const langs=["fr","en","de","es","pt","it","ru","nl"] as const;
 const root="/api/admin/tv/translations/";
 async function call<T>(path:string,method="GET",body?:unknown):Promise<T>{
  const response=await fetch(root+path,{cache:"no-store",method,
-  headers:body===undefined?undefined:{"content-type":"application/json"},
-  body:body===undefined?undefined:JSON.stringify(body)});
+  headers:body===undefined?{}:{"content-type":"application/json"},
+  body:body===undefined?null:JSON.stringify(body)});
  if(!response.ok)throw new Error(response.status===409?
   "Modification concurrente ou fournisseur non éligible ; actualisez.":
   response.status===503?"Module de traductions non configuré.":"Impossible de charger ou enregistrer les données.");
