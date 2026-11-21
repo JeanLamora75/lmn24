@@ -53,6 +53,7 @@ export class TvEpgSourcesService {
         const decoded=await decodeEpgBuffer(data,source.format);
         return {ok:true,stage:"COMPLETE" as const,code:null,
           bytes,programmes:decoded.programmes.length,
+          skippedInvalidDuration:decoded.skippedInvalidDuration??0,
           channels:new Set(decoded.programmes.map(p=>p.externalChannelId)).size,
           elapsedMs:Date.now()-started};
       }catch(error){
