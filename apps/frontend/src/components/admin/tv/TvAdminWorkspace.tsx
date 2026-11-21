@@ -51,7 +51,20 @@ async function request<T>(path:string,method="GET",payload?:unknown):Promise<T>{
  const response=await fetch(api+path,{method,cache:"no-store",
   headers:payload===undefined?{}:{"content-type":"application/json"},
   body:payload===undefined?null:JSON.stringify(payload)});
- if(!response.ok)throw Object.assign(new Error(messageFor(response.status)),{status:response.status});
+ if(!response.ok){
+  let code="";
+  try{
+   const body=await response.json() as {message?:unknown};
+   if(typeof body.message==="string")code=body.message;
+  }catch{/* Proxy or upstream may return a non-JSON error. */}
+  const reason=path==="import-runs"&&method==="POST"
+   &&(code==="No enabled global EPG sources for requested countries"||code==="TV_NO_ACTIVE_EPG_SOURCE")
+    ?"Aucune source EPG active pour ce pays. Activez une source qualifiée avant de lancer un import."
+    :path==="import-runs"&&method==="POST"&&code==="TV_IMPORT_SCOPE_BUSY"
+    ?"Un import est déjà en attente ou en cours pour ce pays."
+    :messageFor(response.status)+" (HTTP "+response.status+").";
+  throw Object.assign(new Error(reason),{status:response.status});
+ }
  return await response.json() as T;
 }
 function Modal({title,children,onClose}:{title:string;children:React.ReactNode;onClose:()=>void}){
