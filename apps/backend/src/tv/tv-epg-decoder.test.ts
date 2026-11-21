@@ -25,6 +25,21 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   expect(decoded.programmes).toHaveLength(1);
   expect(decoded.programmes[0]?.originalTitle).toBe("Informations");
  });
+ it("accepts the uploaded NZXMLTV Freeview DTD as inert metadata",async()=>{
+   const xml='<?xml version="1.0" encoding="utf-8"?>\n'
+    +'<!DOCTYPE tv SYSTEM "https://nzxmltv.com/nzxmltv.dtd">\n'
+    +'<tv generator-info-name="NZXMLTV"><channel id="tvnz1"><display-name>TVNZ 1</display-name></channel>'
+    +'<programme start="20261121134000 +0000" stop="20261121143000 +0000" channel="tvnz1">'
+    +'<title>TVNZ1 Quiz</title></programme></tv>';
+   const decoded=await decodeEpgBuffer(Buffer.from(xml,"utf8"),"XMLTV");
+   expect(decoded.programmes).toHaveLength(1);
+   expect(decoded.programmes[0]?.externalChannelId).toBe("tvnz1");
+ });
+ it("rejects malicious ENTITY declarations even with an allowed DTD identifier",async()=>{
+   const xml='<!DOCTYPE tv SYSTEM "https://nzxmltv.com/nzxmltv.dtd" [<!ENTITY xx "EXPAND">]><tv></tv>';
+   await expect(decodeEpgBuffer(Buffer.from(xml),"XMLTV"))
+    .rejects.toThrow("EPG_XML_SECURITY_REJECTED");
+ });
  it("rejects unsupported doctypes in SAX XMLTV parsing",async()=>{
   const xml='<!DOCTYPE tv SYSTEM "malicious.dtd"><tv></tv>';
   await expect(decodeEpgBuffer(Buffer.from(xml),"XMLTV"))
