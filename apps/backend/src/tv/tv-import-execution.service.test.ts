@@ -45,6 +45,18 @@ describe("Admin manual discovery worker dispatch",()=>{
   }finally{process.env.NODE_ENV=previous;}
   expect(s.create).not.toHaveBeenCalled();
  });
+ it("starts local development discovery with one click without production ingestion flags",async()=>{
+  const s=setup({DATABASE_URL:"postgresql://u:p@localhost:5432/lmn24",
+   TV_EPG_NETWORK_ENABLED:"false",TV_MIGRATION_QUALIFIED:"false",
+   TV_EPG_SOURCE_USE_APPROVED:"false"});
+  const previous=process.env.NODE_ENV;
+  process.env.NODE_ENV="development";
+  try{
+   await expect(s.service.launchManualImport({days:1,countryId:runId}))
+    .resolves.toMatchObject({status:"STARTED",mode:"DISCOVERY"});
+   expect(mock.run).toHaveBeenCalledOnce();
+  }finally{process.env.NODE_ENV=previous;}
+ });
  it("one click starts import, without leaving a merely queued success",async()=>{
   const s=setup();
   await expect(s.service.launchManualImport({days:1,countryId:runId}))
