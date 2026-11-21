@@ -17,6 +17,19 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   expect(decoded.coverage).toEqual([]);
   expect(parseXmltvTime("20260329030000 +0200")).toBe("2026-03-29T01:00:00.000Z");
  });
+ it("reads the channel logo and country from the supplied Teleonline XMLTV sample",async()=>{
+  const xml='<tv><channel id="DAZN Baloncesto 3" country="es">'
+   +'<display-name>DAZN Baloncesto 3</display-name>'
+   +'<display-name>DAZN Baloncesto 3 HD</display-name>'
+   +'<icon src="https://raw.githubusercontent.com/davidmuma/picons_dobleM/master/icon/DAZN%20Baloncesto%203.png"/>'
+   +'</channel></tv>';
+  const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
+  expect(decoded.channels).toEqual([{
+   externalId:"DAZN Baloncesto 3",name:"DAZN Baloncesto 3",
+   countryIso2:"ES",
+   logoUrl:"https://raw.githubusercontent.com/davidmuma/picons_dobleM/master/icon/DAZN%20Baloncesto%203.png",
+  }]);
+ });
  it("maps lowercase country attribute from a worldwide Teleonline channel",async()=>{
   const xml='<tv><channel id="Canal.Discovery.World.Latinoamérica.ar" country="ar">'
    +'<display-name>Canal Discovery</display-name></channel>'
@@ -25,8 +38,8 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
   expect(decoded.channels).toEqual([
    {externalId:"Canal.Discovery.World.Latinoamérica.ar",
-    name:"Canal Discovery",countryIso2:"AR"},
-   {externalId:"No.Country",name:"Unknown",countryIso2:null},
+    name:"Canal Discovery",countryIso2:"AR",logoUrl:null},
+   {externalId:"No.Country",name:"Unknown",countryIso2:null,logoUrl:null},
   ]);
  });
  it("preserves explicit XMLTV channel metadata without inventing any country",async()=>{
@@ -37,8 +50,8 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
    +'</tv>';
   const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
   expect(decoded.channels).toEqual([
-   {externalId:"fr-one",name:"France 1",countryIso2:"FR"},
-   {externalId:"global",name:"International",countryIso2:null},
+   {externalId:"fr-one",name:"France 1",countryIso2:"FR",logoUrl:null},
+   {externalId:"global",name:"International",countryIso2:null,logoUrl:null},
   ]);
   expect(decoded.programmes).toHaveLength(1);
  });
