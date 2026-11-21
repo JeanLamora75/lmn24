@@ -24,6 +24,11 @@ const scheduleQuery=z.object({
   page:pageQuery,pageSize:sizeQuery,
 }).strict();
 const countryQuery=z.object({locale:language}).strict();
+const searchQuery=z.object({
+  q:z.string().trim().min(1).max(120),
+  channelsPage:pageQuery,programmesPage:pageQuery,
+  pageSize:z.coerce.number().int().min(1).max(50).default(30),
+}).strict();
 const detailsQuery=z.object({country:iso2,locale:language}).strict();
 const airingsQuery=z.object({
   country:iso2,variantId:uuid,localDate:day,page:pageQuery,pageSize:sizeQuery,
@@ -90,6 +95,14 @@ export class TvPublicController {
     return this.dayCheck(()=>this.service.schedule({
       country:q.country,localDate,tab:q.tab,page:q.page,pageSize:q.pageSize,
     }));
+  }
+
+  @Get("search")
+  @Header("Cache-Control","no-store")
+  async search(@Query() query:unknown){
+    this.released();
+    const q=this.parse(searchQuery,query);
+    return this.service.worldSearch(q);
   }
 
   @Get("channels/:channelId")
