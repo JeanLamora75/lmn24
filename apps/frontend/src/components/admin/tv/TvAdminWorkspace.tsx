@@ -415,6 +415,105 @@ function SourceEditor({onClose,onSaved}:{onClose:()=>void;onSaved:()=>void}){
   </form>
  </Modal>;
 }
+type OrderedSource={sourceId:string;name:string;isActive:boolean;
+ countrySourceActive:boolean;priority:number|null};
+function SourcePrioritiesEditor({countries,locale,countryNames,onClose,onSaved}:{
+ countries:Country[];locale:string;countryNames:TvCountryNames;
+ onClose:()=>void;onSaved:()=>void;
+}){
+ const [countryId,setCountryId]=useState(countries[0]?.countryId??"");
+ const [items,setItems]=useState<OrderedSource[]>([]);
+ const [loading,setLoading]=useState(false);
+ const [busy,setBusy]=useState(false);
+ const [error,setError]=useState("");
+ useEffect(()=>{
+  if(!countryId){setItems([]);return;}
+  const controller=new AbortController();
+  setItems([]);setLoading(true);setError("");
+  void fetch(api+"epg-sources/countries/"+countryId+"/priorities",{
+   cache:"no-store",signal:controller.signal,
+  }).then(async response=>{
+   if(!response.ok)throw new Error(messageFor(response.status));
+   return response.json() as Promise<{items:OrderedSource[]}>;
+  }).then(payload=>{if(!controller.signal.aborted)setItems(payload.items);})
+   .catch(err=>{if(!controller.signal.aborted)setError((err as Error).message);})
+   .finally(()=>{if(!controller.signal.aborted)setLoading(false);});
+  return ()=>controller.abort();
+ },[countryId]);
+ function move(index:number,delta:number){
+  setItems(previous=>{
+   const target=index+delta;
+   if(target<0||target>=previous.length)return previous;
+   const next=[...previous];
+   [next[index],next[target]]=[next[target]!,next[index]!];
+   return next;
+  });
+ }
+ async function save(){
+  if(busy||loading||!countryId)return;
+  setBusy(true);setError("");
+  try{
+   await request("epg-sources/countries/"+countryId+"/priorities","PUT",{
+    items:items.map((source,index)=>({
+     sourceId:source.sourceId,countryId,priority:index+1,
+     isActive:source.countrySourceActive,
+    })),
+   });
+   onSaved();
+  }catch(err){setError((err as Error).message);}
+  finally{setBusy(false);}
+ }
+ return <Modal title="Ordre d’utilisation des sources EPG" onClose={onClose}>
+  <p className="text-body-secondary">Définissez les priorités pour un pays.
+   La priorité 1 est la plus élevée. Les autres sources actives peuvent compléter
+   la couverture ; cet ordre ne remplace pas la vérification des correspondances ni des droits.</p>
+  <label className="form-label" htmlFor="tv-epg-priority-country">Pays</label>
+  <select id="tv-epg-priority-country" className="form-select mb-3"
+   value={countryId} disabled={busy} onChange={e=>setCountryId(e.target.value)}>
+   {countries.map(c=><option key={c.countryId} value={c.countryId}>
+    {region(c.isoCode2,locale,countryNames)}</option>)}
+  </select>
+  {loading&&<p role="status">Chargement des priorités…</p>}
+  {error&&<p role="alert" className="alert alert-danger">{error}</p>}
+  {!loading&&items.length>0&&<div className="table-responsive">
+   <table className="table table-hover align-middle">
+    <thead><tr><th>Priorité</th><th>Source EPG</th><th>Dans ce pays</th><th>Ordre</th></tr></thead>
+    <tbody>{items.map((source,index)=><tr key={source.sourceId}>
+     <td>{index+1}</td>
+     <td>{source.name}
+      {!source.isActive&&<span className="text-body-secondary small"> (inactive globalement)</span>}
+     </td>
+     <td><label className="d-flex gap-2 align-items-center">
+      <input type="checkbox" className="form-check-input m-0"
+       checked={source.countrySourceActive} disabled={busy||!source.isActive}
+       onChange={e=>setItems(previous=>previous.map(v=>v.sourceId===source.sourceId
+        ?{...v,countrySourceActive:e.target.checked}:v))}/>
+      <span className="small">{source.countrySourceActive&&source.isActive?"Active":"Inactive"}</span>
+     </label></td>
+     <td><div className="d-flex gap-2">
+      <button type="button" className="btn btn-sm btn-outline-secondary"
+       aria-label={"Monter "+source.name} title="Monter"
+       disabled={busy||index===0} onClick={()=>move(index,-1)}>↑</button>
+      <button type="button" className="btn btn-sm btn-outline-secondary"
+       aria-label={"Descendre "+source.name} title="Descendre"
+       disabled={busy||index===items.length-1} onClick={()=>move(index,1)}>↓</button>
+     </div></td>
+    </tr>)}</tbody>
+   </table>
+  </div>}
+  {!loading&&items.length===0&&!error&&<p>Aucune source EPG configurée.</p>}
+  <p className="text-body-secondary small">Une source inactive globalement ne sera
+   pas utilisée, même si son option par pays était activée. Les modifications
+   prennent effet aux prochains imports.</p>
+  <div className="d-flex justify-content-end gap-2 mt-3">
+   <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Annuler</button>
+   <button type="button" className="btn btn-primary" onClick={()=>void save()}
+    disabled={!countryId||loading||busy||!!error||items.length===0}>
+    {busy?"Enregistrement…":"Enregistrer l’ordre"}
+   </button>
+  </div>
+ </Modal>;
+}
 function ImportEditor({countries,locale,countryNames,onClose,onSaved}:{countries:Country[];locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:(id:string)=>void}){
  const [country,setCountry]=useState("");const [days,setDays]=useState(7);
  const [busy,setBusy]=useState(false);const [error,setError]=useState("");
@@ -480,7 +579,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [events,setEvents]=useState<ImportEvent[]>([]);
  const [error,setError]=useState("");const [notice,setNotice]=useState("");
  const [loading,setLoading]=useState(true);const [reload,setReload]=useState(0);
- const [dialog,setDialog]=useState<"source"|"import"|"channel"|null>(null);
+ const [dialog,setDialog]=useState<"source"|"import"|"channel"|"priorities"|null>(null);
  const [countryEditor,setCountryEditor]=useState<Country|null>(null);
  const [channelEditor,setChannelEditor]=useState<Channel|null>(null);
  const [sourceEditor,setSourceEditor]=useState<Source|null>(null);
@@ -579,7 +678,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
  const visible=filtered.slice((Math.min(page,pages)-1)*PAGE_SIZE,Math.min(page,pages)*PAGE_SIZE);
  const action=view==="channels"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("channel")}>Ajouter une chaîne</button>
-   :view==="sources"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("source")}>Ajouter une source EPG</button>
+   :view==="sources"?<div className="d-flex flex-wrap gap-2"><button className="btn btn-outline-primary" type="button" onClick={()=>setDialog("priorities")}>Ordre des sources</button><button className="btn btn-primary" type="button" onClick={()=>setDialog("source")}>Ajouter une source EPG</button></div>
   :view==="imports"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("import")}>Lancer un import</button>:undefined;
  return <main className="container-fluid px-2 px-md-4 py-3">
   <AdminPageHeading title={"Guide TV — "+LABELS[view]}
@@ -626,7 +725,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     </div>
    </AdminDataPanel>
   </>}
-  {view==="sources"&&<p className="text-body-secondary">L&apos;activation d&apos;une source EPG s&apos;applique à tout son flux, sans rattachement obligatoire à un pays. Les pays et chaînes inconnus restent à vérifier avant publication.</p>}
+  {view==="sources"&&<p className="text-body-secondary">Une source active peut être utilisée globalement. Utilisez « Ordre des sources » pour définir sa priorité et ses éventuelles exclusions par pays. Les chaînes inconnues restent à vérifier avant publication.</p>}
    {(view==="countries"||view==="channels"||view==="sources"||view==="imports")&&!loading&&!error&&
    <AdminDataPanel label={"Liste "+LABELS[view]}>
     <div className="table-responsive"><table className="table table-hover align-middle mb-0">
@@ -692,6 +791,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   {countryEditor&&<CountryEditor item={countryEditor} locale={locale} countryNames={countryNames} onClose={()=>setCountryEditor(null)} onSaved={saved}/>}
   {channelEditor&&<ChannelEditor item={channelEditor} onClose={()=>setChannelEditor(null)} onSaved={saved}/>}
   {sourceEditor&&<TvEpgSourceEditor item={sourceEditor} onClose={()=>setSourceEditor(null)} onSaved={saved}/>}
+  {dialog==="priorities"&&<SourcePrioritiesEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
   {dialog==="channel"&&<ChannelCreateEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
    {dialog==="source"&&<SourceEditor onClose={()=>setDialog(null)} onSaved={saved}/>}
   {dialog==="import"&&<ImportEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)}
