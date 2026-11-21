@@ -7,6 +7,8 @@ import {DETAIL_COPY,approvedExternalUrl,dayAtOffset,durationMinutes,gapItems,
   localDateLabel,offsetForDay,selectVariant,timeLabel,type TvChannelDetails as Channel,
   type TvChannelDay} from "./tv-detail-model";
 import styles from "./tv-detail.module.css";
+import {useTvCountryNames} from "@/lib/tv-country-name-hook";
+import {tvCountryName} from "@/lib/tv-country-names";
 
 type Props={locale:TvLocale;initial:Channel;initialVariant:string|null;initialDate:string|null;};
 function validDayPayload(value:unknown,channelId:string,variantId:string,localDate:string):value is TvChannelDay{
@@ -18,6 +20,7 @@ function validDayPayload(value:unknown,channelId:string,variantId:string,localDa
 }
 export function TvChannelDetails({locale,initial,initialVariant,initialDate}:Props){
  const copy=DETAIL_COPY[locale],common=TV_COPY[locale];
+ const countryNames=useTvCountryNames(locale);
  const [variantId,setVariantId]=useState(()=>
   selectVariant(initial.variants,initialVariant,initial.defaultVariantId)?.id??null);
  const [dayOffset,setDayOffset]=useState(()=>{
@@ -73,8 +76,7 @@ export function TvChannelDetails({locale,initial,initialVariant,initialDate}:Pro
  const events=valid?gapItems(day.airings,day.gaps):[];
  const dayLabel=date?new Intl.DateTimeFormat(locale,{timeZone:"UTC",weekday:"long",
   day:"numeric",month:"long",year:"numeric"}).format(new Date(date+"T12:00:00Z")):"";
- const countryName=new Intl.DisplayNames([locale],{type:"region"}).of(initial.countryIso2)
-  ??initial.countryIso2;
+ const countryName=tvCountryName(initial.countryIso2,locale,countryNames);
  const live=approvedExternalUrl(initial.officialLiveUrl);
  return <main className={`container py-4 py-lg-5 ${styles.page}`}>
   <Link href={`/${locale}/tv`} className={styles.back}>← {copy.back}</Link>
