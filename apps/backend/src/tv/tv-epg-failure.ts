@@ -1,40 +1,60 @@
-/** Sanitized, stable diagnostics for an external EPG import.
- * No URL, response body, raw upstream error or secrets may reach admin events.
+/** Stable, sanitized failure diagnostics. Never persist URLs, credentials,
+ * response bodies or raw third-party error messages in the import history.
  */
 export type EpgFailureCode =
  "EPG_HTTP_404"|"EPG_HTTP_403"|"EPG_HTTP_429"|"EPG_HTTP_5XX"|
  "EPG_HTTP_REDIRECT"|"EPG_HTTP_ERROR"|"EPG_DNS_ERROR"|
  "EPG_TIMEOUT"|"EPG_SIZE_LIMIT"|"EPG_XMLTV_INVALID"|
- "EPG_NO_PROGRAMMES"|"EPG_DATABASE_WRITE"|"EPG_SOURCE_UNAVAILABLE";
+ "EPG_NO_PROGRAMMES"|"EPG_DATABASE_WRITE"|"EPG_SOURCE_UNAVAILABLE"|
+ "EPG_TLS_ERROR"|"EPG_CONNECTION_ERROR"|"EPG_GZIP_INVALID"|
+ "EPG_CONTENT_ENCODING_INVALID";
 
 export const EPG_FAILURE_CODES:ReadonlySet<string>=new Set<EpgFailureCode>([
  "EPG_HTTP_404","EPG_HTTP_403","EPG_HTTP_429","EPG_HTTP_5XX",
  "EPG_HTTP_REDIRECT","EPG_HTTP_ERROR","EPG_DNS_ERROR","EPG_TIMEOUT",
  "EPG_SIZE_LIMIT","EPG_XMLTV_INVALID","EPG_NO_PROGRAMMES",
- "EPG_DATABASE_WRITE","EPG_SOURCE_UNAVAILABLE",
+ "EPG_DATABASE_WRITE","EPG_SOURCE_UNAVAILABLE","EPG_TLS_ERROR",
+ "EPG_CONNECTION_ERROR","EPG_GZIP_INVALID","EPG_CONTENT_ENCODING_INVALID",
 ]);
 
+function details(error:unknown):{message:string;code:string}{
+ if(!(error instanceof Error))return {message:"",code:""};
+ const candidate=error as Error & {code?:unknown;cause?:unknown};
+ const cause=candidate.cause && candidate.cause!==error
+  ?details(candidate.cause):{message:"",code:""};
+ return {
+  message:[error.message,cause.message].join(" ").slice(0,4096),
+  code:typeof candidate.code==="string"?candidate.code:cause.code,
+ };
+}
 export function classifyEpgFailure(error:unknown,stage:"DOWNLOAD"|"DECODE"|"MAPPING"):EpgFailureCode{
  if(stage==="MAPPING")return "EPG_DATABASE_WRITE";
- const detail=error instanceof Error?error.message:"";
- if(stage==="DOWNLOAD"){
-  const status=/^EPG source returned HTTP (\d{3})$/.exec(detail);
-  if(status){
-   const code=Number(status[1]);
-   if(code===404)return "EPG_HTTP_404";
-   if(code===403)return "EPG_HTTP_403";
-   if(code===429)return "EPG_HTTP_429";
-   if(code>=300&&code<400)return "EPG_HTTP_REDIRECT";
-   if(code>=500&&code<600)return "EPG_HTTP_5XX";
-   return "EPG_HTTP_ERROR";
-  }
-  if(/size limit|exceeds|payload too large|too large/i.test(detail))return "EPG_SIZE_LIMIT";
-  if(/timed out|timeout|ETIMEDOUT/i.test(detail))return "EPG_TIMEOUT";
-  if(/ENOTFOUND|EAI_AGAIN|source address is not exclusively public/i.test(detail))
-   return "EPG_DNS_ERROR";
+ const {message,code}=details(error);
+ if(/No EPG emissions/.test(message))return "EPG_NO_PROGRAMMES";
+ if(/size limit|exceeds|payload too large|too large|programme limit/i.test(message))
+  return "EPG_SIZE_LIMIT";
+ if(stage==="DECODE")return "EPG_XMLTV_INVALID";
+ const status=/EPG source returned HTTP (\d{3})/.exec(message);
+ if(status){
+  const n=Number(status[1]);
+  if(n===404)return "EPG_HTTP_404";
+  if(n===403)return "EPG_HTTP_403";
+  if(n===429)return "EPG_HTTP_429";
+  if(n>=300&&n<400)return "EPG_HTTP_REDIRECT";
+  if(n>=500&&n<600)return "EPG_HTTP_5XX";
+  return "EPG_HTTP_ERROR";
  }
- if(/No EPG emissions/.test(detail))return "EPG_NO_PROGRAMMES";
- if(stage==="DECODE")return /limit|size|large/i.test(detail)
-  ?"EPG_SIZE_LIMIT":"EPG_XMLTV_INVALID";
+ if(/timed out|timeout|ETIMEDOUT|ESOCKETTIMEDOUT/i.test(message+" "+code))
+  return "EPG_TIMEOUT";
+ if(/ENOTFOUND|EAI_AGAIN|ENODATA|source address is not exclusively public|DNS/i.test(message+" "+code))
+  return "EPG_DNS_ERROR";
+ if(/Unexpected content encoding|ERR_HTTP_INVALID_HEADER_VALUE/i.test(message+" "+code))
+  return "EPG_CONTENT_ENCODING_INVALID";
+ if(/incorrect header check|invalid distance|invalid block type|unexpected end of file|Z_DATA_ERROR|Z_BUF_ERROR|Z_STREAM_ERROR|gzip/i.test(message+" "+code))
+  return "EPG_GZIP_INVALID";
+ if(/CERT_|ERR_TLS_|ERR_SSL_|UNABLE_TO_VERIFY_LEAF_SIGNATURE|SELF_SIGNED_CERT|DEPTH_ZERO_SELF_SIGNED_CERT|CERT_HAS_EXPIRED|certificate|TLS handshake/i.test(message+" "+code))
+  return "EPG_TLS_ERROR";
+ if(/ECONNRESET|ECONNREFUSED|EPIPE|EHOSTUNREACH|ENETUNREACH|UND_ERR_SOCKET|socket hang up/i.test(message+" "+code))
+  return "EPG_CONNECTION_ERROR";
  return "EPG_SOURCE_UNAVAILABLE";
 }
