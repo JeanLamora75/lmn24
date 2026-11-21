@@ -140,10 +140,14 @@ export function createVerifiedDbEpgLoader(
               SELECT revision_id FROM public.tv_schedule_current
               WHERE variant_id=$1::uuid AND local_date=$2::date`,
               [mapping.variantId,localDate]);
-            group={countryId,variantId:mapping.variantId,localDate,startMs,endMs,
+            const created:EpgDayBatch={
+              countryId,variantId:mapping.variantId,localDate,
+              dayStartMs:startMs,dayEndMs:endMs,
               expectedRevisionId:current.rows[0]?.revision_id??null,
-              candidates:[],coverage:[]};
-            staged.set(key,group);
+              candidates:[],coverage:[],
+            };
+            staged.set(key,created);
+            group=created;
           }
           (group.candidates as AiringCandidate[]).push({
             variantId:mapping.variantId,externalId:p.externalProgrammeId,sourceId:row.sourceId,
