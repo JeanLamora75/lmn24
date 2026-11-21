@@ -529,7 +529,10 @@ function SourcePrioritiesEditor({countries,locale,countryNames,onClose,onSaved}:
  </Modal>;
 }
 type PendingDiscovery={id:string;sourceId:string;sourceName:string;externalId:string};
-function EpgDiscoveryInbox({onReview}:{onReview:(item:PendingDiscovery)=>void}){
+function EpgDiscoveryInbox({countries,onReview,onImported}:{
+ countries:{id:string;name:string}[];
+ onReview:(item:PendingDiscovery)=>void;onImported:()=>void;
+}){
  const [search,setSearch]=useState("");
  const [query,setQuery]=useState("");
  const [page,setPage]=useState(1);
@@ -537,6 +540,23 @@ function EpgDiscoveryInbox({onReview}:{onReview:(item:PendingDiscovery)=>void}){
  const [total,setTotal]=useState(0);
  const [loading,setLoading]=useState(true);
  const [error,setError]=useState("");
+ const [selected,setSelected]=useState<string[]>([]);
+ const [countryId,setCountryId]=useState(countries[0]?.id??"");
+ const [saving,setSaving]=useState(false);
+ const [feedback,setFeedback]=useState("");
+ const [refresh,setRefresh]=useState(0);
+ async function importSelected(){
+  if(saving||!countryId||!selected.length)return;
+  setSaving(true);setError("");setFeedback("");
+  try{
+   const result=await request<{created:number;existing:number}>(
+    "epg-sources/discoveries/import","POST",{countryId,mappingIds:selected});
+   setFeedback(result.created+" chaînes créées, inactives et à vérifier. "+
+    "Leurs correspondances EPG restent à valider.");
+   setSelected([]);setRefresh(x=>x+1);onImported();
+  }catch(err){setError((err as Error).message);}
+  finally{setSaving(false);}
+ }
  useEffect(()=>{
   const controller=new AbortController();
   void fetch(api+"epg-sources/discoveries?page="+page+"&search="+encodeURIComponent(query),{
@@ -549,7 +569,7 @@ function EpgDiscoveryInbox({onReview}:{onReview:(item:PendingDiscovery)=>void}){
   }).catch(err=>{if(!controller.signal.aborted)setError((err as Error).message);})
    .finally(()=>{if(!controller.signal.aborted)setLoading(false);});
   return ()=>controller.abort();
- },[page,query]);
+ },[page,query,refresh]);
  return <AdminDataPanel label="Chaînes EPG découvertes — à classer">
   <div className="p-3">
    <p className="text-body-secondary">
@@ -568,12 +588,40 @@ function EpgDiscoveryInbox({onReview}:{onReview:(item:PendingDiscovery)=>void}){
     <button className="btn btn-outline-primary" type="submit">Rechercher</button>
    </form>
    <p className="small text-body-secondary">{total.toLocaleString("fr-FR")} identifiants EPG à examiner</p>
+   {feedback&&<p role="status" className="alert alert-success">{feedback}</p>}
    {loading&&<p role="status">Chargement des découvertes…</p>}
    {error&&<p role="alert" className="alert alert-danger">{error}</p>}
    {!loading&&!error&&<div className="table-responsive">
+    <div className="d-flex flex-wrap align-items-end gap-2 mb-3">
+     <label>Pays de destination
+      <select className="form-select" value={countryId}
+       disabled={saving} onChange={e=>setCountryId(e.target.value)}>
+       {countries.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}
+      </select>
+     </label>
+     <button className="btn btn-primary" type="button"
+      disabled={saving||!selected.length||!countryId}
+      onClick={()=>void importSelected()}>
+      {saving?"Importation…":"Créer "+selected.length+" chaînes sélectionnées (inactives)"}
+     </button>
+    </div>
+    <p className="small text-body-secondary">Le pays est choisi par l’administrateur.
+     Chaque chaîne est créée inactive, sans numéro, et reste à vérifier. Cette
+     opération ne publie aucun programme.</p>
     <table className="table table-hover align-middle">
-     <thead><tr><th>Identifiant EPG</th><th>Source</th><th>Statut</th><th>Action</th></tr></thead>
+     <thead><tr>
+      <th><input type="checkbox" aria-label="Sélectionner toutes les chaînes visibles"
+       checked={items.length>0&&items.every(x=>selected.includes(x.id))}
+       onChange={e=>setSelected(e.target.checked
+        ?[...new Set([...selected,...items.map(x=>x.id)])]
+        :selected.filter(id=>!items.some(x=>x.id===id)))} /></th>
+      <th>Identifiant EPG</th><th>Source</th><th>Statut</th><th>Action</th>
+     </tr></thead>
      <tbody>{items.map(item=><tr key={item.id}>
+      <td><input type="checkbox" aria-label={"Sélectionner "+item.externalId}
+       checked={selected.includes(item.id)}
+       onChange={e=>setSelected(previous=>e.target.checked
+        ?[...previous,item.id]:previous.filter(id=>id!==item.id))}/></td>
       <td><code>{item.externalId}</code></td><td>{item.sourceName}</td>
       <td>À vérifier</td>
       <td><button type="button" className="btn btn-sm btn-outline-primary"
@@ -603,7 +651,7 @@ function ImportEditor({countries,locale,countryNames,onClose,onSaved}:{countries
   <form onSubmit={async e=>{e.preventDefault();if(busy||eligible.length===0)return;
    setBusy(true);setError("");
    try{const created=await request<{id:string;status:string}>("import-runs","POST",{
-    days,...(country?{countryId:country}:{})});
+    days,mode,...(country?{countryId:country}:{})});
     onSaved(created.id);
    }catch(err){setError((err as Error).message);}finally{setBusy(false);}
   }}>
@@ -816,7 +864,9 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    </AdminDataPanel>
   </>}
   {view==="channels"&&!loading&&!error&&
-   <EpgDiscoveryInbox onReview={item=>{
+   <EpgDiscoveryInbox countries={countries.map(c=>({
+    id:c.countryId,name:region(c.isoCode2,locale,countryNames),
+   }))} onImported={()=>setReload(x=>x+1)} onReview={item=>{
     const source=sources.find(x=>x.id===item.sourceId);
     if(!source){setError("Source EPG introuvable. Actualise la page.");return;}
     setReviewExternalId(item.externalId);setSourceEditor(source);
