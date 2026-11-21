@@ -799,7 +799,11 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   {view==="translations"&&!loading&&!error&&<TvTranslationPanel channels={channels}/>}
   {countryEditor&&<CountryEditor item={countryEditor} locale={locale} countryNames={countryNames} onClose={()=>setCountryEditor(null)} onSaved={saved}/>}
   {channelEditor&&<ChannelEditor item={channelEditor} onClose={()=>setChannelEditor(null)} onSaved={saved}/>}
-  {sourceEditor&&<TvEpgSourceEditor item={sourceEditor} onClose={()=>setSourceEditor(null)} onSaved={saved}/>}
+  {sourceEditor&&<TvEpgSourceEditor item={sourceEditor}
+    channels={channels.map(ch=>({id:ch.id,name:ch.name,countryId:ch.countryId,
+     countryLabel:region(countryCodes.get(ch.countryId)??"",locale,countryNames),
+     defaultVariantId:ch.defaultVariantId}))}
+    onClose={()=>setSourceEditor(null)} onSaved={saved}/>}
   {dialog==="priorities"&&<SourcePrioritiesEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
   {dialog==="channel"&&<ChannelCreateEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
    {dialog==="source"&&<SourceEditor onClose={()=>setDialog(null)} onSaved={saved}/>}
