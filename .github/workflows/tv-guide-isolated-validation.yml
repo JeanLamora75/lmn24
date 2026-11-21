@@ -17,6 +17,7 @@ on:
       - "docs/BMAD/guide-tv-mondial-scrum115-catalog-isolated-smoke.sql"
       - "docs/BMAD/guide-tv-mondial-scrum116-epg-sources-isolated-smoke.sql"
       - "docs/BMAD/guide-tv-mondial-scrum117-import-atomic-isolated-smoke.sql"
+      - "docs/BMAD/guide-tv-mondial-scrum117-retention-recovery-isolated-smoke.sql"
   workflow_dispatch:
 
 permissions:
@@ -90,6 +91,9 @@ jobs:
 
       - name: Validate SCRUM-117 fenced TV import CAS and published grid preservation
         run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated < docs/BMAD/guide-tv-mondial-scrum117-import-atomic-isolated-smoke.sql
+
+      - name: Validate SCRUM-117 retention authorization and recent-publication denial
+        run: docker exec -i ${{ job.services.postgres.id }} psql -v ON_ERROR_STOP=1 -U postgres -d tv_guide_isolated < docs/BMAD/guide-tv-mondial-scrum117-retention-recovery-isolated-smoke.sql
 
       - name: Rehearse on LMN24 full bootstrap schema in separate throwaway database
         run: |
