@@ -51,12 +51,15 @@ describe("SCRUM-115 TV catalogue ADMIN authorization", () => {
     expect(s.upsertCountry).not.toHaveBeenCalled();
     expect(s.discoverChannel).not.toHaveBeenCalled();
   });
-  it("rejects an active association with no national number", async () => {
+  it("allows administrative activation without a national number", async () => {
     const s = setup("ADMIN");
-    await expect(s.controller.updateAssociation(request, "a3000000-0000-4000-8000-000000000001", {
-      isActive: true, needsReview: false, manualNumber: null,
+    const id="a3000000-0000-4000-8000-000000000001";
+    const update={
+      isActive: true, needsReview: true, manualNumber: null,
       officialNumber: null, assignedNumber: null, defaultVariantId: null,
-    })).rejects.toMatchObject({ status: 400 });
+    };
+    await expect(s.controller.updateAssociation(request,id,update)).resolves.toEqual({id:"x"});
+    expect(s.updateAssociation).toHaveBeenCalledWith(id,update);
   });
  it("SCRUM-122 passes optimistic version token and respects ADMIN gate",async()=>{
   const s=setup("ADMIN");
