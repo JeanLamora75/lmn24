@@ -121,6 +121,32 @@ export class TvImportRunsService {
     return rows[0]??null;
   }
 
+  /** Record a worker-start failure without leaving a perpetual QUEUED row.
+   * A RUNNING or completed import is never overwritten. This is transactionally
+   * restricted to an import that was never claimed by the worker.
+   */
+  async failUnstartedRun(id:string):Promise<boolean>{
+    await this.requireSchema();
+    return this.database.prisma.$transaction(async tx=>{
+      const changed=await tx.$queryRaw<Array<{id:string}>>`
+        UPDATE public.tv_import_run SET status='ERROR',finished_at=now()
+        WHERE id=${id}::uuid AND status='QUEUED' RETURNING id
+      `;
+      if(!changed.length)return false;
+      await tx.$executeRaw`
+        UPDATE public.tv_import_scope SET status='ERROR',attempts=attempts+1,
+          error_message='Worker did not start; previous grid retained'
+        WHERE run_id=${id}::uuid AND status='QUEUED'
+      `;
+      await tx.$executeRaw`
+        INSERT INTO public.tv_import_event(run_id,level,event_type,message)
+        VALUES(${id}::uuid,'ERROR','START_FAILED',
+          'EPG worker could not start; source data was not published')
+      `;
+      return true;
+    });
+  }
+
   /** Bounded audit history; absent metrics remain absent, not fake zeroes. */
   async listRuns(page:number,pageSize:number){
     await this.requireSchema();
