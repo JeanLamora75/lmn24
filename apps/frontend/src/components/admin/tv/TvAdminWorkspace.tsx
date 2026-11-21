@@ -915,7 +915,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     if(!source){setError("Source EPG introuvable. Actualise la page.");return;}
     setReviewExternalId(item.externalId);setSourceEditor(source);
    }}/>}
-  {view==="sources"&&<p className="text-body-secondary">Une source active peut être utilisée globalement. Utilisez « Ordre des sources » pour définir sa priorité et ses éventuelles exclusions par pays. Les chaînes inconnues restent à vérifier avant publication.</p>}
+  {view==="sources"&&<p className="text-body-secondary">Chaque source couvre soit un pays, soit plusieurs pays (Globale). Le pays configuré est affiché dans la colonne Périmètre. Utilisez « Ordre des sources » pour définir les priorités par pays. Les chaînes inconnues restent à vérifier avant publication.</p>}
    {(view==="countries"||view==="channels"||view==="sources"||view==="imports")&&!loading&&!error&&
    <AdminDataPanel label={"Liste "+LABELS[view]}>
     <div className="table-responsive"><table className="table table-hover align-middle mb-0">
@@ -939,7 +939,10 @@ export function TvAdminWorkspace({view}:{view:TvView}){
       </tr>)}
       {view==="sources"&&(visible as Source[]).map((v,i)=><tr key={v.id+":"+(v.countryId??i)}>
        <td>{v.name}</td><td>{v.format}</td>
-       <td>{v.countryId?("Exception : "+region(countryCodes.get(v.countryId)??"",locale,countryNames)+(v.priority?" · priorité "+v.priority:"")):"Globale"}</td>
+       <td>{v.geographicScope==="COUNTRY"
+         ?region(countryCodes.get(v.scopeCountryId??"")??"",locale,countryNames)
+         :v.countryId?("Globale · exception : "+region(countryCodes.get(v.countryId)??"",locale,countryNames)+(v.priority?" · priorité "+v.priority:""))
+         :"Globale"}</td>
        <td>{v.programmeRightsStatus}</td><td>{v.isActive?"Active":"Inactive"}</td>
        <td><AdminIconButton name="pencil-square" label={"Modifier "+v.name} onClick={()=>setSourceEditor(v)}/></td>
       </tr>)}
