@@ -43,6 +43,24 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
   reference:item[(k+"RightsReference") as keyof TvEpgSource]??"",
  }])) as Record<Key,{status:string;reference:string}>;
  const [rights,setRights]=useState(initial);
+ const [diagnosing,setDiagnosing]=useState(false);
+ const [diagnostic,setDiagnostic]=useState<{
+  ok:boolean;stage:string;code:string|null;bytes:number|null;
+  programmes:number|null;channels:number|null;elapsedMs:number;
+ }|null>(null);
+ async function testConnection(){
+  if(busy||diagnosing)return;
+  setError("");setDiagnostic(null);setDiagnosing(true);
+  try{
+   const response=await fetch("/api/admin/tv/epg-sources/"+item.id+"/test-connection",{
+    method:"POST",cache:"no-store",
+   });
+   if(!response.ok)throw new Error(await describeSaveError(response));
+   const result=await response.json() as NonNullable<typeof diagnostic>;
+   setDiagnostic(result);
+  }catch(e){setError((e as Error).message);}
+  finally{setDiagnosing(false);}
+ }
  const [busy,setBusy]=useState(false);
  const [error,setError]=useState("");const [notice,setNotice]=useState("");
  async function save(path:string,payload:unknown,message:string){
@@ -79,6 +97,22 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
     <label className="form-check mt-2"><input className="form-check-input" type="checkbox"
      checked={active} onChange={e=>setActive(e.target.checked)}/>
      <span className="form-check-label">Source active</span></label>
+    <div className="mt-3">
+     <button type="button" className="btn btn-outline-primary"
+      disabled={busy||diagnosing} onClick={()=>void testConnection()}>
+      {diagnosing?"Test de connexion en cours…":"Tester la connexion"}
+     </button>
+     <p className="small text-body-secondary mt-2 mb-0">
+      Teste l'URL et le format enregistrés dans la base, sans lancer d'import ni modifier les chaînes.
+      {url!==item.sourceUrl||format!==item.format?" Enregistre d'abord les modifications pour tester les nouvelles valeurs.":""}
+     </p>
+     {diagnostic&&<div role="status" className={diagnostic.ok?"alert alert-success mt-2":"alert alert-warning mt-2"}>
+      <strong>{diagnostic.ok?"Connexion et analyse réussies":"Échec du test de connexion"}</strong>
+      <div>Étape : {diagnostic.stage} · Code : {diagnostic.code??"OK"} · Durée : {diagnostic.elapsedMs} ms</div>
+      {diagnostic.bytes!==null&&<div>Fichier décompressé : {diagnostic.bytes.toLocaleString("fr-FR")} octets</div>}
+      {diagnostic.ok&&<div>{diagnostic.channels?.toLocaleString("fr-FR")} chaînes · {diagnostic.programmes?.toLocaleString("fr-FR")} émissions</div>}
+     </div>}
+    </div>
     <button type="button" className="btn btn-primary mt-3" disabled={busy||!name.trim()||!url.trim()}
      onClick={()=>void save("configuration",{name,sourceUrl:url,format,isActive:active,expectedVersion:item.version},
       "Configuration enregistrée.")}>Enregistrer la configuration</button>
