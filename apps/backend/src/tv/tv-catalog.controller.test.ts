@@ -17,7 +17,7 @@ function setup(role: "ADMIN" | "EDITOR" | null, enabled = true) {
   const auth = { getUserFromSession } as unknown as AuthService;
   const service = { listCountries, listChannels, upsertCountry, discoverChannel, updateAssociation, addVariant } as unknown as TvCatalogService;
   const config = { get: (key: string) => key === "TV_CATALOG_ADMIN_ENABLED" ? (enabled ? "true" : "false") : undefined } as unknown as ConfigService;
-  return { controller: new TvCatalogController(auth, service, config), getUserFromSession, listCountries, upsertCountry, discoverChannel };
+  return { controller: new TvCatalogController(auth, service, config), getUserFromSession, listCountries, listChannels, upsertCountry, discoverChannel };
 }
 describe("SCRUM-115 TV catalogue ADMIN authorization", () => {
   it("rejects unauthenticated requests before touching tables", async () => {
@@ -39,6 +39,16 @@ describe("SCRUM-115 TV catalogue ADMIN authorization", () => {
     const s = setup("ADMIN");
     await expect(s.controller.listCountries(request)).resolves.toEqual({ items: [] });
     expect(s.listCountries).toHaveBeenCalledOnce();
+  });
+  it("searches channel names across all countries and combines optional country selection", async()=>{
+    const s=setup("ADMIN");
+    await s.controller.listChannels(request,undefined,"M6");
+    expect(s.listChannels).toHaveBeenCalledWith(undefined,"M6");
+    const france="a1000000-0000-4000-8000-000000000001";
+    await s.controller.listChannels(request,france,"M6");
+    expect(s.listChannels).toHaveBeenCalledWith(france,"M6");
+    await expect(s.controller.listChannels(request,undefined,"x".repeat(121)))
+      .rejects.toMatchObject({status:400});
   });
   it("rejects invalid timezones and unsafe links before writes", async () => {
     const s = setup("ADMIN");
