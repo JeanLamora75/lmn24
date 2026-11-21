@@ -29,6 +29,7 @@ type ImportRun={id:string;trigger:string;requestedDays:number;status:string;crea
 type ImportDetail=ImportRun&{scopes:{id:string;countryId:string;sourceId:string|null;
  status:string;attempts:number;errorMessage:string|null}[]};
 type ImportEvent={id:string;occurredAt:string;eventType:string;level:string;message:string};
+type ExecutionReadiness={ready:boolean;mode:"DISCOVERY";missingFlags:string[];publicPublication:false};
 const LABELS:Record<TvView,string>={
  overview:"Vue d'ensemble",countries:"Pays",channels:"Chaînes",
  sources:"Sources EPG",imports:"Imports",translations:"Traductions",statistics:"Statistiques",
@@ -449,6 +450,16 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [status,setStatus]=useAdminSessionFilter("tv-"+view,"status","all");
  const [page,setPage]=useAdminSessionFilter("tv-"+view,"page",1);
  const [selectedRun,setSelectedRun]=useState("");
+ const [executionState,setExecutionState]=useState<ExecutionReadiness|null>(null);
+ const [executing,setExecuting]=useState(false);
+ useEffect(()=>{
+  if(view!=="imports")return;
+  let current=true;
+  void request<ExecutionReadiness>("import-runs/execution-status").then(value=>{
+   if(current)setExecutionState(value);
+  }).catch(()=>{if(current)setExecutionState(null);});
+  return ()=>{current=false;};
+ },[view,reload]);
  useEffect(()=>{
   const abort=new AbortController();const current=reload;
   async function load(){
@@ -489,6 +500,17 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    ]);
    setDetail(d);setEvents(e.items);
   }catch(err){setError((err as Error).message);}
+ }
+ async function executeRun(id:string){
+  if(executing)return;
+  setExecuting(true);setError("");setNotice("");
+  try{
+   await request("import-runs/"+id+"/execute","POST",{mode:"DISCOVERY"});
+   setNotice("Découverte demandée. Seuls les identifiants externes seront collectés, sans publier de programmes.");
+   await openRun(id);
+   setReload(v=>v+1);
+  }catch(err){setError((err as Error).message);}
+  finally{setExecuting(false);}
  }
  function saved(){setDialog(null);setCountryEditor(null);setChannelEditor(null);setSourceEditor(null);setReload(v=>v+1);}
  const countryCodes=useMemo(()=>new Map(countries.map(c=>[c.countryId,c.isoCode2])),[countries]);
@@ -594,10 +616,26 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     <div className="p-3"><AdminPagination page={Math.min(page,pages)} totalPages={pages} onPageChange={setPage}
       label={LABELS[view]}/></div>
    </AdminDataPanel>}
+  {view==="imports"&&!loading&&!error&&<AdminDataPanel label="Exécution du worker EPG">
+   <div className="p-3">
+    <p>La mise en file d&apos;attente et l&apos;exécution sont séparées. Le mode découverte
+     analyse uniquement les identifiants de chaînes externes, sans publier de programmes.</p>
+    {executionState?.ready
+     ?<p className="text-success">Exécution de découverte autorisée par la configuration serveur.</p>
+     :<p className="text-body-secondary">Exécution externe bloquée tant que les autorisations
+      opérationnelles ne sont pas validées. Le clic sur un import ne télécharge aucun flux.
+      {executionState?.missingFlags.length? " Paramètres à qualifier : "+executionState.missingFlags.join(", "):""}</p>}
+   </div>
+  </AdminDataPanel>}
   {view==="imports"&&selectedRun&&<AdminDataPanel label="Suivi de l'import">
    <div className="p-3">
     <h2 className="h5">Import {selectedRun}</h2>
-    {detail?<><p>Statut : {detail.status}</p><ul>
+    {detail?<><p>Statut : {detail.status}</p>
+     {detail.status==="QUEUED"&&<div className="mb-3">
+      <button type="button" className="btn btn-primary" disabled={executing||!executionState?.ready}
+       onClick={()=>void executeRun(detail.id)}>Exécuter la découverte des chaînes</button>
+      {!executionState?.ready&&<p className="small text-body-secondary mt-2">Action désactivée : les validations serveur nécessaires à la collecte ne sont pas réunies.</p>}
+     </div>}<ul>
      {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {s.status}
        {s.errorMessage?" — "+s.errorMessage:""}</li>)}</ul>
      {["PARTIAL","ERROR","INTERRUPTED"].includes(detail.status)&&detail.scopes.some(s=>["ERROR","INTERRUPTED"].includes(s.status))&&
