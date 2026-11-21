@@ -26,6 +26,26 @@ export class TvImportExecutionService {
    missingFlags:missing,publicPublication:false};
  }
 
+ /** Single-click workflow: validate before queueing, reuse an existing
+  * matching pending import, then dispatch the discovery worker immediately.
+  * No successful response may describe a merely queued run as started.
+  */
+ async launchManualImport(input:{days:number;countryId?:string|undefined}){
+  if(!this.readiness().ready){
+   throw new ServiceUnavailableException(
+    "TV_SOURCE_USE_NOT_QUALIFIED: import execution unavailable; no run was created");
+  }
+  const existing=await this.runs.findQueuedManual(input);
+  const run=existing??await this.runs.create({...input,trigger:"MANUAL"});
+  try{
+   const execution=await this.startDiscovery(run.id);
+   return {...execution,reusedPendingRun:!!existing};
+  }catch(error){
+   // A run already persisted remains available for a future permitted retry;
+   // never claim it was started, and never bypass authorization.
+   throw error;
+  }
+ }
  async startDiscovery(runId:string){
   const state=this.readiness();
   if(!state.ready)throw new ServiceUnavailableException(
