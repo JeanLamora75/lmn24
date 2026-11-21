@@ -288,7 +288,9 @@ export class TvCatalogService {
     officialLiveUrl: string | null;
   }) {
     await this.requireTvTables();
-    const logo = assertTvLogoUrl(profile.logoUrl);
+    // Empty string explicitly means the administrator removed the logo.
+    // Unlike NULL (unknown/unset), it must not be repopulated by EPG imports.
+    const logo = profile.logoUrl===""?"":assertTvLogoUrl(profile.logoUrl);
     const site = assertOfficialUrl(profile.websiteUrl);
     const x = assertOfficialUrl(profile.xUrl);
     const facebook = assertOfficialUrl(profile.facebookUrl);
