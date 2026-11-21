@@ -377,8 +377,9 @@ function ChannelEditor({item,onClose,onSaved}:{item:Channel;onClose:()=>void;onS
     setError("Numéro national invalide.");setBusy(false);return;
    }
    try{
+    const logoUrl=logoFile?await uploadTvChannelIcon(item.channelId,logoFile):urls.logoUrl.trim()||null;
     await request("catalog/channels/"+item.channelId+"/profile","PATCH",{
-     name:name.trim(),...channelUrlPayload(urls),
+     name:name.trim(),...channelUrlPayload(urls),logoUrl,
     });
     await request("catalog/associations/"+item.id,"PATCH",{
      isActive:active,needsReview:review,manualNumber:n,
