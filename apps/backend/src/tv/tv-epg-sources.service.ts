@@ -145,26 +145,47 @@ export class TvEpgSourcesService {
    * assigned to a country. Surface the inbox without assuming global feeds
    * belong to the country of a particular import run.
    */
-  async listPendingDiscoveries(limit:number,offset:number,search:string){
+  async listPendingDiscoveries(limit:number,offset:number,search:string,countryId:string|null){
     await this.requireSchema();
     const term=search.trim().slice(0,120);
+    // Null denotes UNCLASSIFIED. A selected country is a REAL filter over
+    // existing geographical associations, never a bulk assignment target.
     const total=await this.database.prisma.$queryRaw<Array<{count:number}>>`
       SELECT count(*)::int AS count FROM public.tv_channel_external_id m
       JOIN public.tv_source s ON s.id=m.source_id
-      WHERE m.mapping_status='PENDING_REVIEW' AND m.channel_id IS NULL
+      WHERE m.mapping_status='PENDING_REVIEW'
         AND (${term}='' OR m.external_id ILIKE '%' || ${term} || '%'
           OR s.name ILIKE '%' || ${term} || '%')
+        AND (
+          (${countryId}::uuid IS NULL AND NOT EXISTS(
+            SELECT 1 FROM public.tv_channel_country cc
+            WHERE cc.channel_id=m.channel_id))
+          OR (${countryId}::uuid IS NOT NULL AND EXISTS(
+            SELECT 1 FROM public.tv_channel_country cc
+            WHERE cc.channel_id=m.channel_id AND cc.country_id=${countryId}::uuid))
+        )
     `;
     const items=await this.database.prisma.$queryRaw<Array<{
       id:string;externalId:string;sourceId:string;sourceName:string;
+      channelId:string|null;channelName:string|null;
     }>>`
       SELECT m.id,m.external_id AS "externalId",
-        m.source_id AS "sourceId",s.name AS "sourceName"
+        m.source_id AS "sourceId",s.name AS "sourceName",
+        m.channel_id AS "channelId",c.name AS "channelName"
       FROM public.tv_channel_external_id m
       JOIN public.tv_source s ON s.id=m.source_id
-      WHERE m.mapping_status='PENDING_REVIEW' AND m.channel_id IS NULL
+      LEFT JOIN public.tv_channel c ON c.id=m.channel_id
+      WHERE m.mapping_status='PENDING_REVIEW'
         AND (${term}='' OR m.external_id ILIKE '%' || ${term} || '%'
           OR s.name ILIKE '%' || ${term} || '%')
+        AND (
+          (${countryId}::uuid IS NULL AND NOT EXISTS(
+            SELECT 1 FROM public.tv_channel_country cc
+            WHERE cc.channel_id=m.channel_id))
+          OR (${countryId}::uuid IS NOT NULL AND EXISTS(
+            SELECT 1 FROM public.tv_channel_country cc
+            WHERE cc.channel_id=m.channel_id AND cc.country_id=${countryId}::uuid))
+        )
       ORDER BY s.name,m.external_id,m.id
       LIMIT ${limit} OFFSET ${offset}
     `;
