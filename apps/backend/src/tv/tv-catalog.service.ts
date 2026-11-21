@@ -63,8 +63,7 @@ export class TvCatalogService {
 
   async listChannels(countryId?: string, search="") {
     await this.requireTvTables();
-    const pattern="%"+search.trim().replace(/[\\%_]/g,"\\  async listChannels(countryId?: string) {
-    await this.requireTvTables();
+    const pattern="%"+search.trim().replace(/[!%_]/g,(char)=>"!"+char)+"%";
     return this.database.prisma.$queryRaw`")+"%";
     return this.database.prisma.$queryRaw`
       SELECT cc.id, cc.country_id AS "countryId",
@@ -79,7 +78,7 @@ export class TvCatalogService {
              cc.default_variant_id AS "defaultVariantId", cc.updated_at::text AS version
       FROM public.tv_channel_country cc JOIN public.tv_channel c ON c.id=cc.channel_id
       WHERE (${countryId ?? null}::uuid IS NULL OR cc.country_id=${countryId ?? null}::uuid)
-        AND c.name ILIKE ${pattern} ESCAPE '\\'
+        AND c.name ILIKE ${pattern} ESCAPE '!'
       ORDER BY cc.country_id, COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) NULLS LAST,
                c.name,cc.id
       LIMIT 500
