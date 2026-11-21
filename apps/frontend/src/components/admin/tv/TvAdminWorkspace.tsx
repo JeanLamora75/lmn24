@@ -451,6 +451,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [status,setStatus]=useAdminSessionFilter("tv-"+view,"status","all");
  const [page,setPage]=useAdminSessionFilter("tv-"+view,"page",1);
  const [selectedRun,setSelectedRun]=useState("");
+ const [cancellingRun,setCancellingRun]=useState("");
  useEffect(()=>{
   const abort=new AbortController();const current=reload;
   async function load(){
@@ -510,6 +511,18 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   },5000);
   return ()=>{mounted=false;clearInterval(interval);};
  },[view,selectedRun,detail?.status]);
+ async function cancelQueuedRun(id:string){
+  if(cancellingRun||!window.confirm("Annuler et supprimer cet import en attente ? Cette action ne modifie ni les chaînes ni les programmes."))return;
+  setCancellingRun(id);setError("");setNotice("");
+  try{
+   await request<{deleted:boolean}>("import-runs/"+id,"DELETE");
+   setRuns(previous=>previous.filter(run=>run.id!==id));
+   if(selectedRun===id){setSelectedRun("");setDetail(null);setEvents([]);}
+   setNotice("Import en attente supprimé. Vous pouvez lancer un nouvel import.");
+   setReload(value=>value+1);
+  }catch(err){setError((err as Error).message);}
+  finally{setCancellingRun("");}
+ }
  function saved(){setDialog(null);setCountryEditor(null);setChannelEditor(null);setSourceEditor(null);setReload(v=>v+1);}
  const countryCodes=useMemo(()=>new Map(countries.map(c=>[c.countryId,c.isoCode2])),[countries]);
  const filtered=useMemo(()=>{
@@ -607,7 +620,14 @@ export function TvAdminWorkspace({view}:{view:TvView}){
        <td>{new Date(v.createdAt).toLocaleString("fr-FR")}</td>
        <td>{v.trigger}</td><td>{v.requestedDays}</td><td>{v.status}</td>
        <td>{v.succeeded} réussis / {v.failed} échoués / {v.scopeCount} au total</td>
-       <td><AdminIconButton name="eye" label="Voir le détail" onClick={()=>void openRun(v.id)}/></td>
+       <td><div className="d-flex gap-2 align-items-center">
+        <AdminIconButton name="eye" label="Voir le détail" onClick={()=>void openRun(v.id)}/>
+        {v.status==="QUEUED"&&v.trigger==="MANUAL"&&
+         <button type="button" className="btn btn-outline-danger btn-sm"
+          disabled={cancellingRun===v.id} onClick={()=>void cancelQueuedRun(v.id)}>
+          {cancellingRun===v.id?"Annulation…":"Annuler"}
+         </button>}
+       </div></td>
       </tr>)}
      </tbody></table></div>
     {filtered.length===0&&<p className="p-3 text-body-secondary">Aucune donnée correspondant aux filtres.</p>}
@@ -618,6 +638,11 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    <div className="p-3">
     <h2 className="h5">Import {selectedRun}</h2>
     {detail?<><p>Statut : {detail.status}</p>
+     {detail.status==="QUEUED"&&detail.trigger==="MANUAL"&&
+      <button type="button" className="btn btn-outline-danger btn-sm mb-3"
+       disabled={cancellingRun===detail.id} onClick={()=>void cancelQueuedRun(detail.id)}>
+       Annuler et supprimer cet import
+      </button>}
      <ul>
      {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {s.status}
        {s.errorMessage?" — "+s.errorMessage:""}</li>)}</ul>
