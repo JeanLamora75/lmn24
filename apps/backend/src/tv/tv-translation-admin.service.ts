@@ -1,10 +1,11 @@
 import {ConflictException,Injectable,NotFoundException,ServiceUnavailableException} from "@nestjs/common";
 import {DatabaseService} from "../database/database.service";
+import {ConfigService} from "@nestjs/config";
 
 export const TV_DESCRIPTION_LANGUAGES=["fr","en","de","es","pt","it","ru","nl"] as const;
 @Injectable()
 export class TvTranslationAdminService{
- constructor(private readonly database:DatabaseService){}
+ constructor(private readonly database:DatabaseService,private readonly config:ConfigService){}
  private async ready():Promise<void>{
   const rows=await this.database.prisma.$queryRaw<Array<{ready:boolean}>>`
    SELECT to_regclass('public.tv_translation_provider') IS NOT NULL
@@ -20,6 +21,25 @@ export class TvTranslationAdminService{
     free_approved_at IS NOT NULL AS "freeApproved",
     rights_reviewed_at IS NOT NULL AS "rightsReviewed"
    FROM public.tv_translation_provider ORDER BY provider_type,id`};
+ }
+
+ /** Registration never asserts compliance or turns the provider on. Approval
+  * requires a separate audited operational review before any translation. */
+ async registerLocalProvider(){
+  await this.ready();
+  const configured=this.config.get<string>("TV_TRANSLATION_LOCAL_ENDPOINT")?.trim();
+  let url:URL;
+  try{url=new URL(configured??"");}catch{
+   throw new ServiceUnavailableException("Local adapter endpoint is not configured");
+  }
+  if(url.protocol!=="http:"||url.hostname!=="127.0.0.1"||
+    !url.port||url.pathname!=="/translate"||url.search||url.hash||url.username||url.password)
+   throw new ServiceUnavailableException("Only fixed loopback adapters are supported");
+  const rows=await this.database.prisma.$queryRaw<Array<{id:string}>>`
+    INSERT INTO public.tv_translation_provider(provider_type,endpoint,is_active,is_selected)
+    VALUES('LIBRETRANSLATE_LOCAL',${url.toString()},FALSE,FALSE)
+    RETURNING id`;
+  return {id:rows[0]?.id,status:"PENDING_REVIEW",active:false};
  }
  async selectProvider(id:string){
   await this.ready();
