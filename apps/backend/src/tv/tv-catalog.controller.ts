@@ -117,6 +117,14 @@ export class TvCatalogController {
     return { items: await this.catalog.listChannels(countryId) };
   }
 
+  @Get("channels/associations/:id")
+  @Header("Cache-Control","no-store")
+  async getChannelAssociation(@Req() request:RequestLike,@Param("id") id:string){
+    await this.assertAdmin(request);
+    if(!uuid.safeParse(id).success)throw new BadRequestException("Invalid TV association");
+    return this.catalog.getChannelAssociation(id);
+  }
+
   @Post("channels/discover")
   @Header("Cache-Control", "no-store")
   async discoverChannel(@Req() request: RequestLike, @Body() body: unknown) {
