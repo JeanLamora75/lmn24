@@ -369,9 +369,39 @@ ON public.tv_schedule_current FOR EACH ROW
 EXECUTE FUNCTION public.tv_assert_current_published();
 
 -- Prevent a formerly published revision from being mutated or demoted.
+-- SCRUM-117: tightly scoped expiry deletion, NEVER a bypass for edits.
+-- Required: explicit transaction-local retention marker and current parser lease.
+CREATE OR REPLACE FUNCTION public.tv_is_retention_authorized(revision_uuid UUID)
+RETURNS BOOLEAN LANGUAGE plpgsql AS $tv_retention_guard$
+DECLARE owner TEXT;
+BEGIN
+  IF current_setting('app.tv_retention',true) IS DISTINCT FROM 'true' THEN
+    RETURN FALSE;
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM public.tv_schedule_revision r
+    JOIN public.tv_channel_variant v ON v.id=r.variant_id
+    LEFT JOIN public.tv_schedule_current c ON c.revision_id=r.id
+    WHERE r.id=revision_uuid AND c.revision_id IS NULL
+      AND r.local_date < ((now() AT TIME ZONE v.timezone)::date - 7)
+  ) THEN RETURN FALSE; END IF;
+  owner:=current_setting('app.tv_writer_owner',true);
+  IF owner IS NULL OR owner='' THEN RETURN FALSE; END IF;
+  PERFORM public.assert_parser_write_epoch(owner::uuid);
+  RETURN TRUE;
+END $tv_retention_guard$;
+REVOKE ALL ON FUNCTION public.tv_is_retention_authorized(UUID) FROM PUBLIC;
+
 CREATE OR REPLACE FUNCTION public.tv_protect_published_revision()
 RETURNS trigger LANGUAGE plpgsql AS $tv_revision$
 BEGIN
+  IF TG_OP='DELETE' THEN
+    IF OLD.status='PUBLISHED' AND NOT public.tv_is_retention_authorized(OLD.id) THEN
+      RAISE EXCEPTION 'TV published revisions cannot be deleted except expired retention'
+        USING ERRCODE='23514';
+    END IF;
+    RETURN OLD;
+  END IF;
   IF OLD.status='PUBLISHED' THEN
     RAISE EXCEPTION 'TV published revisions are immutable' USING ERRCODE='23514';
   END IF;
@@ -381,7 +411,7 @@ BEGIN
   RETURN NEW;
 END $tv_revision$;
 DROP TRIGGER IF EXISTS trg_tv_revision_immutable ON public.tv_schedule_revision;
-CREATE TRIGGER trg_tv_revision_immutable BEFORE UPDATE
+CREATE TRIGGER trg_tv_revision_immutable BEFORE UPDATE OR DELETE
 ON public.tv_schedule_revision FOR EACH ROW
 EXECUTE FUNCTION public.tv_protect_published_revision();
 
@@ -395,8 +425,10 @@ BEGIN
       SELECT 1 FROM public.tv_schedule_revision
       WHERE id=OLD.revision_id AND status='PUBLISHED'
     ) THEN
-      RAISE EXCEPTION 'TV published airings are immutable'
-        USING ERRCODE='23514';
+      IF TG_OP <> 'DELETE' OR NOT public.tv_is_retention_authorized(OLD.revision_id) THEN
+        RAISE EXCEPTION 'TV published airings are immutable'
+          USING ERRCODE='23514';
+      END IF;
     END IF;
   END IF;
   IF TG_OP IN ('INSERT','UPDATE') THEN
@@ -489,6 +521,7 @@ REVOKE ALL ON FUNCTION public.tv_assert_current_published() FROM PUBLIC;
 REVOKE ALL ON FUNCTION public.tv_assert_current_writer_lease() FROM PUBLIC;
 REVOKE ALL ON FUNCTION public.tv_protect_published_revision() FROM PUBLIC;
 REVOKE ALL ON FUNCTION public.tv_protect_published_airings() FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.tv_is_retention_authorized(UUID) FROM PUBLIC;
 -- Existing assert_parser_write_epoch(uuid) is managed by the legacy parser
 -- security contract. Never revoke its privileges here without a regression
 -- and role review.
