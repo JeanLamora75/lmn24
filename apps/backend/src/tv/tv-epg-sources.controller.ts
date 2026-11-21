@@ -18,8 +18,12 @@ const rights=z.object({programme:right,synopsis:right,image:right,logo:right}).s
 const source=z.object({
  name:z.string().trim().min(1).max(255),
  sourceUrl:z.string().max(2048),format:z.enum(["XMLTV","XMLTV_GZIP","JSON"]),
- isActive:z.boolean(),rights,
+ isActive:z.boolean(),
+ geographicScope:z.enum(["GLOBAL","COUNTRY"]),scopeCountryId:uuid.nullable(),rights,
 }).strict();
+const validateScope=(v:{geographicScope:"GLOBAL"|"COUNTRY";scopeCountryId:string|null})=>
+  (v.geographicScope==="GLOBAL"&&v.scopeCountryId===null)||
+  (v.geographicScope==="COUNTRY"&&v.scopeCountryId!==null);
 const sourceConfiguration=source.omit({rights:true}).extend({expectedVersion:z.string().min(1).max(100).optional()});
 const rightsUpdate=rights.extend({expectedVersion:z.string().min(1).max(100).optional()});
 
@@ -66,7 +70,7 @@ export class TvEpgSourcesController {
  async create(@Req() request:ReqLike,@Body() body:unknown){
    await this.assertAdmin(request);
    const parsed=source.safeParse(body);
-   if(!parsed.success)throw new BadRequestException("Invalid EPG source");
+   if(!parsed.success||!validateScope(parsed.data))throw new BadRequestException("Invalid EPG source scope");
    return this.service.createSource(parsed.data);
  }
  @Patch(":id/configuration")
@@ -74,7 +78,8 @@ export class TvEpgSourcesController {
  async updateSourceConfiguration(@Req() request:ReqLike,@Param("id") id:string,@Body() body:unknown){
    await this.assertAdmin(request);
    const parsed=sourceConfiguration.safeParse(body);
-   if(!uuid.safeParse(id).success||!parsed.success)throw new BadRequestException("Invalid EPG source configuration");
+   if(!uuid.safeParse(id).success||!parsed.success||!validateScope(parsed.data))
+    throw new BadRequestException("Invalid EPG source configuration");
    return this.service.updateSourceConfiguration(id,parsed.data);
  }
 
