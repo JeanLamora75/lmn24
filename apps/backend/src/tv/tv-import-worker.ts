@@ -93,9 +93,12 @@ export async function processQueuedTvRun(
             WHERE id=$3::uuid AND run_id=$4::uuid`,
            [status,status==="SUCCESS"?null:diagnostic,r.scopeId,runId]);
          const discoveryOnly=status==="SUCCESS"&&r.message==="DISCOVERY_ONLY";
+         const staged=status==="SUCCESS"&&r.message==="PROGRAMMES_STAGED";
          await event(db,runId,r.scopeId,status==="SUCCESS"?"INFO":"WARN",
-           discoveryOnly?"SCOPE_SCANNED":status==="SUCCESS"?"SCOPE_SUCCESS":"SCOPE_FAILED",
+           discoveryOnly?"SCOPE_SCANNED":staged?"PROGRAMMES_STAGED":
+             status==="SUCCESS"?"SCOPE_SUCCESS":"SCOPE_FAILED",
            discoveryOnly?"Source scanned; unknown mappings await review, no programmes published":
+           staged?"Verified, licensed programmes staged privately; no schedules published":
            status==="SUCCESS"?"Imported verified scope":diagnostic);
        }
      }catch(e){
