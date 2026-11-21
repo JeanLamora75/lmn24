@@ -30,25 +30,39 @@ type ImportDetail=ImportRun&{scopes:{id:string;countryId:string;sourceId:string|
  status:string;attempts:number;errorMessage:string|null}[]};
 type ImportEvent={id:string;occurredAt:string;eventType:string;level:string;message:string};
 const failureMessages:Record<string,string>={
- EPG_HTTP_404:"Fichier EPG introuvable sur le serveur du fournisseur (HTTP 404).",
- EPG_HTTP_403:"Le fournisseur refuse l'accès au fichier (HTTP 403).",
- EPG_HTTP_429:"Le fournisseur limite les téléchargements (HTTP 429).",
- EPG_HTTP_5XX:"Le serveur du fournisseur rencontre une erreur.",
- EPG_HTTP_REDIRECT:"Le fournisseur renvoie vers une autre URL ; la redirection est bloquée pour sécurité.",
- EPG_HTTP_ERROR:"Le fournisseur refuse le téléchargement.",
- EPG_DNS_ERROR:"Impossible de résoudre ou de valider l'adresse du fournisseur.",
- EPG_TIMEOUT:"Le fournisseur ne répond pas dans le délai autorisé.",
- EPG_SIZE_LIMIT:"Le flux EPG dépasse les limites techniques de téléchargement ou de décodage.",
- EPG_XMLTV_INVALID:"Le fichier EPG ne respecte pas le format attendu.",
- EPG_NO_PROGRAMMES:"Le fichier EPG ne contient aucun programme exploitable.",
- EPG_DATABASE_WRITE:"La découverte a échoué pendant l'enregistrement des identifiants en base.",
- EPG_TLS_ERROR:"Connexion sécurisée impossible : certificat ou négociation TLS du fournisseur en échec.",
- EPG_CONNECTION_ERROR:"La connexion au fournisseur EPG a été interrompue ou refusée.",
- EPG_GZIP_INVALID:"Le fichier EPG compressé est corrompu, incomplet ou n'est pas au format GZIP attendu.",
- EPG_CONTENT_ENCODING_INVALID:"Le fournisseur a renvoyé un encodage HTTP non pris en charge.",
- EPG_SOURCE_UNAVAILABLE:"La source EPG n'a pas pu être analysée (erreur non classifiée).",
+ EPG_HTTP_404:"Téléchargement · HTTP 404 : fichier absent. Vérifier que la source pointe vers un fichier EPG actuel.",
+ EPG_HTTP_403:"Téléchargement · HTTP 403 : accès refusé. Vérifier les autorisations ou restrictions du fournisseur.",
+ EPG_HTTP_429:"Téléchargement · HTTP 429 : trop de requêtes. Espacer les imports.",
+ EPG_HTTP_5XX:"Téléchargement · HTTP 5xx : erreur du fournisseur. Réessayer après rétablissement.",
+ EPG_HTTP_REDIRECT:"Téléchargement · redirection HTTP interdite par sécurité. Enregistrer l'URL finale approuvée.",
+ EPG_HTTP_ERROR:"Téléchargement · réponse HTTP inattendue. Vérifier la disponibilité du fichier chez le fournisseur.",
+ EPG_DNS_ERROR:"Réseau/DNS · nom de domaine introuvable ou résolution impossible. Vérifier DNS et connexion du backend.",
+ EPG_DNS_NON_PUBLIC:"Réseau/DNS · adresse IP non publique ou IPv6 sans IPv4 publique. Source rejetée pour sécurité SSRF.",
+ EPG_URL_INVALID:"Configuration · URL EPG invalide ou non autorisée. Vérifier protocole HTTPS/HTTP, hôte et port.",
+ EPG_TIMEOUT:"Téléchargement · délai de 30 secondes dépassé. Vérifier le débit, la disponibilité du fournisseur et le réseau serveur.",
+ EPG_SIZE_LIMIT:"Taille · limite technique dépassée. Contrôler le fichier téléchargé et le XML extrait.",
+ EPG_SIZE_COMPRESSED:"Taille · archive téléchargée supérieure à 24 Mio. Choisir un flux plus petit.",
+ EPG_SIZE_EXPANDED:"Taille · document décompressé supérieur à 96 Mio. Choisir un flux moins volumineux.",
+ EPG_PROGRAMME_LIMIT:"Décodage · plus de 250 000 émissions dans le fichier XMLTV. Choisir un flux régional ou fractionné.",
+ EPG_XMLTV_INVALID:"Décodage · XMLTV malformé, encodage invalide ou structure non prise en charge. Vérifier le XML extrait.",
+ EPG_XMLTV_TIME_INVALID:"Décodage · date/horaire d'émission invalide ou fuseau horaire absent. Vérifier les attributs start/stop du XMLTV.",
+ EPG_XMLTV_ITEM_INVALID:"Décodage · émission incomplète : chaîne, titre ou horaires manquants. Vérifier les balises programme.",
+ EPG_FORMAT_MISMATCH:"Décodage · le contenu ne correspond pas au format configuré (XMLTV, GZIP ou JSON). Vérifier la source.",
+ EPG_NO_PROGRAMMES:"Décodage · aucune émission exploitable trouvée. Vérifier la période et le contenu de la source.",
+ EPG_DATABASE_WRITE:"Base de données · échec pendant la découverte ou l'enregistrement des chaînes. Vérifier PostgreSQL et les migrations.",
+ EPG_TLS_ERROR:"TLS/HTTPS · certificat ou négociation sécurisée refusé(e). Vérifier la chaîne de certificats du serveur distant.",
+ EPG_CONNECTION_ERROR:"Réseau · connexion refusée, réinitialisée ou inaccessible. Vérifier pare-feu, proxy et serveur fournisseur.",
+ EPG_STREAM_INTERRUPTED:"Téléchargement · flux interrompu avant la fin. Vérifier connexion réseau et stabilité du fournisseur.",
+ EPG_GZIP_INVALID:"Décompression · fichier GZIP incomplet, corrompu ou incompatible avec le format de la source.",
+ EPG_CONTENT_ENCODING_INVALID:"Téléchargement · compression HTTP inattendue. Le fournisseur doit renvoyer un contenu compatible.",
+ EPG_DOWNLOAD_UNEXPECTED:"Téléchargement · erreur non reconnue par le backend. Consulter le diagnostic technique du serveur (aucun détail brut n'est exposé).",
+ EPG_DECODE_UNEXPECTED:"Décodage · erreur interne non reconnue. Vérifier les journaux techniques du backend.",
+ EPG_SOURCE_UNAVAILABLE:"Source EPG indisponible · aucune cause technique n'a été conservée. Vérifier que le backend exécute la version actuelle.",
 };
-function importDiagnostic(value:string):string{return failureMessages[value]??value;}
+function importDiagnostic(value:string):string{
+ const explanation=failureMessages[value];
+ return explanation?explanation+" [Code : "+value+"]":value;
+}
 const LABELS:Record<TvView,string>={
  overview:"Vue d'ensemble",countries:"Pays",channels:"Chaînes",
  sources:"Sources EPG",imports:"Imports",translations:"Traductions",statistics:"Statistiques",
