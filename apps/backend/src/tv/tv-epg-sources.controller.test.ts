@@ -8,14 +8,16 @@ const request={headers:{cookie:"lmn24_session=test"}};
 const id="a1000000-0000-4000-8000-000000000001";
 function setup(role:"ADMIN"|"EDITOR"|null,enabled=true){
  const listSources=vi.fn().mockResolvedValue([]);
+ const listCountryPriorities=vi.fn().mockResolvedValue({countryId:id,items:[]});
+ const replaceCountryPriorities=vi.fn().mockResolvedValue({countryId:id,updated:1});
  const testConnection=vi.fn().mockResolvedValue({ok:true,stage:"COMPLETE",code:null,bytes:123,programmes:1,channels:1,elapsedMs:5});
  const createSource=vi.fn().mockResolvedValue({id:"test"});
  const setRights=vi.fn().mockResolvedValue({id:"test"});
  const reviewExternalId=vi.fn().mockResolvedValue({id:"test"});
- const service={listSources,createSource,setRights,reviewExternalId,testConnection} as unknown as TvEpgSourcesService;
+ const service={listSources,listCountryPriorities,replaceCountryPriorities,createSource,setRights,reviewExternalId,testConnection} as unknown as TvEpgSourcesService;
  const auth={getUserFromSession:vi.fn().mockResolvedValue(role?{id:"id",role}:null)} as unknown as AuthService;
  const config={get:(name:string)=>name==="TV_CATALOG_ADMIN_ENABLED"?(enabled?"true":"false"):name==="TV_IMPORTS_ENABLED"?"true":undefined} as unknown as ConfigService;
- return {c:new TvEpgSourcesController(auth,service,config),listSources,createSource,setRights,reviewExternalId,testConnection};
+ return {c:new TvEpgSourcesController(auth,service,config),listSources,listCountryPriorities,replaceCountryPriorities,createSource,setRights,reviewExternalId,testConnection};
 }
 const right=(status:"UNREVIEWED"|"APPROVED"|"REJECTED"|"EXPIRED"="UNREVIEWED",reference:string|null=null)=>({status,reference});
 const rights={programme:right(),synopsis:right(),image:right(),logo:right()};
@@ -46,6 +48,25 @@ describe("SCRUM-116 ADMIN EPG source security",()=>{
   const admin=setup("ADMIN");
   await expect(admin.c.testConnection(request,id)).resolves.toMatchObject({ok:true,stage:"COMPLETE"});
   expect(admin.testConnection).toHaveBeenCalledWith(id);
+ });
+ it("protects country priority reading and replacement with admin auth and validation",async()=>{
+  const anon=setup(null);
+  await expect(anon.c.listCountryPriorities(request,id)).rejects.toMatchObject({status:401});
+  expect(anon.listCountryPriorities).not.toHaveBeenCalled();
+  const editor=setup("EDITOR");
+  await expect(editor.c.listCountryPriorities(request,id)).rejects.toMatchObject({status:403});
+  await expect(editor.c.replacePriorities(request,id,{items:[]})).rejects.toMatchObject({status:403});
+  const admin=setup("ADMIN");
+  await expect(admin.c.listCountryPriorities(request,"bad")).rejects.toMatchObject({status:400});
+  await expect(admin.c.listCountryPriorities(request,id)).resolves.toEqual({countryId:id,items:[]});
+  expect(admin.listCountryPriorities).toHaveBeenCalledWith(id);
+  await expect(admin.c.replacePriorities(request,id,{items:[{
+   sourceId:id,countryId:id,priority:1,isActive:true,
+  }]})).resolves.toMatchObject({updated:1});
+  expect(admin.replaceCountryPriorities).toHaveBeenCalledTimes(1);
+  await expect(admin.c.replacePriorities(request,id,{items:[{
+   sourceId:id,countryId:id,priority:0,isActive:true,
+  }]})).rejects.toMatchObject({status:400});
  });
  it("records a manually selected right status without mandatory evidence",async()=>{
   const s=setup("ADMIN");
