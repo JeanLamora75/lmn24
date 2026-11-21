@@ -128,15 +128,18 @@ export function createVerifiedDbEpgLoader(
         // Preserve verified/manual mappings and existing catalogue identities.
         const channelNames=new Map((decoded.channels??[]).map(c=>[c.externalId,c.name]));
         const names=externalIds.map(id=>channelNames.get(id)?.trim().slice(0,255)||id.slice(0,255));
+        const channelLogos=new Map((decoded.channels??[]).map(c=>[c.externalId,c.logoUrl]));
+        const logos=externalIds.map(id=>channelLogos.get(id)??null);
         await db.query(`
-          INSERT INTO public.tv_channel(slug,name)
+          INSERT INTO public.tv_channel(slug,name,logo_url)
           SELECT 'epg-'||replace($1::text,'-','')||'-'||md5(incoming.external_id),
-                 incoming.display_name
-          FROM unnest($2::text[],$3::text[]) AS incoming(external_id,display_name)
+                 incoming.display_name,incoming.logo_url
+          FROM unnest($2::text[],$3::text[],$4::text[])
+            AS incoming(external_id,display_name,logo_url)
           JOIN public.tv_channel_external_id m
             ON m.source_id=$1::uuid AND m.external_id=incoming.external_id
           WHERE m.mapping_status='PENDING_REVIEW' AND m.channel_id IS NULL
-          ON CONFLICT(slug) DO NOTHING`,[row.sourceId,externalIds,names]);
+          ON CONFLICT(slug) DO NOTHING`,[row.sourceId,externalIds,names,logos]);
         await db.query(`
           UPDATE public.tv_channel_external_id m SET channel_id=c.id
           FROM public.tv_channel c
@@ -144,6 +147,17 @@ export function createVerifiedDbEpgLoader(
             AND m.mapping_status='PENDING_REVIEW' AND m.channel_id IS NULL
             AND c.slug='epg-'||replace($1::text,'-','')||'-'||md5(m.external_id)
             AND m.external_id=ANY($2::text[])`,[row.sourceId,externalIds]);
+        // Refresh only empty catalogue logos. Never overwrite an administrator
+        // edited logo, and never affect programme artwork or publishing.
+        await db.query(`
+          UPDATE public.tv_channel c SET logo_url=incoming.logo_url
+          FROM public.tv_channel_external_id m
+          JOIN unnest($2::text[],$3::text[]) AS incoming(external_id,logo_url)
+            ON incoming.external_id=m.external_id
+          WHERE m.source_id=$1::uuid AND m.channel_id=c.id
+            AND m.mapping_status='PENDING_REVIEW'
+            AND c.logo_url IS NULL AND incoming.logo_url IS NOT NULL`,
+          [row.sourceId,externalIds,logos]);
         // Explicit ISO country metadata is provisional: create an inactive
         // national association flagged for review, never publish on this basis.
         if(row.geographicScope==="COUNTRY"){
