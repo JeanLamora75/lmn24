@@ -9,7 +9,7 @@ const patterns=[
  /^catalog\/channels\/discover$/,
  /^catalog\/associations\/[0-9a-f-]{36}$/i,
  /^catalog\/associations\/[0-9a-f-]{36}\/assign-number$/i,
- /^catalog\/channels\/[0-9a-f-]{36}\/(?:profile|languages)$/i,
+ /^catalog\/channels\/[0-9a-f-]{36}\/(?:profile|languages|icon)$/i,
  /^catalog\/variants$/,
  /^epg-sources$/,
  /^epg-sources\/discoveries$/,
@@ -33,7 +33,7 @@ async function handle(request:NextRequest,context:Context,method:"GET"|"POST"|"P
  // Allow only already authenticated, role-authorized NestJS operations. No
  // arbitrary path or public-TV operation can be reached through this proxy.
  const body=method==="GET"?undefined:await request.text();
- if(body&&body.length>100_000)
+ if(body&&body.length>(/\/icon$/.test(route)?1_400_100:100_000))
   return NextResponse.json({message:"Payload too large"},{status:413,headers:{"cache-control":"no-store"}});
  return proxyAdminBackend(request,"/admin/tv/"+route+request.nextUrl.search,{
   method,headers:body===undefined?{}:{"content-type":"application/json"},body:body??null,
