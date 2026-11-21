@@ -30,6 +30,7 @@ async function describeSaveError(response:Response):Promise<string>{
 const rightKeys=["programme","synopsis","image","logo"] as const;
 type Key=typeof rightKeys[number];
 const readable:Record<Key,string>={programme:"Programmes",synopsis:"Synopsis",image:"Images",logo:"Logos"};
+const rightOptions=[{value:"UNREVIEWED",label:"À vérifier"},{value:"APPROVED",label:"Autorisé"},{value:"REJECTED",label:"Non autorisé"},{value:"EXPIRED",label:"Expiré"}] as const;
 export function TvEpgSourceEditor({item,onClose,onSaved}:{
  item:TvEpgSource;onClose:()=>void;onSaved:()=>void;
 }){
@@ -54,7 +55,6 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
    setNotice(message);onSaved();
   }catch(e){setError((e as Error).message);}finally{setBusy(false);}
  }
- const missingEvidence=rightKeys.filter(k=>rights[k].status==="APPROVED"&&!rights[k].reference.trim());
  const saveRights=()=>save("rights",{...Object.fromEntries(rightKeys.map(k=>[k,{
   status:rights[k].status,reference:rights[k].reference.trim()||null,
  }])),expectedVersion:item.version},"Droits enregistrés.");
@@ -85,24 +85,15 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
    </fieldset>
    <fieldset>
     <legend className="h5">Droits de republication</legend>
-    <p className="small text-body-secondary">Chaque famille de contenu exige sa propre preuve avant approbation.
-     L&apos;enregistrement des droits est indépendant de celui de la configuration.</p>
+    <p className="small text-body-secondary">Indiquez votre décision pour chaque type de contenu. Aucune pièce justificative n’est demandée ici. La publication publique reste soumise aux contrôles de droits de LMN24.</p>
     {rightKeys.map(k=><div className="mb-3" key={k}>
      <label className="form-label" htmlFor={"right-"+k}>{readable[k]}</label>
-     <div className={styles.formGrid}>
-      <select className="form-select" id={"right-"+k} value={rights[k].status}
-       onChange={e=>setRights(old=>({...old,[k]:{...old[k],status:e.target.value}}))}>
-       {["UNREVIEWED","APPROVED","REJECTED","EXPIRED"].map(x=><option key={x} value={x}>{x}</option>)}</select>
-      <input className="form-control" type="text" value={rights[k].reference} maxLength={2048}
-       aria-label={"Justificatif "+readable[k]} placeholder="Référence de preuve (obligatoire si APPROVED)" required={rights[k].status==="APPROVED"}
-       onChange={e=>setRights(old=>({...old,[k]:{...old[k],reference:e.target.value}}))}/>
-     </div>
+     <select className="form-select" id={"right-"+k} value={rights[k].status}
+      onChange={e=>setRights(old=>({...old,[k]:{...old[k],status:e.target.value}}))}>
+      {rightOptions.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}
+     </select>
     </div>)}
-    {missingEvidence.length>0&&<p role="status" className="small text-warning-emphasis">
-      Pour enregistrer les droits, fournissez un justificatif pour {missingEvidence.map(k=>readable[k]).join(", ")},
-      ou sélectionnez UNREVIEWED si les droits ne sont pas encore vérifiés.
-     </p>}
-    <button type="button" className="btn btn-outline-primary" disabled={busy||missingEvidence.length>0}
+    <button type="button" className="btn btn-outline-primary" disabled={busy}
      onClick={()=>void saveRights()}>Enregistrer les droits</button>
    </fieldset>
    <div className="d-flex justify-content-end mt-3">
