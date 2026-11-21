@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, ServiceUnavailableException } from "@nes
 import { DatabaseService } from "../database/database.service";
 import { localDayBounds } from "./tv-import-time";
 import {
-  addLocalDays,assertTvDay,gapsInDay,stateForChannel,todayInZone,
+  assertTvDay,gapsInDay,stateForChannel,todayInZone,
   type TvAiring,type TvPublicTab,type CoverageEvidence,TV_LANGUAGES,
 } from "./tv-public-policy";
 
