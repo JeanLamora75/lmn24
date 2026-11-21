@@ -184,8 +184,25 @@ export class TvCatalogController {
       throw new BadRequestException("Invalid TV icon URL");
     try{return await this.catalog.importChannelIcon(id,parsed.data.url);}
     catch(error){
-      if(error instanceof Error&&error.message==="TV_ICON_REMOTE_UNAVAILABLE")
-        throw new BadRequestException("Image inaccessible ou non prise en charge (PNG/JPEG/WebP, 1 Mo maximum).");
+      const code=error instanceof Error?error.message:"";
+      const messages:Record<string,string>={
+       TV_ICON_HTTP_403:"Le serveur de l’image refuse le téléchargement (HTTP 403). Choisissez une autre URL directe.",
+       TV_ICON_HTTP_404:"Le fichier image est introuvable (HTTP 404). Vérifiez le lien copié.",
+       TV_ICON_HTTP_429:"Le fournisseur limite les téléchargements (HTTP 429). Réessayez plus tard.",
+       TV_ICON_HTTP_ERROR:"Le serveur distant n’a pas renvoyé une image (HTTP inattendu).",
+       TV_ICON_REDIRECT_LIMIT:"Trop de redirections vers l’image.",
+       TV_ICON_UNSAFE_REDIRECT:"Redirection de l’image refusée pour raison de sécurité.",
+       TV_ICON_REMOTE_URL_INVALID:"L’URL de l’image est invalide.",
+       TV_ICON_REMOTE_ADDRESS_BLOCKED:"L’adresse du serveur d’image est bloquée pour raison de sécurité.",
+       TV_ICON_ENCODING_INVALID:"Le serveur renvoie une image compressée de façon inattendue.",
+       TV_ICON_TOO_LARGE:"L’image dépasse 1 Mo.",
+       TV_ICON_SIZE_INVALID:"Le fichier image est vide ou trop volumineux.",
+       TV_ICON_FORMAT_INVALID:"Format non pris en charge : utilisez une image PNG, JPEG ou WebP.",
+       TV_ICON_TIMEOUT:"Le téléchargement de l’image a dépassé le délai autorisé.",
+       TV_ICON_TRANSFER_FAILED:"Le téléchargement de l’image a été interrompu.",
+      };
+      if(code.startsWith("TV_ICON_"))
+       throw new BadRequestException(messages[code]??"Le logo n’a pas pu être téléchargé. Vérifiez son URL et son format.");
       throw error;
     }
   }
