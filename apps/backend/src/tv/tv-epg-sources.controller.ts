@@ -19,6 +19,8 @@ const source=z.object({
  sourceUrl:z.string().max(2048),format:z.enum(["XMLTV","XMLTV_GZIP","JSON"]),
  isActive:z.boolean(),rights,
 }).strict();
+const sourceConfiguration=source.omit({rights:true});
+
 const priorities=z.object({items:z.array(z.object({
  sourceId:uuid,countryId:uuid,priority:z.number().int().min(1).max(100000),
  isActive:z.boolean(),
@@ -65,6 +67,23 @@ export class TvEpgSourcesController {
    if(!parsed.success)throw new BadRequestException("Invalid EPG source");
    return this.service.createSource(parsed.data);
  }
+ @Patch(":id/configuration")
+ @Header("Cache-Control","no-store")
+ async updateSourceConfiguration(@Req() request:ReqLike,@Param("id") id:string,@Body() body:unknown){
+   await this.assertAdmin(request);
+   const parsed=sourceConfiguration.safeParse(body);
+   if(!uuid.safeParse(id).success||!parsed.success)throw new BadRequestException("Invalid EPG source configuration");
+   return this.service.updateSourceConfiguration(id,parsed.data);
+ }
+
+ @Get(":id/mappings")
+ @Header("Cache-Control","no-store")
+ async listMappings(@Req() request:ReqLike,@Param("id") id:string){
+   await this.assertAdmin(request);
+   if(!uuid.safeParse(id).success)throw new BadRequestException("Invalid EPG source");
+   return {items:await this.service.listMappings(id)};
+ }
+
  @Patch(":id/rights")
  @Header("Cache-Control","no-store")
  async updateRights(@Req() request:ReqLike,@Param("id") id:string,@Body() body:unknown){
