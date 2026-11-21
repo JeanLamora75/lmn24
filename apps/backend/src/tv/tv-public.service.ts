@@ -283,7 +283,7 @@ export class TvPublicService {
           AND COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) IS NOT NULL
           AND (CASE WHEN ${digits}::boolean THEN
             COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)=${exactNumber}
-            ELSE translate(lower(ch.name),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy') LIKE '%'||translate(lower(${query}),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy')||'%' END)
+            ELSE strpos(translate(lower(ch.name),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy'),translate(lower(${query}),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy'))>0 END)
         ORDER BY c.iso_code2,number,ch.name,cc.channel_id
         LIMIT ${pageSize+1} OFFSET ${(args.channelsPage-1)*pageSize}`;
       return {status:"OK" as const,items:rows.slice(0,pageSize),hasNext:rows.length>pageSize};
@@ -322,8 +322,8 @@ export class TvPublicService {
             AND ((${from}::timestamptz AT TIME ZONE v.timezone)::date + 6)
           AND (CASE WHEN ${digits}::boolean THEN
             COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)=${exactNumber}
-            ELSE translate(lower(ch.name),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy') LIKE '%'||translate(lower(${query}),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy')||'%'
-              OR translate(lower(p.title),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy') LIKE '%'||translate(lower(${query}),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy')||'%' END)
+            ELSE strpos(translate(lower(ch.name),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy'),translate(lower(${query}),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy'))>0
+              OR strpos(translate(lower(p.title),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy'),translate(lower(${query}),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy'))>0 END)
         ORDER BY "countryIso2",number,"channelName","startsAt",id
         LIMIT ${pageSize+1} OFFSET ${(args.programmesPage-1)*pageSize}`;
       return {status:"OK" as const,items:rows.slice(0,pageSize).map(row=>({
