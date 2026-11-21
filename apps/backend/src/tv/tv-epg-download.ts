@@ -31,10 +31,10 @@ export async function downloadEpgSource(rawUrl:string,format:EpgFormat):Promise<
   const compressed=await new Promise<Buffer>((resolve,reject)=>{
     const req=request(url,{
       method:"GET",timeout:EPG_FETCH_LIMITS.timeoutMs,
-      // A single prevalidated public IPv4 is pinned to the socket. In Node 20+
-      // automatic family selection may request an array from custom DNS lookup;
-      // disabling it avoids treating the single pinned address as an array.
-      family:4,autoSelectFamily:false,
+      // Explicit family:4 disables Node's automatic family-selection path
+      // and prevents an array-style lookup response being requested for a
+      // single SSRF-validated and pinned public IPv4 address.
+      family:4,
       headers:{"accept":"application/xml,application/json,application/octet-stream","accept-encoding":"identity"},
       lookup:(_hostname,_options,callback)=>callback(null,publicIPv4.address,4),
     },res=>{
