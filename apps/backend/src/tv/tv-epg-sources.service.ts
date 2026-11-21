@@ -151,7 +151,7 @@ export class TvEpgSourcesService {
     const total=await this.database.prisma.$queryRaw<Array<{count:number}>>`
       SELECT count(*)::int AS count FROM public.tv_channel_external_id m
       JOIN public.tv_source s ON s.id=m.source_id
-      WHERE m.mapping_status='PENDING_REVIEW'
+      WHERE m.mapping_status='PENDING_REVIEW' AND m.channel_id IS NULL
         AND (${term}='' OR m.external_id ILIKE '%' || ${term} || '%'
           OR s.name ILIKE '%' || ${term} || '%')
     `;
@@ -162,7 +162,7 @@ export class TvEpgSourcesService {
         m.source_id AS "sourceId",s.name AS "sourceName"
       FROM public.tv_channel_external_id m
       JOIN public.tv_source s ON s.id=m.source_id
-      WHERE m.mapping_status='PENDING_REVIEW'
+      WHERE m.mapping_status='PENDING_REVIEW' AND m.channel_id IS NULL
         AND (${term}='' OR m.external_id ILIKE '%' || ${term} || '%'
           OR s.name ILIKE '%' || ${term} || '%')
       ORDER BY s.name,m.external_id,m.id
