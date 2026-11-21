@@ -66,6 +66,17 @@ describe("EPG import error diagnostics (no secrets leak)",()=>{
    expect(classifyEpgFailure(new Error(code),"DOWNLOAD")).toBe(code);
   }
  });
+ it("identifies XML security rejection and TLS hostname mismatch precisely",()=>{
+  expect(classifyEpgFailure(new Error("External XML entities and document types are prohibited"),"DOWNLOAD"))
+   .toBe("EPG_XML_SECURITY_REJECTED");
+  expect(classifyEpgFailure(Object.assign(new Error("hostname does not match"),{
+   code:"ERR_TLS_CERT_ALTNAME_INVALID",
+  }),"DOWNLOAD")).toBe("EPG_TLS_HOSTNAME_MISMATCH");
+  expect(classifyEpgFailure(Object.assign(new TypeError("bad request options"),{
+   code:"ERR_INVALID_ARG_TYPE",
+  }),"DOWNLOAD")).toBe("EPG_NODE_ARGUMENT_INVALID");
+  expect(classifyEpgFailure(new Error("EPG_JSON_INVALID"),"DOWNLOAD")).toBe("EPG_JSON_INVALID");
+ });
  it("distinguishes exact source, size and decoder stages without leaking details",()=>{
   const cases:[string,"DOWNLOAD"|"DECODE",string][]=[
    ["Invalid EPG source URL","DOWNLOAD","EPG_URL_INVALID"],
