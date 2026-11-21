@@ -47,6 +47,7 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
  const [diagnostic,setDiagnostic]=useState<{
   ok:boolean;stage:string;code:string|null;bytes:number|null;
   programmes:number|null;channels:number|null;elapsedMs:number;
+  skippedInvalidDuration?:number;
  }|null>(null);
  async function testConnection(){
   if(busy||diagnosing)return;
@@ -115,6 +116,7 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
       {diagnostic.code==="EPG_JSON_INVALID"&&<div>Le contenu obtenu n’est pas un document JSON valide pour le format configuré.</div>}
       {diagnostic.bytes!==null&&<div>Fichier décompressé : {diagnostic.bytes.toLocaleString("fr-FR")} octets</div>}
       {diagnostic.ok&&<div>{diagnostic.channels?.toLocaleString("fr-FR")} chaînes · {diagnostic.programmes?.toLocaleString("fr-FR")} émissions</div>}
+      {diagnostic.ok&&Boolean(diagnostic.skippedInvalidDuration)&&<div>Émissions à durée nulle ignorées : {diagnostic.skippedInvalidDuration?.toLocaleString("fr-FR")}</div>}
      </div>}
     </div>
     <button type="button" className="btn btn-primary mt-3" disabled={busy||!name.trim()||!url.trim()}
