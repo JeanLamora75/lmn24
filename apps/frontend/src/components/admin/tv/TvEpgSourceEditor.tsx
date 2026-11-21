@@ -103,7 +103,7 @@ export function TvEpgSourceEditor({item,onClose,onSaved}:{
       {diagnosing?"Test de connexion en cours…":"Tester la connexion"}
      </button>
      <p className="small text-body-secondary mt-2 mb-0">
-      Teste l'URL et le format enregistrés dans la base, sans lancer d'import ni modifier les chaînes.
+      Teste l’URL et le format enregistrés dans la base, sans lancer d’import ni modifier les chaînes.
       {url!==item.sourceUrl||format!==item.format?" Enregistre d'abord les modifications pour tester les nouvelles valeurs.":""}
      </p>
      {diagnostic&&<div role="status" className={diagnostic.ok?"alert alert-success mt-2":"alert alert-warning mt-2"}>
