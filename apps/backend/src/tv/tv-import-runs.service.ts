@@ -97,6 +97,30 @@ export class TvImportRunsService {
     });
   }
 
+  /** Reuse an exact pending manual single-country request when the user
+   * clicks "Lancer un import" again. Never duplicate an existing QUEUED run.
+   * An already-started run is not reusable.
+   */
+  async findQueuedManual(input:{days:number;countryId?:string|undefined}):
+   Promise<{id:string}|null>{
+    await this.requireSchema();
+    assertImportDays(input.days);
+    // Reuse only for explicit single-country selection, not an ambiguous
+    // global run whose country set may have changed since enqueue.
+    if(!input.countryId)return null;
+    const rows=await this.database.prisma.$queryRaw<Array<{id:string}>>`
+      SELECT r.id FROM public.tv_import_run r
+      JOIN public.tv_import_scope scope ON scope.run_id=r.id
+      WHERE r.trigger='MANUAL' AND r.status='QUEUED'
+        AND r.requested_days=${input.days}
+      GROUP BY r.id
+      HAVING count(DISTINCT scope.country_id)=1
+         AND min(scope.country_id::text)=${input.countryId}::text
+      ORDER BY r.created_at DESC LIMIT 1
+    `;
+    return rows[0]??null;
+  }
+
   /** Bounded audit history; absent metrics remain absent, not fake zeroes. */
   async listRuns(page:number,pageSize:number){
     await this.requireSchema();
