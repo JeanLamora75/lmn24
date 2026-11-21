@@ -67,7 +67,7 @@ export type ValidatedAirings = {
   programmeId:string;sourceId:string;startsAt:string;endsAt:string;fingerprint:string;
 };
 export type PublishInput = {
-  variantId:string;localDate:string;runId:string;
+  variantId:string;countryId:string;localDate:string;runId:string;
   expectedRevisionId:string|null;airings:readonly ValidatedAirings[];
   /** Derived by separately verified coverage. Empty input alone is insufficient. */
   fullCoverageConfirmed:boolean;
@@ -88,6 +88,27 @@ export async function publishTvRevision(lease:TvWriterLease,input:PublishInput):
   try {
     await client.query("SELECT set_config('app.tv_writer_owner',$1,true)",[lease.ownerToken]);
     await client.query("SELECT public.assert_parser_write_epoch($1::uuid)",[lease.ownerToken]);
+    // Publication is impossible with non-approved source rights or an unrelated
+    // variant/country. No speculative catalogue data may become the current grid.
+    const variantScope=await client.query<{found:boolean}>(
+      `SELECT EXISTS (
+        SELECT 1 FROM public.tv_variant_country vc
+        JOIN public.tv_channel_country cc ON cc.id=vc.channel_country_id
+        WHERE vc.variant_id=$1::uuid AND cc.country_id=$2::uuid
+      ) AS found`,[input.variantId,input.countryId]);
+    if(!variantScope.rows[0]?.found)throw new Error("TV_VARIANT_NOT_IN_COUNTRY");
+    for(const row of input.airings){
+      const permitted=await client.query<{allowed:boolean}>(
+        `SELECT EXISTS (
+          SELECT 1 FROM public.tv_source s
+          JOIN public.tv_source_country sc ON sc.source_id=s.id
+          WHERE s.id=$1::uuid AND sc.country_id=$2::uuid
+            AND s.is_active AND sc.is_active
+            AND s.programme_rights_status='APPROVED'
+            AND nullif(btrim(s.programme_rights_reference),'') IS NOT NULL
+        ) AS allowed`,[row.sourceId,input.countryId]);
+      if(!permitted.rows[0]?.allowed)throw new Error("TV_SOURCE_RIGHTS_NOT_APPROVED");
+    }
     // Transaction-level scope lock; no duplicate publishes on same variant/date.
     await client.query("SELECT pg_advisory_xact_lock(hashtext($1),hashtext($2))",
       [input.variantId,input.localDate]);
