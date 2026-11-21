@@ -234,10 +234,16 @@ export class TvImportRunsService {
           WHERE deleted.run_id=r.id AND deleted.event_type='ADMIN_DELETED')
     `;
     if(!rows.length)throw new NotFoundException("TV import run not found");
-    const scopes=await this.database.prisma.$queryRaw<Array<{id:string;status:string}>>`
-      SELECT id,country_id AS "countryId",source_id AS "sourceId",
-        status,attempts,error_message AS "errorMessage"
-      FROM public.tv_import_scope WHERE run_id=${id}::uuid ORDER BY country_id,source_id,id
+    const scopes=await this.database.prisma.$queryRaw<Array<{
+      id:string;status:string;sourceName:string|null;
+    }>>`
+      SELECT scope.id,scope.country_id AS "countryId",
+        scope.source_id AS "sourceId",source.name AS "sourceName",
+        scope.status,scope.attempts,scope.error_message AS "errorMessage"
+      FROM public.tv_import_scope scope
+      LEFT JOIN public.tv_source source ON source.id=scope.source_id
+      WHERE scope.run_id=${id}::uuid
+      ORDER BY scope.country_id,scope.source_id,scope.id
     `;
     const drafts=await this.database.prisma.$queryRaw<Array<{
       draftDays:number;draftAirings:number;draftProgrammes:number;
