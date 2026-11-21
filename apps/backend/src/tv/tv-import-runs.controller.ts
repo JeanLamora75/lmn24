@@ -1,5 +1,5 @@
 import {
- BadRequestException,Body,Controller,ForbiddenException,Get,Header,Param,Post,Req,
+ BadRequestException,Body,Controller,Delete,ForbiddenException,Get,Header,Param,Post,Req,
  ServiceUnavailableException,UnauthorizedException,Query,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -69,6 +69,13 @@ export class TvImportRunsController {
   if(!uuid.safeParse(id).success||!parsed.success)
    throw new BadRequestException("Invalid TV discovery execution request");
   return this.execution.startDiscovery(id);
+ }
+ @Delete(":id")
+ @Header("Cache-Control","no-store")
+ async cancel(@Req() request:ReqLike,@Param("id") id:string){
+  await this.authorize(request);
+  if(!uuid.safeParse(id).success)throw new BadRequestException("Invalid TV import ID");
+  return this.runs.cancelQueued(id);
  }
  @Get(":id")
  @Header("Cache-Control","no-store")
