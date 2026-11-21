@@ -18,13 +18,14 @@ function setup(role:"ADMIN"|"EDITOR"|null,enabled=false){
  const startDiscovery=vi.fn().mockResolvedValue({id,status:"STARTED",mode:"DISCOVERY"});
  const readiness=vi.fn().mockReturnValue({ready:false,mode:"DISCOVERY",missingFlags:["TV_EPG_NETWORK_ENABLED"],publicPublication:false});
  const launchManualImport=vi.fn().mockResolvedValue({id,status:"STARTED",mode:"DISCOVERY"});
- const execution={startDiscovery,readiness,launchManualImport} as unknown as TvImportExecutionService;
+ const retryFailedImport=vi.fn().mockResolvedValue({id,status:"STARTED",mode:"DISCOVERY",retried:1});
+ const execution={startDiscovery,readiness,launchManualImport,retryFailedImport} as unknown as TvImportExecutionService;
  const auth={getUserFromSession:vi.fn().mockResolvedValue(role?{role}:null)} as unknown as AuthService;
  const config={get:(key:string)=>{
   if(key==="TV_IMPORTS_ENABLED"||key==="TV_CATALOG_ADMIN_ENABLED")return enabled?"true":"false";
   return undefined;
  }} as unknown as ConfigService;
- return {controller:new TvImportRunsController(auth,service,config,execution),create,getRun,getEvents,retryFailed,listRuns,cancelQueued,startDiscovery,readiness,launchManualImport};
+ return {controller:new TvImportRunsController(auth,service,config,execution),create,getRun,getEvents,retryFailed,listRuns,cancelQueued,startDiscovery,readiness,launchManualImport,retryFailedImport};
 }
 describe("SCRUM-117 protected import orchestration",()=>{
  it("never reads/writes import data for anonymous users",async()=>{
@@ -92,7 +93,8 @@ describe("SCRUM-117 protected import orchestration",()=>{
   expect(s.create).not.toHaveBeenCalled(); // controller dispatches, never just queues
   await expect(s.controller.get(request,id)).resolves.toMatchObject({id});
   await expect(s.controller.events(request,id)).resolves.toEqual({items:[]});
-  await expect(s.controller.retry(request,id)).resolves.toMatchObject({retried:1});
+  await expect(s.controller.retry(request,id)).resolves.toMatchObject({status:"STARTED",retried:1});
+  expect(s.retryFailedImport).toHaveBeenCalledWith(id);
  });
  it("SCRUM-122 denies import history to unauthorized users and validates page limits",async()=>{
   const anonymous=setup(null,true);
