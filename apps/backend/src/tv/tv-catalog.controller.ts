@@ -166,6 +166,22 @@ export class TvCatalogController {
     }
   }
 
+  @Post("channels/:id/icon/import")
+  @Header("Cache-Control","no-store")
+  async importIcon(@Req() request:RequestLike,@Param("id") id:string,
+    @Body() body:unknown){
+    await this.assertAdmin(request);
+    const parsed=z.object({url:z.string().url().max(2048).refine(url=>url.startsWith("https://"))}).strict().safeParse(body);
+    if(!uuid.safeParse(id).success||!parsed.success)
+      throw new BadRequestException("Invalid TV icon URL");
+    try{return await this.catalog.importChannelIcon(id,parsed.data.url);}
+    catch(error){
+      if(error instanceof Error&&error.message==="TV_ICON_REMOTE_UNAVAILABLE")
+        throw new BadRequestException("Image inaccessible ou non prise en charge (PNG/JPEG/WebP, 1 Mo maximum).");
+      throw error;
+    }
+  }
+
   @Patch("channels/:id/profile")
   @Header("Cache-Control", "no-store")
   async updateProfile(@Req() request: RequestLike, @Param("id") id: string, @Body() body: unknown) {
