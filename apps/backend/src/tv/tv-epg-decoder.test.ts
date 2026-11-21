@@ -51,7 +51,7 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
  });
  it("rejects XML entity expansion and external DTD",async()=>{
   const unsafe=`<?xml version="1.0"?><!DOCTYPE tv [<!ENTITY payload SYSTEM "file:///etc/passwd">]><tv><programme>&payload;</programme></tv>`;
-  await expect(decodeEpgBuffer(Buffer.from(unsafe),"XMLTV")).rejects.toThrow(/XML declarations forbidden/);
+  await expect(decodeEpgBuffer(Buffer.from(unsafe),"XMLTV")).rejects.toThrow(/EPG_XML_SECURITY_REJECTED/);
  });
  it("supports strongly-typed JSON, but source completeness claims remain UNVERIFIED",async()=>{
   const src={programmes:[{id:"p",channel:"ch",start:"2026-11-21T20:30:00+01:00",
