@@ -105,7 +105,14 @@ export async function downloadEpgSource(rawUrl:string,format:EpgFormat):Promise<
     throw new Error("Expanded EPG exceeds size limit");
   if(format==="XMLTV"||format==="XMLTV_GZIP"){
     const prefix=expanded.subarray(0,Math.min(expanded.length,2048)).toString("utf8");
-    if(/<!\s*(DOCTYPE|ENTITY)\b/i.test(expanded.toString("utf8")))
+    // XMLTV legitimately uses <!DOCTYPE tv SYSTEM "xmltv.dtd">.
+    // The SAX parser never resolves this external DTD. Reject every other
+    // declaration and ALL entity definitions (including in internal subsets).
+    const xmlText=expanded.toString("utf8");
+    const withoutStandardDoctype=xmlText.replace(
+      /<!DOCTYPE\s+tv\s+SYSTEM\s+["']xmltv\.dtd["']\s*>/gi,"",
+    );
+    if(/<!\s*(?:DOCTYPE|ENTITY)\b/i.test(withoutStandardDoctype))
       throw new Error("EPG_XML_SECURITY_REJECTED");
     if(!prefix.trimStart().startsWith("<?xml")&&!prefix.trimStart().startsWith("<tv"))
       throw new Error("Invalid XMLTV document");
