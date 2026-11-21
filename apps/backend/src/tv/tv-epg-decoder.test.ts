@@ -17,6 +17,19 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   expect(decoded.coverage).toEqual([]);
   expect(parseXmltvTime("20260329030000 +0200")).toBe("2026-03-29T01:00:00.000Z");
  });
+ it("decodes standard Teleonline XMLTV DOCTYPE without resolving external DTD",async()=>{
+  const xml='<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE tv SYSTEM "xmltv.dtd">\n'
+   +'<tv><programme channel="fr" start="20261121190000 +0100" stop="20261121200000 +0100">'
+   +'<title>Informations</title></programme></tv>';
+  const decoded=await decodeEpgBuffer(Buffer.from(xml,"utf8"),"XMLTV");
+  expect(decoded.programmes).toHaveLength(1);
+  expect(decoded.programmes[0]?.originalTitle).toBe("Informations");
+ });
+ it("rejects unsupported doctypes in SAX XMLTV parsing",async()=>{
+  const xml='<!DOCTYPE tv SYSTEM "malicious.dtd"><tv></tv>';
+  await expect(decodeEpgBuffer(Buffer.from(xml),"XMLTV"))
+   .rejects.toThrow("EPG_XML_SECURITY_REJECTED");
+ });
  it("streams UTF-8 across chunk boundaries and retains escaped/CDATAs",async()=>{
   const prefix='<tv><meta>';
   const after='</meta><programme channel="fr" start="20261121190000 +0100" stop="20261121200000 +0100"><title>';
