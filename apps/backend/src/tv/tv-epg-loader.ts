@@ -7,6 +7,7 @@ import {localDayBounds} from "./tv-import-time";
 import type {ValidatedEpgLoader,EpgDayBatch,ScopeResult} from "./tv-import-worker";
 import type {Coverage,AiringCandidate} from "./tv-import-policy";
 import type {EpgFormat} from "./tv-epg-source-policy";
+import {classifyEpgFailure,EPG_FAILURE_CODES} from "./tv-epg-failure";
 
 export type AttestedCoverage = (args:{
  countryId:string;sourceId:string;variantId:string;localDate:string;
@@ -58,7 +59,10 @@ export function createVerifiedDbEpgLoader(
  const acquire=(sourceId:string,url:string,format:EpgFormat)=>{
   const existing=decodedSources.get(sourceId);
   if(existing)return existing;
-  const work=options.transport(url,format).then(payload=>decodeEpgBuffer(payload,format));
+  const work=Promise.resolve().then(()=>options.transport(url,format))
+   .catch(error=>{throw new Error(classifyEpgFailure(error,"DOWNLOAD"));})
+   .then(payload=>decodeEpgBuffer(payload,format)
+    .catch(error=>{throw new Error(classifyEpgFailure(error,"DECODE"));}));
   decodedSources.set(sourceId,work);
   return work;
  };
@@ -95,6 +99,7 @@ export function createVerifiedDbEpgLoader(
     matched.add(row.scopeId);
     try{
       const staged=new Map<string,EpgDayBatch>();
+      let stage:"DOWNLOAD"|"MAPPING"="DOWNLOAD";
       if(signal.aborted)throw new TvImportLeaseLostError();
       const decoded=await acquire(row.sourceId,row.sourceUrl,row.format);
       if(!decoded.programmes.length)throw new Error("No EPG emissions");
@@ -102,6 +107,7 @@ export function createVerifiedDbEpgLoader(
       // Unknown external IDs remain pending manual mapping, never guessed from names.
       const externalIds=[...new Set(decoded.programmes.map(p=>p.externalChannelId))];
       if(signal.aborted)throw new TvImportLeaseLostError();
+      stage="MAPPING";
       await db.query("BEGIN");
       try{
         // Discover IDs atomically under the same fenced writer ownership.
@@ -209,14 +215,16 @@ export function createVerifiedDbEpgLoader(
         }else groups.set(key,entry);
       }
       results.push({scopeId:row.scopeId,outcome:"SUCCESS"});
-    }catch{
+    }catch(error){
       if(signal.aborted)throw new TvImportLeaseLostError();
-      // Never propagate arbitrary source URL/content into log messages.
-      results.push({scopeId:row.scopeId,outcome:"ERROR"});
+      // Only a finite, reviewed diagnostic code crosses into the run history.
+      const code=error instanceof Error&&EPG_FAILURE_CODES.has(error.message)
+       ?error.message:classifyEpgFailure(error,stage);
+      results.push({scopeId:row.scopeId,outcome:"ERROR",message:code});
     }
   }
   for(const scopeId of scopeIds){
-    if(!matched.has(scopeId))results.push({scopeId,outcome:"ERROR"});
+    if(!matched.has(scopeId))results.push({scopeId,outcome:"ERROR",message:"EPG_SOURCE_UNAVAILABLE"});
   }
   for(const group of groups.values()){
     const associated=[...new Set(group.candidates.map(c=>c.sourceId))];
