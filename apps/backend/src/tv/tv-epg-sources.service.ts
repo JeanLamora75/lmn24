@@ -14,6 +14,7 @@ import {
 export type SourceRightsInput = Record<RightsFamily, RightsDecision>;
 export type SourceInput = {
   name:string; sourceUrl:string; format:EpgFormat; isActive:boolean;
+  geographicScope:"GLOBAL"|"COUNTRY";scopeCountryId:string|null;
   rights:SourceRightsInput;
 };
 
@@ -78,6 +79,8 @@ export class TvEpgSourcesService {
     await this.requireSchema();
     return this.database.prisma.$queryRaw`
       SELECT s.id,s.name,s.source_url AS "sourceUrl",s.format,s.is_active AS "isActive",
+        s.geographic_scope AS "geographicScope",
+        s.scope_country_id AS "scopeCountryId",
         md5(to_jsonb(s)::text) AS version,
         s.programme_rights_status AS "programmeRightsStatus",
         s.synopsis_rights_status AS "synopsisRightsStatus",
@@ -111,12 +114,13 @@ export class TvEpgSourcesService {
     const r=input.rights;
     const rows=await this.database.prisma.$queryRaw`
       INSERT INTO public.tv_source
-      (name,source_url,format,is_active,rights_status,
+      (name,source_url,format,is_active,geographic_scope,scope_country_id,rights_status,
        programme_rights_status,programme_rights_reference,
        synopsis_rights_status,synopsis_rights_reference,
        image_rights_status,image_rights_reference,
        logo_rights_status,logo_rights_reference)
-      VALUES (${input.name},${url},${input.format},${input.isActive},'UNREVIEWED',
+      VALUES (${input.name},${url},${input.format},${input.isActive},
+        ${input.geographicScope},${input.scopeCountryId}::uuid,'UNREVIEWED',
         ${r.programme.status},${r.programme.reference},
         ${r.synopsis.status},${r.synopsis.reference},
         ${r.image.status},${r.image.reference},
@@ -127,13 +131,16 @@ export class TvEpgSourcesService {
   }
 
   async updateSourceConfiguration(sourceId:string,input:{
-    name:string;sourceUrl:string;format:EpgFormat;isActive:boolean;expectedVersion?:string|undefined;
+    name:string;sourceUrl:string;format:EpgFormat;isActive:boolean;
+    geographicScope:"GLOBAL"|"COUNTRY";scopeCountryId:string|null;
+    expectedVersion?:string|undefined;
   }) {
     await this.requireSchema();
     const url=validateEpgSourceUrl(input.sourceUrl).toString();
     const rows=await this.database.prisma.$queryRaw<Array<{id:string}>>`
       UPDATE public.tv_source AS s
-      SET name=${input.name},source_url=${url},format=${input.format},is_active=${input.isActive}
+      SET name=${input.name},source_url=${url},format=${input.format},is_active=${input.isActive},
+        geographic_scope=${input.geographicScope},scope_country_id=${input.scopeCountryId}::uuid
       WHERE id=${sourceId}::uuid AND (${input.expectedVersion??null}::text IS NULL
         OR md5(to_jsonb(s)::text)=${input.expectedVersion??null}) RETURNING id
     `;
