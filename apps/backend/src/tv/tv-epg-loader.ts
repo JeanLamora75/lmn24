@@ -149,16 +149,18 @@ export function createVerifiedDbEpgLoader(
         const channelNames=new Map((decoded.channels??[]).map(c=>[c.externalId,c.name]));
         const names=externalIds.map(id=>channelNames.get(id)?.trim().slice(0,255)||id.slice(0,255));
         const logos=externalIds.map(id=>iconMap.get(id)??null);
+        const channelSites=new Map((decoded.channels??[]).map(ch=>[ch.externalId,ch.websiteUrl]));
+        const websites=externalIds.map(id=>channelSites.get(id)??null);
         await db.query(`
-          INSERT INTO public.tv_channel(slug,name,logo_url)
+          INSERT INTO public.tv_channel(slug,name,logo_url,website_url)
           SELECT 'epg-'||replace($1::text,'-','')||'-'||md5(incoming.external_id),
-                 incoming.display_name,incoming.logo_url
-          FROM unnest($2::text[],$3::text[],$4::text[])
-            AS incoming(external_id,display_name,logo_url)
+                 incoming.display_name,incoming.logo_url,incoming.website_url
+          FROM unnest($2::text[],$3::text[],$4::text[],$5::text[])
+            AS incoming(external_id,display_name,logo_url,website_url)
           JOIN public.tv_channel_external_id m
             ON m.source_id=$1::uuid AND m.external_id=incoming.external_id
           WHERE m.mapping_status='PENDING_REVIEW' AND m.channel_id IS NULL
-          ON CONFLICT(slug) DO NOTHING`,[row.sourceId,externalIds,names,logos]);
+          ON CONFLICT(slug) DO NOTHING`,[row.sourceId,externalIds,names,logos,websites]);
         await db.query(`
           UPDATE public.tv_channel_external_id m SET channel_id=c.id
           FROM public.tv_channel c
@@ -177,6 +179,17 @@ export function createVerifiedDbEpgLoader(
             AND (c.logo_url IS NULL OR c.logo_url NOT LIKE '/tv-icons/%')
             AND incoming.logo_url IS NOT NULL`,
           [row.sourceId,externalIds,logos]);
+        // Import the upstream channel website only when no website has
+        // already been set. Never replace an administrator's chosen URL.
+        await db.query(`
+          UPDATE public.tv_channel c SET website_url=incoming.website_url
+          FROM public.tv_channel_external_id m
+          JOIN unnest($2::text[],$3::text[]) AS incoming(external_id,website_url)
+            ON incoming.external_id=m.external_id
+          WHERE m.source_id=$1::uuid AND m.channel_id=c.id
+            AND (c.website_url IS NULL OR c.website_url='')
+            AND incoming.website_url IS NOT NULL`,
+          [row.sourceId,externalIds,websites]);
         // Explicit ISO country metadata is provisional: create an inactive
         // national association flagged for review, never publish on this basis.
         if(row.geographicScope==="COUNTRY"){
