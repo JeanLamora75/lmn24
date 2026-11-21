@@ -179,13 +179,20 @@ export function TvEpgSourceEditor({item,channels,onClose,onSaved}:{
    </fieldset>
    <fieldset>
     <legend className="h5">Droits de republication</legend>
-    <p className="small text-body-secondary">Indiquez votre décision pour chaque type de contenu. Aucune pièce justificative n’est demandée ici. La publication publique reste soumise aux contrôles de droits de LMN24.</p>
+    <p className="small text-body-secondary">Indiquez votre décision pour chaque type de contenu. Une autorisation peut être enregistrée sans justificatif, mais une référence vérifiable est nécessaire pour importer les programmes sous licence et pour toute republication ultérieure.</p>
     {rightKeys.map(k=><div className="mb-3" key={k}>
      <label className="form-label" htmlFor={"right-"+k}>{readable[k]}</label>
      <select className="form-select" id={"right-"+k} value={rights[k].status}
       onChange={e=>setRights(old=>({...old,[k]:{...old[k],status:e.target.value}}))}>
       {rightOptions.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}
      </select>
+     <label className="form-label small mt-2" htmlFor={"right-ref-"+k}>
+      Référence de droits (URL, licence ou justificatif)
+     </label>
+     <input id={"right-ref-"+k} className="form-control form-control-sm"
+      maxLength={2048} value={rights[k].reference}
+      placeholder="Référence vérifiable, nécessaire pour l’import autorisé"
+      onChange={e=>setRights(old=>({...old,[k]:{...old[k],reference:e.target.value}}))}/>
     </div>)}
     <button type="button" className="btn btn-outline-primary" disabled={busy}
      onClick={()=>void saveRights()}>Enregistrer les droits</button>
