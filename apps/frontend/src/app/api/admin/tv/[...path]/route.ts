@@ -12,7 +12,7 @@ const patterns=[
  /^catalog\/channels\/[0-9a-f-]{36}\/(?:profile|languages)$/i,
  /^catalog\/variants$/,
  /^epg-sources$/,
- /^epg-sources\/[0-9a-f-]{36}\/(?:configuration|rights|mappings)$/i,
+ /^epg-sources\/[0-9a-f-]{36}\/(?:configuration|rights|mappings|test-connection)$/i,
  /^epg-sources\/countries\/[0-9a-f-]{36}\/priorities$/i,
  /^epg-sources\/mappings(?:\/[0-9a-f-]{36})?$/i,
  /^translations\/providers$/,
