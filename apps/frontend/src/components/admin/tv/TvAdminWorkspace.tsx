@@ -308,7 +308,7 @@ function ChannelCreateEditor({countries,locale,countryNames,onClose,onSaved}:{co
    try{
     const n=number.trim()===""?null:Number(number);
     if(n!==null&&(!Number.isInteger(n)||n<1||n>2147483647))throw new Error("Numéro national invalide.");
-    if(active&&n===null)throw new Error("Une chaîne active nécessite un numéro national.");
+ 
     const created=await request<{channelId:string;discoveredAssociations:{id:string}[]}>(
      "catalog/channels/discover","POST",{
       countryId,slug:slug.trim(),name:name.trim(),...channelUrlPayload(urls),
@@ -491,10 +491,6 @@ function ChannelQuickControls({item,onSaved}:{item:Channel;onSaved:()=>void}){
  async function update(nextActive:boolean,nextManual:number|null){
   if(pending)return false;
   const effective=nextManual??item.officialNumber??item.assignedNumber;
-  if(nextActive&&effective===null){
-   setError("Attribuez un numéro avant d’activer cette chaîne.");
-   return false;
-  }
   setPending(true);setError("");
   try{
    await request("catalog/associations/"+item.id,"PATCH",{
@@ -548,13 +544,13 @@ function ChannelQuickControls({item,onSaved}:{item:Channel;onSaved:()=>void}){
   </td>
   <td>
    <div className="d-flex align-items-center gap-2">
-    <div className="form-check form-switch m-0">
-     <input type="checkbox" className="form-check-input" role="switch"
-      checked={active} disabled={pending}
+    <label className={styles.channelSwitch}>
+     <input type="checkbox" role="switch" checked={active} disabled={pending}
       aria-label={(active?"Désactiver ":"Activer ")+item.name}
       onChange={e=>void update(e.target.checked,item.manualNumber)}/>
-    </div>
-    <span>{item.needsReview?"À vérifier":active?"Active":"Inactive"}</span>
+     <span className={styles.channelSwitchTrack} aria-hidden="true"/>
+    </label>
+    <span>{active?"Active":"Inactive"}{item.needsReview?" · À vérifier":""}</span>
    </div>
   </td>
  </>;
