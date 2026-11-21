@@ -31,6 +31,7 @@ export class TvEpgSourcesService {
     await this.requireSchema();
     return this.database.prisma.$queryRaw`
       SELECT s.id,s.name,s.source_url AS "sourceUrl",s.format,s.is_active AS "isActive",
+        md5(to_jsonb(s)::text) AS version,
         s.programme_rights_status AS "programmeRightsStatus",
         s.synopsis_rights_status AS "synopsisRightsStatus",
         s.image_rights_status AS "imageRightsStatus",
@@ -83,16 +84,17 @@ export class TvEpgSourcesService {
   }
 
   async updateSourceConfiguration(sourceId:string,input:{
-    name:string;sourceUrl:string;format:EpgFormat;isActive:boolean;
+    name:string;sourceUrl:string;format:EpgFormat;isActive:boolean;expectedVersion?:string;
   }) {
     await this.requireSchema();
     const url=validateEpgSourceUrl(input.sourceUrl).toString();
     const rows=await this.database.prisma.$queryRaw<Array<{id:string}>>`
       UPDATE public.tv_source
       SET name=${input.name},source_url=${url},format=${input.format},is_active=${input.isActive}
-      WHERE id=${sourceId}::uuid RETURNING id
+      WHERE id=${sourceId}::uuid AND (${input.expectedVersion??null}::text IS NULL
+        OR md5(to_jsonb(public.tv_source)::text)=${input.expectedVersion??null}) RETURNING id
     `;
-    if(!rows.length)throw new NotFoundException("EPG source not found");
+    if(!rows.length)throw new ConflictException("TV_CONCURRENT_EDIT");
     return rows[0];
   }
 
@@ -109,7 +111,7 @@ export class TvEpgSourcesService {
     `;
   }
 
-  async setRights(sourceId:string, rights:SourceRightsInput) {
+  async setRights(sourceId:string, rights:SourceRightsInput, expectedVersion?:string) {
     await this.requireSchema();
     for(const family of ["programme","synopsis","image","logo"] as const) {
       if(rights[family].status==="APPROVED"&&!rights[family].reference?.trim())
@@ -122,9 +124,10 @@ export class TvEpgSourcesService {
         synopsis_rights_status=${r.synopsis.status},synopsis_rights_reference=${r.synopsis.reference},
         image_rights_status=${r.image.status},image_rights_reference=${r.image.reference},
         logo_rights_status=${r.logo.status},logo_rights_reference=${r.logo.reference}
-      WHERE id=${sourceId}::uuid RETURNING id
+      WHERE id=${sourceId}::uuid AND (${expectedVersion??null}::text IS NULL
+        OR md5(to_jsonb(public.tv_source)::text)=${expectedVersion??null}) RETURNING id
     `;
-    if(!rows.length)throw new NotFoundException("EPG source not found");
+    if(!rows.length)throw new ConflictException("TV_CONCURRENT_EDIT");
     return rows[0];
   }
 
