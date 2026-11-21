@@ -7,7 +7,7 @@ export type TvChannelGroupingRow={
  effectiveNumber:number|null;
 };
 export function tvChannelDisplayKey(row:Pick<TvChannelGroupingRow,"countryId"|"name">):string{
- return row.countryId+"|"+row.name.normalize("NFKC").trim().replace(/\\s+/g," ").toLocaleLowerCase("fr");
+ return row.countryId+"|"+row.name.normalize("NFKC").trim().replace(/\s+/g," ").toLocaleLowerCase("fr");
 }
 export function groupTvChannels<T extends TvChannelGroupingRow>(rows:readonly T[]):{
  representatives:T[];members:Map<string,T[]>;
