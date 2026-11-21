@@ -612,6 +612,14 @@ function EpgDiscoveryInbox({countries,onImported}:{
  const [saving,setSaving]=useState(false);
  const [feedback,setFeedback]=useState("");
  const [refresh,setRefresh]=useState(0);
+ const [sort,setSort]=useState<TvSortState>(null);
+ const toggleSort=(key:string)=>setSort(current=>nextTvSort(current,key));
+ const orderedItems=useMemo(()=>sortTvRows(items,sort,(item,key)=>{
+  if(key==="channel")return item.channelName??item.externalId;
+  if(key==="source")return item.sourceName;
+  if(key==="country")return "Pays inconnu";
+  return null;
+ }),[items,sort]);
  async function importSelected(){
   if(saving||!countryId||!selected.length)return;
   setSaving(true);setError("");setFeedback("");
@@ -683,9 +691,11 @@ function EpgDiscoveryInbox({countries,onImported}:{
        onChange={e=>setSelected(e.target.checked
         ?[...new Set([...selected,...items.map(x=>x.id)])]
         :selected.filter(id=>!items.some(x=>x.id===id)))} /></th>
-      <th>Chaîne et identifiant EPG</th><th>Source</th><th>Pays</th>
+      <TvSortableHeader label="Chaîne et identifiant EPG" sortKey="channel" sort={sort} onSort={toggleSort}/>
+      <TvSortableHeader label="Source" sortKey="source" sort={sort} onSort={toggleSort}/>
+      <TvSortableHeader label="Pays" sortKey="country" sort={sort} onSort={toggleSort}/>
      </tr></thead>
-     <tbody>{items.map(item=><tr key={item.id}>
+     <tbody>{orderedItems.map(item=><tr key={item.id}>
       <td><input type="checkbox" aria-label={"Sélectionner "+item.externalId}
        checked={selected.includes(item.id)}
        onChange={e=>setSelected(previous=>e.target.checked
