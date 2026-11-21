@@ -93,6 +93,39 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
   expect(loaded.days[0]?.coverage).toHaveLength(1);
   expect(attest).toHaveBeenCalledOnce();
  });
+ it("retains the upstream diagnostic after the loader classifies the same error twice",async()=>{
+  const samples:[Error,string][]=[
+   [new Error("EPG source returned HTTP 404"),"EPG_HTTP_404"],
+   [Object.assign(new Error("socket hang up"),{code:"ECONNRESET"}),"EPG_CONNECTION_ERROR"],
+   [new Error("incorrect header check"),"EPG_GZIP_INVALID"],
+   [new Error("EPG source request timed out"),"EPG_TIMEOUT"],
+  ];
+  for(const [failure,expected] of samples){
+   const {lease}=setup();
+   const transport=vi.fn(async():Promise<Buffer>=>{throw failure;});
+   const loader=createVerifiedDbEpgLoader(lease,"run",{
+    transport,attest:noCoverageAttested,discoveryOnly:true,
+   });
+   const result=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+   expect(result.days).toEqual([]);
+   expect(result.scopeResults).toEqual([
+    {scopeId:"s1",outcome:"ERROR",message:expected},
+    {scopeId:"s2",outcome:"ERROR",message:expected},
+   ]);
+  }
+ });
+ it("retains classified XMLTV decoder errors after the shared promise boundary",async()=>{
+  const {lease}=setup();
+  const transport=vi.fn(async()=>Buffer.from("<not-tv/>"));
+  // Source scopes in this test use JSON, so malformed input fails JSON decoding.
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+   transport,attest:noCoverageAttested,discoveryOnly:true,
+  });
+  const result=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  expect(result.scopeResults.map(s=>s.message)).toEqual([
+   "EPG_XMLTV_INVALID","EPG_XMLTV_INVALID",
+  ]);
+ });
  it("fails closed on inaccessible source without generating a published day",async()=>{
   const {lease}=setup();
   const transport=vi.fn(async()=>{throw new Error("Upstream failure");});
