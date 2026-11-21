@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { Parser } from "xml2js";
 import { z } from "zod";
 import { EPG_FETCH_LIMITS, type EpgFormat } from "./tv-epg-source-policy";
+import {assertSafeXmltvDeclarations,isAllowedXmltvDoctype} from "./tv-xmltv-doctype";
 
 // Bounded by payload bytes and emission count; neither limit alone is sufficient.
 // Transport still buffers the bounded downloaded payload; SAX parsing is incremental.
@@ -131,10 +132,9 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   };
   sax.ontext=appendText;
   sax.oncdata=appendText;
-  // SAX does not fetch external DTDs. Only the standard XMLTV identifier
-  // is accepted; no entity definitions are allowed by download validation.
+  // SAX never retrieves a DTD. Verify only the exact inert identifiers.
   sax.ondoctype=(value)=>{
-    if(!/^\s*tv\s+SYSTEM\s+["']xmltv\.dtd["']\s*$/i.test(value))
+    if(!isAllowedXmltvDoctype(value))
       throw new Error("EPG_XML_SECURITY_REJECTED");
   };
   sax.onclosetag=(name)=>{
