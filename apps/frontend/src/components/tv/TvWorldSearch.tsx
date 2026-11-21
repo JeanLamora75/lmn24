@@ -103,7 +103,7 @@ export function TvWorldSearch({locale,initialQuery=""}:{locale:TvLocale;initialQ
   setLoading(part);setPages(old=>({...old,[part]:old[part]+1}));
  },[]);
  const retry=useCallback((part:SectionName)=>{
-  sectionRef.current=part;
+  setRequestedSection(part);
   setLoading(part);setPending(v=>v+1);
  },[]);
  const countryName=(iso:string)=>new Intl.DisplayNames([locale],{type:"region"}).of(iso)??iso;
