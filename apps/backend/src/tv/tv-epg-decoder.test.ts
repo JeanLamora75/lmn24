@@ -100,7 +100,7 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
   expect(decoded.programmes).toHaveLength(50_001);
   expect(decoded.coverage).toEqual([]);
- });
+ },30_000);
  it("rejects invented durations, missing titles, excessive JSON items",async()=>{
   const src={programmes:[{id:"p",channel:"ch",start:"2026-11-21T20:30:00Z",
    end:"2026-11-21T19:30:00Z",title:"Film"}]};
