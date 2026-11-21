@@ -528,6 +528,72 @@ function SourcePrioritiesEditor({countries,locale,countryNames,onClose,onSaved}:
   </div>
  </Modal>;
 }
+type PendingDiscovery={id:string;sourceId:string;sourceName:string;externalId:string};
+function EpgDiscoveryInbox({onReview}:{onReview:(item:PendingDiscovery)=>void}){
+ const [search,setSearch]=useState("");
+ const [query,setQuery]=useState("");
+ const [page,setPage]=useState(1);
+ const [items,setItems]=useState<PendingDiscovery[]>([]);
+ const [total,setTotal]=useState(0);
+ const [loading,setLoading]=useState(true);
+ const [error,setError]=useState("");
+ useEffect(()=>{
+  const controller=new AbortController();
+  void fetch(api+"epg-sources/discoveries?page="+page+"&search="+encodeURIComponent(query),{
+   cache:"no-store",signal:controller.signal,
+  }).then(async res=>{
+   if(!res.ok)throw new Error(messageFor(res.status));
+   return res.json() as Promise<{items:PendingDiscovery[];total:number}>;
+  }).then(data=>{
+   if(!controller.signal.aborted){setItems(data.items);setTotal(data.total);}
+  }).catch(err=>{if(!controller.signal.aborted)setError((err as Error).message);})
+   .finally(()=>{if(!controller.signal.aborted)setLoading(false);});
+  return ()=>controller.abort();
+ },[page,query]);
+ return <AdminDataPanel label="Chaînes EPG découvertes — à classer">
+  <div className="p-3">
+   <p className="text-body-secondary">
+    Les imports ont identifié ces chaînes dans les flux EPG, mais elles ne sont pas
+    encore rattachées au catalogue. Aucun pays n’est déduit automatiquement d’un
+    flux mondial. Choisis la source et le pays lors de leur création, puis valide
+    la correspondance avant l’import des programmes.
+   </p>
+   <form className="d-flex flex-wrap gap-2 mb-3" onSubmit={e=>{
+    e.preventDefault();setPage(1);setQuery(search);
+   }}>
+    <input className="form-control" style={{maxWidth:380}} type="search"
+     aria-label="Rechercher une chaîne EPG découverte"
+     placeholder="Identifiant externe ou source" value={search}
+     onChange={e=>setSearch(e.target.value)}/>
+    <button className="btn btn-outline-primary" type="submit">Rechercher</button>
+   </form>
+   <p className="small text-body-secondary">{total.toLocaleString("fr-FR")} identifiants EPG à examiner</p>
+   {loading&&<p role="status">Chargement des découvertes…</p>}
+   {error&&<p role="alert" className="alert alert-danger">{error}</p>}
+   {!loading&&!error&&<div className="table-responsive">
+    <table className="table table-hover align-middle">
+     <thead><tr><th>Identifiant EPG</th><th>Source</th><th>Statut</th><th>Action</th></tr></thead>
+     <tbody>{items.map(item=><tr key={item.id}>
+      <td><code>{item.externalId}</code></td><td>{item.sourceName}</td>
+      <td>À vérifier</td>
+      <td><button type="button" className="btn btn-sm btn-outline-primary"
+       onClick={()=>onReview(item)}>Examiner la chaîne</button></td>
+     </tr>)}</tbody>
+    </table>
+    {!items.length&&<p>Aucune chaîne EPG en attente dans cette sélection.</p>}
+    <div className="d-flex justify-content-between align-items-center">
+     <span className="small text-body-secondary">Page {page} / {Math.max(1,Math.ceil(total/50))}</span>
+     <div className="d-flex gap-2">
+      <button className="btn btn-sm btn-outline-secondary" type="button"
+       disabled={page===1} onClick={()=>setPage(x=>x-1)}>Précédent</button>
+      <button className="btn btn-sm btn-outline-secondary" type="button"
+       disabled={page*50>=total} onClick={()=>setPage(x=>x+1)}>Suivant</button>
+     </div>
+    </div>
+   </div>}
+  </div>
+ </AdminDataPanel>;
+}
 function ImportEditor({countries,locale,countryNames,onClose,onSaved}:{countries:Country[];locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:(id:string)=>void}){
  const [country,setCountry]=useState("");const [days,setDays]=useState(7);
  const [mode,setMode]=useState<"DISCOVERY"|"STAGING">("DISCOVERY");
@@ -605,6 +671,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [countryEditor,setCountryEditor]=useState<Country|null>(null);
  const [channelEditor,setChannelEditor]=useState<Channel|null>(null);
  const [sourceEditor,setSourceEditor]=useState<Source|null>(null);
+ const [reviewExternalId,setReviewExternalId]=useState("");
  const [filter,setFilter]=useAdminSessionFilter("tv-"+view,"search","");
  const [country,setCountry]=useAdminSessionFilter("tv-"+view,"country","");
  const [status,setStatus]=useAdminSessionFilter("tv-"+view,"status","all");
@@ -622,7 +689,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     const requested=view==="overview"||view==="statistics"?
      ["catalog/countries","catalog/channels","epg-sources","import-runs?page=1&pageSize=100"]:
      view==="translations"?["catalog/channels"]:
-     view==="sources"?["epg-sources","catalog/countries","catalog/channels"]:
+     (view==="sources"||view==="channels")?["epg-sources","catalog/countries","catalog/channels"]:
      [paths[view]??"catalog/countries","catalog/countries"];
     const unique=[...new Set(requested)];
     const responses=await Promise.all(unique.map(async name=>{
@@ -748,6 +815,12 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     </div>
    </AdminDataPanel>
   </>}
+  {view==="channels"&&!loading&&!error&&
+   <EpgDiscoveryInbox onReview={item=>{
+    const source=sources.find(x=>x.id===item.sourceId);
+    if(!source){setError("Source EPG introuvable. Actualise la page.");return;}
+    setReviewExternalId(item.externalId);setSourceEditor(source);
+   }}/>}
   {view==="sources"&&<p className="text-body-secondary">Une source active peut être utilisée globalement. Utilisez « Ordre des sources » pour définir sa priorité et ses éventuelles exclusions par pays. Les chaînes inconnues restent à vérifier avant publication.</p>}
    {(view==="countries"||view==="channels"||view==="sources"||view==="imports")&&!loading&&!error&&
    <AdminDataPanel label={"Liste "+LABELS[view]}>
@@ -820,12 +893,13 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   {countryEditor&&<CountryEditor item={countryEditor} locale={locale} countryNames={countryNames} onClose={()=>setCountryEditor(null)} onSaved={saved}/>}
   {channelEditor&&<ChannelEditor item={channelEditor} onClose={()=>setChannelEditor(null)} onSaved={saved}/>}
   {sourceEditor&&<TvEpgSourceEditor item={sourceEditor}
+    initialMappingSearch={reviewExternalId}
     channels={channels.map(ch=>({id:ch.channelId,name:ch.name,countryId:ch.countryId,
      countryLabel:region(countryCodes.get(ch.countryId)??"",locale,countryNames),
      defaultVariantId:ch.defaultVariantId}))}
     countries={countries.map(c=>({id:c.countryId,
      name:region(c.isoCode2,locale,countryNames),timezone:c.referenceTimezone,code:c.isoCode2}))}
-    onClose={()=>setSourceEditor(null)} onSaved={saved}/>}
+    onClose={()=>{setSourceEditor(null);setReviewExternalId("");}} onSaved={saved}/>}
   {dialog==="priorities"&&<SourcePrioritiesEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
   {dialog==="channel"&&<ChannelCreateEditor countries={countries} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)} onSaved={saved}/>}
    {dialog==="source"&&<SourceEditor onClose={()=>setDialog(null)} onSaved={saved}/>}
