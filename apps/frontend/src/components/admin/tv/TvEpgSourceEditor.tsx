@@ -36,8 +36,9 @@ type MappingRow={id:string;sourceId:string;externalId:string;status:string;
 type MappingChannel={id:string;name:string;countryId:string;countryLabel:string;
  defaultVariantId:string|null};
 type MappingCountry={id:string;name:string;timezone:string;code:string};
-export function TvEpgSourceEditor({item,channels,countries,onClose,onSaved}:{
+export function TvEpgSourceEditor({item,channels,countries,initialMappingSearch="",onClose,onSaved}:{
  item:TvEpgSource;channels:MappingChannel[];countries:MappingCountry[];
+ initialMappingSearch?:string;
  onClose:()=>void;onSaved:()=>void;
 }){
  const [name,setName]=useState(item.name);
@@ -52,7 +53,7 @@ export function TvEpgSourceEditor({item,channels,countries,onClose,onSaved}:{
  const [mappings,setMappings]=useState<MappingRow[]>([]);
  const [mappingLoading,setMappingLoading]=useState(true);
  const [mappingError,setMappingError]=useState("");
- const [mappingSearch,setMappingSearch]=useState("");
+ const [mappingSearch,setMappingSearch]=useState(initialMappingSearch);
  const [mappingStatus,setMappingStatus]=useState("PENDING_REVIEW");
  const [mappingPage,setMappingPage]=useState(1);
  const [mappingBusy,setMappingBusy]=useState("");
@@ -64,7 +65,8 @@ export function TvEpgSourceEditor({item,channels,countries,onClose,onSaved}:{
 
  useEffect(()=>{
   const controller=new AbortController();
-  void fetch("/api/admin/tv/epg-sources/"+item.id+"/mappings",{
+  void fetch("/api/admin/tv/epg-sources/"+item.id+"/mappings"+
+   (initialMappingSearch?"?search="+encodeURIComponent(initialMappingSearch):""),{
    cache:"no-store",signal:controller.signal,
   }).then(async res=>{
    if(!res.ok)throw new Error(await describeSaveError(res));
@@ -73,7 +75,7 @@ export function TvEpgSourceEditor({item,channels,countries,onClose,onSaved}:{
    .catch(err=>{if(!controller.signal.aborted)setMappingError((err as Error).message);})
    .finally(()=>{if(!controller.signal.aborted)setMappingLoading(false);});
   return ()=>controller.abort();
- },[item.id]);
+ },[item.id,initialMappingSearch]);
  const filteredMappings=useMemo(()=>mappings.filter(m=>
   (mappingStatus==="ALL"||m.status===mappingStatus)
   &&(!mappingSearch||[m.externalId,m.channelName??""].join(" ")
