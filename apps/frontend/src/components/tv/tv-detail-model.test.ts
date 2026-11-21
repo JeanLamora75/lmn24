@@ -30,7 +30,7 @@ describe("SCRUM-120 UX02 invariants",()=>{
     .toContain("Oct");
  });
  it("gaps stay non-airing items, ordered without invented programme ids",()=>{
-  const airing:TvAiring={id:"real",variantId:"v",sourceId:"source",startsAt:"2026-11-21T20:00:00Z",
+  const airing:TvAiring={id:"real",sourceId:"source",startsAt:"2026-11-21T20:00:00Z",
    endsAt:"2026-11-21T21:00:00Z",title:"Actual airing",category:null,
    description:null,imageUrl:null};
   const gaps:TvGap[]=[{startsAt:"2026-11-21T19:00:00Z",
