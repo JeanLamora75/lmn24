@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import {useCallback,useEffect,useMemo,useState} from "react";
-import {TV_COPY,dateOffset,localToday,type TvLocale} from "./tv-guide-model";
+import {TV_COPY,type TvLocale} from "./tv-guide-model";
 import {DETAIL_COPY,approvedExternalUrl,dayAtOffset,durationMinutes,gapItems,
   localDateLabel,offsetForDay,selectVariant,timeLabel,type TvChannelDetails as Channel,
-  type TvChannelDay,type TvVariant} from "./tv-detail-model";
+  type TvChannelDay} from "./tv-detail-model";
 import styles from "./tv-detail.module.css";
 
 type Props={locale:TvLocale;initial:Channel;initialVariant:string|null;initialDate:string|null;};
