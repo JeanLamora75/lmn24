@@ -35,8 +35,10 @@ type MappingRow={id:string;sourceId:string;externalId:string;status:string;
  channelId:string|null;variantId:string|null;channelName:string|null};
 type MappingChannel={id:string;name:string;countryId:string;countryLabel:string;
  defaultVariantId:string|null};
-export function TvEpgSourceEditor({item,channels,onClose,onSaved}:{
- item:TvEpgSource;channels:MappingChannel[];onClose:()=>void;onSaved:()=>void;
+type MappingCountry={id:string;name:string;timezone:string;code:string};
+export function TvEpgSourceEditor({item,channels,countries,onClose,onSaved}:{
+ item:TvEpgSource;channels:MappingChannel[];countries:MappingCountry[];
+ onClose:()=>void;onSaved:()=>void;
 }){
  const [name,setName]=useState(item.name);
  const [url,setUrl]=useState(item.sourceUrl);
@@ -55,6 +57,11 @@ export function TvEpgSourceEditor({item,channels,onClose,onSaved}:{
  const [mappingPage,setMappingPage]=useState(1);
  const [mappingBusy,setMappingBusy]=useState("");
  const [selection,setSelection]=useState<Record<string,string>>({});
+ const [availableChannels,setAvailableChannels]=useState<MappingChannel[]>(channels);
+ const [creatingFor,setCreatingFor]=useState<MappingRow|null>(null);
+ const [newChannelCountry,setNewChannelCountry]=useState(countries[0]?.id??"");
+ const [newChannelName,setNewChannelName]=useState("");
+
  useEffect(()=>{
   const controller=new AbortController();
   void fetch("/api/admin/tv/epg-sources/"+item.id+"/mappings",{
@@ -90,10 +97,46 @@ export function TvEpgSourceEditor({item,channels,onClose,onSaved}:{
     }),
    });
    if(!response.ok)throw new Error(await describeSaveError(response));
-   const channel=channels.find(x=>x.id===channelId);
+   const channel=availableChannels.find(x=>x.id===channelId);
    setMappings(previous=>previous.map(x=>x.id===mapping.id
     ?{...x,status,channelId:status==="VERIFIED"?channelId:null,
        channelName:status==="VERIFIED"?channel?.name??null:null}:x));
+  }catch(err){setMappingError((err as Error).message);}
+  finally{setMappingBusy("");}
+ }
+ async function createChannel(){
+  if(!creatingFor||!newChannelCountry||!newChannelName.trim()||mappingBusy)return;
+  const target=creatingFor;
+  const country=countries.find(c=>c.id===newChannelCountry);
+  if(!country)return;
+  setMappingBusy(target.id);setMappingError("");
+  try{
+   // Unique deterministic slug scoped to the source external mapping.
+   // The name remains editable; no guessed country assignment is made.
+   const slug="epg-"+target.id.replaceAll("-","").slice(0,24);
+   const response=await fetch("/api/admin/tv/catalog/channels/discover",{
+    method:"POST",headers:{"content-type":"application/json"},
+    body:JSON.stringify({countryId:country.id,slug,name:newChannelName.trim()}),
+   });
+   if(!response.ok)throw new Error(await describeSaveError(response));
+   const created=await response.json() as {
+    channelId:string;discoveredAssociations:{id:string}[];
+   };
+   const association=created.discoveredAssociations[0];
+   if(!association)throw new Error(
+    "La chaîne existe déjà. Vérifie son rattachement dans l’onglet Chaînes.");
+   const variantResponse=await fetch("/api/admin/tv/catalog/variants",{
+    method:"POST",headers:{"content-type":"application/json"},
+    body:JSON.stringify({channelId:created.channelId,channelCountryId:association.id,
+     code:"main-"+country.code.toLowerCase(),name:newChannelName.trim(),
+     timezone:country.timezone}),
+   });
+   if(!variantResponse.ok)throw new Error(await describeSaveError(variantResponse));
+   setAvailableChannels(prev=>[...prev,{id:created.channelId,
+    name:newChannelName.trim(),countryId:country.id,countryLabel:country.name,
+    defaultVariantId:null}]);
+   setSelection(prev=>({...prev,[target.id]:created.channelId}));
+   setCreatingFor(null);
   }catch(err){setMappingError((err as Error).message);}
   finally{setMappingBusy("");}
  }
@@ -223,6 +266,34 @@ export function TvEpgSourceEditor({item,channels,onClose,onSaved}:{
        </select>
       </label>
      </div>
+     {creatingFor&&<div className="border rounded p-3 mb-3">
+      <strong>Créer une chaîne dans le catalogue</strong>
+      <p className="small text-body-secondary mb-2">
+       Identifiant EPG : {creatingFor.externalId}. La chaîne sera inactive et à vérifier ;
+       aucun programme ne sera publié automatiquement.
+      </p>
+      <label className="form-label d-block">Nom
+       <input className="form-control" value={newChannelName}
+        onChange={e=>setNewChannelName(e.target.value)} maxLength={255}/>
+      </label>
+      <label className="form-label d-block">Pays de diffusion
+       <select className="form-select" value={newChannelCountry}
+        onChange={e=>setNewChannelCountry(e.target.value)}>
+        {countries.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}
+       </select>
+      </label>
+      <div className="d-flex gap-2 mt-2">
+       <button type="button" className="btn btn-primary btn-sm"
+        disabled={!!mappingBusy||!newChannelName.trim()||!newChannelCountry}
+        onClick={()=>void createChannel()}>Créer la chaîne</button>
+       <button type="button" className="btn btn-outline-secondary btn-sm"
+        onClick={()=>setCreatingFor(null)}>Annuler</button>
+      </div>
+     </div>}
+     {availableChannels.length===0&&<p className="alert alert-info">
+      Aucune chaîne n’est encore dans le catalogue. Crée une chaîne depuis
+      un identifiant EPG ci-dessous, puis valide sa correspondance.
+     </p>}
      <div className="table-responsive">
       <table className="table align-middle">
        <thead><tr><th>ID externe</th><th>Chaîne LMN24</th><th>Action</th></tr></thead>
@@ -235,7 +306,7 @@ export function TvEpgSourceEditor({item,channels,onClose,onSaved}:{
           value={selection[m.id]??m.channelId??""}
           onChange={e=>setSelection(prev=>({...prev,[m.id]:e.target.value}))}>
           <option value="">Sélectionner une chaîne</option>
-          {channels.map(ch=><option key={ch.id} value={ch.id}>
+          {availableChannels.map(ch=><option key={ch.countryId+ch.id} value={ch.id}>
            {ch.countryLabel} · {ch.name}</option>)}
          </select></td>
          <td><div className="d-flex gap-1">
@@ -244,6 +315,11 @@ export function TvEpgSourceEditor({item,channels,onClose,onSaved}:{
            onClick={()=>void reviewMapping(m,"VERIFIED")}>Valider</button>
           <button className="btn btn-sm btn-outline-secondary" type="button"
            disabled={!!mappingBusy} onClick={()=>void reviewMapping(m,"REJECTED")}>Rejeter</button>
+          <button className="btn btn-sm btn-outline-secondary" type="button"
+           disabled={!!mappingBusy} onClick={()=>{
+            setCreatingFor(m);
+            setNewChannelName(m.externalId.slice(0,255));
+           }}>Créer une chaîne</button>
          </div></td>
         </tr>)}</tbody>
       </table>
