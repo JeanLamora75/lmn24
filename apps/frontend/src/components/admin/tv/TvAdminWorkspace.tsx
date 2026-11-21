@@ -269,15 +269,26 @@ function ChannelCreateEditor({countries,locale,countryNames,onClose,onSaved}:{co
     const n=number.trim()===""?null:Number(number);
     if(n!==null&&(!Number.isInteger(n)||n<1||n>2147483647))throw new Error("Numéro national invalide.");
     if(active&&n===null)throw new Error("Une chaîne active nécessite un numéro national.");
-    const created=await request<{discoveredAssociations:{id:string}[]}>("catalog/channels/discover","POST",{
-     countryId,slug:slug.trim(),name:name.trim(),...channelUrlPayload(urls),
+    const created=await request<{channelId:string;discoveredAssociations:{id:string}[]}>(
+     "catalog/channels/discover","POST",{
+      countryId,slug:slug.trim(),name:name.trim(),...channelUrlPayload(urls),
     });
     const association=created.discoveredAssociations[0];
-    if(association&&(n!==null||active||!review)){
-     await request("catalog/associations/"+association.id,"PATCH",{
-      isActive:active,needsReview:review,manualNumber:n,
-      officialNumber:null,assignedNumber:null,defaultVariantId:null,
+    if(association){
+     // A broadcast variant is required before verified EPG mappings can
+     // produce programmes. Use the country's configured IANA timezone.
+     const zone=countries.find(c=>c.countryId===countryId)?.referenceTimezone;
+     if(!zone)throw new Error("Fuseau du pays indisponible : configurez d’abord ce pays.");
+     const variant=await request<{variantId:string}>("catalog/variants","POST",{
+      channelId:created.channelId,channelCountryId:association.id,
+      code:"main",name:name.trim(),timezone:zone,
      });
+     if(n!==null||active||!review){
+      await request("catalog/associations/"+association.id,"PATCH",{
+       isActive:active,needsReview:review,manualNumber:n,
+       officialNumber:null,assignedNumber:null,defaultVariantId:variant.variantId,
+      });
+     }
     }
     onSaved();
    }catch(err){setError((err as Error).message);}finally{setBusy(false);}
