@@ -880,7 +880,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const countryCodes=useMemo(()=>new Map(countries.map(c=>[c.countryId,c.isoCode2])),[countries]);
  const filtered=useMemo(()=>{
   const normal=(s:string)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
-  const pool=view==="countries"?countries:view==="channels"?channels:view==="sources"?sources:runs;
+  const pool=view==="countries"?sortedCountries:view==="channels"?channels:view==="sources"?sources:runs;
   return pool.filter(item=>{
    const displayedCountry=view==="countries"&&"isoCode2" in item
     ?region(item.isoCode2,locale,countryNames):"";
@@ -892,7 +892,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    if(status==="review"&&("needsReview" in item)&&!item.needsReview)return false;
    return true;
   });
- },[view,countries,channels,sources,runs,filter,country,status,locale,countryNames]);
+ },[view,sortedCountries,channels,sources,runs,filter,country,status,locale,countryNames]);
  const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
  const visible=filtered.slice((Math.min(page,pages)-1)*PAGE_SIZE,Math.min(page,pages)*PAGE_SIZE);
  const action=view==="channels"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("channel")}>Ajouter une chaîne</button>
@@ -952,13 +952,13 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    <AdminDataPanel label={"Liste "+LABELS[view]}>
     <div className="table-responsive"><table className="table table-hover align-middle mb-0">
      <thead><tr>
-      {view==="countries"&&<><th>Pays</th><th>Statut</th><th>Fuseau IANA</th><th>Chaînes actives / total</th><th>Couverture</th><th>Actions</th></>}
+      {view==="countries"&&<><th>Pays</th><th>ISO 2</th><th>Statut</th><th>Fuseau IANA</th><th>Chaînes actives / total</th><th>Couverture</th><th>Actions</th></>}
       {view==="channels"&&<><th>Chaîne</th><th>Pays</th><th>N°</th><th>Statut</th><th>Actions</th></>}
       {view==="sources"&&<><th>Source</th><th>Format</th><th>Périmètre</th><th>Droits programmes</th><th>Statut</th><th>Actions</th></>}
       {view==="imports"&&<><th>Date</th><th>Déclencheur</th><th>Jours</th><th>État</th><th>Périmètres</th><th>Actions</th></>}
      </tr></thead><tbody>
       {view==="countries"&&(visible as Country[]).map(v=><tr key={v.countryId}>
-       <td>{region(v.isoCode2,locale,countryNames)} ({v.isoCode2})</td>
+       <td>{region(v.isoCode2,locale,countryNames)}</td><td>{v.isoCode2}</td>
        <td>{v.isActive?"Actif":"Inactif"}</td><td>{v.referenceTimezone}</td>
        <td>{v.approvedChannelCount} / {v.channelCount}</td><td>Inconnue</td>
        <td><AdminIconButton name="pencil-square" label={"Modifier "+region(v.isoCode2,locale,countryNames)} onClick={()=>setCountryEditor(v)}/></td>
