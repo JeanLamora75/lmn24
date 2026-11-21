@@ -512,6 +512,24 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   }catch(err){setError((err as Error).message);}
   finally{setExecuting(false);}
  }
+ // Refresh the run and event history while a dispatched worker is active.
+ // Unlike the queue creation endpoint, this is read-only polling.
+ useEffect(()=>{
+  if(view!=="imports"||!selectedRun||!executionState?.ready
+    ||(detail?.status!=="QUEUED"&&detail?.status!=="RUNNING"))return;
+  let mounted=true;
+  const interval=setInterval(()=>{
+   void Promise.all([
+    request<ImportDetail>("import-runs/"+selectedRun),
+    request<{items:ImportEvent[]}>("import-runs/"+selectedRun+"/events"),
+    request<{items:ImportRun[]}>("import-runs?page=1&pageSize=100"),
+   ]).then(([d,e,list])=>{
+    if(!mounted)return;
+    setDetail(d);setEvents(e.items);setRuns(list.items);
+   }).catch(()=>{/* Manual reload remains available; never falsify success. */});
+  },5000);
+  return ()=>{mounted=false;clearInterval(interval);};
+ },[view,selectedRun,executionState?.ready,detail?.status]);
  function saved(){setDialog(null);setCountryEditor(null);setChannelEditor(null);setSourceEditor(null);setReload(v=>v+1);}
  const countryCodes=useMemo(()=>new Map(countries.map(c=>[c.countryId,c.isoCode2])),[countries]);
  const filtered=useMemo(()=>{
