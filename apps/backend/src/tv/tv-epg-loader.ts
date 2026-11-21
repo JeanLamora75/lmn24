@@ -61,7 +61,7 @@ export function createVerifiedDbEpgLoader(
   if(!Number.isInteger(days)||!days||days<1||days>7)throw new Error("Invalid import duration");
   const rows=await db.query<Scope>(`
     SELECT scope.id AS "scopeId",s.id AS "sourceId",s.source_url AS "sourceUrl",
-      s.format,s.name AS "_sourceName",sc.priority,
+      s.format,s.name AS "_sourceName",COALESCE(sc.priority,2147483647) AS priority,
       s.programme_rights_status AS "programmeRightsStatus",
       s.programme_rights_reference AS "programmeRightsReference",
       s.synopsis_rights_status AS "synopsisRightsStatus",
@@ -70,26 +70,38 @@ export function createVerifiedDbEpgLoader(
       s.image_rights_reference AS "imageRightsReference"
     FROM public.tv_import_scope scope
     JOIN public.tv_source s ON s.id=scope.source_id
-    JOIN public.tv_source_country sc ON sc.country_id=scope.country_id
+    LEFT JOIN public.tv_source_country sc ON sc.country_id=scope.country_id
       AND sc.source_id=s.id
     WHERE scope.run_id=$1::uuid AND scope.country_id=$2::uuid
       AND scope.id::text=ANY($3::text[])
-      AND scope.status='QUEUED' AND s.is_active AND sc.is_active
-    ORDER BY sc.priority,s.id`,[runId,countryId,[...scopeIds]]);
+      AND scope.status='QUEUED' AND s.is_active
+      AND (sc.source_id IS NULL OR sc.is_active)
+    ORDER BY sc.priority NULLS LAST,s.id`,[runId,countryId,[...scopeIds]]);
   const groups=new Map<string,EpgDayBatch>();
   const results:ScopeResult[]=[];
   const matched=new Set<string>();
   for(const row of rows.rows){
     matched.add(row.scopeId);
-    if(row.programmeRightsStatus!=="APPROVED"||!row.programmeRightsReference?.trim()){
-      results.push({scopeId:row.scopeId,outcome:"ERROR"});continue;
-    }
     try{
       const staged=new Map<string,EpgDayBatch>();
       if(signal.aborted)throw new TvImportLeaseLostError();
       const payload=await options.transport(row.sourceUrl,row.format);
       const decoded=await decodeEpgBuffer(payload,row.format);
-      if(!decoded.programmes.length)throw new Error("No mapped EPG emissions");
+      if(!decoded.programmes.length)throw new Error("No EPG emissions");
+      // The feed is scanned as a whole, independent of any country assignment.
+      // Unknown external IDs remain pending manual mapping, never guessed from names.
+      const externalIds=[...new Set(decoded.programmes.map(p=>p.externalChannelId))];
+      for(const externalId of externalIds){
+        await db.query(`
+          INSERT INTO public.tv_channel_external_id(source_id,external_id,mapping_status)
+          VALUES($1::uuid,$2,'PENDING_REVIEW')
+          ON CONFLICT(source_id,external_id) DO NOTHING`,[row.sourceId,externalId]);
+      }
+      // Acquisition is allowed before republication rights approval;
+      // importing to the public programme grid is NOT.
+      if(row.programmeRightsStatus!=="APPROVED"||!row.programmeRightsReference?.trim()){
+        results.push({scopeId:row.scopeId,outcome:"SUCCESS"});continue;
+      }
       let mapped=0;
       for(const p of decoded.programmes){
         if(signal.aborted)throw new TvImportLeaseLostError();
@@ -156,7 +168,11 @@ export function createVerifiedDbEpgLoader(
           });
         }
       }
-      if(!mapped)throw new Error("All EPG mappings are pending review");
+      if(!mapped){
+        // A valid source can be fully inspected without verified programme mappings.
+        // No speculative programme is published and no previous grid is replaced.
+        results.push({scopeId:row.scopeId,outcome:"SUCCESS"});continue;
+      }
       // Only commit candidates of a completely decoded and mapped scope;
       // a partially failed source must never contaminate a published grid.
       for(const [key,entry] of staged){
