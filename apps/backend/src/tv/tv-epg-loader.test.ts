@@ -68,7 +68,8 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
    {scopeId:"s2",outcome:"SUCCESS",message:"DISCOVERY_ONLY"},
   ]);
   expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_channel_external_id"))).toBe(true);
-  expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_channel(slug,name,logo_url)"))).toBe(true);
+  expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_channel(slug,name,logo_url,website_url)"))).toBe(true);
+  expect(query.mock.calls.some(c=>c[0].includes("SET website_url=incoming.website_url"))).toBe(true);
   expect(query.mock.calls.some(c=>c[0].includes("UPDATE public.tv_channel_external_id"))).toBe(true);
   expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_channel_country"))).toBe(false);
   expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_programme"))).toBe(false);
@@ -142,7 +143,7 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
  it("retains the upstream diagnostic after the loader classifies the same error twice",async()=>{
   const samples:[Error,string][]=[
    [new Error("EPG source returned HTTP 404"),"EPG_HTTP_404"],
-   [Object.assign(new Error("socket hang up"),{code:"ECONNRESET"}),"EPG_CONNECTION_ERROR"],
+   [Object.assign(new Error("socket hang up"),{code:"ECONNRESET"}),"EPG_CONNECTION_RESET"],
    [new Error("incorrect header check"),"EPG_GZIP_INVALID"],
    [new Error("EPG source request timed out"),"EPG_TIMEOUT"],
   ];
