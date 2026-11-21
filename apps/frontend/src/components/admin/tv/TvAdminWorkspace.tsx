@@ -1074,7 +1074,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
         </div></td>
         <td>{v.effectiveNumber??"—"}</td>
         <td>{v.needsReview?"À vérifier":v.isActive?"Active":"Inactive"}</td>
-        <td><AdminIconButton name="pencil-square" label={"Modifier "+v.name} onClick={()=>setChannelEditor(v)}/></td>
+        <td><AdminIconButton name="pencil-square" label={"Modifier "+v.name} onClick={()=>router.push("/admin/tv/channels/"+encodeURIComponent(v.id)+"/edit")}/></td>
        </tr>;
       })}
       {view==="sources"&&(visible as Source[]).map((v,i)=><tr key={v.id+":"+(v.countryId??i)}>
@@ -1128,7 +1128,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   </AdminDataPanel>}
   {view==="translations"&&!loading&&!error&&<TvTranslationPanel channels={channels}/>}
   {countryEditor&&<CountryEditor item={countryEditor} locale={locale} countryNames={countryNames} onClose={()=>setCountryEditor(null)} onSaved={saved}/>}
-  {channelEditor&&<ChannelEditor item={channelEditor} onClose={()=>setChannelEditor(null)} onSaved={saved}/>}
+  
   {sourceEditor&&<TvEpgSourceEditor item={sourceEditor}
     channels={channels.map(ch=>({id:ch.channelId,name:ch.name,countryId:ch.countryId,
      countryLabel:region(countryCodes.get(ch.countryId)??"",locale,countryNames),
@@ -1142,4 +1142,36 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   {dialog==="import"&&<ImportEditor countries={sortedCountries} sources={sources} locale={locale} countryNames={countryNames} onClose={()=>setDialog(null)}
    onSaved={id=>{saved();void openRun(id);setNotice("Import lancé. Le suivi affiche les sources effectivement traitées et s’actualise automatiquement.");}}/>}
  </main>;
+}
+
+/** Full-page edition, preserving the same associations contract and save logic. */
+export function TvChannelEditPage({associationId}:{associationId:string}){
+ const router=useRouter();
+ const [channel,setChannel]=useState<Channel|null>(null);
+ const [loading,setLoading]=useState(true);
+ const [error,setError]=useState("");
+ useEffect(()=>{
+  const ctrl=new AbortController();
+  void fetch(api+"catalog/channels",{cache:"no-store",signal:ctrl.signal})
+   .then(async response=>{
+    if(!response.ok)throw new Error(messageFor(response.status));
+    return response.json() as Promise<{items:Channel[]}>;
+   }).then(data=>{
+    if(ctrl.signal.aborted)return;
+    const selected=data.items.find(item=>item.id===associationId);
+    if(!selected)throw new Error("Chaîne introuvable.");
+    setChannel(selected);
+   }).catch(e=>{if(!ctrl.signal.aborted)setError((e as Error).message);})
+   .finally(()=>{if(!ctrl.signal.aborted)setLoading(false);});
+  return ()=>ctrl.abort();
+ },[associationId]);
+ if(loading)return <main className="container-fluid px-2 px-md-4 py-3"><p>Chargement de la chaîne…</p></main>;
+ if(error||!channel)return <main className="container-fluid px-2 px-md-4 py-3">
+  <p role="alert" className="alert alert-danger">{error||"Chaîne introuvable."}</p>
+  <button type="button" className="btn btn-outline-secondary"
+   onClick={()=>router.push("/admin/tv/channels")}>Retour aux chaînes</button>
+ </main>;
+ return <ChannelEditor item={channel} page
+  onClose={()=>router.push("/admin/tv/channels")}
+  onSaved={()=>router.push("/admin/tv/channels")}/>;
 }
