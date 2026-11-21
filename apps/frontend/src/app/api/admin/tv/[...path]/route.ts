@@ -20,7 +20,8 @@ const patterns=[
  /^translations\/providers\/[0-9a-f-]{36}\/select$/i,
  /^translations\/channels\/[0-9a-f-]{36}\/descriptions(?:\/(?:fr|en|de|es|pt|it|ru|nl))?$/i,
  /^import-runs$/,
- /^import-runs\/[0-9a-f-]{36}(?:\/(?:events|retry))?$/i,
+ /^import-runs\/execution-status$/,
+ /^import-runs\/[0-9a-f-]{36}(?:\/(?:events|retry|execute))?$/i,
 ];
 async function handle(request:NextRequest,context:Context,method:"GET"|"POST"|"PUT"|"PATCH"){
  const {path}=await context.params;
