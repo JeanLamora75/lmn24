@@ -665,9 +665,7 @@ function EpgDiscoveryInbox({countries,onImported}:{
        onChange={e=>setSelected(previous=>e.target.checked
         ?[...previous,item.id]:previous.filter(id=>id!==item.id))}/></td>
       <td><strong>{item.channelName??item.externalId}</strong><div><code>{item.externalId}</code></div></td><td>{item.sourceName}</td>
-      <td>À vérifier</td>
-      <td><button type="button" className="btn btn-sm btn-outline-primary"
-       onClick={()=>onReview(item)}>Examiner la chaîne</button></td>
+      <td>Pays inconnu</td>
      </tr>)}</tbody>
     </table>
     {!items.length&&<p>Aucune chaîne EPG en attente dans cette sélection.</p>}
