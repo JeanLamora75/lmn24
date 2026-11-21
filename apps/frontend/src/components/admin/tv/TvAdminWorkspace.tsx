@@ -44,8 +44,8 @@ function messageFor(status:number):string{
 }
 async function request<T>(path:string,method="GET",payload?:unknown):Promise<T>{
  const response=await fetch(api+path,{method,cache:"no-store",
-  headers:payload===undefined?undefined:{"content-type":"application/json"},
-  body:payload===undefined?undefined:JSON.stringify(payload)});
+  headers:payload===undefined?{}:{"content-type":"application/json"},
+  body:payload===undefined?null:JSON.stringify(payload)});
  if(!response.ok)throw Object.assign(new Error(messageFor(response.status)),{status:response.status});
  return await response.json() as T;
 }
