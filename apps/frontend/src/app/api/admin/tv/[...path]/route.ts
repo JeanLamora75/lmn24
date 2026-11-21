@@ -23,7 +23,7 @@ const patterns=[
  /^import-runs\/execution-status$/,
  /^import-runs\/[0-9a-f-]{36}(?:\/(?:events|retry|execute))?$/i,
 ];
-async function handle(request:NextRequest,context:Context,method:"GET"|"POST"|"PUT"|"PATCH"){
+async function handle(request:NextRequest,context:Context,method:"GET"|"POST"|"PUT"|"PATCH"|"DELETE"){
  const {path}=await context.params;
  const route=path?.join("/")??"";
  if(!patterns.some(pattern=>pattern.test(route))||request.nextUrl.search.length>1500)
@@ -41,3 +41,4 @@ export const GET=(request:NextRequest,context:Context)=>handle(request,context,"
 export const POST=(request:NextRequest,context:Context)=>handle(request,context,"POST");
 export const PUT=(request:NextRequest,context:Context)=>handle(request,context,"PUT");
 export const PATCH=(request:NextRequest,context:Context)=>handle(request,context,"PATCH");
+export const DELETE=(request:NextRequest,context:Context)=>handle(request,context,"DELETE");
