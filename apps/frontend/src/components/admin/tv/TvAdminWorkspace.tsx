@@ -812,7 +812,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   {countryEditor&&<CountryEditor item={countryEditor} locale={locale} countryNames={countryNames} onClose={()=>setCountryEditor(null)} onSaved={saved}/>}
   {channelEditor&&<ChannelEditor item={channelEditor} onClose={()=>setChannelEditor(null)} onSaved={saved}/>}
   {sourceEditor&&<TvEpgSourceEditor item={sourceEditor}
-    channels={channels.map(ch=>({id:ch.id,name:ch.name,countryId:ch.countryId,
+    channels={channels.map(ch=>({id:ch.channelId,name:ch.name,countryId:ch.countryId,
      countryLabel:region(countryCodes.get(ch.countryId)??"",locale,countryNames),
      defaultVariantId:ch.defaultVariantId}))}
     onClose={()=>setSourceEditor(null)} onSaved={saved}/>}
