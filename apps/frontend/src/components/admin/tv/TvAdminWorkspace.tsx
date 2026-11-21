@@ -117,7 +117,7 @@ function ChannelUrlInputs({values,onChange}:{values:ChannelUrls;onChange:(next:C
  const [notice,setNotice]=useState("");
  const [conflicts,setConflicts]=useState<Partial<SocialLinkValues>>({});
  const latest=useRef(values);
- latest.current=values;
+ useEffect(()=>{latest.current=values;},[values]);
  const router=useRouter();
  async function discover(){
   if(discovering)return;
