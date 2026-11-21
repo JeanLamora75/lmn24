@@ -120,13 +120,13 @@ export class TvImportRunsService {
       JOIN public.tv_import_scope scope ON scope.run_id=r.id
       WHERE r.trigger='MANUAL' AND r.status='QUEUED'
         AND r.requested_days=${input.days}
+        AND (EXISTS (
+          SELECT 1 FROM public.tv_import_event e
+          WHERE e.run_id=r.id AND e.event_type='RUN_MODE_STAGING'
+        ))=${input.mode==="STAGING"}
       GROUP BY r.id
       HAVING count(DISTINCT scope.country_id)=1
          AND min(scope.country_id::text)=${input.countryId}::text
-         AND bool_or(EXISTS (
-           SELECT 1 FROM public.tv_import_event e
-           WHERE e.run_id=r.id AND e.event_type='RUN_MODE_STAGING'
-         ))=${input.mode==="STAGING"}
       ORDER BY r.created_at DESC LIMIT 1
     `;
     return rows[0]??null;
