@@ -65,6 +65,9 @@ export class TvCatalogService {
     return this.database.prisma.$queryRaw`
       SELECT cc.id, cc.country_id AS "countryId",
              cc.channel_id AS "channelId", c.slug, c.name, c.logo_url AS "logoUrl",
+             c.website_url AS "websiteUrl", c.x_url AS "xUrl",
+             c.facebook_url AS "facebookUrl", c.instagram_url AS "instagramUrl",
+             c.youtube_url AS "youtubeUrl", c.official_live_url AS "officialLiveUrl",
              cc.is_active AS "isActive", cc.needs_review AS "needsReview",
              cc.official_number AS "officialNumber", cc.manual_number AS "manualNumber",
              cc.assigned_number AS "assignedNumber",
