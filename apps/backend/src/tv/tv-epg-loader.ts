@@ -191,10 +191,11 @@ export function createVerifiedDbEpgLoader(
           const key=mapping.variantId+":"+localDate;
           let group=staged.get(key);
           if(!group){
-            const current=await db.query<{revision_id:string}>(`
-              SELECT revision_id FROM public.tv_schedule_current
-              WHERE variant_id=$1::uuid AND local_date=$2::date`,
-              [mapping.variantId,localDate]);
+            const current=options.stagingOnly?{rows:[] as {revision_id:string}[]}:
+              await db.query<{revision_id:string}>(`
+                SELECT revision_id FROM public.tv_schedule_current
+                WHERE variant_id=$1::uuid AND local_date=$2::date`,
+                [mapping.variantId,localDate]);
             const created:EpgDayBatch={
               countryId,variantId:mapping.variantId,localDate,
               dayStartMs:startMs,dayEndMs:endMs,
