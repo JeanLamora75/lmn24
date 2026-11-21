@@ -25,6 +25,8 @@ export class TvImportRunsService {
     await this.requireSchema();
     assertImportDays(input.days);
     return this.database.prisma.$transaction(async tx=>{
+      // Serialize queue creation across processes (distinct from parser lease).
+      await tx.$queryRaw`SELECT pg_advisory_xact_lock(241024,87)`;
       const countries=await tx.$queryRaw<Array<{countryId:string}>>`
         SELECT country_id AS "countryId" FROM public.tv_country
         WHERE (${input.countryId??null}::uuid IS NULL AND is_active=TRUE)
@@ -34,6 +36,15 @@ export class TvImportRunsService {
         ORDER BY country_id
       `;
       if(countries.length===0)throw new NotFoundException("No eligible TV countries");
+      const wanted=countries.map(c=>c.countryId);
+      const busy=await tx.$queryRaw<Array<{id:string}>>`
+        SELECT scope.id FROM public.tv_import_scope scope
+        JOIN public.tv_import_run r ON r.id=scope.run_id
+        WHERE scope.country_id::text=ANY(${wanted}::text[])
+          AND r.status IN ('QUEUED','RUNNING')
+        LIMIT 1
+      `;
+      if(busy.length)throw new ConflictException("TV_IMPORT_SCOPE_BUSY");
       const run=await tx.$queryRaw<Array<{id:string}>>`
         INSERT INTO public.tv_import_run(trigger,requested_days,status)
         VALUES(${input.trigger},${input.days},'QUEUED') RETURNING id
@@ -106,8 +117,18 @@ export class TvImportRunsService {
         SELECT id,country_id AS "countryId",source_id AS "sourceId",status
         FROM public.tv_import_scope WHERE run_id=${id}::uuid FOR UPDATE
       `;
+      await tx.$queryRaw`SELECT pg_advisory_xact_lock(241024,87)`;
       const failedIds=failedScopeIds(scopes);
       if(!failedIds.length)throw new ConflictException("No failed scopes to retry");
+      const pending=await tx.$queryRaw<Array<{id:string}>>`
+        SELECT scope.id FROM public.tv_import_scope scope
+        JOIN public.tv_import_run existing ON existing.id=scope.run_id
+        WHERE scope.country_id IN (
+          SELECT country_id FROM public.tv_import_scope WHERE id::text=ANY(${failedIds}::text[])
+        ) AND existing.status IN ('QUEUED','RUNNING')
+        LIMIT 1
+      `;
+      if(pending.length)throw new ConflictException("TV_IMPORT_SCOPE_BUSY");
       const run=await tx.$queryRaw<Array<{id:string}>>`
         INSERT INTO public.tv_import_run(trigger,requested_days,status)
         VALUES('MANUAL',${original[0].requestedDays},'QUEUED') RETURNING id
