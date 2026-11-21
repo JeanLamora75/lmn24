@@ -27,8 +27,31 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   expect(decoded.channels).toEqual([{
    externalId:"DAZN Baloncesto 3",name:"DAZN Baloncesto 3",
    countryIso2:"ES",
-   logoUrl:"https://raw.githubusercontent.com/davidmuma/picons_dobleM/master/icon/DAZN%20Baloncesto%203.png",
+   logoUrl:"https://raw.githubusercontent.com/davidmuma/picons_dobleM/master/icon/DAZN%20Baloncesto%203.png",websiteUrl:null,
   }]);
+ });
+ it("extracts a single repaired icon and website from the reported country XMLTV sample",async()=>{
+  const xml='<tv><channel id="TF1.Séries.Films.fr">'
+   +'<icon src="https://television.telerama.frhttps://focus.telerama.fr/0000/00/01/clear-192.png"/>'
+   +'<icon src="https://television.telerama.frhttps://focus.telerama.fr/0000/00/01/clear-192.png"/>'
+   +'<url>http://www.telerama.fr</url>'
+   +'<display-name lang="fr">TF1 Séries Films</display-name></channel></tv>';
+  const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
+  expect(decoded.channels).toEqual([{
+   externalId:"TF1.Séries.Films.fr",name:"TF1 Séries Films",countryIso2:null,
+   logoUrl:"https://focus.telerama.fr/0000/00/01/clear-192.png",
+   websiteUrl:"http://www.telerama.fr/",
+  }]);
+ });
+ it("skips bad icons and invalid websites without preventing valid metadata",async()=>{
+  const xml='<tv><channel id="test">'
+   +'<icon src="javascript:alert(1)"/><icon src="https://example.org/logo.png"/>'
+   +'<url>javascript:alert(1)</url><url>https://example.org/</url>'
+   +'<display-name>Test</display-name></channel></tv>';
+  const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
+  expect(decoded.channels?.[0]).toMatchObject({
+   logoUrl:"https://example.org/logo.png",websiteUrl:"https://example.org/",
+  });
  });
  it("maps lowercase country attribute from a worldwide Teleonline channel",async()=>{
   const xml='<tv><channel id="Canal.Discovery.World.Latinoamérica.ar" country="ar">'
@@ -38,8 +61,8 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
   expect(decoded.channels).toEqual([
    {externalId:"Canal.Discovery.World.Latinoamérica.ar",
-    name:"Canal Discovery",countryIso2:"AR",logoUrl:null},
-   {externalId:"No.Country",name:"Unknown",countryIso2:null,logoUrl:null},
+    name:"Canal Discovery",countryIso2:"AR",logoUrl:null,websiteUrl:null},
+   {externalId:"No.Country",name:"Unknown",countryIso2:null,logoUrl:null,websiteUrl:null},
   ]);
  });
  it("preserves explicit XMLTV channel metadata without inventing any country",async()=>{
@@ -50,8 +73,8 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
    +'</tv>';
   const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
   expect(decoded.channels).toEqual([
-   {externalId:"fr-one",name:"France 1",countryIso2:"FR",logoUrl:null},
-   {externalId:"global",name:"International",countryIso2:null,logoUrl:null},
+   {externalId:"fr-one",name:"France 1",countryIso2:"FR",logoUrl:null,websiteUrl:null},
+   {externalId:"global",name:"International",countryIso2:null,logoUrl:null,websiteUrl:null},
   ]);
   expect(decoded.programmes).toHaveLength(1);
  });
