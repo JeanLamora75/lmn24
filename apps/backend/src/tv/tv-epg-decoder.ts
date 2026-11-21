@@ -170,7 +170,8 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   };
   const appendText=(value:string)=>{
     if(channelField&&currentChannel){
-      if(channelText.length<255)channelText+=value.slice(0,255-channelText.length);
+      const limit=channelField==="url"?2048:255;
+      if(channelText.length<limit)channelText+=value.slice(0,limit-channelText.length);
       return;
     }
     if(!capture)return;
