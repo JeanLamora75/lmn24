@@ -90,8 +90,11 @@ jobs:
         run: pnpm --filter '@lmn24/frontend^...' build
       - name: Install Chromium browser and OS libraries
         run: pnpm --filter @lmn24/frontend exec playwright install --with-deps chromium
-      - name: Browser acceptance (desktop + mobile)
-        run: pnpm --filter @lmn24/frontend exec playwright test e2e/visitor-preferences-qa.pw.ts e2e/biorhythms.pw.ts e2e/visitor-category-preferences.pw.ts e2e/horoscope-mobile-day-navigation.pw.ts
+      - name: Browser acceptance (desktop + mobile), including TV embargo (SCRUM-124)
+        env:
+          TV_PUBLIC_ENABLED: "false"
+          TV_PUBLIC_RELEASE_APPROVED: "false"
+        run: pnpm --filter @lmn24/frontend exec playwright test e2e/visitor-preferences-qa.pw.ts e2e/biorhythms.pw.ts e2e/visitor-category-preferences.pw.ts e2e/horoscope-mobile-day-navigation.pw.ts e2e/tv-guide-embargo.pw.ts
       - name: Upload browser traces when tests fail
         if: failure()
         uses: actions/upload-artifact@v4
