@@ -82,6 +82,28 @@ export class TvCatalogService {
     `;
   }
 
+  /** Load one country/channel association independently of the catalog listing limit. */
+  async getChannelAssociation(associationId:string){
+    await this.requireTvTables();
+    const rows=await this.database.prisma.$queryRaw<Array<Record<string,unknown>>>`
+      SELECT cc.id, cc.country_id AS "countryId",
+             cc.channel_id AS "channelId", c.slug, c.name, c.logo_url AS "logoUrl",
+             c.website_url AS "websiteUrl", c.x_url AS "xUrl",
+             c.facebook_url AS "facebookUrl", c.instagram_url AS "instagramUrl",
+             c.youtube_url AS "youtubeUrl", c.official_live_url AS "officialLiveUrl",
+             cc.is_active AS "isActive", cc.needs_review AS "needsReview",
+             cc.official_number AS "officialNumber", cc.manual_number AS "manualNumber",
+             cc.assigned_number AS "assignedNumber",
+             COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) AS "effectiveNumber",
+             cc.default_variant_id AS "defaultVariantId", cc.updated_at::text AS version
+      FROM public.tv_channel_country cc
+      JOIN public.tv_channel c ON c.id=cc.channel_id
+      WHERE cc.id=${associationId}::uuid
+    `;
+    if(!rows[0])throw new NotFoundException("TV channel association not found");
+    return rows[0];
+  }
+
   async discoverChannel(payload: {
     countryId: string; slug: string; name: string; websiteUrl?: string | null | undefined;
     logoUrl?: string | null | undefined;
