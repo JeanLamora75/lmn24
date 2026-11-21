@@ -79,9 +79,11 @@ export class TvImportExecutionService {
   // The lease/recovery protocol handles interrupted RUNNING work.
   void runAuthorizedTvImport({
    env,connectionString,runId,discoveryOnly:true,attest:noCoverageAttested,
-  }).catch(()=>{
-   // Source credentials/URLs/stack traces must never appear in admin events/logs.
-   this.logger.warn("TV discovery worker could not start or finish; inspect run state");
+  }).catch(async()=>{
+   // A pre-start failure is stored as ERROR rather than leaving QUEUED forever.
+   // If the worker already claimed RUNNING, the guarded update does nothing.
+   try{await this.runs.failUnstartedRun(runId);}catch{/* Database may be offline. */}
+   this.logger.warn("TV discovery worker failed; inspect run status and events");
   }).finally(()=>{this.starting.delete(runId);});
   return {id:runId,status:"STARTED" as const,mode:"DISCOVERY" as const};
  }
