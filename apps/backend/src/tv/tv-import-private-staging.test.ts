@@ -2,16 +2,14 @@ import {describe,expect,it,vi} from "vitest";
 import type {TvWriterLease} from "./tv-import-publisher";
 import {stagePrivateTvRevision} from "./tv-import-publisher";
 
-const id=(x:string)=>x+"0000000-0000-4000-8000-000000000001";
 const variantId="a3000000-0000-4000-8000-000000000001";
 const countryId="a1000000-0000-4000-8000-000000000001";
 const sourceId="a2000000-0000-4000-8000-000000000001";
 const programmeId="a4000000-0000-4000-8000-000000000001";
 const runId="a5000000-0000-4000-8000-000000000001";
-void id;
 function setup(rights=true){
  const query=vi.fn(async(sql:string)=>{
-  if(sql.includes("AS allowed"))return {rows:[{allowed:rights}]};
+  if(sql.includes("AS allowed"))return {rows:[{allowed:sql.includes("FROM public.tv_source")?rights:true}]};
   if(sql.includes("RETURNING id"))return {rows:[{id:"a6000000-0000-4000-8000-000000000001"}]};
   return {rows:[]};
  });
@@ -40,7 +38,7 @@ describe("Private EPG draft schedule",()=>{
  it("rejects missing source rights and rolls back all draft writes",async()=>{
   const {lease,query,input}=setup(false);
   await expect(stagePrivateTvRevision(lease,input))
-   .rejects.toThrow(/TV_VARIANT_NOT_IN_COUNTRY|TV_SOURCE_RIGHTS_NOT_APPROVED/);
+   .rejects.toThrow("TV_SOURCE_RIGHTS_NOT_APPROVED");
   const sql=query.mock.calls.map(c=>c[0]).join("\n");
   expect(sql).toContain("ROLLBACK");
   expect(sql).not.toContain("INSERT INTO public.tv_airing");
