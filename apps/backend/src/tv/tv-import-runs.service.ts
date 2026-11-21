@@ -90,6 +90,32 @@ export class TvImportRunsService {
       return {id,status:"QUEUED" as const,scopeCount:counts[0].n};
     });
   }
+
+  /** Bounded audit history; absent metrics remain absent, not fake zeroes. */
+  async listRuns(page:number,pageSize:number){
+    await this.requireSchema();
+    const offset=(page-1)*pageSize;
+    const [items,count]=await Promise.all([
+      this.database.prisma.$queryRaw<Array<{
+        id:string;trigger:string;requestedDays:number;status:string;createdAt:Date;
+        startedAt:Date|null;finishedAt:Date|null;scopeCount:number;
+        succeeded:number;failed:number;
+      }>>`
+        SELECT r.id,r.trigger,r.requested_days AS "requestedDays",r.status,
+          r.created_at AS "createdAt",r.started_at AS "startedAt",
+          r.finished_at AS "finishedAt",
+          count(s.id)::int AS "scopeCount",
+          count(s.id) FILTER (WHERE s.status='SUCCESS')::int AS succeeded,
+          count(s.id) FILTER (WHERE s.status IN ('ERROR','INTERRUPTED'))::int AS failed
+        FROM public.tv_import_run r LEFT JOIN public.tv_import_scope s ON s.run_id=r.id
+        GROUP BY r.id ORDER BY r.created_at DESC,r.id DESC
+        LIMIT ${pageSize} OFFSET ${offset}`,
+      this.database.prisma.$queryRaw<Array<{total:number}>>`
+        SELECT count(*)::int AS total FROM public.tv_import_run`,
+    ]);
+    return {items,pagination:{page,pageSize,total:count[0]?.total??0,
+      totalPages:Math.ceil((count[0]?.total??0)/pageSize)}};
+  }
   async getRun(id:string){
     await this.requireSchema();
     const rows=await this.database.prisma.$queryRaw<Array<{id:string;status:string}>>`
