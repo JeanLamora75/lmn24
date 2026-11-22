@@ -50,6 +50,13 @@ describe("SCRUM-119 TV home UX01",()=>{
   expect(formatBroadcast("2026-07-22T18:00:00.000Z","Europe/Paris","fr")).toBe("20:00");
   expect(formatBroadcast("2026-11-22T19:00:00.000Z","UTC","fr")).toBe("19:00");
  });
+ it("translates the channel number prefix across all eight locales",()=>{
+  expect(TV_COPY.fr.channelNumber).toBe("Chaîne n°");
+  expect(TV_COPY.en.channelNumber).toBe("Channel No.");
+  for(const locale of ["fr","en","de","es","pt","it","ru","nl"] as const){
+   expect(TV_COPY[locale].channelNumber.length).toBeGreaterThan(3);
+  }
+ });
  it("contains meaningful localizations in all eight locales",()=>{
   expect(Object.keys(TV_COPY).sort()).toEqual(["de","en","es","fr","it","nl","pt","ru"]);
   for(const value of Object.values(TV_COPY)){
