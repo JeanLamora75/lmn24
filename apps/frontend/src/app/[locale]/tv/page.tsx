@@ -15,7 +15,7 @@ export async function generateMetadata({params}:Props):Promise<Metadata>{
   return {robots:{index:false,follow:false}};
  const copy=TV_COPY[tvLocale(locale)];
  return {title:copy.title,description:copy.subtitle,
-  robots:{index:false,follow:false}};
+  robots:{index:true,follow:true}};
 }
 export default async function TvHomePage({params}:Props){
  const {locale}=await params;
