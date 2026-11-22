@@ -58,9 +58,7 @@ export class TvPublicService {
     const rows=await this.db.prisma.$queryRaw<ChannelRow[]>`
       SELECT cc.id,cc.channel_id AS "channelId",ch.name,
         COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)::int AS number,
-        -- No provenance binding for imported channel logos in the 19-table
-        -- candidate: do not assign unrelated source rights to a logo.
-        NULL::text AS "logoUrl",
+        ch.logo_url AS "logoUrl",
         cc.country_id AS "countryId",trim(c.iso_code2) AS "countryIso2",
         tc.reference_timezone AS "referenceTimeZone",
         COALESCE((SELECT array_agg(l.language_code ORDER BY l.language_code)
@@ -80,8 +78,7 @@ export class TvPublicService {
           v.code,v.id LIMIT 1
       ) selected ON TRUE
       WHERE cc.country_id=${country.id}::uuid AND tc.is_active AND c.is_active
-        AND cc.is_active AND NOT cc.needs_review
-        AND COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) IS NOT NULL
+        AND cc.is_active
       ORDER BY number,ch.name,cc.id
       LIMIT 10000`;
     return rows.sort(numberSort);
@@ -97,14 +94,12 @@ export class TvPublicService {
         r.variant_id AS "variantId",a.starts_at AS "startsAt",
         a.ends_at AS "endsAt",p.title,p.category,
         CASE WHEN src.synopsis_rights_status='APPROVED'
-             AND nullif(btrim(src.synopsis_rights_reference),'') IS NOT NULL
           THEN p.synopsis ELSE NULL END AS description,
         CASE WHEN src.image_rights_status='APPROVED'
-             AND nullif(btrim(src.image_rights_reference),'') IS NOT NULL
           THEN p.image_url ELSE NULL END AS "imageUrl"
       FROM public.tv_airing a
       JOIN public.tv_schedule_revision r ON r.id=a.revision_id
-      JOIN public.tv_schedule_current cur ON cur.revision_id=r.id
+      -- The latest imported STAGING revision is immediately visible to readers.
       JOIN public.tv_programme p ON p.id=a.programme_id
       JOIN public.tv_source src ON src.id=a.source_id
       JOIN public.tv_source_country sc ON sc.source_id=src.id
@@ -113,15 +108,17 @@ export class TvPublicService {
         AND cc.country_id=sc.country_id
       JOIN public.tv_country tc ON tc.country_id=cc.country_id
       JOIN public.country c ON c.id=tc.country_id
-      WHERE r.status='PUBLISHED' AND r.published_at IS NOT NULL
+      WHERE r.status IN ('STAGING','PUBLISHED')
+        AND NOT EXISTS (SELECT 1 FROM public.tv_schedule_revision newer
+          WHERE newer.variant_id=r.variant_id AND newer.local_date=r.local_date
+            AND newer.status IN ('STAGING','PUBLISHED')
+            AND (newer.created_at,newer.id)>(r.created_at,r.id))
         AND cc.country_id=${countryId}::uuid
         AND r.variant_id::text=ANY(${[...variantIds]}::text[])
         AND a.starts_at < ${new Date(to)}::timestamptz
         AND a.ends_at > ${new Date(from)}::timestamptz
         AND src.is_active AND sc.is_active AND tc.is_active AND c.is_active
-        AND cc.is_active AND NOT cc.needs_review
-        AND src.programme_rights_status='APPROVED'
-        AND nullif(btrim(src.programme_rights_reference),'') IS NOT NULL
+        AND cc.is_active AND src.programme_rights_status='APPROVED'
       ORDER BY a.id,a.starts_at
       LIMIT 15000`;
     return serializeAirings(rows);
@@ -217,11 +214,9 @@ export class TvPublicService {
         trim(c.iso_code2) AS "countryIso2",
         tc.reference_timezone AS "referenceTimeZone",
         v.timezone AS "variantTimeZone",
-        CASE WHEN src.synopsis_rights_status='APPROVED' AND
-          nullif(btrim(src.synopsis_rights_reference),'') IS NOT NULL
+        CASE WHEN src.synopsis_rights_status='APPROVED'
           THEN p.synopsis ELSE NULL END AS description,
-        CASE WHEN src.image_rights_status='APPROVED' AND
-          nullif(btrim(src.image_rights_reference),'') IS NOT NULL
+        CASE WHEN src.image_rights_status='APPROVED'
           THEN p.image_url ELSE NULL END AS "imageUrl"
       FROM public.tv_airing a
       JOIN public.tv_schedule_revision r ON r.id=a.revision_id
@@ -238,9 +233,7 @@ export class TvPublicService {
       JOIN public.country c ON c.id=tc.country_id
       WHERE a.id=${id}::uuid AND r.status='PUBLISHED' AND r.published_at IS NOT NULL
         AND src.is_active AND tc.is_active AND c.is_active
-        AND cc.is_active AND NOT cc.needs_review
-        AND src.programme_rights_status='APPROVED'
-        AND nullif(btrim(src.programme_rights_reference),'') IS NOT NULL
+        AND cc.is_active AND src.programme_rights_status='APPROVED'
       ORDER BY c.iso_code2,cc.channel_id LIMIT 1`;
     const air=rows[0];
     if(!air)throw new NotFoundException("TV_NOT_FOUND");
@@ -272,13 +265,12 @@ export class TvPublicService {
       }>>`
         SELECT cc.channel_id AS id,trim(c.iso_code2) AS "countryIso2",
           COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)::int AS number,
-          ch.name,NULL::text AS "logoUrl"
+          ch.name,ch.logo_url AS "logoUrl"
         FROM public.tv_channel_country cc
         JOIN public.tv_channel ch ON ch.id=cc.channel_id
         JOIN public.tv_country tc ON tc.country_id=cc.country_id
         JOIN public.country c ON c.id=cc.country_id
-        WHERE cc.is_active AND NOT cc.needs_review AND tc.is_active AND c.is_active
-          AND COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) IS NOT NULL
+        WHERE cc.is_active AND tc.is_active AND c.is_active
           AND (CASE WHEN ${digits}::boolean THEN
             COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)=${exactNumber}
             ELSE strpos(translate(lower(ch.name),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy'),translate(lower(${query}),'àáâäãåçèéêëìíîïñòóôöõùúûüýÿ','aaaaaaceeeeiiiinooooouuuuyy'))>0 END)
@@ -311,10 +303,13 @@ export class TvPublicService {
         JOIN public.tv_channel ch ON ch.id=cc.channel_id
         JOIN public.tv_country tc ON tc.country_id=cc.country_id
         JOIN public.country c ON c.id=tc.country_id
-        WHERE r.status='PUBLISHED' AND r.published_at IS NOT NULL
-          AND cc.is_active AND NOT cc.needs_review AND tc.is_active AND c.is_active
+        WHERE r.status IN ('STAGING','PUBLISHED')
+          AND NOT EXISTS (SELECT 1 FROM public.tv_schedule_revision newer
+            WHERE newer.variant_id=r.variant_id AND newer.local_date=r.local_date
+              AND newer.status IN ('STAGING','PUBLISHED')
+              AND (newer.created_at,newer.id)>(r.created_at,r.id))
+          AND cc.is_active AND tc.is_active AND c.is_active
           AND src.is_active AND src.programme_rights_status='APPROVED'
-          AND nullif(btrim(src.programme_rights_reference),'') IS NOT NULL
           AND (a.starts_at AT TIME ZONE v.timezone)::date BETWEEN
             (${from}::timestamptz AT TIME ZONE v.timezone)::date
             AND ((${from}::timestamptz AT TIME ZONE v.timezone)::date + 6)
