@@ -40,16 +40,16 @@ const LANGUAGE_FLAGS: Record<SupportedLocale, string> = {
  * route to this registry — the labels/icons and scrollable layout are ready.
  * Never show empty links or pretend a planned page already exists.
  */
-type NavKey = "news" | "videos" | "hashtags" | "horoscope" | "weather" | "live" | "podcasts" | "dossiers";
+type NavKey = "news" | "videos" | "hashtags" | "horoscope" | "weather" | "tv" | "live" | "podcasts" | "dossiers";
 const NAVIGATION_LABELS: Record<SupportedLocale, Record<NavKey, string>> = {
-  fr: { news: "Articles", videos: "Vidéos", hashtags: "Hashtags", weather: "Météo", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
-  en: { news: "Articles", videos: "Videos", hashtags: "Hashtags", weather: "Weather", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Features" },
-  de: { news: "Artikel", videos: "Videos", hashtags: "Hashtags", weather: "Wetter", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
-  es: { news: "Artículos", videos: "Vídeos", hashtags: "Hashtags", weather: "El tiempo", horoscope: "Horoscope", live: "Directo", podcasts: "Pódcasts", dossiers: "Reportajes" },
-  pt: { news: "Artigos", videos: "Vídeos", hashtags: "Hashtags", weather: "Meteorologia", horoscope: "Horoscope", live: "Ao vivo", podcasts: "Podcasts", dossiers: "Dossiês" },
-  it: { news: "Articoli", videos: "Video", hashtags: "Hashtag", weather: "Meteo", horoscope: "Oroscopo", live: "Diretta", podcasts: "Podcast", dossiers: "Dossier" },
-  ru: { news: "Статьи", videos: "Видео", hashtags: "Хэштеги", weather: "Погода", horoscope: "Гороскоп", live: "Эфир", podcasts: "Подкасты", dossiers: "Материалы" },
-  nl: { news: "Artikelen", videos: "Video's", hashtags: "Hashtags", weather: "Weer", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
+  fr: { news: "Articles", videos: "Vidéos", hashtags: "Hashtags", tv: "Guide TV", weather: "Météo", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
+  en: { news: "Articles", videos: "Videos", hashtags: "Hashtags", tv: "TV Guide", weather: "Weather", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Features" },
+  de: { news: "Artikel", videos: "Videos", hashtags: "Hashtags", tv: "TV-Programm", weather: "Wetter", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
+  es: { news: "Artículos", videos: "Vídeos", hashtags: "Hashtags", tv: "Guía TV", weather: "El tiempo", horoscope: "Horoscope", live: "Directo", podcasts: "Pódcasts", dossiers: "Reportajes" },
+  pt: { news: "Artigos", videos: "Vídeos", hashtags: "Hashtags", tv: "Guia TV", weather: "Meteorologia", horoscope: "Horoscope", live: "Ao vivo", podcasts: "Podcasts", dossiers: "Dossiês" },
+  it: { news: "Articoli", videos: "Video", hashtags: "Hashtag", tv: "Guida TV", weather: "Meteo", horoscope: "Oroscopo", live: "Diretta", podcasts: "Podcast", dossiers: "Dossier" },
+  ru: { news: "Статьи", videos: "Видео", hashtags: "Хэштеги", tv: "Телепрограмма", weather: "Погода", horoscope: "Гороскоп", live: "Эфир", podcasts: "Подкасты", dossiers: "Материалы" },
+  nl: { news: "Artikelen", videos: "Video's", hashtags: "Hashtags", tv: "TV-gids", weather: "Weer", horoscope: "Horoscope", live: "Live", podcasts: "Podcasts", dossiers: "Dossiers" },
 };
 
 // Add new links here only when their pages actually exist.
@@ -86,6 +86,8 @@ function NavigationIcon({ name }: { name: NavKey }) {
       return <svg {...common}><circle cx="12" cy="12" r="7"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M12 8l1.5 2.5L16 12l-2.5 1.5L12 16l-1.5-2.5L8 12l2.5-1.5z"/></svg>;
     case "weather":
       return <svg {...common}><circle cx="9" cy="8" r="3.4"/><path d="M9 2V1m0 14v-1m-7-6H1m16-1h-1m-12-4-.7-.7m11.4 11.4-.7-.7M4 12a5 5 0 0 1 5.1-4.8c2.4 0 4.1 1.3 4.9 3.2a4.7 4.7 0 0 1 1.6-.3 4.5 4.5 0 0 1 0 9H6a4 4 0 0 1-2-7.5"/></svg>;
+    case "tv":
+      return <svg {...common}><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M8 22h8M12 18v4M8 10h8M8 13h5"/></svg>;
     case "live":
       return <svg {...common}><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M7.2 7.2a6.8 6.8 0 0 0 0 9.6m9.6-9.6a6.8 6.8 0 0 1 0 9.6M4.3 4.3a10.9 10.9 0 0 0 0 15.4m15.4-15.4a10.9 10.9 0 0 1 0 15.4"/></svg>;
     case "podcasts":
@@ -99,7 +101,7 @@ function isSupportedLocale(locale: string): locale is SupportedLocale {
   return (SUPPORTED_LOCALES as readonly string[]).includes(locale);
 }
 
-export function PublicHeader() {
+export function PublicHeader({tvNavigation=null}:{tvNavigation?:"preview"|"public"|null}) {
   const detectedLocale = useLocale();
   const locale = isSupportedLocale(detectedLocale) ? detectedLocale : SUPPORTED_LOCALES[0];
   const tLanguages = useTranslations("languages");
@@ -160,7 +162,7 @@ export function PublicHeader() {
         </div>
 
         <nav className={styles.primaryNavigation} aria-label="Navigation principale">
-          {VISIBLE_NAVIGATION.map((item) => {
+          {[...VISIBLE_NAVIGATION,...(tvNavigation?[{key:"tv" as const,href:tvNavigation==="preview"?"/tv-preview":"/tv"}]:[])].map((item) => {
             const isActive = item.href === "/"
               ? pathname === "/"
               : pathname === item.href || pathname.startsWith(item.href + "/");
