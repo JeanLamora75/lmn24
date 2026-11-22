@@ -37,6 +37,10 @@ export class TvImportScheduler implements OnModuleInit,OnModuleDestroy {
   this.timer.unref();
   void this.tick().catch(error=>this.logFailure(error));
  }
+ onModuleDestroy():void{
+  if(this.timer)clearInterval(this.timer);
+  this.timer=undefined;
+ }
  private logFailure(error:unknown){
   this.logger.warn("Automatic TV import skipped or failed: "+(error instanceof Error?error.message:String(error)));
  }
