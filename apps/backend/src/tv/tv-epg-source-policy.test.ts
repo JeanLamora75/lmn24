@@ -11,13 +11,13 @@ const rights: SourceRights = {
  logo: { status:"EXPIRED",reference:"https://licences.example.org/logo" },
 };
 describe("SCRUM-116 EPG rights and source policy",()=>{
- it("requires per-family evidence and explicit approval",()=>{
+ it("requires explicit approval, without supplementary reference",()=>{
    expect(canRepublish(rights,"programme")).toBe(true);
    expect(canRepublish(rights,"synopsis")).toBe(false);
-   expect(canRepublish(rights,"image")).toBe(false);
+   expect(canRepublish(rights,"image")).toBe(true);
    expect(canRepublish(rights,"logo")).toBe(false);
    expect(filterPublishableEpg({programme:"P",synopsis:"S",image:"I",logo:"L"},rights))
-     .toEqual({programme:"P"});
+     .toEqual({programme:"P",image:"I"});
  });
  it("sorts active providers by country priority then ID",()=>{
    const entries=[
