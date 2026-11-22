@@ -7,7 +7,7 @@ import {routing} from "@/i18n/routing";
 import {getBackendUrl} from "@/lib/admin-backend";
 import {tvPublicEnabled} from "@/lib/tv-public-gate";
 import {tvLocale,type TvLocale} from "@/components/tv/tv-guide-model";
-import {DETAIL_COPY,approvedExternalUrl,durationMinutes,localDateLabel,
+import {DETAIL_COPY,safeTvProgrammeImageUrl,durationMinutes,localDateLabel,
  timeLabel,validTvId,type TvAiringDetails} from "@/components/tv/tv-detail-model";
 import styles from "@/components/tv/tv-detail.module.css";
 
@@ -58,7 +58,7 @@ export default async function TvAiringPage({params}:Props){
  const channelPath=`/${locale}/tv/channels/${encodeURIComponent(airing.channel.id)}`
   +`?country=${encodeURIComponent(airing.countryIso2)}`
   +`&variant=${encodeURIComponent(airing.variantId)}&date=${encodeURIComponent(date)}`;
- const image=approvedExternalUrl(airing.imageUrl);
+ const image=safeTvProgrammeImageUrl(airing.imageUrl);
  return <main className={`container py-4 py-lg-5 ${styles.page}`}>
   <Link href={channelPath} className={styles.back}>← {copy.seeGrid}</Link>
   <article className={styles.programmeHero}>
