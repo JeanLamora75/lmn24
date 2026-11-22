@@ -10,11 +10,12 @@ function setup(options:{automatic?:boolean;ready?:boolean;alreadyScheduled?:bool
    ?{id:"one",status:"SUCCESS",alreadyScheduled:true}
    :{id:"one",status:"QUEUED",scopeCount:2});
  const startRun=vi.fn().mockResolvedValue({id:"one",status:"STARTED"});
- const runs={create} as unknown as TvImportRunsService;
+ const failUnstartedRun=vi.fn().mockResolvedValue(true);
+ const runs={create,failUnstartedRun} as unknown as TvImportRunsService;
  const execution={readiness:()=>({ready:options.ready??true}),startRun} as unknown as TvImportExecutionService;
  const config={get:(key:string)=>key==="TV_IMPORT_AUTOMATIC_ENABLED"
   ?(options.automatic??true)?"true":"false":undefined} as unknown as ConfigService;
- return {scheduler:new TvImportScheduler(config,runs,execution),create,startRun};
+ return {scheduler:new TvImportScheduler(config,runs,execution),create,startRun,failUnstartedRun};
 }
 describe("Daily TV EPG refresh at 04:00 Europe/Paris",()=>{
  it("observes both DST boundaries and rejects other hours",()=>{
@@ -49,6 +50,12 @@ describe("Daily TV EPG refresh at 04:00 Europe/Paris",()=>{
   const {scheduler,startRun}=setup({alreadyScheduled:true});
   expect(await scheduler.tick(new Date("2026-11-21T03:01:00Z"))).toBe(false);
   expect(startRun).not.toHaveBeenCalled();
+ });
+ it("marks scheduler-created run failed if dispatch rejects",async()=>{
+  const {scheduler,startRun,failUnstartedRun}=setup();
+  startRun.mockRejectedValueOnce(new Error("dispatch failed"));
+  await expect(scheduler.tick(new Date("2026-11-21T03:01:00Z"))).rejects.toThrow("dispatch failed");
+  expect(failUnstartedRun).toHaveBeenCalledWith("one");
  });
  it("does not start if creation fails",async()=>{
   const {scheduler,create,startRun}=setup();
