@@ -13,7 +13,7 @@ async function main(){
  let url;
  try{url=new URL(raw);}catch{throw new Error("DATABASE_URL invalide.");}
  const host=url.hostname.replace(/^\[|\]$/g,"").toLowerCase();
- const database=decodeURIComponent(url.pathname.replace(/^\/,""));
+ const database=decodeURIComponent(url.pathname.startsWith("/")?url.pathname.slice(1):url.pathname);
  if(!["localhost","127.0.0.1","::1"].includes(host)
    ||database!=="lmn24"
    ||!["postgres:","postgresql:"].includes(url.protocol))
