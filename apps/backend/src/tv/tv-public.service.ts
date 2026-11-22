@@ -120,7 +120,7 @@ export class TvPublicService {
             AND newer.status IN ('STAGING','PUBLISHED')
             AND (newer.created_at,newer.id)>(r.created_at,r.id))
         AND cc.country_id=${countryId}::uuid
-        AND r.variant_id::text=ANY(${[...variantIds]}::text[])
+        AND r.variant_id=ANY(${[...variantIds]}::uuid[])
         AND a.starts_at < ${new Date(to)}::timestamptz
         AND a.ends_at > ${new Date(from)}::timestamptz
         AND src.is_active AND (sc.source_id IS NULL OR sc.is_active) AND tc.is_active AND c.is_active
