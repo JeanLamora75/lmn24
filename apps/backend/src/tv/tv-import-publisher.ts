@@ -128,7 +128,6 @@ export async function stagePrivateTvRevision(lease:TvWriterLease,input:{
       WHERE s.id=$1::uuid AND s.is_active
         AND (sc.source_id IS NULL OR sc.is_active)
         AND s.programme_rights_status='APPROVED'
-        AND nullif(btrim(s.programme_rights_reference),'') IS NOT NULL
     ) AS allowed`,[id,input.countryId]);
    if(!permitted.rows[0]?.allowed)throw new Error("TV_SOURCE_RIGHTS_NOT_APPROVED");
   }
