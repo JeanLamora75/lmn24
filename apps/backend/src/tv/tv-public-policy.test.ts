@@ -40,11 +40,11 @@ describe("SCRUM-118 TV public date and window contracts",()=>{
   expect(choose([later,short,exactlyThirty,long]).airing).toEqual(long);
   expect(choose([exactlyThirty,short]).airing).toEqual(short);
   expect(choose([exactlyThirty]).airing).toEqual(exactlyThirty);
-  // Do not substitute a long programme starting outside 20:30–21:30.
+  // An already-running programme is used only if nothing starts in the window.
   const earlier=airing("early","2026-11-21T19:00:00Z","2026-11-21T21:00:00Z");
   const tooLate=airing("late","2026-11-21T20:31:00Z","2026-11-21T22:00:00Z");
   expect(choose([earlier,short,tooLate]).airing).toEqual(short);
-  expect(choose([earlier,tooLate]).programmeState).toBe("EPG_UNAVAILABLE");
+  expect(choose([earlier,tooLate]).airing).toEqual(earlier);
   const boundary=airing("boundary","2026-11-21T20:30:00Z","2026-11-21T21:31:00Z");
   expect(choose([boundary]).airing).toEqual(boundary);
  });
