@@ -42,8 +42,8 @@ describe("SCRUM-10 — approved LMN24 header redesign", () => {
     expect(header).not.toContain("L'actu qui compte");
   });
 
-  it("has an eight-entry icon and translation registry for all eight existing locales", () => {
-    const keys = ["news", "videos", "hashtags", "horoscope", "weather", "live", "podcasts", "dossiers"];
+  it("has TV navigation alongside existing icon and translation registry for all eight locales", () => {
+    const keys = ["news", "videos", "hashtags", "horoscope", "weather", "tv", "live", "podcasts", "dossiers"];
     for (const key of keys) {
       expect(header).toContain('case "' + key + '":');
     }
@@ -54,6 +54,7 @@ describe("SCRUM-10 — approved LMN24 header redesign", () => {
       for (const key of keys) expect(line).toContain(key + ":");
     }
     expect(header).toContain("SUPPORTED_LOCALES.map");
+    expect(header).toContain('tvNavigation==="preview"?"/tv-preview":"/tv"');
   });
 
   it("uses approved blue-white pill design and accessible responsive nav", () => {
