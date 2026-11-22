@@ -261,9 +261,9 @@ export function createVerifiedDbEpgLoader(
         results.push({scopeId:row.scopeId,outcome:"SUCCESS",message:"DISCOVERY_ONLY"});
         continue;
       }
-      // Acquisition is allowed before republication rights approval;
-      // importing to the public programme grid is NOT.
-      if(row.programmeRightsStatus!=="APPROVED"||!row.programmeRightsReference?.trim()){
+      // Private staging requires explicit programme approval, but no evidence reference.
+      // Public publication is a separate, stricter workflow.
+      if(row.programmeRightsStatus!=="APPROVED"){
         results.push({scopeId:row.scopeId,outcome:"SUCCESS",
           message:options.stagingOnly?"RIGHTS_REQUIRED":"DISCOVERY_ONLY"});continue;
       }
