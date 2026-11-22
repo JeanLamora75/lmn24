@@ -61,13 +61,15 @@ function TvChannelLogo({item,locale,countryIso2,date}:{
  </Link>;
 }
 
-function TvCard({item,locale,mode,tab,countryIso2,nowMs,preview=false}:{
+function TvCard({item,locale,mode,tab,countryIso2,countryTimeZone,nowMs,preview=false}:{
  item:TvScheduleItem;locale:TvLocale;mode:ClockMode;tab:TvTab;
- countryIso2:string;nowMs:number|null;preview?:boolean;
+ countryIso2:string;countryTimeZone:string;nowMs:number|null;preview?:boolean;
 }){
+ // A national channel is displayed in its country's local time by default.
+ // Technical variants can use a different timezone (e.g. a global EPG feed).
  const copy=TV_COPY[locale],a=item.airing,zone=mode==="VISITOR"
   ?Intl.DateTimeFormat().resolvedOptions().timeZone
-  :item.variant?.timeZone??"UTC";
+  :countryTimeZone;
  const image=safeProgrammeImage(a?.imageUrl??null);
  const channelHref=`/${locale}/tv/channels/${encodeURIComponent(item.channel.id)}?country=${countryIso2}`;
  const programmeHref=a&&item.variant?
@@ -301,7 +303,8 @@ export function TvGuideHome({locale,preview=false}: {locale:TvLocale;preview?:bo
       </div>
      :<div className={styles.grid}>
        {visible.map((item,i)=><TvCard key={item.channel.id+":"+i} item={item}
-         locale={locale} mode={clockMode} tab={tab} countryIso2={countryIso2??""} nowMs={nowMs} preview={preview}
+         locale={locale} mode={clockMode} tab={tab} countryIso2={countryIso2??""}
+         countryTimeZone={schedule?.referenceTimeZone??selectedCountry?.referenceTimeZone??"UTC"} nowMs={nowMs} preview={preview}
          />)}
       </div>)}
    {validScope&&!loading&&!error&&schedule.items.length===0&&
