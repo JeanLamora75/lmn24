@@ -11,14 +11,14 @@ const fixture=Buffer.from(JSON.stringify({programmes:[{
  start:"2026-11-21T19:30:00Z",end:"2026-11-21T20:30:00Z",
  title:"Fixture",synopsis:"Fixture synopsis",imageUrl:"https://example.org/a.jpg",
 }]}));
-function setup(geographicScope:"GLOBAL"|"COUNTRY"="GLOBAL",channelActive=true){
+function setup(geographicScope:"GLOBAL"|"COUNTRY"="GLOBAL",channelActive=true,rightsReference:string|null="https://example.org/licence"){
  const query=vi.fn(async(sql:string,_params?:unknown[])=>{
   void _params;
   if(sql.includes("SELECT requested_days"))return {rows:[{requested_days:7}]};
   if(sql.includes("FROM public.tv_import_scope scope"))return {rows:[
    {scopeId:"s1",sourceId,sourceUrl:"https://example.org/feed.json",format:"JSON",priority:1,geographicScope,
     scopeCountryId:geographicScope==="COUNTRY"?countryId:null,
-    programmeRightsStatus:"APPROVED",programmeRightsReference:"https://example.org/licence",
+    programmeRightsStatus:"APPROVED",programmeRightsReference:rightsReference,
     synopsisRightsStatus:"UNREVIEWED",synopsisRightsReference:null,
     imageRightsStatus:"UNREVIEWED",imageRightsReference:null},
    {scopeId:"s2",sourceId:"a2000000-0000-4000-8000-000000000002",
@@ -78,6 +78,17 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
   expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_programme"))).toBe(false);
   expect(query.mock.calls.some(c=>c[0].includes("FROM public.tv_schedule_current"))).toBe(false);
   expect(attest).not.toHaveBeenCalled();
+ });
+ it("imports APPROVED source programmes with no rights reference",async()=>{
+  const {lease,query}=setup("GLOBAL",true,null);
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+   transport:async()=>fixture,attest:noCoverageAttested,stagingOnly:true,
+   now:new Date("2026-11-21T12:00:00Z"),
+  });
+  const loaded=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  expect(loaded.scopeResults[0]).toEqual({scopeId:"s1",outcome:"SUCCESS",message:"PROGRAMMES_STAGED"});
+  expect(loaded.days[0]?.candidates).toHaveLength(1);
+  expect(query.mock.calls.some(call=>call[0].includes("INSERT INTO public.tv_programme"))).toBe(true);
  });
  it("stages licensed, verified programmes privately and never creates schedule days",async()=>{
   const {lease,transport,query}=setup();
