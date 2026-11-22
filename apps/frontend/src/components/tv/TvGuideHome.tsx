@@ -33,7 +33,7 @@ function isSchedule(input:unknown):input is TvSchedule{
 function safeProgrammeImage(url:string|null):string|null{
  if(!url)return null;
  if(/^\/tv-icons\/[a-z0-9_.-]+$/i.test(url))return url;
- try{const parsed=new URL(url);return parsed.protocol==="https:"?parsed.toString():null;}
+ try{const parsed=new URL(url);return (parsed.protocol==="https:"||parsed.protocol==="http:")&&!parsed.username&&!parsed.password?parsed.toString():null;}
  catch{return null;}
 }
 function duration(start:string,end:string):string{
