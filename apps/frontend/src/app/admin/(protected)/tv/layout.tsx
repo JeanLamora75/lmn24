@@ -22,6 +22,8 @@ export default async function TvAdminLayout({children}:{children:ReactNode}){
  return <section className={styles.workspace}>
   <nav className={styles.navigation} aria-label="Rubriques Guide TV">
    {TV_ADMIN_VIEWS.map(v=><Link key={v.slug} href={`/admin/tv${v.slug?"/"+v.slug:""}`}>{v.label}</Link>)}
+   <Link href="/fr/tv-preview" target="_blank" rel="noopener noreferrer"
+    title="Prévisualiser les programmes privés sans publier la grille">Aperçu privé ↗</Link>
   </nav>
   <div className={styles.content}>{children}</div>
  </section>;
