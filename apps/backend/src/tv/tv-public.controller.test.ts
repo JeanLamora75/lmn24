@@ -21,18 +21,13 @@ function setup(open=false){
    channelDetails,channelAirings,airingDetails,worldSearch};
 }
 describe("SCRUM-118 public TV HTTP controllers and embargo",()=>{
- it("keeps ALL routes 404 no-store before GO without touching DB",async()=>{
+ it("serves public countries and schedule without manual GO flags",async()=>{
   const s=setup();
-  await expect(s.controller.countries({})).rejects.toMatchObject({status:404});
-  await expect(s.controller.schedule({country:"FR"})).rejects.toMatchObject({status:404});
-  await expect(s.controller.channel(UUID,{country:"FR"})).rejects.toMatchObject({status:404});
-  await expect(s.controller.channelAirings(UUID,{})).rejects.toMatchObject({status:404});
-  await expect(s.controller.airing(UUID)).rejects.toMatchObject({status:404});
-  await expect(s.controller.search({q:"2"})).rejects.toMatchObject({status:404});
-  expect(s.worldSearch).not.toHaveBeenCalled();
-  expect(s.countries).not.toHaveBeenCalled();
-  expect(s.schedule).not.toHaveBeenCalled();
-  expect(shouldBlockTvApi("/public/tv/schedule",{})).toBe(true);
+  await expect(s.controller.countries({locale:"fr"})).resolves.toMatchObject({
+    items:[{countryIso2:"FR"}],
+  });
+  await expect(s.controller.schedule({country:"FR"})).resolves.toEqual({items:[]});
+  expect(shouldBlockTvApi("/public/tv/schedule",{})).toBe(false);
  });
  it("accepts only allowed tabs/languages/time display and bounded pagination",async()=>{
   const s=setup(true);
