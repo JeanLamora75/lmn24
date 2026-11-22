@@ -21,11 +21,13 @@ const input = z.object({
 @Controller("admin/scheduler-settings")
 export class SchedulerSettingsController {
   private readonly cookieName: string;
+  private readonly config: ConfigService;
   constructor(
     private readonly db: DatabaseService,
     private readonly auth: AuthService,
     config: ConfigService,
   ) {
+    this.config = config;
     this.cookieName = config.get<string>("SESSION_COOKIE_NAME")?.trim() ||
       DEFAULT_SESSION_COOKIE_NAME;
   }
@@ -43,9 +45,18 @@ export class SchedulerSettingsController {
   @Header("Cache-Control", "no-store")
   async list(@Req() req: RequestLike) {
     await this.assertAdmin(req);
+    const flags=["TV_CATALOG_ADMIN_ENABLED","TV_IMPORTS_ENABLED",
+      "TV_EPG_NETWORK_ENABLED","TV_MIGRATION_QUALIFIED","TV_EPG_SOURCE_USE_APPROVED"];
+    const missingFlags=flags.filter(flag=>this.config.get<string>(flag)!=="true");
+    const configured=this.config.get<string>("TV_IMPORT_AUTOMATIC_ENABLED")==="true";
     return { configured: await this.db.prisma.schedulerConfig.findMany({
       orderBy: { parserType: "asc" },
-    }), schedulerActive: false };
+    }), schedulerActive: false,
+      tvGuide: { enabled: configured && missingFlags.length===0,
+        configured, ready: missingFlags.length===0,
+        missingFlags, localTime:"04:00", timezone:"Europe/Paris",
+        requestedDays:7, managedBy:"ENVIRONMENT" as const },
+    };
   }
   @Patch()
   @Header("Cache-Control", "no-store")
