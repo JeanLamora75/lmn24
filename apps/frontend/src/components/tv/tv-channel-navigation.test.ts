@@ -22,14 +22,14 @@ describe("TV Guide: Channels tab and channel day",()=>{
  });
  it("opens the selected day when selecting a logo",()=>{
   expect(guide).toContain("date=\${encodeURIComponent(date)}");
-  expect(channel).toContain("offsetForDay(new Date(),selected.timeZone,initialDate)");
+  expect(channel).toContain("offsetForDay(new Date(),initial.referenceTimeZone??selected.timeZone,initialDate)");
   expect(channel).toContain("/api/public/tv/channels/");
  });
- it("marks only the real currently airing programme",()=>{
-  expect(channel).toContain("Date.parse(event.airing.startsAt)<=nowMs");
-  expect(channel).toContain("nowMs<Date.parse(event.airing.endsAt)");
-  expect(channel).toContain('date===dayAtOffset(new Date(nowMs),variant.timeZone,0)');
-  expect(channel).toContain('aria-current={isCurrent?"time":undefined}');
-  expect(channel).toContain("styles.currentEvent");
+ it("renders the same complete programme card as the Guide TV and keeps national times",()=>{
+  expect(channel).toContain('import {TvCard} from "./TvGuideHome"');
+  expect(channel).toContain("<TvCard");
+  expect(channel).toContain("countryTimeZone={nationalZone}");
+  expect(channel).toContain("nowMs={nowMs}");
  });
+
 });
