@@ -95,7 +95,7 @@ export function offsetForDay(now:Date,variantZone:string,day:string):number|null
 }
 export function timeLabel(instant:string,zone:string,locale:string):string{
  return new Intl.DateTimeFormat(locale,{timeZone:zone,hour:"2-digit",minute:"2-digit",
-  timeZoneName:"shortOffset"}).format(new Date(instant));
+  }).format(new Date(instant));
 }
 export function localDateLabel(instant:string,zone:string,locale:string):string{
  return new Intl.DateTimeFormat(locale,{timeZone:zone,day:"numeric",month:"short",year:"numeric"}).format(new Date(instant));
