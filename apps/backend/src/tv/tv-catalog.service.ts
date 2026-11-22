@@ -4,6 +4,8 @@ import {
 import { DatabaseService } from "../database/database.service";
 import { assertIanaZone, assertOfficialUrl,assertTvLogoUrl } from "./tv-catalog-policy";
 import {saveUploadedTvIcon,validateUploadedIcon,importTvIconFromUrl} from "./tv-icon-storage";
+import {assertTvDay,stateForChannel,type TvPublicTab,type TvAiring} from "./tv-public-policy";
+import {localDayBounds} from "./tv-import-time";
 
 /** This module intentionally uses bound SQL parameters: TV schema is still a candidate,
  * and must NOT be appended to the canonical Prisma schema before SCRUM-114 approval.
@@ -59,6 +61,94 @@ export class TvCatalogService {
     `;
     if(!Array.isArray(rows)||rows.length===0)throw new ConflictException("TV_CONCURRENT_EDIT");
     return rows;
+  }
+
+  /** ADMIN-only preview of private STAGING revisions. This never changes
+   * tv_schedule_current or public programme availability.
+   */
+  async previewSchedule(args:{country:string;localDate:string;tab:TvPublicTab;
+    page:number;pageSize:number}){
+    await this.requireTvTables();
+    const countryRows=await this.database.prisma.$queryRaw<Array<{id:string;iso2:string;timezone:string}>>`
+      SELECT tc.country_id AS id,c.iso_code2 AS iso2,tc.reference_timezone AS timezone
+      FROM public.tv_country tc JOIN public.country c ON c.id=tc.country_id
+      WHERE upper(c.iso_code2)=${args.country.toUpperCase()}
+      LIMIT 1
+    `;
+    const country=countryRows[0];
+    if(!country)throw new NotFoundException("TV preview country not found");
+    assertTvDay(args.localDate,country.timezone,new Date());
+    const count=Math.max(1,Math.min(100,args.pageSize));
+    const offset=(args.page-1)*count;
+    type PreviewChannel={id:string;channelId:string;name:string;number:number|null;
+      logoUrl:string|null;variantId:string|null;timezone:string|null};
+    const channels=await this.database.prisma.$queryRaw<PreviewChannel[]>`
+      SELECT cc.id,cc.channel_id AS "channelId",ch.name,
+        COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)::int AS number,
+        ch.logo_url AS "logoUrl",v.id AS "variantId",v.timezone
+      FROM public.tv_channel_country cc
+      JOIN public.tv_channel ch ON ch.id=cc.channel_id
+      LEFT JOIN LATERAL (
+        SELECT v.id,v.timezone FROM public.tv_variant_country vc
+        JOIN public.tv_channel_variant v ON v.id=vc.variant_id
+        WHERE vc.channel_country_id=cc.id
+        ORDER BY CASE WHEN v.id=cc.default_variant_id THEN 0 ELSE 1 END,v.id
+        LIMIT 1
+      ) v ON TRUE
+      WHERE cc.country_id=${country.id}::uuid AND cc.is_active
+      ORDER BY COALESCE(cc.manual_number,cc.official_number,cc.assigned_number) NULLS LAST,
+        ch.name,cc.id
+      LIMIT ${count+1} OFFSET ${offset}
+    `;
+    const selected=channels.slice(0,count);
+    const bounds=localDayBounds(args.localDate,country.timezone);
+    const start=new Date(bounds.startMs-86_400_000);
+    const end=new Date(bounds.endMs+86_400_000);
+    const ids=selected.flatMap(ch=>ch.variantId?[ch.variantId]:[]);
+    const rows=ids.length?await this.database.prisma.$queryRaw<Array<{
+      id:string;variantId:string;sourceId:string;startsAt:Date;endsAt:Date;
+      title:string;category:string|null;description:string|null;imageUrl:string|null;
+    }>>`
+      SELECT a.id,r.variant_id AS "variantId",a.source_id AS "sourceId",
+        a.starts_at AS "startsAt",a.ends_at AS "endsAt",
+        p.title,p.category,p.synopsis AS description,p.image_url AS "imageUrl"
+      FROM public.tv_airing a
+      JOIN public.tv_schedule_revision r ON r.id=a.revision_id
+      JOIN public.tv_programme p ON p.id=a.programme_id
+      WHERE r.status='STAGING' AND r.variant_id::text=ANY(${ids}::text[])
+        AND r.local_date BETWEEN ${new Date(start).toISOString().slice(0,10)}::date
+                             AND ${new Date(end).toISOString().slice(0,10)}::date
+        AND r.id=(
+          SELECT newest.id FROM public.tv_schedule_revision newest
+          WHERE newest.variant_id=r.variant_id AND newest.local_date=r.local_date
+            AND newest.status='STAGING'
+          ORDER BY newest.created_at DESC,newest.id DESC LIMIT 1
+        )
+        AND a.starts_at<${end}::timestamptz
+        AND a.ends_at>${start}::timestamptz
+      ORDER BY a.starts_at,a.id LIMIT 15000
+    `:[];
+
+    const airings:TvAiring[]=rows.map(a=>({
+      id:a.id,variantId:a.variantId,sourceId:a.sourceId,
+      startsAt:new Date(a.startsAt).toISOString(),endsAt:new Date(a.endsAt).toISOString(),
+      title:a.title,category:a.category,description:a.description,imageUrl:a.imageUrl,
+    }));
+    const now=new Date();
+    return {
+      countryIso2:country.iso2,referenceTimeZone:country.timezone,
+      localDate:args.localDate,tab:args.tab,
+      items:selected.map(ch=>({
+        channel:{id:ch.channelId,number:ch.number??0,name:ch.name,
+          logoUrl:ch.logoUrl,broadcastLanguages:[]},
+        variant:ch.variantId?{id:ch.variantId,timeZone:ch.timezone??country.timezone}:null,
+        ...stateForChannel({tab:args.tab,localDate:args.localDate,
+          timezone:ch.timezone??country.timezone,variantId:ch.variantId,
+          airings,coverage:[],now}),
+        coverageState:"UNKNOWN",
+      })),
+      pagination:{page:args.page,pageSize:count,hasNext:channels.length>count},
+    };
   }
 
   async listChannels(countryId?: string, search="") {
