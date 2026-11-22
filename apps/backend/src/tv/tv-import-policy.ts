@@ -5,7 +5,7 @@ export type ImportTrigger = "AUTOMATIC" | "MANUAL";
 export type CountryScope = { id: string; isActive: boolean };
 export type SourceScope = {
   id: string; countryId: string; sourceActive: boolean; countrySourceActive: boolean;
-  priority: number; programmesApproved: boolean; rightsEvidence: boolean;
+  priority: number; programmesApproved: boolean; rightsEvidence?: boolean; // legacy metadata; not a publication requirement
 };
 export type AiringCandidate = {
   externalId: string; sourceId: string; programmeId: string; variantId: string;
@@ -38,7 +38,7 @@ export function chooseSources(
 ): SourceScope[] {
   // An unlicensed source may be inspected in quarantine, but may not publish.
   return sources.filter(s=>s.countryId===countryId && s.sourceActive && s.countrySourceActive
-      && s.programmesApproved && s.rightsEvidence && Number.isInteger(s.priority) && s.priority>0)
+      && s.programmesApproved && Number.isInteger(s.priority) && s.priority>0)
     .sort((a,b)=>a.priority-b.priority || a.id.localeCompare(b.id));
 }
 function bounds(a: AiringCandidate): {start:number;end:number} {
