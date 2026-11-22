@@ -26,6 +26,7 @@ async function main(){
       s.name AS "Source EPG",
       COALESCE(sc.priority::text,'globale / non classée') AS "Priorité",
       r.status AS "Grille",
+      a.id AS "Diffusion",
       r.id AS "Révision",
       to_char(r.created_at AT TIME ZONE 'Europe/Paris','YYYY-MM-DD HH24:MI:SS') AS "Créée Paris",
       r.variant_id AS "Variante",
@@ -57,7 +58,7 @@ async function main(){
    console.table(result.rows);
    console.log("\n2. Révision que le Guide TV public doit utiliser (la plus récente par variante et journée)");
    const current=await client.query(`
-    SELECT r.id AS "Révision",r.variant_id AS "Variante",
+    SELECT a.id AS "Diffusion",r.id AS "Révision",r.variant_id AS "Variante",
       to_char(r.created_at AT TIME ZONE 'Europe/Paris','YYYY-MM-DD HH24:MI:SS') AS "Créée Paris",
       r.status AS "Grille",s.name AS "Source EPG",p.title AS "Programme",
       to_char(a.starts_at AT TIME ZONE 'UTC','YYYY-MM-DD HH24:MI') AS "Début UTC",
@@ -109,13 +110,36 @@ async function main(){
      .filter(p=>p.title?.toLowerCase().includes("jt 20"))
      .filter(p=>p.startsAt?.startsWith("2026-11-22"));
     console.table(rows.map(p=>({
-     "Programme":p.title,"Début API (UTC)":p.startsAt,
+     "Diffusion":p.id,"Programme":p.title,"Début API (UTC)":p.startsAt,
      "Début Paris":new Intl.DateTimeFormat("fr-FR",{
       timeZone:"Europe/Paris",day:"2-digit",month:"2-digit",year:"numeric",
       hour:"2-digit",minute:"2-digit",hourCycle:"h23",
      }).format(new Date(p.startsAt)),"Variante":p.variantId,
     })));
     if(!rows.length)console.log("Aucun JT 20h TF1 dans la réponse API (période de recherche ou filtre).");
+    if(rows.length){
+     // Resolve exact API airing identities; comparing names alone can mix
+     // distinct airings or revisions of the same named programme.
+     await client.query("BEGIN READ ONLY");
+     try{
+      const detail=await client.query(`
+       SELECT a.id AS "Diffusion",r.id AS "Révision",r.status AS "Grille",
+         s.name AS "Source EPG",p.title AS "Programme",
+         r.variant_id AS "Variante",
+         to_char(a.starts_at AT TIME ZONE 'UTC','YYYY-MM-DD HH24:MI') AS "Début UTC",
+         to_char(a.starts_at AT TIME ZONE 'Europe/Paris','YYYY-MM-DD HH24:MI') AS "Début Paris",
+         to_char(r.created_at AT TIME ZONE 'Europe/Paris','YYYY-MM-DD HH24:MI:SS') AS "Créée Paris"
+       FROM public.tv_airing a
+       JOIN public.tv_schedule_revision r ON r.id=a.revision_id
+       JOIN public.tv_programme p ON p.id=a.programme_id
+       JOIN public.tv_source s ON s.id=a.source_id
+       WHERE a.id = ANY($1::uuid[])
+       ORDER BY a.starts_at,r.created_at DESC
+      `,[rows.map(p=>p.id)]);
+      console.log("\n4. Identifiants exacts des diffusions de l'API retrouvés en base");
+      console.table(detail.rows);
+     }finally{await client.query("ROLLBACK");}
+    }
    }
   }catch(error){console.log("API non accessible :",error.message,
     "— vérifiez que frontend et backend sont démarrés.");}
