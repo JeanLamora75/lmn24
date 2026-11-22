@@ -27,6 +27,8 @@ describe("SCRUM-117 EPG import safety",()=>{
    {...base,id:"c",priority:1,programmesApproved:false},
    {...base,id:"d",countrySourceActive:false}];
   expect(chooseSources(sources,"FR").map(x=>x.id)).toEqual(["a","b"]);
+  expect(chooseSources([...sources,{...base,id:"e",rightsEvidence:false}],"FR").map(x=>x.id))
+    .toEqual(["a","b","e"]);
  });
  it("keeps the highest-priority full airing, fills genuine gaps without clipping",()=>{
   const input=[event("secondary",2,0,2),event("primary",1,1,2),
