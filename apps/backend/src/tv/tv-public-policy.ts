@@ -102,14 +102,15 @@ export function stateForChannel(args:{
   const {tab,localDate,timezone,variantId,now}=args;
   if(!variantId)return {programmeState:"EPG_UNAVAILABLE",airing:null};
   const bounds=localDayBounds(localDate,timezone);
+  const eveningWindow=tab==="TONIGHT"||tab==="LATE"
+    ?tvWindow(tab,localDate,timezone,now):null;
   const matching=args.airings.filter(a=>{
     if(a.variantId!==variantId)return false;
     const from=Date.parse(a.startsAt),until=Date.parse(a.endsAt);
     if(!Number.isFinite(from)||!Number.isFinite(until)||until<=from)return false;
     if(tab==="NOW")return from<=now.getTime()&&now.getTime()<until;
     if(tab==="CHANNELS")return from<bounds.endMs&&until>bounds.startMs;
-    const window=tvWindow(tab,localDate,timezone,now);
-    return from<window.endMs&&until>window.startMs;
+    return !!eveningWindow&&from<eveningWindow.endMs&&until>eveningWindow.startMs;
   }).sort((a,b)=>Date.parse(a.startsAt)-Date.parse(b.startsAt)||a.id.localeCompare(b.id));
   if(matching[0])return {programmeState:"AVAILABLE",airing:matching[0]};
   // No independent evidence => NEVER say the window is completely empty.
