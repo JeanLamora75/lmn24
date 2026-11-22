@@ -25,7 +25,7 @@ for file in \
   mkdir -p "$tmp/$(dirname "$file")"
   git show "$SHA:$file" > "$tmp/$file"
 done
-sql() { sudo -n -u postgres psql -X -v ON_ERROR_STOP=1 -d "$1" -f "$2"; }
+sql() { sudo -n -u postgres psql -X -v ON_ERROR_STOP=1 -d "$1" < "$2"; }
 echo "Checking production prerequisites (read-only)..."
 sql "$DB" "$tmp/database/tests/tv_production_preflight.sql"
 actual="$(sudo -n -u postgres psql -X -At -d "$DB" -c "SELECT count(*) FROM pg_tables WHERE schemaname='public' AND tablename LIKE 'tv_%'")"
@@ -36,9 +36,9 @@ fi
 echo "Building isolated PostgreSQL schema rehearsal..."
 sudo -n -u postgres createdb "$scratch"
 sudo -n -u postgres pg_dump --schema-only --no-owner --no-privileges -d "$DB" > "$tmp/current-schema.sql"
-sudo -n -u postgres psql -X -v ON_ERROR_STOP=1 -d "$scratch" -f "$tmp/current-schema.sql" > "$tmp/rehearsal.log"
+sudo -n -u postgres psql -X -v ON_ERROR_STOP=1 -d "$scratch" < "$tmp/current-schema.sql" > "$tmp/rehearsal.log"
 sudo -n -u postgres pg_dump --data-only --table=public.country --no-owner --no-privileges -d "$DB" > "$tmp/country-data.sql"
-sudo -n -u postgres psql -X -v ON_ERROR_STOP=1 -d "$scratch" -f "$tmp/country-data.sql" >> "$tmp/rehearsal.log"
+sudo -n -u postgres psql -X -v ON_ERROR_STOP=1 -d "$scratch" < "$tmp/country-data.sql" >> "$tmp/rehearsal.log"
 sql "$scratch" "$tmp/database/migrations/20261122_tv_initial_schema.sql" >> "$tmp/rehearsal.log"
 sql "$scratch" "$tmp/database/migrations/20261121_tv_channel_activation_optional_number.sql" >> "$tmp/rehearsal.log"
 sql "$scratch" "$tmp/database/migrations/20261121_tv_epg_source_scope.sql" >> "$tmp/rehearsal.log"
