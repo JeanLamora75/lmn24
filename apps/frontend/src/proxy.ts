@@ -14,6 +14,11 @@ export default function proxy(request: NextRequest) {
       headers: { "cache-control": "no-store", "x-robots-tag": "noindex, nofollow" },
     });
   }
+  // API routes are not localized pages. In particular, never redirect
+  // /api/public/tv/* to /fr/api/public/tv/* (which does not exist).
+  if (request.nextUrl.pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
   return localeMiddleware(request);
 }
 
