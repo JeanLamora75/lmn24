@@ -62,7 +62,7 @@ describe("TV schedule performance without editorial changes",()=>{
    country:"FR",localDate:"2026-11-24",tab:"TONIGHT",
    page:1,pageSize:100,now:new Date("2026-11-22T14:00:00Z"),
   });
-  expect(result.items[0]?.airing).toBeNull();
+  expect(result.items[0]?.airing?.id).toBe("prime");
   expect(result.items[1]?.airing?.id).toBe("other");
  });
 });
