@@ -79,8 +79,8 @@ const tvEventLabels:Record<string,{fr:string;en:string}>={
  RUN_MODE_STAGING:{fr:"Mode catalogue privé",en:"Private catalogue mode"},
  RUN_FINISHED:{fr:"Import terminé",en:"Import completed"},
  RIGHTS_REQUIRED:{fr:"Droits programmes manquants",en:"Programme rights missing"},
- MAPPINGS_REQUIRED:{fr:"Correspondance EPG vérifiée manquante ou chaîne inactive",en:"Verified EPG mapping missing or channel inactive"},
- PROGRAMMES_STAGED:{fr:"Programmes enregistrés dans le catalogue privé",en:"Programmes staged privately"},
+ MAPPINGS_REQUIRED:{fr:"Chaîne active ou association EPG manquante",en:"Active channel or linked EPG identifier missing"},
+ PROGRAMMES_STAGED:{fr:"Programmes disponibles dans le Guide TV",en:"Programmes available in TV Guide"},
  DISCOVERY_ONLY:{fr:"Découverte des chaînes uniquement",en:"Channel discovery only"},
  SCOPE_SCANNED:{fr:"Source analysée",en:"Source scanned"},
  SCOPE_FAILED:{fr:"Échec de la source",en:"Source failed"},
@@ -88,12 +88,15 @@ const tvEventLabels:Record<string,{fr:string;en:string}>={
 };
 const tvEventMessages:Record<string,{fr:string;en:string}>={
  RIGHTS_REQUIRED:{fr:"Droits programmes non approuvés pour cette source : aucun programme enregistré.",en:"Programme rights are not approved for this source: no programmes staged."},
- MAPPINGS_REQUIRED:{fr:"Aucune émission éligible : vérifiez les correspondances EPG et l'activation des chaînes.",en:"No eligible programmes: check verified EPG mappings and active channels."},
+ MAPPINGS_REQUIRED:{fr:"Aucun programme éligible : vérifiez que les chaînes sont actives et disposent d’un identifiant EPG associé.",en:"No eligible programmes: ensure channels are active and have linked EPG identifiers."},
  PROGRAMMES_STAGED:{fr:"Programmes importés : ils sont consultables dans le Guide TV public.",en:"Programmes imported and available in the public TV Guide."},
  "Private programme staging; no public schedule":{fr:"Import des programmes : consultation publique automatique après enregistrement.",en:"Programme import: publicly accessible after storage."},
  "EPG import queued for isolated processing":{fr:"Import EPG ajouté à la file de traitement.",en:"EPG import queued for isolated processing."},
- "Source requires approved programme rights and a non-empty evidence reference; no programmes staged":{fr:"Droits programmes non approuvés : aucun programme enregistré.",en:"Approved programme rights and a supporting reference are required; no programmes staged."},
- "Source scanned; unknown mappings await review, no programmes published":{fr:"Source analysée ; correspondances inconnues à vérifier ; aucun programme publié.",en:"Source scanned; unknown mappings await review, no programmes published."},
+ "Source programme rights are not approved; no programmes imported":{fr:"Droits des programmes non approuvés : aucun programme importé.",en:"Programme rights not approved: no programmes imported."},
+ "Source scanned; unknown mappings await review, no programmes published":{fr:"Source analysée et nouveaux identifiants EPG découverts.",en:"Source scanned; new EPG identifiers discovered."},
+ "Programmes imported successfully and available in the public TV guide":{fr:"Programmes importés et consultables dans le Guide TV public.",en:"Programmes imported and available in the public TV Guide."},
+ "No active channel with a linked EPG identifier and eligible programmes in requested period":{fr:"Aucune chaîne active associée à un identifiant EPG avec des programmes sur la période.",en:"No active channel linked to an EPG identifier with programmes in the period."},
+ "Source imported successfully":{fr:"Source importée avec succès.",en:"Source imported successfully."},
 };
 function tvEventText(event:ImportEvent,locale:string):string{
  const language=locale.toLowerCase().startsWith("fr")?"fr":"en";
