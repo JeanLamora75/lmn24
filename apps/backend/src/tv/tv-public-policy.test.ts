@@ -28,13 +28,25 @@ describe("SCRUM-118 TV public date and window contracts",()=>{
   expect(isWithinStartWindow("2026-11-21T22:30:00.000Z",zone,day,"LATE")).toBe(true);
   expect(isWithinStartWindow("2026-11-21T22:30:00.001Z",zone,day,"LATE")).toBe(false);
  });
- it("shows programmes overlapping the evening slot even when started earlier",()=>{
-  const old=airing("old","2026-11-21T19:00:00.000Z","2026-11-21T21:00:00.000Z");
-  expect(stateForChannel({tab:"TONIGHT",localDate:day,timezone:zone,variantId:"v",
-    airings:[old],coverage:[],now})).toEqual({programmeState:"AVAILABLE",airing:old});
-  const ended=airing("ended","2026-11-21T18:00:00.000Z","2026-11-21T19:00:00.000Z");
-  expect(stateForChannel({tab:"TONIGHT",localDate:day,timezone:zone,variantId:"v",
-    airings:[ended],coverage:[],now}).programmeState).toBe("EPG_UNAVAILABLE");
+ it("selects the first programme longer than 30 minutes starting 20:30–21:30",()=>{
+  const short=airing("short","2026-11-21T19:30:00Z","2026-11-21T19:40:00Z");
+  const exactlyThirty=airing("thirty","2026-11-21T19:40:00Z","2026-11-21T20:10:00Z");
+  const long=airing("long","2026-11-21T20:10:00Z","2026-11-21T21:00:00Z");
+  const later=airing("later","2026-11-21T20:20:00Z","2026-11-21T22:00:00Z");
+  const choose=(items:TvAiring[])=>stateForChannel({
+    tab:"TONIGHT",localDate:day,timezone:zone,variantId:"v",
+    airings:items,coverage:[],now,
+  });
+  expect(choose([later,short,exactlyThirty,long]).airing).toEqual(long);
+  expect(choose([exactlyThirty,short]).airing).toEqual(short);
+  expect(choose([exactlyThirty]).airing).toEqual(exactlyThirty);
+  // Do not substitute a long programme starting outside 20:30–21:30.
+  const earlier=airing("early","2026-11-21T19:00:00Z","2026-11-21T21:00:00Z");
+  const tooLate=airing("late","2026-11-21T20:31:00Z","2026-11-21T22:00:00Z");
+  expect(choose([earlier,short,tooLate]).airing).toEqual(short);
+  expect(choose([earlier,tooLate]).programmeState).toBe("EPG_UNAVAILABLE");
+  const boundary=airing("boundary","2026-11-21T20:30:00Z","2026-11-21T21:31:00Z");
+  expect(choose([boundary]).airing).toEqual(boundary);
  });
  it("NOW is half-open and uses a real UTC instant only",()=>{
   const a=airing("n","2026-11-21T08:30:00Z","2026-11-21T09:00:00Z");
