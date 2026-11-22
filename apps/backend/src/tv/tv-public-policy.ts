@@ -120,6 +120,15 @@ export function stateForChannel(args:{
     if(longer)return {programmeState:"AVAILABLE",airing:longer};
   }
   if(matching[0])return {programmeState:"AVAILABLE",airing:matching[0]};
+  if(tab==="TONIGHT"&&eveningWindow){
+    // Fallback only: a show already in progress at 20:30 remains visible
+    // when nothing starts within the requested evening slot.
+    const ongoing=args.airings.filter(a=>a.variantId===variantId
+      &&Date.parse(a.startsAt)<eveningWindow.startMs
+      &&Date.parse(a.endsAt)>eveningWindow.startMs)
+      .sort((a,b)=>Date.parse(b.startsAt)-Date.parse(a.startsAt));
+    if(ongoing[0])return {programmeState:"AVAILABLE",airing:ongoing[0]};
+  }
   // No independent evidence => NEVER say the window is completely empty.
   if(tab!=="NOW"&&tab!=="CHANNELS"&&coversWindow(args.coverage,variantId,
     tvWindow(tab,localDate,timezone,now).startMs,
