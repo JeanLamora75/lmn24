@@ -288,13 +288,17 @@ export class TvPublicService {
       if(digits&&exactNumber===null)return {status:"OK" as const,items:[],hasNext:false};
       const rows=await this.db.prisma.$queryRaw<Array<{
         id:string;variantId:string;countryIso2:string;channelId:string;
-        channelName:string;number:number;title:string;startsAt:Date;endsAt:Date;
+        channelName:string;number:number;logoUrl:string|null;title:string;
+        category:string|null;imageUrl:string|null;startsAt:Date;endsAt:Date;
         timeZone:string;
       }>>`
         SELECT DISTINCT a.id,r.variant_id AS "variantId",trim(c.iso_code2) AS "countryIso2",
           cc.channel_id AS "channelId",ch.name AS "channelName",
           COALESCE(cc.manual_number,cc.official_number,cc.assigned_number,0)::int AS number,
-          p.title,a.starts_at AS "startsAt",a.ends_at AS "endsAt",v.timezone AS "timeZone"
+          ch.logo_url AS "logoUrl",p.title,p.category,
+          CASE WHEN src.image_rights_status='APPROVED' THEN p.image_url ELSE NULL END AS "imageUrl",
+          a.starts_at AS "startsAt",a.ends_at AS "endsAt",
+          tc.reference_timezone AS "timeZone"
         FROM public.tv_airing a
         JOIN public.tv_schedule_revision r ON r.id=a.revision_id
         -- Automatically visible STAGING schedule; no manual current pointer required.
