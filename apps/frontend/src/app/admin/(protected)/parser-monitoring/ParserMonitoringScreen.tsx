@@ -6,12 +6,13 @@ import { AdminFilterResetButton } from "@/components/admin/AdminFilterResetButto
 import { ParserWorkspaceHeader } from "@/components/admin/ParserWorkspace";
 import "@/components/admin/admin-workspace.css";
 import { WeatherMonitoringPanel } from "./WeatherMonitoringPanel";
+import { TvMonitoringPanel } from "./TvMonitoringPanel";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getFrenchCategoryLabel } from "@/lib/fr-category-labels";
 import { parserStatusBadge, parserStatusLabel } from "@/components/admin/parser-status";
 import { AdminPagination } from "@/components/admin/AdminPagination";
 
-type Parser = "ALL" | "INFOS" | "VIDEOS" | "WEATHER";
+type Parser = "ALL" | "INFOS" | "VIDEOS" | "WEATHER" | "TV";
 type Period = "24h" | "7d" | "30d" | "custom";
 type Status = "ALL" | "SUCCESS" | "ERROR" | "RUNNING" | "INTERRUPTED";
 type PageData<T> = {
@@ -209,7 +210,7 @@ export function ParserMonitoringScreen() {
 
   const load = useCallback(async (signal: AbortSignal) => {
     if (period === "custom" && (!from || !to)) return;
-    if (parser === "WEATHER") {setLoading(false);setError("");return;}
+    if (parser === "WEATHER" || parser === "TV") {setLoading(false);setError("");return;}
     setLoading(true); setError("");
     try {
       const params = base;
@@ -274,7 +275,7 @@ export function ParserMonitoringScreen() {
       <AdminFilterResetButton section="parser-monitoring" />
     <ParserWorkspaceHeader
       title="Logs et statistiques des parsers"
-      description="Supervisez les collectes Infos, Vidéos et Météo. Les indicateurs de flux et de villes restent distincts."
+      description="Supervisez les collectes Infos, Vidéos, Météo et Guide TV. Chaque moteur conserve ses propres indicateurs."
       active="/admin/parser-monitoring"
     />
     <section className="card mb-4 shadow-sm lmn-admin-filter-panel" aria-label="Filtres de supervision">
@@ -285,7 +286,7 @@ export function ParserMonitoringScreen() {
             <select id="monitor-parser" className="form-select" value={parser}
               onChange={e=>changeFilter(setParser,e.target.value as Parser)}>
               <option value="ALL">Tous</option><option value="INFOS">Infos</option>
-              <option value="VIDEOS">Vidéos</option><option value="WEATHER">Météo</option>
+              <option value="VIDEOS">Vidéos</option><option value="WEATHER">Météo</option><option value="TV">Guide TV</option>
             </select>
           </div>
           <div className="col-6 col-md-3 col-xl-2">
@@ -308,7 +309,7 @@ export function ParserMonitoringScreen() {
                 className="form-control" onChange={e=>changeFilter(setTo,e.target.value)}/>
             </div>
           </>}
-          {parser!=="WEATHER"&&<div className="col-6 col-md-3 col-xl-2">
+          {parser!=="WEATHER"&&parser!=="TV"&&<div className="col-6 col-md-3 col-xl-2">
             <label htmlFor="monitor-status" className="form-label">Statut</label>
             <select id="monitor-status" className="form-select" value={status}
               onChange={e=>changeFilter(setStatus,e.target.value as Status)}>
@@ -317,19 +318,19 @@ export function ParserMonitoringScreen() {
                   {parserStatusLabel(value)}</option>)}
             </select>
           </div>}
-          {parser!=="WEATHER"&&<div className="col-12 col-md-6 col-xl-3">
+          {parser!=="WEATHER"&&parser!=="TV"&&<div className="col-12 col-md-6 col-xl-3">
             <label htmlFor="monitor-search" className="form-label">Source ou URL du flux</label>
             <input id="monitor-search" className="form-control" maxLength={120}
               placeholder="Rechercher…" value={search}
               onChange={e=>changeFilter(setSearch,e.target.value)}/>
           </div>}
-          {parser!=="WEATHER"&&<div className="col-6 col-md-2">
+          {parser!=="WEATHER"&&parser!=="TV"&&<div className="col-6 col-md-2">
             <label htmlFor="monitor-language" className="form-label">Langue (ISO 2)</label>
             <input id="monitor-language" className="form-control"
               maxLength={2} placeholder="Toutes" value={language}
               onChange={e=>changeFilter(setLanguage,e.target.value)}/>
           </div>}
-          {parser!=="WEATHER"&&<div className="col-6 col-md-3">
+          {parser!=="WEATHER"&&parser!=="TV"&&<div className="col-6 col-md-3">
             <label htmlFor="monitor-country" className="form-label">Pays</label>
             <select id="monitor-country" className="form-select" value={countryId}
               onChange={e=>changeFilter(setCountryId,e.target.value)}>
@@ -343,7 +344,7 @@ export function ParserMonitoringScreen() {
                 </option>)}
             </select>
           </div>}
-          {parser!=="WEATHER"&&<div className="col-6 col-md-3">
+          {parser!=="WEATHER"&&parser!=="TV"&&<div className="col-6 col-md-3">
             <label htmlFor="monitor-category" className="form-label">Catégorie</label>
             <select id="monitor-category" className="form-select" value={categoryId}
               onChange={e=>changeFilter(setCategoryId,e.target.value)}>
@@ -361,7 +362,7 @@ export function ParserMonitoringScreen() {
               {loading?"Chargement…":"Actualiser"}
             </button>
           </div>
-          {parser!=="WEATHER"&&<div className="col-auto">
+          {parser!=="WEATHER"&&parser!=="TV"&&<div className="col-auto">
             <a className="btn btn-outline-secondary" href={exportUrl}
               download="parser-runs.csv">Export CSV</a>
           </div>}
@@ -373,14 +374,16 @@ export function ParserMonitoringScreen() {
         </p>
       </div>
     </section>
-    {optionsError && parser!=="WEATHER" && <p className="small text-warning" role="status">Les listes Pays et Catégorie sont momentanément indisponibles. Les autres filtres restent utilisables.</p>}
-    {parser!=="WEATHER"&&error && <div className="alert alert-danger" role="alert">
+    {optionsError && parser!=="WEATHER"&&parser!=="TV" && <p className="small text-warning" role="status">Les listes Pays et Catégorie sont momentanément indisponibles. Les autres filtres restent utilisables.</p>}
+    {parser!=="WEATHER"&&parser!=="TV"&&error && <div className="alert alert-danger" role="alert">
       {error} <button className="btn btn-sm btn-outline-danger ms-2"
         onClick={()=>setRevision(n=>n+1)}><AdminIcon name="arrow-clockwise" className="me-2 align-middle" /> Réessayer</button>
     </div>}
     <WeatherMonitoringPanel period={period} from={from} to={to}
       visible={parser==="ALL"||parser==="WEATHER"}/>
-    {parser!=="WEATHER" && <>
+    <TvMonitoringPanel period={period} from={from} to={to}
+      visible={parser==="ALL"||parser==="TV"}/>
+    {parser!=="WEATHER"&&parser!=="TV" && <>
     {summary && <>
       <div className="row g-3 mb-4">
         <Kpi title="Flux actifs" value={fmt(summary.activeFeeds.total)}
