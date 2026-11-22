@@ -102,10 +102,10 @@ export class TvPublicService {
       -- The latest imported STAGING revision is immediately visible to readers.
       JOIN public.tv_programme p ON p.id=a.programme_id
       JOIN public.tv_source src ON src.id=a.source_id
-      JOIN public.tv_source_country sc ON sc.source_id=src.id
       JOIN public.tv_variant_country vc ON vc.variant_id=r.variant_id
       JOIN public.tv_channel_country cc ON cc.id=vc.channel_country_id
-        AND cc.country_id=sc.country_id
+      LEFT JOIN public.tv_source_country sc ON sc.source_id=src.id
+        AND sc.country_id=cc.country_id
       JOIN public.tv_country tc ON tc.country_id=cc.country_id
       JOIN public.country c ON c.id=tc.country_id
       WHERE r.status IN ('STAGING','PUBLISHED')
@@ -117,8 +117,9 @@ export class TvPublicService {
         AND r.variant_id::text=ANY(${[...variantIds]}::text[])
         AND a.starts_at < ${new Date(to)}::timestamptz
         AND a.ends_at > ${new Date(from)}::timestamptz
-        AND src.is_active AND sc.is_active AND tc.is_active AND c.is_active
-        AND cc.is_active AND src.programme_rights_status='APPROVED'
+        AND src.is_active AND (sc.source_id IS NULL OR sc.is_active) AND tc.is_active AND c.is_active
+        AND cc.is_active AND (sc.source_id IS NULL OR sc.is_active)
+        AND src.programme_rights_status='APPROVED'
       ORDER BY a.id,a.starts_at
       LIMIT 15000`;
     return serializeAirings(rows);
@@ -220,14 +221,13 @@ export class TvPublicService {
           THEN p.image_url ELSE NULL END AS "imageUrl"
       FROM public.tv_airing a
       JOIN public.tv_schedule_revision r ON r.id=a.revision_id
-      JOIN public.tv_schedule_current cur ON cur.revision_id=r.id
       JOIN public.tv_channel_variant v ON v.id=r.variant_id
       JOIN public.tv_programme p ON p.id=a.programme_id
       JOIN public.tv_source src ON src.id=a.source_id
-      JOIN public.tv_source_country sc ON sc.source_id=src.id AND sc.is_active
       JOIN public.tv_variant_country vc ON vc.variant_id=r.variant_id
       JOIN public.tv_channel_country cc ON cc.id=vc.channel_country_id
-        AND cc.country_id=sc.country_id
+      LEFT JOIN public.tv_source_country sc ON sc.source_id=src.id
+        AND sc.country_id=cc.country_id
       JOIN public.tv_channel ch ON ch.id=cc.channel_id
       JOIN public.tv_country tc ON tc.country_id=cc.country_id
       JOIN public.country c ON c.id=tc.country_id
@@ -301,9 +301,10 @@ export class TvPublicService {
         JOIN public.tv_channel_variant v ON v.id=r.variant_id
         JOIN public.tv_programme p ON p.id=a.programme_id
         JOIN public.tv_source src ON src.id=a.source_id
-        JOIN public.tv_source_country sc ON sc.source_id=src.id AND sc.is_active
         JOIN public.tv_variant_country vc ON vc.variant_id=r.variant_id
-        JOIN public.tv_channel_country cc ON cc.id=vc.channel_country_id AND cc.country_id=sc.country_id
+        JOIN public.tv_channel_country cc ON cc.id=vc.channel_country_id
+        LEFT JOIN public.tv_source_country sc ON sc.source_id=src.id
+          AND sc.country_id=cc.country_id
         JOIN public.tv_channel ch ON ch.id=cc.channel_id
         JOIN public.tv_country tc ON tc.country_id=cc.country_id
         JOIN public.country c ON c.id=tc.country_id
@@ -313,7 +314,8 @@ export class TvPublicService {
               AND newer.status IN ('STAGING','PUBLISHED')
               AND (newer.created_at,newer.id)>(r.created_at,r.id))
           AND cc.is_active AND tc.is_active AND c.is_active
-          AND src.is_active AND src.programme_rights_status='APPROVED'
+          AND src.is_active AND (sc.source_id IS NULL OR sc.is_active)
+          AND src.programme_rights_status='APPROVED'
           AND (a.starts_at AT TIME ZONE v.timezone)::date BETWEEN
             (${from}::timestamptz AT TIME ZONE v.timezone)::date
             AND ((${from}::timestamptz AT TIME ZONE v.timezone)::date + 6)
