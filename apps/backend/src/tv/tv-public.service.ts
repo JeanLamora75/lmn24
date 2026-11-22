@@ -172,7 +172,7 @@ export class TvPublicService {
     const languages=await this.db.prisma.$queryRaw<Array<{languageCode:string}>>`
       SELECT language_code AS "languageCode" FROM public.tv_channel_language
       WHERE channel_id=${channelId}::uuid ORDER BY language_code`;
-    return {countryIso2:iso2,channel:{id:channelId,name:channel.name,
+    return {countryIso2:iso2,referenceTimeZone:country.referenceTimeZone,channel:{id:channelId,name:channel.name,
       number:channel.number,logoUrl:channel.logoUrl,
       broadcastLanguages:languages.map(l=>l.languageCode)},
       variants,defaultVariantId:channel.variantId,
