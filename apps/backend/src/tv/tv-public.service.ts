@@ -191,8 +191,8 @@ export class TvPublicService {
       LIMIT 1`;
     const variant=rows[0];
     if(!variant)throw new NotFoundException("TV_NOT_FOUND");
-    assertTvDay(args.localDate,variant.timeZone,args.now??new Date());
-    const bounds=localDayBounds(args.localDate,variant.timeZone);
+    assertTvDay(args.localDate,country.referenceTimeZone,args.now??new Date());
+    const bounds=localDayBounds(args.localDate,country.referenceTimeZone);
     const all=(await this.publishedAirings([variant.id],country.id,bounds.startMs,bounds.endMs))
       .sort((a,b)=>Date.parse(a.startsAt)-Date.parse(b.startsAt)||a.id.localeCompare(b.id));
     const offset=(args.page-1)*args.pageSize;
