@@ -17,6 +17,24 @@ describe("SCRUM-117 XMLTV and JSON decoder (offline fixtures)",()=>{
   expect(decoded.coverage).toEqual([]);
   expect(parseXmltvTime("20260329030000 +0200")).toBe("2026-03-29T01:00:00.000Z");
  });
+ it("reads multiple programme icons and prefers HTTPS, while retaining HTTP-only images",async()=>{
+  const xml='<tv>'
+   +'<programme channel="TFX.fr" start="20261122110000 +0000" stop="20261122150000 +0000">'
+   +'<title>Super Nanny</title>'
+   +'<icon src="http://static-cdn.tv.sfr.net/data/img/pl/9/7/1/15540179.jpg"/>'
+   +'<icon src="https://example.org/super-nanny.jpg"/>'
+   +'<icon src="http://static-cdn.tv.sfr.net/data/img/pl/7/7/1/15540177.jpg"/>'
+   +'</programme>'
+   +'<programme channel="TFX.fr" start="20261122160000 +0000" stop="20261122170000 +0000">'
+   +'<title>Second show</title>'
+   +'<icon src="http://static-cdn.tv.sfr.net/data/img/pl/8/8/9/16164988.jpg"/>'
+   +'</programme></tv>';
+  const decoded=await decodeEpgBuffer(Buffer.from(xml),"XMLTV");
+  expect(decoded.programmes.map(item=>item.imageUrl)).toEqual([
+   "https://example.org/super-nanny.jpg",
+   "http://static-cdn.tv.sfr.net/data/img/pl/8/8/9/16164988.jpg",
+  ]);
+ });
  it("reads the channel logo and country from the supplied Teleonline XMLTV sample",async()=>{
   const xml='<tv><channel id="DAZN Baloncesto 3" country="es">'
    +'<display-name>DAZN Baloncesto 3</display-name>'
