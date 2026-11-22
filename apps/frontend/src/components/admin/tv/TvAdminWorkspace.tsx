@@ -161,6 +161,36 @@ function Modal({title,children,onClose}:{title:string;children:React.ReactNode;o
   </div>
  </div>;
 }
+/** Update the country directly, using the same versioned API as its edit form. */
+function CountryQuickStatus({item,onSaved}:{item:Country;onSaved:()=>void}){
+ const [pending,setPending]=useState(false);
+ const [error,setError]=useState("");
+ const [active,setActive]=useState(item.isActive);
+ async function toggle(next:boolean){
+  if(pending)return;
+  setPending(true);setError("");
+  try{
+   await request("catalog/countries/"+item.countryId,"PUT",{
+    referenceTimezone:item.referenceTimezone,isActive:next,expectedVersion:item.version,
+   });
+   setActive(next);
+   onSaved();
+  }catch(err){setError((err as Error).message);}
+  finally{setPending(false);}
+ }
+ return <div>
+  <div className="d-flex align-items-center gap-2">
+   <label className={styles.channelSwitch}>
+    <input type="checkbox" role="switch" checked={active} disabled={pending}
+     aria-label={(active?"Désactiver ":"Activer ")+item.isoCode2}
+     onChange={e=>void toggle(e.target.checked)}/>
+    <span className={styles.channelSwitchTrack} aria-hidden="true"/>
+   </label>
+   <span>{active?"Actif":"Inactif"}</span>
+  </div>
+  {error&&<div role="alert" className="small text-danger mt-1">{error}</div>}
+ </div>;
+}
 function CountryEditor({item,locale,countryNames,onClose,onSaved}:{item:Country;locale:string;countryNames:TvCountryNames;onClose:()=>void;onSaved:()=>void}){
  const [active,setActive]=useState(item.isActive);
  const [zone,setZone]=useState(item.referenceTimezone);
@@ -1209,14 +1239,17 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    <AdminDataPanel label={"Liste "+LABELS[view]}>
     <div className="table-responsive"><table className="table table-hover align-middle mb-0">
      <thead><tr>
-      {view==="countries"&&<><TvSortableHeader label="Pays" sortKey="name" sort={sort} onSort={toggleSort}/><TvSortableHeader label="ISO 2" sortKey="iso" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Statut" sortKey="status" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Fuseau IANA" sortKey="timezone" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Chaînes actives / total" sortKey="channels" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Couverture" sortKey="coverage" sort={sort} onSort={toggleSort}/><th>Actions</th></>}
+      {view==="countries"&&<><th scope="col">Drapeau</th><TvSortableHeader label="Pays" sortKey="name" sort={sort} onSort={toggleSort}/><TvSortableHeader label="ISO 2" sortKey="iso" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Statut" sortKey="status" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Fuseau IANA" sortKey="timezone" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Chaînes actives / total" sortKey="channels" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Couverture" sortKey="coverage" sort={sort} onSort={toggleSort}/><th>Actions</th></>}
       {view==="channels"&&<><TvSortableHeader label="Chaîne" sortKey="name" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Pays" sortKey="country" sort={sort} onSort={toggleSort}/><TvSortableHeader label="N°" sortKey="number" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Statut" sortKey="status" sort={sort} onSort={toggleSort}/><th>Actions</th></>}
       {view==="sources"&&<><TvSortableHeader label="Source" sortKey="name" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Format" sortKey="format" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Périmètre" sortKey="scope" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Droits programmes" sortKey="rights" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Statut" sortKey="status" sort={sort} onSort={toggleSort}/><th>Actions</th></>}
       {view==="imports"&&<><TvSortableHeader label="Date" sortKey="date" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Déclencheur" sortKey="trigger" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Jours" sortKey="days" sort={sort} onSort={toggleSort}/><TvSortableHeader label="État" sortKey="status" sort={sort} onSort={toggleSort}/><TvSortableHeader label="Périmètres" sortKey="scope" sort={sort} onSort={toggleSort}/><th>Actions</th></>}
      </tr></thead><tbody>
       {view==="countries"&&(visible as Country[]).map(v=><tr key={v.countryId}>
+       <td style={{width:68}}><img src={`/country-flags/w160/${v.isoCode2.toLowerCase()}.png`}
+        alt="" loading="lazy" style={{width:36,height:24,objectFit:"contain"}}/></td>
        <td>{region(v.isoCode2,locale,countryNames)}</td><td>{v.isoCode2}</td>
-       <td>{v.isActive?"Actif":"Inactif"}</td><td>{v.referenceTimezone}</td>
+       <td><CountryQuickStatus key={v.countryId+":"+v.version} item={v} onSaved={()=>setReload(x=>x+1)}/></td>
+       <td>{v.referenceTimezone}</td>
        <td>{v.approvedChannelCount} / {v.channelCount}</td><td>Inconnue</td>
        <td><AdminIconButton name="pencil-square" label={"Modifier "+region(v.isoCode2,locale,countryNames)} onClick={()=>setCountryEditor(v)}/></td>
       </tr>)}
