@@ -910,7 +910,7 @@ function ImportEditor({countries,sources,locale,countryNames,onClose,onSaved}:{c
    <p className="text-body-secondary">{eligible.length} pays concernés, {new Set(perCountry.flatMap(x=>x.sources.map(s=>s.id))).size} sources distinctes potentiellement éligibles.
     {mode==="DISCOVERY"
      ?" Les identifiants des chaînes sont découverts et attendent une vérification ; aucun programme n’est enregistré."
-     :" Seules les émissions de chaînes déjà associées et vérifiées, issues de sources autorisées avec une référence de droits, sont enregistrées dans le catalogue privé. Aucune grille n’est publiée."}
+     :" Seules les émissions des chaînes actives ayant un identifiant EPG associé sont importées depuis les sources dont les droits programmes sont approuvés. Aucun justificatif supplémentaire ni validation manuelle de la correspondance n’est nécessaire pour le catalogue privé. Aucune grille n’est publiée."}
     {" "}Les sources actives sont prises en compte selon leur priorité par pays.</p>
    {eligible.length===0&&<p className="alert alert-warning">Aucun pays éligible : activez les pays souhaités dans Guide TV — Pays ou sélectionnez un pays précis.</p>}
    {eligible.length>0&&<details className="mb-3"><summary>Voir les sources prévues par pays ({perCountry.reduce((n,x)=>n+x.sources.length,0)} périmètres potentiels)</summary>
