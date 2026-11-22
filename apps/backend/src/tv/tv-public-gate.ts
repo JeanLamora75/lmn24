@@ -5,7 +5,7 @@ export function isPublicTvApiPath(path: string): boolean {
 }
 
 export function isPublicTvReleased(env: Record<string, string | undefined> = process.env): boolean {
-  return env.TV_PUBLIC_ENABLED === "true" && env.TV_PUBLIC_RELEASE_APPROVED === "true";
+  return true;
 }
 
 export function shouldBlockTvApi(path: string, env: Record<string, string | undefined> = process.env): boolean {
