@@ -108,7 +108,8 @@ export function stateForChannel(args:{
     if(!Number.isFinite(from)||!Number.isFinite(until)||until<=from)return false;
     if(tab==="NOW")return from<=now.getTime()&&now.getTime()<until;
     if(tab==="CHANNELS")return from<bounds.endMs&&until>bounds.startMs;
-    return isWithinStartWindow(a.startsAt,timezone,localDate,tab);
+    const window=tvWindow(tab,localDate,timezone,now);
+    return from<window.endMs&&until>window.startMs;
   }).sort((a,b)=>Date.parse(a.startsAt)-Date.parse(b.startsAt)||a.id.localeCompare(b.id));
   if(matching[0])return {programmeState:"AVAILABLE",airing:matching[0]};
   // No independent evidence => NEVER say the window is completely empty.
