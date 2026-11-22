@@ -112,3 +112,17 @@ export function approvedExternalUrl(value:string|null|undefined):string|null{
  if(!value)return null;
  try{const url=new URL(value);return url.protocol==="https:"?url.toString():null;}catch{return null;}
 }
+
+/** Same source-image acceptance as the TV guide cards.
+ * HTTP images are supported for EPG feeds, but URL credentials and unsafe
+ * schemes are rejected. This does not loosen approvedExternalUrl for links.
+ */
+export function safeTvProgrammeImageUrl(value:string|null|undefined):string|null{
+ if(!value)return null;
+ if(/^\/tv-icons\/[a-z0-9_.-]+$/i.test(value))return value;
+ try{
+  const url=new URL(value);
+  return (url.protocol==="https:"||url.protocol==="http:")
+    &&!url.username&&!url.password?url.toString():null;
+ }catch{return null;}
+}
