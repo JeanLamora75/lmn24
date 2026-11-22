@@ -5,7 +5,7 @@ import {useRouter} from "next/navigation";
 import {useCallback,useEffect,useMemo,useState} from "react";
 import {useVisitorPreferences} from "@/components/public/VisitorPreferencesProvider";
 import {
- TV_COPY,TV_TABS,dateOffset,filterBroadcastLanguage,formatBroadcast,
+ TV_COPY,TV_TABS,dateOffset,formatBroadcast,
  localToday,moveDate,resolveCountry,type TvCountry,type TvLocale,
  type TvSchedule,type TvScheduleItem,type TvTab,
 } from "./tv-guide-model";
@@ -15,7 +15,6 @@ import {tvCountryName} from "@/lib/tv-country-names";
 
 type CountryResponse={items:TvCountry[]};
 type ClockMode="CHANNEL"|"VISITOR";
-const languageOptions=["all","fr","en","de","es","pt","it","ru","nl"];
 function isCountryResponse(input:unknown):input is CountryResponse{
  if(!input||typeof input!=="object"||!("items" in input))return false;
  const items=(input as {items:unknown}).items;
@@ -61,56 +60,55 @@ function TvChannelLogo({item,locale,countryIso2,date}:{
  </Link>;
 }
 
-function TvCard({item,locale,mode,tab,countryIso2,countryTimeZone,nowMs,preview=false}:{
- item:TvScheduleItem;locale:TvLocale;mode:ClockMode;tab:TvTab;
+function TvCard({item,locale,mode,countryIso2,countryTimeZone,nowMs,preview=false}:{
+ item:TvScheduleItem;locale:TvLocale;mode:ClockMode;
  countryIso2:string;countryTimeZone:string;nowMs:number|null;preview?:boolean;
 }){
- // A national channel is displayed in its country's local time by default.
- // Technical variants can use a different timezone (e.g. a global EPG feed).
- const copy=TV_COPY[locale],a=item.airing,zone=mode==="VISITOR"
-  ?Intl.DateTimeFormat().resolvedOptions().timeZone
-  :countryTimeZone;
+ const copy=TV_COPY[locale],a=item.airing;
+ const zone=mode==="VISITOR"?Intl.DateTimeFormat().resolvedOptions().timeZone:countryTimeZone;
+ const logo=safeProgrammeImage(item.channel.logoUrl);
  const image=safeProgrammeImage(a?.imageUrl??null);
- const channelHref=`/${locale}/tv/channels/${encodeURIComponent(item.channel.id)}?country=${countryIso2}`;
- const programmeHref=a&&item.variant?
-  `/${locale}/tv/airings/${encodeURIComponent(a.id)}`:null;
- const live=tab==="NOW"&&a&&nowMs!==null&&Date.parse(a.startsAt)<=nowMs&&nowMs<Date.parse(a.endsAt);
+ const programmeHref=a&&item.variant? `/${locale}/tv/airings/${encodeURIComponent(a.id)}`:null;
+ const channelHref=`/${locale}/tv/channels/${encodeURIComponent(item.channel.id)}?country=${encodeURIComponent(countryIso2)}`;
+ const href=programmeHref??channelHref;
+ const live=!!a&&nowMs!==null&&Date.parse(a.startsAt)<=nowMs&&nowMs<Date.parse(a.endsAt);
  const progress=live&&a?Math.max(0,Math.min(100,
-  100*((nowMs??0)-Date.parse(a.startsAt))/(Date.parse(a.endsAt)-Date.parse(a.startsAt)))):null;
- return <article className={styles.card} aria-label={`${copy.channelNumber} ${item.channel.number}: ${item.channel.name}`}>
+  100*(nowMs!-Date.parse(a.startsAt))/(Date.parse(a.endsAt)-Date.parse(a.startsAt)))):null;
+ const content=<>
   <div className={styles.identity}>
    <div className={styles.logoBox}>
-    {safeProgrammeImage(item.channel.logoUrl)
+    {logo
       // eslint-disable-next-line @next/next/no-img-element
-      ? <img src={safeProgrammeImage(item.channel.logoUrl)!} alt="" loading="lazy"/>
-      : <span aria-hidden="true">TV</span>}
+      ?<img src={logo} alt="" loading="lazy"/>
+      :<span aria-hidden="true">TV</span>}
    </div>
-   <span className={styles.channelNumber} aria-label={`${copy.channelNumber} ${item.channel.number}`}>{item.channel.number}</span>
+   <span className={styles.channelNumber}>{copy.channelNumber} {item.channel.number}</span>
   </div>
   <div className={styles.cardBody}>
-   <div className={styles.channelName}>{preview?item.channel.name:<Link href={channelHref}>{item.channel.name}</Link>}</div>
-   {a&&item.programmeState==="AVAILABLE"
-    ?<>
-      <span className={styles.time}>{formatBroadcast(a.startsAt,zone,locale)}</span>
-      <h2 className={styles.programmeTitle}>
-       {programmeHref&&!preview?<Link href={programmeHref}>{a.title}</Link>:a.title}
-      </h2>
-      <div className={styles.metadata}>{[a.category,duration(a.startsAt,a.endsAt)].filter(Boolean).join(" · ")}</div>
-      {progress!==null&&<div className={styles.progress} role="progressbar"
-        aria-label={`${Math.round(progress)}%`} aria-valuenow={Math.round(progress)}
-        aria-valuemin={0} aria-valuemax={100}>
-        <span style={{width:progress+"%"}}/>
+   {a&&item.programmeState==="AVAILABLE"?<>
+    <div className={styles.timeRow}>
+     <span className={styles.time}>{formatBroadcast(a.startsAt,zone,locale)}</span>
+     {progress!==null&&<div className={styles.progress} role="progressbar"
+       aria-label={`${Math.round(progress)}%`} aria-valuenow={Math.round(progress)}
+       aria-valuemin={0} aria-valuemax={100}>
+       <span style={{width:progress+"%"}}/>
       </div>}
-     </>
-    :<p className={styles.missing}>{item.programmeState==="NO_START_IN_WINDOW"?copy.noStart:copy.missing}</p>}
+    </div>
+    <h2 className={styles.programmeTitle}>{a.title}</h2>
+    <div className={styles.metadata}>{[a.category,duration(a.startsAt,a.endsAt)].filter(Boolean).join(" · ")}</div>
+   </>:<p className={styles.missing}>{item.programmeState==="NO_START_IN_WINDOW"?copy.noStart:copy.missing}</p>}
   </div>
   <div className={styles.poster} aria-hidden="true">
    {image
-    // eslint-disable-next-line @next/next/no-img-element
-    ?<img src={image} alt="" loading="lazy"/>
-    :<div className={styles.posterFallback}><span>▧</span></div>}
+     // eslint-disable-next-line @next/next/no-img-element
+     ?<img src={image} alt="" loading="lazy"/>
+     :<div className={styles.posterFallback}><span>▧</span></div>}
   </div>
- </article>;
+ </>;
+ const label=`${item.channel.name} — ${a?.title??copy.missing}`;
+ return preview
+  ?<article className={styles.card} aria-label={label}>{content}</article>
+  :<Link href={href} className={styles.card} aria-label={label}>{content}</Link>;
 }
 
 export function TvGuideHome({locale,preview=false}: {locale:TvLocale;preview?:boolean}){
@@ -122,7 +120,6 @@ export function TvGuideHome({locale,preview=false}: {locale:TvLocale;preview?:bo
  const [countryIso2,setCountryIso2]=useState<string|null>(null);
  const [loadingCountries,setLoadingCountries]=useState(true);
  const [countryError,setCountryError]=useState(false);
- const [language,setLanguage]=useState("all");
  const [clockMode,setClockMode]=useState<ClockMode>("CHANNEL");
  const [dayIndex,setDayIndex]=useState(0);
  const [tab,setTab]=useState<TvTab>("TONIGHT");
@@ -210,9 +207,7 @@ export function TvGuideHome({locale,preview=false}: {locale:TvLocale;preview?:bo
   setDayIndex(result.dayIndex);setTab(result.tab);setPage(1);
   setSchedule(null);setLoading(true);setNotice(result.notice?copy.changeNow:"");
  },[dayIndex,tab,copy.changeNow]);
- const visible=useMemo(()=>filterBroadcastLanguage(schedule?.items??[],language),
-  [schedule,language]);
- const labels=new Intl.DisplayNames([locale],{type:"language"});
+ const visible=schedule?.items??[];
  const dateLabel=date?new Intl.DateTimeFormat(locale,{
    timeZone:"UTC",weekday:"long",day:"numeric",month:"long",year:"numeric",
   }).format(new Date(date+"T12:00:00Z")):"";
@@ -223,27 +218,19 @@ export function TvGuideHome({locale,preview=false}: {locale:TvLocale;preview?:bo
   <header className={styles.header}>
    <h1>{copy.title}</h1><p>{copy.subtitle}</p>
   </header>
-  {!preview&&<div className={styles.searchLine}>
-   <form onSubmit={event=>{event.preventDefault();if(search.trim())router.push(`/${locale}/tv/search?q=${encodeURIComponent(search.trim())}`);}}>
+  <div className={styles.filters}>
+   {!preview&&<form className={styles.searchLine}
+     onSubmit={event=>{event.preventDefault();if(search.trim())router.push(`/${locale}/tv/search?q=${encodeURIComponent(search.trim())}`);}}>
     <label className="visually-hidden" htmlFor="tv-global-search">{copy.search}</label>
     <input id="tv-global-search" className="form-control" type="search" value={search}
       onChange={event=>setSearch(event.target.value)} placeholder={copy.search} maxLength={120}/>
     <button type="submit" className="btn btn-outline-primary" aria-label={copy.search}>⌕</button>
-   </form>
-  </div>}
-  <div className={styles.filters}>
+   </form>}
    <label>{copy.country}
     <select className="form-select" disabled={loadingCountries||!countries.length}
       value={countryIso2??""} onChange={e=>changeCountry(e.target.value)}>
      {countries.length===0&&<option value="">—</option>}
      {countries.map(c=><option key={c.countryIso2} value={c.countryIso2}>{tvCountryName(c.countryIso2,locale,countryNames)}</option>)}
-    </select>
-   </label>
-   <label>{copy.language}
-    <select className="form-select" value={language} onChange={e=>setLanguage(e.target.value)}>
-     {languageOptions.map(code=><option key={code} value={code}>
-       {code==="all"?copy.allLanguages:labels.of(code)??code}
-     </option>)}
     </select>
    </label>
    <label>{copy.clock}
@@ -303,17 +290,12 @@ export function TvGuideHome({locale,preview=false}: {locale:TvLocale;preview?:bo
       </div>
      :<div className={styles.grid}>
        {visible.map((item,i)=><TvCard key={item.channel.id+":"+i} item={item}
-         locale={locale} mode={clockMode} tab={tab} countryIso2={countryIso2??""}
+         locale={locale} mode={clockMode} countryIso2={countryIso2??""}
          countryTimeZone={schedule?.referenceTimeZone??selectedCountry?.referenceTimeZone??"UTC"} nowMs={nowMs} preview={preview}
          />)}
       </div>)}
    {validScope&&!loading&&!error&&schedule.items.length===0&&
       <p className={styles.feedback}>{copy.empty}</p>}
-   {validScope&&!loading&&!error&&schedule.items.length>0&&visible.length===0&&
-      <div className={styles.feedback}>{copy.noLanguage}
-       <button type="button" className="btn btn-outline-primary ms-3"
-         onClick={()=>setLanguage("all")}>{copy.resetLanguage}</button>
-      </div>}
    {validScope&&schedule.pagination.hasNext&&!loading&&
      <button type="button" className="btn btn-outline-primary d-block mx-auto mt-4"
        onClick={()=>{setPage(v=>v+1);setLoading(true);}}>{copy.next} · +100</button>}
