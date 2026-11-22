@@ -1,4 +1,5 @@
 import {describe,expect,it,vi} from "vitest";
+import {readFileSync} from "node:fs";
 import type {TvWriterLease} from "./tv-import-publisher";
 import {stagePrivateTvRevision} from "./tv-import-publisher";
 
