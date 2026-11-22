@@ -54,7 +54,7 @@ describe("TV schedule performance without editorial changes",()=>{
   expect(statement?.sql).not.toContain("r.variant_id::text");
   // A future date must not expand the SQL scan back to today's airings.
   expect(statement?.params.some(p=>p==="2026-11-21")).toBe(true);
-  expect(statement?.params.some(p=>p==="2026-11-27")).toBe(true);
+  expect(statement?.params.some(p=>p==="2026-11-26")).toBe(true);
  });
  it("keeps tonight's program independent per variant",async()=>{
   const {service}=setup();
