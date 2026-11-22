@@ -48,7 +48,14 @@ export class TvImportScheduler implements OnModuleInit,OnModuleDestroy {
    // A previous instance may already have created/started this day's run.
    // Never start it a second time when the idempotence guard returns it.
    if("alreadyScheduled" in run && run.alreadyScheduled)return false;
-   await this.execution.startRun(run.id,"STAGING");
+   try {
+    await this.execution.startRun(run.id,"STAGING");
+   } catch(error) {
+    // A scheduler-created run must not remain indefinitely QUEUED
+    // when dispatch fails before the worker has claimed it.
+    await this.runs.failUnstartedRun(run.id).catch(()=>undefined);
+    throw error;
+   }
    this.logger.log("Automatic TV EPG import started: "+run.id);
    return true;
   }finally{this.inProgress=false;}
