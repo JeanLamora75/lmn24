@@ -28,10 +28,13 @@ describe("SCRUM-118 TV public date and window contracts",()=>{
   expect(isWithinStartWindow("2026-11-21T22:30:00.000Z",zone,day,"LATE")).toBe(true);
   expect(isWithinStartWindow("2026-11-21T22:30:00.001Z",zone,day,"LATE")).toBe(false);
  });
- it("never displays a programme begun before tonight even if still playing",()=>{
+ it("shows programmes overlapping the evening slot even when started earlier",()=>{
   const old=airing("old","2026-11-21T19:00:00.000Z","2026-11-21T21:00:00.000Z");
   expect(stateForChannel({tab:"TONIGHT",localDate:day,timezone:zone,variantId:"v",
-    airings:[old],coverage:[],now})).toEqual({programmeState:"EPG_UNAVAILABLE",airing:null});
+    airings:[old],coverage:[],now})).toEqual({programmeState:"AVAILABLE",airing:old});
+  const ended=airing("ended","2026-11-21T18:00:00.000Z","2026-11-21T19:00:00.000Z");
+  expect(stateForChannel({tab:"TONIGHT",localDate:day,timezone:zone,variantId:"v",
+    airings:[ended],coverage:[],now}).programmeState).toBe("EPG_UNAVAILABLE");
  });
  it("NOW is half-open and uses a real UTC instant only",()=>{
   const a=airing("n","2026-11-21T08:30:00Z","2026-11-21T09:00:00Z");
