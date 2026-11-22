@@ -49,10 +49,16 @@ export class TvPublicService {
       ORDER BY c.iso_code2,tc.country_id`;
   }
   async country(iso2:string):Promise<CountryRow>{
-    const rows=await this.countries();
-    const found=rows.find(c=>c.isoCode2.toUpperCase()===iso2.toUpperCase());
-    if(!found)throw new NotFoundException("TV_NOT_FOUND");
-    return found;
+    await this.requireSchema();
+    const rows=await this.db.prisma.$queryRaw<CountryRow[]>`
+      SELECT tc.country_id AS id,trim(c.iso_code2) AS "isoCode2",
+        tc.reference_timezone AS "referenceTimeZone"
+      FROM public.tv_country tc JOIN public.country c ON c.id=tc.country_id
+      WHERE tc.is_active=TRUE AND c.is_active=TRUE
+        AND upper(trim(c.iso_code2))=${iso2.toUpperCase()}
+      LIMIT 1`;
+    if(!rows[0])throw new NotFoundException("TV_NOT_FOUND");
+    return rows[0];
   }
   private async channelRows(country:CountryRow):Promise<ChannelRow[]>{
     const rows=await this.db.prisma.$queryRaw<ChannelRow[]>`
@@ -140,14 +146,28 @@ export class TvPublicService {
     const start=(args.page-1)*args.pageSize;
     const selected=channels.slice(start,start+args.pageSize);
     const localBounds=localDayBounds(args.localDate,country.referenceTimeZone);
-    const from=Math.min(localBounds.startMs,now.getTime())-86_400_000;
-    const to=Math.max(localBounds.endMs,now.getTime())+86_400_000;
+    // Restrict each request to the selected local day and its neighbors.
+    // NOW always refers to that same local day; a future date must not drag
+    // unrelated airings from today into the SQL result.
+    const from=localBounds.startMs-86_400_000;
+    const to=localBounds.endMs+86_400_000;
     const all=await this.publishedAirings(selected.flatMap(c=>c.variantId?[c.variantId]:[]),country.id,from,to);
+    // Each channel previously filtered and sorted the full result (up to 15k
+    // airings). Index once per variant so rendering 100 channels is linear.
+    const byVariant=new Map<string,TvAiring[]>();
+    for(const airing of all){
+      const group=byVariant.get(airing.variantId);
+      if(group)group.push(airing);
+      else byVariant.set(airing.variantId,[airing]);
+    }
+    const coverage=this.coverage();
     const items=selected.map(c=>{
       const state=stateForChannel({
         tab:args.tab,localDate:args.localDate,
         timezone:country.referenceTimeZone,
-        variantId:c.variantId,airings:all,coverage:this.coverage(),now,
+        variantId:c.variantId,
+        airings:c.variantId?(byVariant.get(c.variantId)??[]):[],
+        coverage,now,
       });
       return {channel:{id:c.channelId,number:c.number,name:c.name,
           logoUrl:c.logoUrl,broadcastLanguages:c.broadcastLanguages},
