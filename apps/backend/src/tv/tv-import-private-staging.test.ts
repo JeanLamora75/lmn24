@@ -29,6 +29,8 @@ describe("Private EPG draft schedule",()=>{
   const sql=query.mock.calls.map(c=>c[0]).join("\n");
   expect(sql).toContain("tv_schedule_revision");
   expect(sql).toContain("'STAGING'");
+  expect(sql).toContain("s.programme_rights_status='APPROVED'");
+  expect(sql).not.toContain("programme_rights_reference");
   expect(sql).toContain("INSERT INTO public.tv_airing");
   expect(sql).toContain("COMMIT");
   expect(sql).not.toContain("tv_schedule_current");
