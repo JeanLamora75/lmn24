@@ -3,6 +3,7 @@ import { AdminIcon } from "@/components/admin/AdminIcon";
 import { AdminPageHeading } from "@/components/admin/AdminWorkspace";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type Type = "INFOS" | "VIDEOS" | "WEATHER" | "HOROSCOPE_IMPORT";
 type Config = {
@@ -10,6 +11,8 @@ type Config = {
   localTime: string | null; timezone: string; nextDueAt: string | null;
   lastScheduledAt: string | null; updatedAt: string;
 };
+type TvGuideSchedule={enabled:boolean;configured:boolean;ready:boolean;missingFlags:string[];
+ localTime:string;timezone:string;requestedDays:number;managedBy:"ENVIRONMENT"};
 const names: Record<Type,string> = {
   INFOS:"Actualités RSS/XML", VIDEOS:"Vidéos YouTube",
   WEATHER:"Météo mondiale", HOROSCOPE_IMPORT:"Import Horoscope",
@@ -18,6 +21,7 @@ const order: Type[] = ["INFOS","VIDEOS","WEATHER","HOROSCOPE_IMPORT"];
 export function SchedulerSettings() {
   const router = useRouter();
   const [rows,setRows] = useState<Config[]>([]);
+  const [tvGuide,setTvGuide] = useState<TvGuideSchedule|null>(null);
   const [draft,setDraft] = useState<Record<string,string>>({});
   const [loading,setLoading] = useState(true);
   const [saving,setSaving] = useState<Type|null>(null);
@@ -28,9 +32,10 @@ export function SchedulerSettings() {
     const res = await fetch("/api/admin/scheduler-settings",{cache:"no-store"});
     if (res.status===401) { router.replace("/admin/login"); return; }
     if(!res.ok) throw new Error("Impossible de récupérer la configuration du planificateur.");
-    const body=await res.json() as {configured:Config[]};
+    const body=await res.json() as {configured:Config[];tvGuide?:TvGuideSchedule};
     if(!Array.isArray(body.configured)) throw new Error("Configuration incorrecte.");
     setRows(body.configured);
+    setTvGuide(body.tvGuide??null);
     setEnabledDraft(Object.fromEntries(body.configured.map(x=>[x.parserType,x.isEnabled])));
     setDraft(Object.fromEntries(body.configured.map(x=>[
       x.parserType, x.parserType==="HOROSCOPE_IMPORT" ? x.localTime??"06:15" : String(x.intervalMinutes??60)
@@ -102,6 +107,36 @@ export function SchedulerSettings() {
         </div>
       </section></div>
     })}
+      {tvGuide&&<div className="col-12 col-lg-6">
+        <section className="card h-100 shadow-sm lmn-admin-form-surface">
+          <div className="card-body">
+            <div className="d-flex justify-content-between gap-2">
+              <h2 className="h5">Guide TV — Import EPG</h2>
+              <span className={"badge "+(tvGuide.enabled?"text-bg-success":"text-bg-secondary")}>
+                {tvGuide.enabled?"Activé":"Désactivé"}
+              </span>
+            </div>
+            <p className="small text-body-secondary mb-2">Import quotidien automatique des programmes TV sur {tvGuide.requestedDays} jours.</p>
+            <div className="mb-3">
+              <label className="form-label">Heure quotidienne ({tvGuide.timezone})</label>
+              <input className="form-control" type="time" readOnly value={tvGuide.localTime}
+                aria-label="Heure de collecte automatique du Guide TV"/>
+            </div>
+            <p className="small text-body-secondary mb-2">
+              {tvGuide.enabled?"Planification active, prochaine exécution à 04h00 (heure de Paris).":
+               tvGuide.configured?"Planification configurée mais collecte non autorisée.":"Planification inactive."}
+            </p>
+            <p className="small text-body-secondary">
+              Configuration gérée sur le serveur LMN24. Cette carte affiche l'état réel ;
+              elle ne modifie pas les paramètres du serveur.
+            </p>
+            <Link className="btn btn-outline-primary" href="/admin/tv/imports">
+              <AdminIcon name="clock-history" className="me-2 align-middle"/>
+              Voir les imports Guide TV
+            </Link>
+          </div>
+        </section>
+      </div>}
     </div>
     </main>;
 }
