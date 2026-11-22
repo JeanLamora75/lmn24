@@ -1,4 +1,4 @@
-import {describe,expect,it,vi} from "vitest";
+import {describe,expect,it} from "vitest";
 import {isWithinStartWindow,localClock,stateForChannel,tvWindow} from "./tv-public-policy";
 
 describe("Guide TV broadcast windows remain correct and fast",()=>{
