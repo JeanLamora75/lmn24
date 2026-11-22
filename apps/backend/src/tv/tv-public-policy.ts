@@ -111,7 +111,9 @@ export function stateForChannel(args:{
     if(tab==="NOW")return from<=now.getTime()&&now.getTime()<until;
     if(tab==="CHANNELS")return from<bounds.endMs&&until>bounds.startMs;
     if(tab==="TONIGHT")return isWithinStartWindow(a.startsAt,timezone,localDate,"TONIGHT");
-    return !!eveningWindow&&from<eveningWindow.endMs&&until>eveningWindow.startMs;
+    // Late-night picks a programme STARTING in 22:30–23:30, not one
+    // which started in prime time and merely overlaps that window.
+    return isWithinStartWindow(a.startsAt,timezone,localDate,"LATE");
   }).sort((a,b)=>Date.parse(a.startsAt)-Date.parse(b.startsAt)||a.id.localeCompare(b.id));
   if(tab==="TONIGHT"){
     // Prefer the first broadcast lasting strictly more than 30 minutes
@@ -120,6 +122,15 @@ export function stateForChannel(args:{
     if(longer)return {programmeState:"AVAILABLE",airing:longer};
   }
   if(matching[0])return {programmeState:"AVAILABLE",airing:matching[0]};
+  if(tab==="LATE"&&eveningWindow){
+    // If no broadcast begins in the late slot, retain the programme
+    // already playing at 22:30 instead of inventing an empty schedule.
+    const ongoing=args.airings.filter(a=>a.variantId===variantId
+      &&Date.parse(a.startsAt)<eveningWindow.startMs
+      &&Date.parse(a.endsAt)>eveningWindow.startMs)
+      .sort((a,b)=>Date.parse(b.startsAt)-Date.parse(a.startsAt));
+    if(ongoing[0])return {programmeState:"AVAILABLE",airing:ongoing[0]};
+  }
   if(tab==="TONIGHT"&&eveningWindow){
     // Fallback only: a show already in progress at 20:30 remains visible
     // when nothing starts within the requested evening slot.
