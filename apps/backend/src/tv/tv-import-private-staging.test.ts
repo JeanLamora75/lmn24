@@ -31,6 +31,8 @@ describe("Private EPG draft schedule",()=>{
   expect(sql).toContain("'STAGING'");
   expect(sql).toContain("s.programme_rights_status='APPROVED'");
   expect(sql).not.toContain("programme_rights_reference");
+  const publisher=readFileSync(new URL("./tv-import-publisher.ts",import.meta.url),"utf8");
+  expect(publisher).not.toContain("nullif(btrim(s.programme_rights_reference)");
   expect(sql).toContain("INSERT INTO public.tv_airing");
   expect(sql).toContain("COMMIT");
   expect(sql).not.toContain("tv_schedule_current");
