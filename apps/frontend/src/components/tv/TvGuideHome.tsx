@@ -55,6 +55,9 @@ function TvChannelLogo({item,locale,countryIso2,date}:{
       ?<img src={logo} alt={item.channel.name} loading="lazy"/>
       :<span className={styles.logoTileFallback} aria-hidden="true">TV</span>}
    </span>
+   <span className={styles.logoTileCaption}>
+    {item.channel.number>0?`${item.channel.number} - ${item.channel.name}`:item.channel.name}
+   </span>
  </Link>;
 }
 
