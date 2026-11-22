@@ -13,6 +13,8 @@ import { siteSchema } from "@/lib/seo-schema";
 import type { SeoLocale } from "@/lib/seo-metadata";
 import { GoogleAnalyticsTracker } from "@/components/public/GoogleAnalyticsTracker";
 import { PublicHeader } from "@/components/public/PublicHeader";
+import {getAdminSession} from "@/lib/admin-auth";
+import {tvPublicEnabled} from "@/lib/tv-public-gate";
 import { VisitorPreferencesProvider } from "@/components/public/VisitorPreferencesProvider";
 import { PublicThemeController } from "@/components/public/PublicThemeController";
 import { VISITOR_THEME_BOOTSTRAP_SCRIPT } from "@/lib/visitor-theme";
@@ -42,6 +44,9 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   setRequestLocale(locale);
+  const released=tvPublicEnabled();
+  const session=released?null:await getAdminSession();
+  const tvNavigation=released?"public" as const:session?.role==="ADMIN"?"preview" as const:null;
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -53,7 +58,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <NextIntlClientProvider>
           <VisitorPreferencesProvider>
             <PublicThemeController />
-            <PublicHeader />
+            <PublicHeader tvNavigation={tvNavigation}/>
             <div className="flex-grow-1">{children}</div>
             <PublicFooter />
           </VisitorPreferencesProvider>
