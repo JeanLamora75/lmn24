@@ -11,7 +11,7 @@ const fixture=Buffer.from(JSON.stringify({programmes:[{
  start:"2026-11-21T19:30:00Z",end:"2026-11-21T20:30:00Z",
  title:"Fixture",synopsis:"Fixture synopsis",imageUrl:"https://example.org/a.jpg",
 }]}));
-function setup(geographicScope:"GLOBAL"|"COUNTRY"="GLOBAL",channelActive=true,rightsReference:string|null="https://example.org/licence"){
+function setup(geographicScope:"GLOBAL"|"COUNTRY"="GLOBAL",channelActive=true,rightsReference:string|null="https://example.org/licence",missingVariant=false){
  const query=vi.fn(async(sql:string,_params?:unknown[])=>{
   void _params;
   if(sql.includes("SELECT requested_days"))return {rows:[{requested_days:7}]};
@@ -29,7 +29,11 @@ function setup(geographicScope:"GLOBAL"|"COUNTRY"="GLOBAL",channelActive=true,ri
     imageRightsStatus:"UNREVIEWED",imageRightsReference:null},
   ]};
   if(sql.includes("FROM public.tv_channel_external_id m"))
-   return {rows:channelActive?[{variantId,timezone:"Europe/Paris"}]:[]};
+   return {rows:channelActive?[{variantId:missingVariant?null:variantId,
+    timezone:"Europe/Paris",associationId:"a4000000-0000-4000-8000-000000000001",
+    channelId:"a5000000-0000-4000-8000-000000000001",channelName:"France 2"}]:[]};
+  if(sql.includes("INSERT INTO public.tv_channel_variant")&&sql.includes("RETURNING id"))
+   return {rows:[{id:variantId}]};
   if(sql.includes("FROM public.tv_schedule_current"))return {rows:[]};
   return {rows:[]};
  });
@@ -136,6 +140,45 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
   expect(loaded.days).toHaveLength(1);
   expect(loaded.days[0]?.candidates).toHaveLength(1);
   expect(query.mock.calls.some(call=>call[0].includes("INSERT INTO public.tv_programme"))).toBe(true);
+ });
+ it("imports an active discovered pending-review EPG channel without manual verification",async()=>{
+  const {lease,query}=setup("COUNTRY",true,null);
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+   transport:async()=>fixture,attest:noCoverageAttested,stagingOnly:true,
+   now:new Date("2026-11-21T12:00:00Z"),
+  });
+  const loaded=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  expect(loaded.days[0]?.candidates).toHaveLength(1);
+  const lookups=query.mock.calls.filter(call=>call[0].includes('SELECT CASE WHEN vc.variant_id'));
+  expect(lookups).toHaveLength(1);
+  expect(lookups[0]?.[0]).toContain("m.mapping_status='PENDING_REVIEW'");
+  expect(lookups[0]?.[1]?.[3]).toBe(true);
+  expect(lookups[0]?.[0]).toContain('cc.is_active=TRUE');
+  expect(lookups[0]?.[0]).not.toContain("m.mapping_status='REJECTED'");
+ });
+ it("automatically provisions a missing private EPG variant for an active discovered chain",async()=>{
+  const {lease,query}=setup("COUNTRY",true,null,true);
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+   transport:async()=>fixture,attest:noCoverageAttested,stagingOnly:true,
+   now:new Date("2026-11-21T12:00:00Z"),
+  });
+  const loaded=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  expect(loaded.days[0]?.candidates).toHaveLength(1);
+  const sql=query.mock.calls.map(call=>call[0]).join("\n");
+  expect(sql).toContain("INSERT INTO public.tv_channel_variant");
+  expect(sql).toContain("INSERT INTO public.tv_variant_country");
+  expect(sql).toContain("SET default_variant_id=$1::uuid");
+  expect(sql).not.toContain("SET mapping_status='VERIFIED'");
+ });
+ it("keeps the extra pending-review eligibility exclusive to private staging",async()=>{
+  const {lease,query}=setup("COUNTRY");
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+   transport:async()=>fixture,attest:noCoverageAttested,
+   now:new Date("2026-11-21T12:00:00Z"),
+  });
+  await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  const lookups=query.mock.calls.filter(call=>call[0].includes('SELECT CASE WHEN vc.variant_id'));
+  expect(lookups[0]?.[1]?.[3]).toBe(false);
  });
  it("assigns all national-source discovered channels to the configured country",async()=>{
   const {lease,query}=setup("COUNTRY");
