@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import {useCallback,useEffect,useMemo,useState} from "react";
-import {TV_COPY,type TvLocale} from "./tv-guide-model";
-import {DETAIL_COPY,approvedExternalUrl,dayAtOffset,durationMinutes,gapItems,
-  localDateLabel,offsetForDay,selectVariant,timeLabel,type TvChannelDetails as Channel,
+import {TV_COPY,type TvLocale,type TvScheduleItem} from "./tv-guide-model";
+import {TvCard} from "./TvGuideHome";
+import {DETAIL_COPY,approvedExternalUrl,dayAtOffset,gapItems,
+  offsetForDay,selectVariant,timeLabel,type TvChannelDetails as Channel,
   type TvChannelDay} from "./tv-detail-model";
 import styles from "./tv-detail.module.css";
 import {useTvCountryNames} from "@/lib/tv-country-name-hook";
@@ -21,11 +22,12 @@ function validDayPayload(value:unknown,channelId:string,variantId:string,localDa
 export function TvChannelDetails({locale,initial,initialVariant,initialDate}:Props){
  const copy=DETAIL_COPY[locale],common=TV_COPY[locale];
  const countryNames=useTvCountryNames(locale);
+ const nationalZone=initial.referenceTimeZone??initial.variants[0]?.timeZone??"UTC";
  const [variantId,setVariantId]=useState(()=>
   selectVariant(initial.variants,initialVariant,initial.defaultVariantId)?.id??null);
  const [dayOffset,setDayOffset]=useState(()=>{
   const selected=selectVariant(initial.variants,initialVariant,initial.defaultVariantId);
-  return selected&&initialDate?offsetForDay(new Date(),selected.timeZone,initialDate)??0:0;
+  return selected&&initialDate?offsetForDay(new Date(),initial.referenceTimeZone??selected.timeZone,initialDate)??0:0;
  });
  const [clockMode,setClockMode]=useState<"CHANNEL"|"VISITOR">("CHANNEL");
  const [day,setDay]=useState<TvChannelDay|null>(null);
@@ -42,8 +44,8 @@ export function TvChannelDetails({locale,initial,initialVariant,initialDate}:Pro
  },[]);
  const variant=useMemo(()=>initial.variants.find(v=>v.id===variantId)??null,
   [initial.variants,variantId]);
- const date=variant?dayAtOffset(new Date(),variant.timeZone,dayOffset):null;
- const displayZone=clockMode==="CHANNEL"?variant?.timeZone
+ const date=variant?dayAtOffset(new Date(),nationalZone,dayOffset):null;
+ const displayZone=clockMode==="CHANNEL"?nationalZone
   :Intl.DateTimeFormat().resolvedOptions().timeZone;
  const valid=!!day&&day.variantId===variant?.id&&day.localDate===date
   &&day.channelId===initial.channel.id;
@@ -81,10 +83,6 @@ export function TvChannelDetails({locale,initial,initialVariant,initialDate}:Pro
  },[initial.channel.id,initial.countryIso2,variant,date,page,retry]);
 
  const events=valid?gapItems(day.airings,day.gaps):[];
- const currentAiring=nowMs===null?null:events.find(event=>event.kind==="airing"
-  &&Date.parse(event.airing.startsAt)<=nowMs
-  &&nowMs<Date.parse(event.airing.endsAt)
-  &&!!variant&&date===dayAtOffset(new Date(nowMs),variant.timeZone,0));
  const dayLabel=date?new Intl.DateTimeFormat(locale,{timeZone:"UTC",weekday:"long",
   day:"numeric",month:"long",year:"numeric"}).format(new Date(date+"T12:00:00Z")):"";
  const countryName=tvCountryName(initial.countryIso2,locale,countryNames);
@@ -131,30 +129,24 @@ export function TvChannelDetails({locale,initial,initialVariant,initialDate}:Pro
    {valid&&error&&<p className="text-body-secondary">{common.stale}</p>}
    {!variant&&!loading&&<p className="alert alert-secondary">{copy.empty}</p>}
    {valid&&!loading&&events.length===0&&<p className="alert alert-secondary">{copy.empty}</p>}
-   {valid&&events.map((event)=>{
-     const isAir=event.kind==="airing";
-     const from=isAir?event.airing.startsAt:event.gap.startsAt;
-     const until=isAir?event.airing.endsAt:event.gap.endsAt;
-     const title=isAir?event.airing.title:copy.unavailable;
-     const currentZone=displayZone??"UTC";
-     const secondary=clockMode==="VISITOR"?localDateLabel(from,currentZone,locale):null;
-     const isCurrent=isAir&&currentAiring?.id===event.id;
-     const content=<>
-      <span className={styles.hour}>{timeLabel(from,currentZone,locale)}
-       {secondary&&<small>{copy.dayOffset}: {secondary}</small>}</span>
-      <span className={styles.eventBody}>
-       <strong>{title}{isCurrent&&<span className={styles.onAirBadge}>{
-        locale==="fr"?"En cours":locale==="de"?"Läuft jetzt":locale==="es"?"En emisión":locale==="pt"?"No ar":locale==="it"?"In onda":locale==="ru"?"Сейчас":locale==="nl"?"Nu bezig":"On now"
-       }</span>}</strong>
-       <small>{timeLabel(from,currentZone,locale)} – {timeLabel(until,currentZone,locale)}
-        {isAir&&<> · {durationMinutes(from,until)} min{event.airing.category?` · ${event.airing.category}`:""}</>}</small>
+   {valid&&events.map(event=>{
+     if(event.kind==="airing"){
+      const item:TvScheduleItem={
+       channel:{id:initial.channel.id,name:initial.channel.name,number:initial.channel.number,
+        logoUrl:initial.channel.logoUrl},
+       variant:variant?{id:variant.id,timeZone:variant.timeZone}:null,
+       programmeState:"AVAILABLE",airing:event.airing,
+      };
+      return <TvCard key={event.id} item={item} locale={locale} mode={clockMode}
+       countryIso2={initial.countryIso2} countryTimeZone={nationalZone} nowMs={nowMs}/>;
+     }
+     return <div key={event.id} className={`${styles.event} ${styles.gap}`}>
+      <span className={styles.hour}>{timeLabel(event.gap.startsAt,displayZone??"UTC",locale)}</span>
+      <span className={styles.eventBody}><strong>{copy.unavailable}</strong>
+       <small>{timeLabel(event.gap.startsAt,displayZone??"UTC",locale)} –
+        {timeLabel(event.gap.endsAt,displayZone??"UTC",locale)}</small>
       </span>
-      <span aria-hidden="true" className={styles.chevron}>{isAir?"›":""}</span>
-     </>;
-     return isAir?<Link key={event.id} aria-current={isCurrent?"time":undefined}
-       className={isCurrent?`${styles.event} ${styles.currentEvent}`:styles.event}
-       href={`/${locale}/tv/airings/${encodeURIComponent(event.airing.id)}`}>{content}</Link>
-      :<div key={event.id} className={`${styles.event} ${styles.gap}`}>{content}</div>;
+     </div>;
    })}
    {valid&&day.pagination.hasNext&&!loading&&<button type="button"
      className="btn btn-outline-primary" onClick={()=>{setPage(n=>n+1);setLoading(true);}}>
