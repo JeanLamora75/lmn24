@@ -11,7 +11,7 @@ const fixture=Buffer.from(JSON.stringify({programmes:[{
  start:"2026-11-21T19:30:00Z",end:"2026-11-21T20:30:00Z",
  title:"Fixture",synopsis:"Fixture synopsis",imageUrl:"https://example.org/a.jpg",
 }]}));
-function setup(geographicScope:"GLOBAL"|"COUNTRY"="GLOBAL"){
+function setup(geographicScope:"GLOBAL"|"COUNTRY"="GLOBAL",channelActive=true){
  const query=vi.fn(async(sql:string,_params?:unknown[])=>{
   void _params;
   if(sql.includes("SELECT requested_days"))return {rows:[{requested_days:7}]};
@@ -28,7 +28,8 @@ function setup(geographicScope:"GLOBAL"|"COUNTRY"="GLOBAL"){
     synopsisRightsStatus:"UNREVIEWED",synopsisRightsReference:null,
     imageRightsStatus:"UNREVIEWED",imageRightsReference:null},
   ]};
-  if(sql.includes("FROM public.tv_channel_external_id m"))return {rows:[{variantId,timezone:"Europe/Paris"}]};
+  if(sql.includes("FROM public.tv_channel_external_id m"))
+   return {rows:channelActive?[{variantId,timezone:"Europe/Paris"}]:[]};
   if(sql.includes("FROM public.tv_schedule_current"))return {rows:[]};
   return {rows:[]};
  });
@@ -96,6 +97,34 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
   expect(query.mock.calls.some(c=>c[0].includes("INSERT INTO public.tv_programme"))).toBe(true);
   expect(query.mock.calls.some(c=>c[0].includes("FROM public.tv_schedule_current"))).toBe(false);
   expect(attest).not.toHaveBeenCalled();
+ });
+ it("does not stage private programmes for an inactive channel even when its EPG mapping is verified",async()=>{
+  const {lease,query}=setup("GLOBAL",false);
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+   transport:async()=>fixture,attest:noCoverageAttested,stagingOnly:true,
+   now:new Date("2026-11-21T12:00:00Z"),
+  });
+  const loaded=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  const mappings=query.mock.calls.filter(call=>call[0].includes("FROM public.tv_channel_external_id m"));
+  expect(mappings.length).toBeGreaterThan(0);
+  expect(mappings.every(call=>call[0].includes("cc.is_active=TRUE"))).toBe(true);
+  expect(loaded.days).toEqual([]);
+  expect(loaded.scopeResults).toEqual([
+   {scopeId:"s1",outcome:"SUCCESS",message:"MAPPINGS_REQUIRED"},
+   {scopeId:"s2",outcome:"SUCCESS",message:"RIGHTS_REQUIRED"},
+  ]);
+  expect(query.mock.calls.some(call=>call[0].includes("INSERT INTO public.tv_programme"))).toBe(false);
+ });
+ it("keeps active channels with verified EPG mappings eligible for private staging",async()=>{
+  const {lease,query}=setup("GLOBAL",true);
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+   transport:async()=>fixture,attest:noCoverageAttested,stagingOnly:true,
+   now:new Date("2026-11-21T12:00:00Z"),
+  });
+  const loaded=await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  expect(loaded.days).toHaveLength(1);
+  expect(loaded.days[0]?.candidates).toHaveLength(1);
+  expect(query.mock.calls.some(call=>call[0].includes("INSERT INTO public.tv_programme"))).toBe(true);
  });
  it("assigns all national-source discovered channels to the configured country",async()=>{
   const {lease,query}=setup("COUNTRY");
