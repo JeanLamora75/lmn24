@@ -53,7 +53,7 @@ function TvChannelLogo({item,locale,countryIso2,date}:{
     {logo
       // eslint-disable-next-line @next/next/no-img-element
       ?<img src={logo} alt={item.channel.name} loading="lazy"/>
-      :<span className={styles.logoTileFallback}>{item.channel.name}</span>}
+      :<span className={styles.logoTileFallback} aria-hidden="true">TV</span>}
    </span>
  </Link>;
 }
