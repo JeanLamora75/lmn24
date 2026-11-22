@@ -36,11 +36,23 @@ export function assertTvDay(localDate:string,timezone:string,now:Date):string {
     throw new RangeError("TV_DATE_OUTSIDE_J0_J6");
   return localDate;
 }
-export function localClock(epochMs:number,timezone:string):{day:string;hour:number;minute:number;second:number}{
-  const parts=new Intl.DateTimeFormat("en-GB",{
+// Reuse immutable Intl formatters rather than rebuilding one for each airing
+// or every minute of a local broadcast window.
+const clockFormatters=new Map<string,Intl.DateTimeFormat>();
+function clockFormatter(timezone:string):Intl.DateTimeFormat {
+  const existing=clockFormatters.get(timezone);
+  if(existing)return existing;
+  const formatter=new Intl.DateTimeFormat("en-GB",{
     timeZone:timezone,year:"numeric",month:"2-digit",day:"2-digit",
     hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23",
-  }).formatToParts(new Date(epochMs));
+  });
+  // Bound the per-process cache when exploring many country time zones.
+  if(clockFormatters.size>=64)clockFormatters.delete(clockFormatters.keys().next().value!);
+  clockFormatters.set(timezone,formatter);
+  return formatter;
+}
+export function localClock(epochMs:number,timezone:string):{day:string;hour:number;minute:number;second:number}{
+  const parts=clockFormatter(timezone).formatToParts(new Date(epochMs));
   const get=(name:string)=>parts.find(part=>part.type===name)?.value??"0";
   return {day:`${get("year")}-${get("month")}-${get("day")}`,
     hour:Number(get("hour")),minute:Number(get("minute")),second:Number(get("second"))};
@@ -60,23 +72,35 @@ export function isWithinStartWindow(
     &&clock<=((23*60+30)*60)*1000;
   return true;
 }
+// A programme window is the same for every channel of a given country/day.
+// Cache it instead of scanning ~1,440 minute instants 27 times per request.
+const broadcastWindowCache=new Map<string,TvWindow>();
 export function tvWindow(
   tab:TvPublicTab,localDate:string,zone:string,now:Date,
 ):TvWindow {
-  const bounds=localDayBounds(localDate,zone);
   if(tab==="NOW")return {tab,startMs:now.getTime(),endMs:now.getTime()+1};
+  const cacheKey=zone+"|"+localDate+"|"+tab;
+  const cached=broadcastWindowCache.get(cacheKey);
+  if(cached)return cached;
+  const bounds=localDayBounds(localDate,zone);
   if(tab==="CHANNELS")return {tab,startMs:bounds.startMs,endMs:bounds.endMs};
   // During DST, a local clock window may have >1 UTC interval. Coverage
   // checks must not infer completeness from this envelope alone.
   const begin=tab==="TONIGHT"?20*60+30:22*60+30;
   const finish=tab==="TONIGHT"?21*60+30:23*60+30;
-  const first:number[]=[];
+  let first:number|undefined,last:number|undefined;
   for(let epoch=bounds.startMs;epoch<bounds.endMs;epoch+=60_000){
     const clock=localClock(epoch,zone),min=clock.hour*60+clock.minute;
-    if(clock.day===localDate && min>=begin && min<=finish)first.push(epoch);
+    if(clock.day===localDate && min>=begin && min<=finish){
+      first??=epoch;
+      last=epoch;
+    }
   }
-  if(!first.length)throw new RangeError("Local programme window does not exist");
-  return {tab,startMs:first[0]!,endMs:first[first.length-1]!+60_000};
+  if(first===undefined||last===undefined)throw new RangeError("Local programme window does not exist");
+  const window={tab,startMs:first,endMs:last+60_000};
+  if(broadcastWindowCache.size>=128)broadcastWindowCache.delete(broadcastWindowCache.keys().next().value!);
+  broadcastWindowCache.set(cacheKey,window);
+  return window;
 }
 export function coversWindow(
   evidence:readonly CoverageEvidence[],variantId:string,
