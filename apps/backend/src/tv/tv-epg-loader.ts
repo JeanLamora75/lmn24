@@ -288,9 +288,10 @@ export function createVerifiedDbEpgLoader(
               ON vc.variant_id=v.id AND vc.channel_country_id=cc.id
             WHERE m.source_id=$1::uuid AND m.external_id=$2
               AND m.channel_id IS NOT NULL
-              AND m.mapping_status=${options.stagingOnly?"ANY(ARRAY['PENDING_REVIEW','VERIFIED'])":"'VERIFIED'"}
+              AND (m.mapping_status='VERIFIED'
+                   OR ($4::boolean AND m.mapping_status='PENDING_REVIEW'))
               AND cc.is_active=TRUE
-            LIMIT 1`,[row.sourceId,p.externalChannelId,countryId]);
+            LIMIT 1`,[row.sourceId,p.externalChannelId,countryId,options.stagingOnly===true]);
           const match=matches.rows[0];
           if(match&&!match.variantId&&options.stagingOnly&&match.associationId&&match.channelId){
             // An automatically discovered national channel may have no usable
