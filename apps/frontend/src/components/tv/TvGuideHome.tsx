@@ -60,7 +60,7 @@ function TvChannelLogo({item,locale,countryIso2,date}:{
  </Link>;
 }
 
-function TvCard({item,locale,mode,countryIso2,countryTimeZone,nowMs,preview=false}:{
+export function TvCard({item,locale,mode,countryIso2,countryTimeZone,nowMs,preview=false}:{
  item:TvScheduleItem;locale:TvLocale;mode:ClockMode;
  countryIso2:string;countryTimeZone:string;nowMs:number|null;preview?:boolean;
 }){
