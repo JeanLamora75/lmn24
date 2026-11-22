@@ -271,6 +271,7 @@ export function createVerifiedDbEpgLoader(
       }
       let mapped=0;
       const mappedChannels=new Map<string,Mapping|null>();
+      const eligible:Array<{p:typeof decoded.programmes[number];mapping:Mapping&{variantId:string};today:string;start:number;end:number}>=[];
       for(const p of decoded.programmes){
         if(signal.aborted)throw new TvImportLeaseLostError();
         if(!mappedChannels.has(p.externalChannelId)){
@@ -334,6 +335,13 @@ export function createVerifiedDbEpgLoader(
         const first=localDayBounds(today,mapping.timezone).startMs;
         const last=localDayBounds(addCalendarDays(today,days-1),mapping.timezone).endMs;
         if(start>=last||end<=first)continue;
+        eligible.push({p,mapping: mapping as Mapping&{variantId:string},today,start,end});
+      }
+      // Probe multiple HTTP image URLs concurrently before the sequential DB
+      // transactions. Thousands of serialized network requests would block imports.
+      const images=await Promise.all(eligible.map(({p})=>
+        row.imageRightsStatus==="APPROVED"?resolveArtwork(p.imageUrl):Promise.resolve(null)));
+      for(const [i,{p,mapping,today,start,end}] of eligible.entries()){
         mapped++;
         // Persist catalogue data only under current fenced lease; source rights
         // independently determine which synopsis/image fields may be reused.
@@ -363,7 +371,7 @@ export function createVerifiedDbEpgLoader(
              row.synopsisRightsStatus==="APPROVED"?p.originalSynopsis:null,
              p.category,
              row.imageRightsStatus==="APPROVED"
-                ?await resolveArtwork(p.imageUrl):null]);
+                ?images[i]??null:null]);
           await db.query("COMMIT");
         }catch(err){await db.query("ROLLBACK").catch(()=>undefined);throw err;}
         for(let n=0;n<days;n++){
