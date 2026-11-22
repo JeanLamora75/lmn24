@@ -22,7 +22,7 @@ describe("Guide TV integrates into existing parser administration",()=>{
   expect(panel).toContain("/api/admin/tv/import-runs?page=1&pageSize=100");
   expect(panel).toContain('"/events"');
   expect(panel).toContain("AUTOMATIC");
-  expect(panel).toContain("Historique plus ancien non inclus".toLowerCase().slice(0,1)? "historique plus ancien non inclus":"");
+  expect(panel).toContain("historique plus ancien non inclus");
   expect(panel).toContain('href="/admin/tv/imports"');
  });
 });
