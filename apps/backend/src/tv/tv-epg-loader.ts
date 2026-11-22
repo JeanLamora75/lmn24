@@ -27,7 +27,7 @@ type Scope={scopeId:string;sourceId:string;sourceUrl:string;format:EpgFormat;pri
  programmeRightsStatus:string;programmeRightsReference:string|null;
  synopsisRightsStatus:string;synopsisRightsReference:string|null;
  imageRightsStatus:string;imageRightsReference:string|null;};
-type Mapping={variantId:string;timezone:string};
+type Mapping={variantId:string|null;timezone:string;associationId?:string;channelId?:string;channelName?:string};
 function deterministicUuid(scope:string,externalId:string):string{
  const hex=createHash("sha256").update(scope+"|"+externalId).digest("hex");
  return [hex.slice(0,8),hex.slice(8,12),"5"+hex.slice(13,16),
@@ -273,20 +273,54 @@ export function createVerifiedDbEpgLoader(
         if(signal.aborted)throw new TvImportLeaseLostError();
         if(!mappedChannels.has(p.externalChannelId)){
           const matches=await db.query<Mapping>(`
-            SELECT COALESCE(m.variant_id,cc.default_variant_id) AS "variantId",
-                   v.timezone
+            SELECT CASE WHEN vc.variant_id IS NOT NULL THEN v.id ELSE NULL END AS "variantId",
+                   COALESCE(v.timezone,tc.reference_timezone) AS timezone,
+                   cc.id AS "associationId",cc.channel_id AS "channelId",c.name AS "channelName"
             FROM public.tv_channel_external_id m
             JOIN public.tv_channel_country cc ON cc.channel_id=m.channel_id
               AND cc.country_id=$3::uuid
-            JOIN public.tv_channel_variant v
+            JOIN public.tv_country tc ON tc.country_id=cc.country_id
+            JOIN public.tv_channel c ON c.id=cc.channel_id
+            LEFT JOIN public.tv_channel_variant v
               ON v.id=COALESCE(m.variant_id,cc.default_variant_id)
-            JOIN public.tv_variant_country vc
+              AND v.channel_id=cc.channel_id
+            LEFT JOIN public.tv_variant_country vc
               ON vc.variant_id=v.id AND vc.channel_country_id=cc.id
             WHERE m.source_id=$1::uuid AND m.external_id=$2
-              AND m.mapping_status='VERIFIED'
+              AND m.channel_id IS NOT NULL
+              AND m.mapping_status=${options.stagingOnly?"ANY(ARRAY['PENDING_REVIEW','VERIFIED'])":"'VERIFIED'"}
               AND cc.is_active=TRUE
             LIMIT 1`,[row.sourceId,p.externalChannelId,countryId]);
-          mappedChannels.set(p.externalChannelId,matches.rows[0]??null);
+          const match=matches.rows[0];
+          if(match&&!match.variantId&&options.stagingOnly&&match.associationId&&match.channelId){
+            // An automatically discovered national channel may have no usable
+            // variant. Provision the private staging variant without verifying
+            // its EPG association or modifying its public review state.
+            await db.query("BEGIN");
+            try{
+              await db.query("SELECT public.assert_parser_write_epoch($1::uuid)",[lease.ownerToken]);
+              const created=await db.query<{id:string}>(`
+                INSERT INTO public.tv_channel_variant(channel_id,code,name,timezone)
+                VALUES($1::uuid,'epg-main',$2,$3)
+                ON CONFLICT(channel_id,code) DO UPDATE SET code=EXCLUDED.code
+                RETURNING id`,[match.channelId,match.channelName??p.externalChannelId,match.timezone]);
+              const variantId=created.rows[0]?.id;
+              if(!variantId)throw new Error("TV_VARIANT_CREATION_FAILED");
+              await db.query(`
+                INSERT INTO public.tv_variant_country(variant_id,channel_country_id,channel_id)
+                VALUES($1::uuid,$2::uuid,$3::uuid)
+                ON CONFLICT(variant_id,channel_country_id) DO NOTHING`,
+                [variantId,match.associationId,match.channelId]);
+              await db.query(`
+                UPDATE public.tv_channel_country
+                SET default_variant_id=$1::uuid
+                WHERE id=$2::uuid AND default_variant_id IS NULL`,
+                [variantId,match.associationId]);
+              await db.query("COMMIT");
+              match.variantId=variantId;
+            }catch(error){await db.query("ROLLBACK").catch(()=>undefined);throw error;}
+          }
+          mappedChannels.set(p.externalChannelId,match??null);
         }
         const mapping=mappedChannels.get(p.externalChannelId);
         if(!mapping?.variantId)continue; // never guess by similar names
