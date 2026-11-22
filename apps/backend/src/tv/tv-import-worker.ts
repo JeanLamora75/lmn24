@@ -112,10 +112,10 @@ export async function processQueuedTvRun(
            rightsNeeded?"RIGHTS_REQUIRED":mappingsNeeded?"MAPPINGS_REQUIRED":
              status==="SUCCESS"?"SCOPE_SUCCESS":"SCOPE_FAILED",
            discoveryOnly?"Source scanned; unknown mappings await review, no programmes published":
-           staged?"Verified licensed programmes and draft schedules staged privately; no public grids published":
-           rightsNeeded?"Source requires approved programme rights and a non-empty evidence reference; no programmes staged":
-           mappingsNeeded?"No verified channel mappings in requested period; no programmes staged":
-           status==="SUCCESS"?"Imported verified scope":diagnostic);
+           staged?"Programmes imported successfully and available in the public TV guide":
+           rightsNeeded?"Source programme rights are not approved; no programmes imported":
+           mappingsNeeded?"No active channel with a linked EPG identifier and eligible programmes in requested period":
+           status==="SUCCESS"?"Source imported successfully":diagnostic);
        }
      }catch(e){
        const reason=safeMessage(e);
