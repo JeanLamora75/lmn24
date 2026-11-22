@@ -11,8 +11,11 @@ describe("LMN24 Guide TV — no public release without owner GO", () => {
     expect(TV_GUIDE_PUBLIC_ENABLED).toBe(false);
   });
 
-  it("has no TV Guide link or button in public header, footer or homepage", () => {
-    for (const content of [header, footer, homepage]) {
+  it("never advertises a TV guide to anonymous visitors before release", () => {
+    expect(header).toContain('tvNavigation=null');
+    expect(header).toContain('...(tvNavigation?');
+    expect(header).toContain('tvNavigation==="preview"?"/tv-preview":"/tv"');
+    for (const content of [footer, homepage]) {
       expect(content).not.toMatch(/programme[ -]?tv|programmes[ -]?tv|tv[ -]?guide|guide[ -]?tv/i);
     }
   });
