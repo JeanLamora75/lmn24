@@ -124,6 +124,7 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
   let depth=0,rootSeen=false,programme:({
     channel:string;externalId:string;start:string;end:string;
     title:string;synopsis:string;category:string;image:string;
+    imageIsHttps:boolean;
   })|null=null;
   let capture:"title"|"desc"|"category"|null=null;
   let captured="";
@@ -160,12 +161,20 @@ export async function decodeEpgBuffer(data:Buffer,format:EpgFormat):Promise<EpgD
       const channel=a.channel?.trim()??"";
       const start=a.start?.trim()??"";
       programme={channel,externalId:a.id?.trim()||channel+"|"+start,
-        start,end:a.stop?.trim()??"",title:"",synopsis:"",category:"",image:""};
+        start,end:a.stop?.trim()??"",title:"",synopsis:"",category:"",image:"",
+        imageIsHttps:false};
       return;
     }
     if(programme && depth===3){
-      if(node.name==="icon"&&!programme.image)
-        programme.image=node.attributes.src?.slice(0,2048)??"";
+      if(node.name==="icon"){
+        const url=xmltvHttpUrl(node.attributes.src??"",true);
+        // Prefer an explicit HTTPS illustration; otherwise keep the first
+        // HTTP image to probe for HTTPS support during import.
+        if(url&&(!programme.image||(!programme.imageIsHttps&&url.startsWith("https://")))){
+          programme.image=url;
+          programme.imageIsHttps=url.startsWith("https://");
+        }
+      }
       if((node.name==="title"||node.name==="desc"||node.name==="category")
          && !capture){
         capture=node.name;
