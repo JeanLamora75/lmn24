@@ -284,6 +284,7 @@ export function createVerifiedDbEpgLoader(
               ON vc.variant_id=v.id AND vc.channel_country_id=cc.id
             WHERE m.source_id=$1::uuid AND m.external_id=$2
               AND m.mapping_status='VERIFIED'
+              AND cc.is_active=TRUE
             LIMIT 1`,[row.sourceId,p.externalChannelId,countryId]);
           mappedChannels.set(p.externalChannelId,matches.rows[0]??null);
         }
