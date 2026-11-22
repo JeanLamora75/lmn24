@@ -105,7 +105,7 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
   expect(insert?.[1]?.[4]).toBe("https://example.org/a.jpg");
   expect(insert?.[0]).toContain("ON CONFLICT(id) DO UPDATE");
   expect(insert?.[0]).toContain("NULLIF(public.tv_programme.image_url,'') IS NULL");
-  expect(insert?.[0]).toContain("EXCLUDED.image_url IS NOT NULL");
+  expect(insert?.[0]).toContain("NULLIF(EXCLUDED.image_url,'') IS NOT NULL");
   expect(insert?.[0]).toContain("image_url=CASE");
  });
  it("accepts APPROVED synopsis without a rights reference and backfills only missing synopsis",async()=>{
