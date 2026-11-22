@@ -144,7 +144,7 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
   const insert=query.mock.calls.find(call=>call[0].includes("INSERT INTO public.tv_programme"));
   expect(insert?.[1]?.[4]).toBeNull();
  });
- it("does not store non-HTTPS programme image URLs even if approved",async()=>{
+ it("keeps the HTTP programme illustration if the HTTPS probe fails",async()=>{
   const {lease,query}=setup("GLOBAL",true,null,false,"APPROVED",null);
   const unsafe=Buffer.from(JSON.stringify({programmes:[{
    channel:"sample.channel",id:"fixture-1",
@@ -153,11 +153,29 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
   }]}));
   const loader=createVerifiedDbEpgLoader(lease,"run",{
    transport:async()=>unsafe,attest:noCoverageAttested,stagingOnly:true,
+   imageProbe:async()=>false,
    now:new Date("2026-11-21T12:00:00Z"),
   });
   await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
   const insert=query.mock.calls.find(call=>call[0].includes("INSERT INTO public.tv_programme"));
-  expect(insert?.[1]?.[4]).toBeNull();
+  expect(insert?.[1]?.[4]).toBe("http://example.org/insecure.jpg");
+ });
+ it("upgrades a HTTP illustration only when its HTTPS endpoint responds successfully",async()=>{
+  const {lease,query}=setup("GLOBAL",true,null,false,"APPROVED",null);
+  const payload=Buffer.from(JSON.stringify({programmes:[{
+   channel:"sample.channel",id:"fixture-1",
+   start:"2026-11-21T19:30:00Z",end:"2026-11-21T20:30:00Z",
+   title:"Fixture",imageUrl:"http://example.org/image.jpg",
+  }]}));
+  const imageProbe=vi.fn(async(url:string)=>url==="https://example.org/image.jpg");
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+   transport:async()=>payload,attest:noCoverageAttested,stagingOnly:true,imageProbe,
+   now:new Date("2026-11-21T12:00:00Z"),
+  });
+  await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  const insert=query.mock.calls.find(call=>call[0].includes("INSERT INTO public.tv_programme"));
+  expect(imageProbe).toHaveBeenCalledWith("https://example.org/image.jpg");
+  expect(insert?.[1]?.[4]).toBe("https://example.org/image.jpg");
  });
  it("stages licensed, verified programmes privately and never creates schedule days",async()=>{
   const {lease,transport,query}=setup();
