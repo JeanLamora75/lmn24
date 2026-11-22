@@ -485,11 +485,6 @@ function ChannelQuickControls({item,onSaved}:{item:Channel;onSaved:()=>void}){
  const [error,setError]=useState("");
  const [active,setActive]=useState(item.isActive);
  const [currentNumber,setCurrentNumber]=useState(item.effectiveNumber);
- useEffect(()=>{
-  setActive(item.isActive);
-  setCurrentNumber(item.effectiveNumber);
-  if(!editing)setNumber(item.effectiveNumber===null?"":String(item.effectiveNumber));
- },[item.isActive,item.effectiveNumber,item.version,editing]);
  async function update(nextActive:boolean,nextManual:number|null){
   if(pending)return false;
   const effective=nextManual??item.officialNumber??item.assignedNumber;
@@ -942,21 +937,19 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [country,setCountry]=useAdminSessionFilter("tv-"+view,"country","");
  const [status,setStatus]=useAdminSessionFilter("tv-"+view,"status","all");
  const [page,setPage]=useAdminSessionFilter("tv-"+view,"page",1);
- const [channelPageSize,setChannelPageSize]=useState<number>(DEFAULT_PAGE_SIZE);
- const [channelPageSizeRestored,setChannelPageSizeRestored]=useState(false);
- useEffect(()=>{
+ const [channelPageSize,setChannelPageSize]=useState<number>(()=>{
+  if(typeof window==="undefined")return DEFAULT_PAGE_SIZE;
   try{
    const raw=window.localStorage.getItem(CHANNEL_PAGE_SIZE_STORAGE_KEY);
    const stored=raw===null?null:Number(raw);
-   if(stored!==null&&CHANNEL_PAGE_SIZES.some(size=>size===stored))setChannelPageSize(stored);
-  }catch{/* Private browsing or disabled storage: keep default. */}
-  setChannelPageSizeRestored(true);
- },[]);
+   return stored!==null&&CHANNEL_PAGE_SIZES.some(size=>size===stored)
+    ?stored:DEFAULT_PAGE_SIZE;
+  }catch{return DEFAULT_PAGE_SIZE;}
+ });
  useEffect(()=>{
-  if(!channelPageSizeRestored)return;
   try{window.localStorage.setItem(CHANNEL_PAGE_SIZE_STORAGE_KEY,String(channelPageSize));}
   catch{/* Storage is optional. */}
- },[channelPageSize,channelPageSizeRestored]);
+ },[channelPageSize]);
  const [sort,setSort]=useState<TvSortState>(null);
  const [expandedChannelGroups,setExpandedChannelGroups]=useState<string[]>([]);
  const toggleSort=(key:string)=>{setSort(current=>nextTvSort(current,key));setPage(1);};
@@ -1230,7 +1223,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
            style={{width:32,height:22,objectFit:"contain",flexShrink:0}}/>}
           <span>{region(countryCodes.get(entry.countryId)??"",locale,countryNames)}</span>
          </div></td>
-         <ChannelQuickControls key={entry.id} item={entry} onSaved={()=>setReload(v=>v+1)}/>
+         <ChannelQuickControls key={entry.id+":"+entry.version} item={entry} onSaved={()=>setReload(v=>v+1)}/>
          <td><AdminIconButton name="pencil-square" label={"Modifier "+entry.name}
           onClick={()=>router.push("/admin/tv/channels/"+encodeURIComponent(entry.id)+"/edit")}/></td>
         </tr>;
