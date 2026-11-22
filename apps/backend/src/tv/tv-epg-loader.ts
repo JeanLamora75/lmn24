@@ -343,16 +343,23 @@ export function createVerifiedDbEpgLoader(
           await db.query(`
             INSERT INTO public.tv_programme(id,title,synopsis,category,image_url)
             VALUES($1::uuid,$2,$3,$4,$5)
-            ON CONFLICT(id) DO UPDATE
-            SET image_url=EXCLUDED.image_url
-            WHERE (public.tv_programme.image_url IS NULL OR public.tv_programme.image_url='')
-              AND EXCLUDED.image_url IS NOT NULL`,
+            ON CONFLICT(id) DO UPDATE SET
+              synopsis=CASE
+                WHEN NULLIF(public.tv_programme.synopsis,'') IS NULL
+                THEN COALESCE(NULLIF(EXCLUDED.synopsis,''),public.tv_programme.synopsis)
+                ELSE public.tv_programme.synopsis END,
+              image_url=CASE
+                WHEN NULLIF(public.tv_programme.image_url,'') IS NULL
+                THEN COALESCE(NULLIF(EXCLUDED.image_url,''),public.tv_programme.image_url)
+                ELSE public.tv_programme.image_url END
+            WHERE (NULLIF(public.tv_programme.synopsis,'') IS NULL
+                    AND NULLIF(EXCLUDED.synopsis,'') IS NOT NULL)
+               OR (NULLIF(public.tv_programme.image_url,'') IS NULL
+                    AND NULLIF(EXCLUDED.image_url,'') IS NOT NULL)`,
             [id,p.originalTitle,
-             row.synopsisRightsStatus==="APPROVED"&&row.synopsisRightsReference?.trim()
-                ?p.originalSynopsis:null,
+             // APPROVED is sufficient for the import. Never overwrite manual content.
+             row.synopsisRightsStatus==="APPROVED"?p.originalSynopsis:null,
              p.category,
-             // Image approval alone authorizes storing the feed's HTTPS illustration.
-             // A separate evidence reference is not mandatory.
              row.imageRightsStatus==="APPROVED"&&p.imageUrl?.startsWith("https://")
                 ?p.imageUrl:null]);
           await db.query("COMMIT");
