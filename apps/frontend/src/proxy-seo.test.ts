@@ -35,6 +35,13 @@ describe("SCRUM-113 public TV proxy coverage", () => {
     expect(publicLocaleMatcher).toContain("/api/public/tv/:path*");
     expect(publicLocaleMatcher).toContain("/api/tv/public/:path*");
   });
+  it("lets public TV API requests bypass next-intl redirects after the access check",()=>{
+    expect(source).toContain('if (request.nextUrl.pathname.startsWith("/api/"))');
+    expect(source.indexOf('if (shouldBlockPublicTv(')).toBeLessThan(
+      source.indexOf('if (request.nextUrl.pathname.startsWith("/api/"))'));
+    expect(source.indexOf('return NextResponse.next();')).toBeLessThan(
+      source.indexOf('return localeMiddleware(request);'));
+  });
   it("matches localized TV pages at every supported language while leaving admin untouched", () => {
     for (const locale of ["fr", "en", "de", "es", "pt", "it", "ru", "nl"]) {
       expect(matches("/" + locale + "/tv")).toBe(true);
