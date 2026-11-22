@@ -57,7 +57,7 @@ export class TvPublicService {
   private async channelRows(country:CountryRow):Promise<ChannelRow[]>{
     const rows=await this.db.prisma.$queryRaw<ChannelRow[]>`
       SELECT cc.id,cc.channel_id AS "channelId",ch.name,
-        COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)::int AS number,
+        COALESCE(cc.manual_number,cc.official_number,cc.assigned_number,0)::int AS number,
         ch.logo_url AS "logoUrl",
         cc.country_id AS "countryId",trim(c.iso_code2) AS "countryIso2",
         tc.reference_timezone AS "referenceTimeZone",
@@ -87,7 +87,7 @@ export class TvPublicService {
     variantIds:readonly string[],countryId:string,from:number,to:number,
   ):Promise<TvAiring[]>{
     if(!variantIds.length)return [];
-    // The current pointer is the ONLY authoritative published grid. Query
+    // Latest STAGING/PUBLISHED revision is the public grid after the owner GO. Query
     // neighboring dates too, because a real airing can cross local midnight.
     const rows=await this.db.prisma.$queryRaw<AiringRow[]>`
       SELECT DISTINCT ON (a.id) a.id,a.source_id AS "sourceId",
@@ -210,7 +210,7 @@ export class TvPublicService {
       SELECT a.id,r.variant_id AS "variantId",a.source_id AS "sourceId",
         a.starts_at AS "startsAt",a.ends_at AS "endsAt",p.title,p.category,
         cc.channel_id AS "channelId",ch.name AS "channelName",
-        COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)::int AS "channelNumber",
+        COALESCE(cc.manual_number,cc.official_number,cc.assigned_number,0)::int AS "channelNumber",
         trim(c.iso_code2) AS "countryIso2",
         tc.reference_timezone AS "referenceTimeZone",
         v.timezone AS "variantTimeZone",
@@ -231,7 +231,11 @@ export class TvPublicService {
       JOIN public.tv_channel ch ON ch.id=cc.channel_id
       JOIN public.tv_country tc ON tc.country_id=cc.country_id
       JOIN public.country c ON c.id=tc.country_id
-      WHERE a.id=${id}::uuid AND r.status='PUBLISHED' AND r.published_at IS NOT NULL
+      WHERE a.id=${id}::uuid AND r.status IN ('STAGING','PUBLISHED')
+        AND NOT EXISTS (SELECT 1 FROM public.tv_schedule_revision newer
+          WHERE newer.variant_id=r.variant_id AND newer.local_date=r.local_date
+            AND newer.status IN ('STAGING','PUBLISHED')
+            AND (newer.created_at,newer.id)>(r.created_at,r.id))
         AND src.is_active AND tc.is_active AND c.is_active
         AND cc.is_active AND src.programme_rights_status='APPROVED'
       ORDER BY c.iso_code2,cc.channel_id LIMIT 1`;
@@ -264,7 +268,7 @@ export class TvPublicService {
         id:string;countryIso2:string;number:number;name:string;logoUrl:string|null;
       }>>`
         SELECT cc.channel_id AS id,trim(c.iso_code2) AS "countryIso2",
-          COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)::int AS number,
+          COALESCE(cc.manual_number,cc.official_number,cc.assigned_number,0)::int AS number,
           ch.name,ch.logo_url AS "logoUrl"
         FROM public.tv_channel_country cc
         JOIN public.tv_channel ch ON ch.id=cc.channel_id
@@ -289,11 +293,11 @@ export class TvPublicService {
       }>>`
         SELECT DISTINCT a.id,r.variant_id AS "variantId",trim(c.iso_code2) AS "countryIso2",
           cc.channel_id AS "channelId",ch.name AS "channelName",
-          COALESCE(cc.manual_number,cc.official_number,cc.assigned_number)::int AS number,
+          COALESCE(cc.manual_number,cc.official_number,cc.assigned_number,0)::int AS number,
           p.title,a.starts_at AS "startsAt",a.ends_at AS "endsAt",v.timezone AS "timeZone"
         FROM public.tv_airing a
         JOIN public.tv_schedule_revision r ON r.id=a.revision_id
-        JOIN public.tv_schedule_current cur ON cur.revision_id=r.id
+        -- Automatically visible STAGING schedule; no manual current pointer required.
         JOIN public.tv_channel_variant v ON v.id=r.variant_id
         JOIN public.tv_programme p ON p.id=a.programme_id
         JOIN public.tv_source src ON src.id=a.source_id
