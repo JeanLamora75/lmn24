@@ -74,6 +74,36 @@ function importDiagnostic(value:string):string{
  const explanation=failureMessages[value];
  return explanation?explanation+" [Code : "+value+"]":value;
 }
+const tvEventLabels:Record<string,{fr:string;en:string}>={
+ QUEUED:{fr:"Import mis en attente",en:"Import queued"},
+ RUN_MODE_STAGING:{fr:"Mode catalogue privé",en:"Private catalogue mode"},
+ RUN_FINISHED:{fr:"Import terminé",en:"Import completed"},
+ RIGHTS_REQUIRED:{fr:"Droits programmes manquants",en:"Programme rights missing"},
+ MAPPINGS_REQUIRED:{fr:"Correspondance EPG vérifiée manquante ou chaîne inactive",en:"Verified EPG mapping missing or channel inactive"},
+ PROGRAMMES_STAGED:{fr:"Programmes enregistrés dans le catalogue privé",en:"Programmes staged privately"},
+ DISCOVERY_ONLY:{fr:"Découverte des chaînes uniquement",en:"Channel discovery only"},
+ SCOPE_SCANNED:{fr:"Source analysée",en:"Source scanned"},
+ SCOPE_FAILED:{fr:"Échec de la source",en:"Source failed"},
+ RUN_STARTED:{fr:"Import démarré",en:"Import started"},
+};
+const tvEventMessages:Record<string,{fr:string;en:string}>={
+ RIGHTS_REQUIRED:{fr:"Source sans droits programmes approuvés et référence justificative : aucun programme enregistré.",en:"Source lacks approved programme rights and a supporting reference: no programmes staged."},
+ MAPPINGS_REQUIRED:{fr:"Aucune émission éligible : vérifiez les correspondances EPG et l'activation des chaînes.",en:"No eligible programmes: check verified EPG mappings and active channels."},
+ PROGRAMMES_STAGED:{fr:"Programmes préparés dans le catalogue privé, sans publication publique.",en:"Programmes staged privately, without public publication."},
+ "Private programme staging; no public schedule":{fr:"Préparation des programmes dans le catalogue privé ; aucune grille publique modifiée.",en:"Private programme staging; no public schedule."},
+ "EPG import queued for isolated processing":{fr:"Import EPG ajouté à la file de traitement.",en:"EPG import queued for isolated processing."},
+ "Source requires approved programme rights and a non-empty evidence reference; no programmes staged":{fr:"Droits programmes non approuvés ou justificatif absent : aucun programme enregistré.",en:"Approved programme rights and a supporting reference are required; no programmes staged."},
+ "Source scanned; unknown mappings await review, no programmes published":{fr:"Source analysée ; correspondances inconnues à vérifier ; aucun programme publié.",en:"Source scanned; unknown mappings await review, no programmes published."},
+};
+function tvEventText(event:ImportEvent,locale:string):string{
+ const language=locale.toLowerCase().startsWith("fr")?"fr":"en";
+ const label=tvEventLabels[event.eventType]?.[language]??event.eventType;
+ const status=event.message.match(/^TV import completed with status ([A-Z_]+)$/);
+ const message=status
+  ?language==="fr"?"Traitement terminé (statut technique : "+status[1]+").":"Import completed (technical status: "+status[1]+")."
+  :tvEventMessages[event.message]?.[language]??event.message;
+ return label+" : "+message;
+}
 const LABELS:Record<TvView,string>={
  overview:"Vue d'ensemble",countries:"Pays",channels:"Chaînes",associations:"Associations EPG",
  sources:"Sources EPG",imports:"Imports",translations:"Traductions",statistics:"Statistiques",
@@ -1258,7 +1288,8 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    <div className="p-3">
     <h2 className="h5">Import {selectedRun}</h2>
     {detail?<><p>Statut : {detail.status}</p>
-     {detail.privateDrafts&&detail.privateDrafts.draftDays>0&&
+     {detail.privateDrafts&&<p className={detail.privateDrafts.draftProgrammes>0?"alert alert-info":"alert alert-warning"}>Catalogue privé : {detail.privateDrafts.draftProgrammes.toLocaleString(locale)} programmes et {detail.privateDrafts.draftAirings.toLocaleString(locale)} diffusions enregistrés dans cet import. {detail.privateDrafts.draftProgrammes===0?"Aucun programme n’a été enregistré malgré la fin du traitement.": "Aucune grille publique modifiée."}</p>}
+     {false&&detail.privateDrafts&&detail.privateDrafts.draftDays>0&&
       <p className="alert alert-info">
        Catalogue privé : {detail.privateDrafts.draftProgrammes.toLocaleString("fr-FR")} programmes,
        {" "}{detail.privateDrafts.draftAirings.toLocaleString("fr-FR")} diffusions,
@@ -1274,7 +1305,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
         setReload(v=>v+1);}catch(e){setError((e as Error).message);}
       }}>Relancer uniquement les échecs</button>}
      <h3 className="h6 mt-3">Journal d’événements</h3>
-     <ul>{events.map(e=>{const scope=detail.scopes.find(s=>s.id===e.scopeId);return <li key={e.id}>{new Date(e.occurredAt).toLocaleString("fr-FR")} · {e.level} · {e.eventType}{scope?" · "+region(countryCodes.get(scope.countryId)??"",locale,countryNames)+" / "+(scope.sourceName??sources.find(s=>s.id===scope.sourceId)?.name??"Source inconnue"):""} : {importDiagnostic(e.message)}</li>;})}</ul>
+     <ul>{events.map(e=>{const scope=detail.scopes.find(s=>s.id===e.scopeId);return <li key={e.id}>{new Date(e.occurredAt).toLocaleString("fr-FR")} · {e.level==="INFO"?"Info":e.level==="WARN"?"Avertissement":e.level} · {scope?" · "+region(countryCodes.get(scope.countryId)??"",locale,countryNames)+" / "+(scope.sourceName??sources.find(s=>s.id===scope.sourceId)?.name??"Source inconnue"):""} · {tvEventText(e,locale)}{e.message.startsWith("EPG_")?" — "+importDiagnostic(e.message):""}</li>;})}</ul>
     </>:<p>Chargement…</p>}
    </div>
   </AdminDataPanel>}
