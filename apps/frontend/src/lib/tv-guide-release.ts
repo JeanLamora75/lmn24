@@ -13,4 +13,4 @@
  *
  * See docs/BMAD/guide-tv-mondial-mary-cadrage-fonctionnel.md.
  */
-export const TV_GUIDE_PUBLIC_ENABLED = false as boolean;
+export const TV_GUIDE_PUBLIC_ENABLED = true as boolean;
