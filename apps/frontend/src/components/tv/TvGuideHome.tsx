@@ -40,6 +40,24 @@ function duration(start:string,end:string):string{
  const minutes=Math.max(0,Math.round((Date.parse(end)-Date.parse(start))/60000));
  return Number.isFinite(minutes)?minutes+" min":"";
 }
+/** The Channels tab is a channel picker, not a miniature programme grid. */
+function TvChannelLogo({item,locale,countryIso2,date}:{
+ item:TvScheduleItem;locale:TvLocale;countryIso2:string;date:string;
+}){
+ const href=`/${locale}/tv/channels/${encodeURIComponent(item.channel.id)}?country=${encodeURIComponent(countryIso2)}&date=${encodeURIComponent(date)}`;
+ const logo=safeProgrammeImage(item.channel.logoUrl);
+ return <Link href={href} className={styles.logoTile}
+   aria-label={item.channel.name+" — "+(locale==="fr"?"voir les programmes du ":"view schedule for ")+date}
+   title={item.channel.name}>
+   <span className={styles.logoTileArt}>
+    {logo
+      // eslint-disable-next-line @next/next/no-img-element
+      ?<img src={logo} alt={item.channel.name} loading="lazy"/>
+      :<span className={styles.logoTileFallback}>{item.channel.name}</span>}
+   </span>
+ </Link>;
+}
+
 function TvCard({item,locale,mode,tab,countryIso2,nowMs,preview=false}:{
  item:TvScheduleItem;locale:TvLocale;mode:ClockMode;tab:TvTab;
  countryIso2:string;nowMs:number|null;preview?:boolean;
@@ -272,11 +290,17 @@ export function TvGuideHome({locale,preview=false}: {locale:TvLocale;preview?:bo
    </div>}
    {!loading&&!loadingCountries&&!countryError&&countries.length===0&&
      <p className={styles.feedback}>{copy.empty}</p>}
-   {validScope&&visible.length>0&&<div className={styles.grid}>
-     {visible.map((item,i)=><TvCard key={item.channel.id+":"+i} item={item}
-       locale={locale} mode={clockMode} tab={tab} countryIso2={countryIso2??""} nowMs={nowMs} preview={preview}
-       />)}
-    </div>}
+   {validScope&&visible.length>0&&
+    (tab==="CHANNELS"
+     ?<div className={styles.logoGrid} aria-label={copy.tabs[0]}>
+       {visible.map((item,i)=><TvChannelLogo key={item.channel.id+":"+i}
+         item={item} locale={locale} countryIso2={countryIso2??""} date={date!}/>)}
+      </div>
+     :<div className={styles.grid}>
+       {visible.map((item,i)=><TvCard key={item.channel.id+":"+i} item={item}
+         locale={locale} mode={clockMode} tab={tab} countryIso2={countryIso2??""} nowMs={nowMs} preview={preview}
+         />)}
+      </div>)}
    {validScope&&!loading&&!error&&schedule.items.length===0&&
       <p className={styles.feedback}>{copy.empty}</p>}
    {validScope&&!loading&&!error&&schedule.items.length>0&&visible.length===0&&
