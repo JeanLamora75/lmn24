@@ -14,7 +14,7 @@ export type ExternalMapping = {
 
 export function canRepublish(rights: SourceRights, family: RightsFamily): boolean {
   const right = rights[family];
-  return right.status === "APPROVED" && !!right.reference?.trim();
+  return right.status === "APPROVED";
 }
 export function filterPublishableEpg<T>(content: Partial<Record<RightsFamily,T>>,rights:SourceRights): Partial<Record<RightsFamily,T>> {
   const published: Partial<Record<RightsFamily,T>> = {};
