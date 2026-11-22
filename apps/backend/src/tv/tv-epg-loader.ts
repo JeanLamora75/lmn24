@@ -5,6 +5,7 @@ import {downloadEpgSource} from "./tv-epg-download";
 import {cacheTvIcon} from "./tv-icon-storage";
 import {selectXmltvLogos} from "./tv-logo-policy";
 import {decodeEpgBuffer} from "./tv-epg-decoder";
+import {makeProgrammeImageResolver,type HttpsImageProbe} from "./tv-programme-image";
 import {localDayBounds} from "./tv-import-time";
 import type {ValidatedEpgLoader,EpgDayBatch,ScopeResult} from "./tv-import-worker";
 import type {Coverage,AiringCandidate} from "./tv-import-policy";
@@ -51,10 +52,11 @@ async function assertOwner(lease:TvWriterLease){
  */
 export function createVerifiedDbEpgLoader(
  lease:TvWriterLease,runId:string,
- options:{transport:EpgTransport;attest:AttestedCoverage;now?:Date;discoveryOnly?:boolean;stagingOnly?:boolean},
+ options:{transport:EpgTransport;attest:AttestedCoverage;now?:Date;discoveryOnly?:boolean;stagingOnly?:boolean;imageProbe?:HttpsImageProbe},
 ):ValidatedEpgLoader{
  const db=lease.client;
  const now=options.now??new Date();
+ const resolveArtwork=makeProgrammeImageResolver(options.imageProbe);
  // A global source is downloaded/decoded once per worker execution, then
  // mapped into the independently validated national publication partitions.
  // Rejected promises are shared too: a failing feed cannot be partially reused.
@@ -360,8 +362,8 @@ export function createVerifiedDbEpgLoader(
              // APPROVED is sufficient for the import. Never overwrite manual content.
              row.synopsisRightsStatus==="APPROVED"?p.originalSynopsis:null,
              p.category,
-             row.imageRightsStatus==="APPROVED"&&p.imageUrl?.startsWith("https://")
-                ?p.imageUrl:null]);
+             row.imageRightsStatus==="APPROVED"
+                ?await resolveArtwork(p.imageUrl):null]);
           await db.query("COMMIT");
         }catch(err){await db.query("ROLLBACK").catch(()=>undefined);throw err;}
         for(let n=0;n<days;n++){
