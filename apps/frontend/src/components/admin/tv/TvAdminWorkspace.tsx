@@ -79,7 +79,9 @@ const LABELS:Record<TvView,string>={
  sources:"Sources EPG",imports:"Imports",translations:"Traductions",statistics:"Statistiques",
 };
 const api="/api/admin/tv/";
-const PAGE_SIZE=20;
+const DEFAULT_PAGE_SIZE=25;
+const CHANNEL_PAGE_SIZES=[10,25,50,100,150] as const;
+const CHANNEL_PAGE_SIZE_STORAGE_KEY="lmn24:admin:tv:channels:page-size";
 const timezoneOptions=(()=>{try{return Intl.supportedValuesOf("timeZone");}
  catch{return ["Europe/Paris","Europe/London","America/New_York","Asia/Tokyo","UTC"];}})();
 function region(iso:string,locale:string,countryNames:TvCountryNames){
@@ -940,6 +942,21 @@ export function TvAdminWorkspace({view}:{view:TvView}){
  const [country,setCountry]=useAdminSessionFilter("tv-"+view,"country","");
  const [status,setStatus]=useAdminSessionFilter("tv-"+view,"status","all");
  const [page,setPage]=useAdminSessionFilter("tv-"+view,"page",1);
+ const [channelPageSize,setChannelPageSize]=useState<number>(DEFAULT_PAGE_SIZE);
+ const [channelPageSizeRestored,setChannelPageSizeRestored]=useState(false);
+ useEffect(()=>{
+  try{
+   const raw=window.localStorage.getItem(CHANNEL_PAGE_SIZE_STORAGE_KEY);
+   const stored=raw===null?null:Number(raw);
+   if(stored!==null&&CHANNEL_PAGE_SIZES.some(size=>size===stored))setChannelPageSize(stored);
+  }catch{/* Private browsing or disabled storage: keep default. */}
+  setChannelPageSizeRestored(true);
+ },[]);
+ useEffect(()=>{
+  if(!channelPageSizeRestored)return;
+  try{window.localStorage.setItem(CHANNEL_PAGE_SIZE_STORAGE_KEY,String(channelPageSize));}
+  catch{/* Storage is optional. */}
+ },[channelPageSize,channelPageSizeRestored]);
  const [sort,setSort]=useState<TvSortState>(null);
  const [expandedChannelGroups,setExpandedChannelGroups]=useState<string[]>([]);
  const toggleSort=(key:string)=>{setSort(current=>nextTvSort(current,key));setPage(1);};
@@ -1104,8 +1121,9 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   }
   return null;
  },locale),[rowsForSort,sort,view,locale,countryNames,countryCodes]);
- const pages=Math.max(1,Math.ceil(sortedRows.length/PAGE_SIZE));
- const visible=sortedRows.slice((Math.min(page,pages)-1)*PAGE_SIZE,Math.min(page,pages)*PAGE_SIZE);
+ const pageSize=view==="channels"?channelPageSize:DEFAULT_PAGE_SIZE;
+ const pages=Math.max(1,Math.ceil(sortedRows.length/pageSize));
+ const visible=sortedRows.slice((Math.min(page,pages)-1)*pageSize,Math.min(page,pages)*pageSize);
  const action=view==="channels"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("channel")}>Ajouter une chaîne</button>
    :view==="sources"?<div className="d-flex flex-wrap gap-2"><button className="btn btn-outline-primary" type="button" onClick={()=>setDialog("priorities")}>Ordre des sources</button><button className="btn btn-primary" type="button" onClick={()=>setDialog("source")}>Ajouter une source EPG</button></div>
   :view==="imports"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("import")}>Lancer un import</button>:undefined;
@@ -1120,20 +1138,25 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   {(view==="countries"||view==="channels"||view==="sources"||view==="imports")&&
    <AdminFilterPanel>
     <div className="row g-3">
-     <label className="col-12 col-md-4">Recherche
+     <label className={view==="channels"?"col-12 col-md-3":"col-12 col-md-4"}>Recherche
       <input className="form-control" type="search" value={filter}
        onChange={e=>{setFilter(e.target.value);setPage(1);}}/>
      </label>
-     {view==="channels"&&<label className="col-12 col-md-4">Pays
+     {view==="channels"&&<label className="col-12 col-md-3">Pays
       <select className="form-select" value={country} onChange={e=>{setCountry(e.target.value);setPage(1);}}>
        <option value="">Tous les pays</option>{sortedCountries.map(c=>
         <option key={c.countryId} value={c.countryId}>{region(c.isoCode2,locale,countryNames)}</option>)}
       </select></label>}
-     {view!=="imports"&&<label className="col-12 col-md-4">Statut
+     {view!=="imports"&&<label className={view==="channels"?"col-12 col-md-3":"col-12 col-md-4"}>Statut
       <select className="form-select" value={status} onChange={e=>{setStatus(e.target.value);setPage(1);}}>
        <option value="all">Tous</option><option value="active">Actifs</option>
        <option value="inactive">Inactifs</option>
        {view==="channels"&&<option value="review">À vérifier</option>}
+      </select></label>}
+     {view==="channels"&&<label className="col-12 col-md-3">Lignes par page
+      <select className="form-select" value={channelPageSize}
+       onChange={e=>{setChannelPageSize(Number(e.target.value));setPage(1);}}>
+       {CHANNEL_PAGE_SIZES.map(size=><option key={size} value={size}>{size}</option>)}
       </select></label>}
     </div>
    </AdminFilterPanel>}
