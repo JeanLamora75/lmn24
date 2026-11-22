@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ServiceUnavailableException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException, ServiceUnavailableException } from "@nestjs/common";
 import { DatabaseService } from "../database/database.service";
 import { localDayBounds } from "./tv-import-time";
 import { classifyTvWorldQuery } from "./tv-world-search-policy";
@@ -31,6 +31,7 @@ function serializeAirings(rows:readonly AiringRow[]):TvAiring[]{
 
 @Injectable()
 export class TvPublicService {
+  private readonly logger=new Logger(TvPublicService.name);
   constructor(private readonly db:DatabaseService){}
   private async requireSchema():Promise<void>{
     const rows=await this.db.prisma.$queryRaw<Array<{ready:boolean}>>`
@@ -146,12 +147,15 @@ export class TvPublicService {
   private coverage():CoverageEvidence[]{return [];}
   async schedule(args:{country:string;localDate:string;tab:TvPublicTab;
     page:number;pageSize:number;now?:Date}){
+    const startedAt=performance.now();
     const country=await this.country(args.country);
+    const countryMs=performance.now()-startedAt;
     const now=args.now??new Date();
     assertTvDay(args.localDate,country.referenceTimeZone,now);
     if(args.tab==="NOW"&&args.localDate!==todayInZone(now,country.referenceTimeZone))
       throw new RangeError("TV_NOW_ONLY_TODAY");
     const channels=await this.channelRows(country);
+    const channelsMs=performance.now()-startedAt-countryMs;
     const start=(args.page-1)*args.pageSize;
     const selected=channels.slice(start,start+args.pageSize);
     const localBounds=localDayBounds(args.localDate,country.referenceTimeZone);
@@ -160,7 +164,9 @@ export class TvPublicService {
     // unrelated airings from today into the SQL result.
     const from=localBounds.startMs-86_400_000;
     const to=localBounds.endMs+86_400_000;
+    const beforeAirings=performance.now();
     const all=await this.publishedAirings(selected.flatMap(c=>c.variantId?[c.variantId]:[]),country.id,from,to);
+    const airingsMs=performance.now()-beforeAirings;
     // Each channel previously filtered and sorted the full result (up to 15k
     // airings). Index once per variant so rendering 100 channels is linear.
     const byVariant=new Map<string,TvAiring[]>();
@@ -183,6 +189,8 @@ export class TvPublicService {
         variant:c.variantId?{id:c.variantId,timeZone:c.variantTimeZone}:null,
         ...state,coverageState:"UNKNOWN" as const};
     });
+    const totalMs=performance.now()-startedAt;
+    if(totalMs>1000)this.logger.warn(`Slow TV schedule country=${country.isoCode2} day=${args.localDate} tab=${args.tab} channels=${selected.length} airings=${all.length} countryMs=${countryMs.toFixed(0)} channelsMs=${channelsMs.toFixed(0)} airingsMs=${airingsMs.toFixed(0)} totalMs=${totalMs.toFixed(0)}`);
     return {countryIso2:country.isoCode2,
       referenceTimeZone:country.referenceTimeZone,
       localDate:args.localDate,tab:args.tab,sort:"COUNTRY_CHANNEL_NUMBER_ASC",
