@@ -87,12 +87,12 @@ const tvEventLabels:Record<string,{fr:string;en:string}>={
  RUN_STARTED:{fr:"Import démarré",en:"Import started"},
 };
 const tvEventMessages:Record<string,{fr:string;en:string}>={
- RIGHTS_REQUIRED:{fr:"Source sans droits programmes approuvés et référence justificative : aucun programme enregistré.",en:"Source lacks approved programme rights and a supporting reference: no programmes staged."},
+ RIGHTS_REQUIRED:{fr:"Droits programmes non approuvés pour cette source : aucun programme enregistré.",en:"Programme rights are not approved for this source: no programmes staged."},
  MAPPINGS_REQUIRED:{fr:"Aucune émission éligible : vérifiez les correspondances EPG et l'activation des chaînes.",en:"No eligible programmes: check verified EPG mappings and active channels."},
  PROGRAMMES_STAGED:{fr:"Programmes préparés dans le catalogue privé, sans publication publique.",en:"Programmes staged privately, without public publication."},
  "Private programme staging; no public schedule":{fr:"Préparation des programmes dans le catalogue privé ; aucune grille publique modifiée.",en:"Private programme staging; no public schedule."},
  "EPG import queued for isolated processing":{fr:"Import EPG ajouté à la file de traitement.",en:"EPG import queued for isolated processing."},
- "Source requires approved programme rights and a non-empty evidence reference; no programmes staged":{fr:"Droits programmes non approuvés ou justificatif absent : aucun programme enregistré.",en:"Approved programme rights and a supporting reference are required; no programmes staged."},
+ "Source requires approved programme rights and a non-empty evidence reference; no programmes staged":{fr:"Droits programmes non approuvés : aucun programme enregistré.",en:"Approved programme rights and a supporting reference are required; no programmes staged."},
  "Source scanned; unknown mappings await review, no programmes published":{fr:"Source analysée ; correspondances inconnues à vérifier ; aucun programme publié.",en:"Source scanned; unknown mappings await review, no programmes published."},
 };
 function tvEventText(event:ImportEvent,locale:string):string{
