@@ -1121,7 +1121,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
   }
   return null;
  },locale),[rowsForSort,sort,view,locale,countryNames,countryCodes]);
- const pageSize=view==="channels"?channelPageSize:DEFAULT_PAGE_SIZE;
+ const pageSize=view==="channels"?channelPageSize:20;
  const pages=Math.max(1,Math.ceil(sortedRows.length/pageSize));
  const visible=sortedRows.slice((Math.min(page,pages)-1)*pageSize,Math.min(page,pages)*pageSize);
  const action=view==="channels"?<button className="btn btn-primary" type="button" onClick={()=>setDialog("channel")}>Ajouter une chaîne</button>
