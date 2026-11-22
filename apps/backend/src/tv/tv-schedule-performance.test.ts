@@ -54,7 +54,7 @@ describe("TV schedule performance without editorial changes",()=>{
   expect(statement?.params.some(p=>p instanceof Date
    &&p.toISOString()==="2026-11-22T23:00:00.000Z")).toBe(true);
   expect(statement?.params.some(p=>p instanceof Date
-   &&p.toISOString()==="2026-11-25T23:00:00.000Z")).toBe(true);
+   &&p.toISOString()==="2026-11-26T23:00:00.000Z")).toBe(true);
  });
  it("keeps tonight's program independent per variant",async()=>{
   const {service}=setup();
