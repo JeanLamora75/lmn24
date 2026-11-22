@@ -2,7 +2,7 @@ import {dateOffset,localToday,type TvAiring,type TvLocale} from "./tv-guide-mode
 
 export type TvVariant={id:string;code:string;name:string;timeZone:string};
 export type TvChannelDetails={
- countryIso2:string;
+ countryIso2:string;referenceTimeZone:string;
  channel:{id:string;name:string;number:number;logoUrl:string|null;broadcastLanguages:string[]};
  variants:TvVariant[];defaultVariantId:string|null;officialLiveUrl:string|null;
 };
