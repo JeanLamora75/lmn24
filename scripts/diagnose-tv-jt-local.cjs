@@ -92,7 +92,7 @@ async function main(){
   endpoint.searchParams.set("q","JT 20h");
   endpoint.searchParams.set("channelsPage","1");
   endpoint.searchParams.set("programmesPage","1");
-  endpoint.searchParams.set("pageSize","100");
+  endpoint.searchParams.set("pageSize","50");
   endpoint.searchParams.set("section","programmes");
   try{
    const response=await fetch(endpoint,{signal:AbortSignal.timeout(8000),
