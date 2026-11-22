@@ -25,7 +25,7 @@ function setup(){
    return [{id:country,isoCode2:"FR",referenceTimeZone:"Europe/Paris"}];
   if(sql.includes('AS "broadcastLanguages"'))
    return [channel(a,a,"France A",2),channel(b,b,"France B",3)];
-  if(sql.includes("SELECT DISTINCT ON (a.id)"))
+  if(sql.includes("WITH latest AS"))
    return [
     airing("prime",a,"2026-11-24T20:10:00.000Z","2026-11-24T22:30:00.000Z"),
     airing("late",a,"2026-11-24T21:45:00.000Z","2026-11-24T23:00:00.000Z"),
@@ -46,15 +46,15 @@ describe("TV schedule performance without editorial changes",()=>{
   expect(result.items).toHaveLength(2);
   expect(result.items[0]?.airing?.id).toBe("late");
   expect(result.items[1]?.airing).toBeNull();
-  const statement=statements.find(x=>x.sql.includes("SELECT DISTINCT ON (a.id)"));
+  const statement=statements.find(x=>x.sql.includes("WITH latest AS"));
   expect(statement).toBeDefined();
   expect(statement?.sql).toContain("r.variant_id=ANY(?::uuid[])");
+  expect(statement?.sql).toContain("JOIN public.tv_airing a ON a.revision_id=latest.id");
+  expect(statement?.sql).not.toContain("NOT EXISTS (SELECT 1 FROM public.tv_schedule_revision newer");
   expect(statement?.sql).not.toContain("r.variant_id::text");
   // A future date must not expand the SQL scan back to today's airings.
-  expect(statement?.params.some(p=>p instanceof Date
-   &&p.toISOString()==="2026-11-22T23:00:00.000Z")).toBe(true);
-  expect(statement?.params.some(p=>p instanceof Date
-   &&p.toISOString()==="2026-11-26T23:00:00.000Z")).toBe(true);
+  expect(statement?.params.some(p=>p==="2026-11-21")).toBe(true);
+  expect(statement?.params.some(p=>p==="2026-11-27")).toBe(true);
  });
  it("keeps tonight's program independent per variant",async()=>{
   const {service}=setup();
