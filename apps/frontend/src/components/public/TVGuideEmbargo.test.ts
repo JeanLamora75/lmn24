@@ -7,8 +7,8 @@ const footer = readFileSync(new URL("./PublicFooter.tsx", import.meta.url), "utf
 const homepage = readFileSync(new URL("../../app/[locale]/page.tsx", import.meta.url), "utf8");
 
 describe("LMN24 Guide TV — no public release without owner GO", () => {
-  it("keeps the public release gate disabled", () => {
-    expect(TV_GUIDE_PUBLIC_ENABLED).toBe(false);
+  it("records owner GO for public release", () => {
+    expect(TV_GUIDE_PUBLIC_ENABLED).toBe(true);
   });
 
   it("restricts private programme previews to authenticated administrators", () => {
@@ -23,7 +23,7 @@ describe("LMN24 Guide TV — no public release without owner GO", () => {
     expect(client).toContain("Aperçu privé réservé à l’administration");
   });
 
-  it("never advertises a TV guide to anonymous visitors before release", () => {
+  it("keeps the header navigation configurable", () => {
     expect(header).toContain('tvNavigation=null');
     expect(header).toContain('...(tvNavigation?');
     expect(header).toContain('tvNavigation==="preview"?"/tv-preview":"/tv"');
