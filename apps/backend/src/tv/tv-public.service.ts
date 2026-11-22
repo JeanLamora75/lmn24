@@ -146,7 +146,7 @@ export class TvPublicService {
     const items=selected.map(c=>{
       const state=stateForChannel({
         tab:args.tab,localDate:args.localDate,
-        timezone:c.variantTimeZone??country.referenceTimeZone,
+        timezone:country.referenceTimeZone,
         variantId:c.variantId,airings:all,coverage:this.coverage(),now,
       });
       return {channel:{id:c.channelId,number:c.number,name:c.name,
