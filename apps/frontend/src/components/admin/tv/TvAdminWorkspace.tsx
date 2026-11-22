@@ -1288,14 +1288,9 @@ export function TvAdminWorkspace({view}:{view:TvView}){
    <div className="p-3">
     <h2 className="h5">Import {selectedRun}</h2>
     {detail?<><p>Statut : {detail.status}</p>
-     {detail.privateDrafts&&<p className={detail.privateDrafts.draftProgrammes>0?"alert alert-info":"alert alert-warning"}>Catalogue privé : {detail.privateDrafts.draftProgrammes.toLocaleString(locale)} programmes et {detail.privateDrafts.draftAirings.toLocaleString(locale)} diffusions enregistrés dans cet import. {detail.privateDrafts.draftProgrammes===0?"Aucun programme n’a été enregistré malgré la fin du traitement.": "Aucune grille publique modifiée."}</p>}
-     {false&&detail.privateDrafts&&detail.privateDrafts.draftDays>0&&
-      <p className="alert alert-info">
-       Catalogue privé : {detail.privateDrafts.draftProgrammes.toLocaleString("fr-FR")} programmes,
-       {" "}{detail.privateDrafts.draftAirings.toLocaleString("fr-FR")} diffusions,
-       {" "}{detail.privateDrafts.draftDays.toLocaleString("fr-FR")} révisions de grille en préparation.
-       Aucune de ces révisions n’est publiée.
-      </p>}
+     {detail.privateDrafts&&<p className={detail.privateDrafts.draftProgrammes>0?"alert alert-info":"alert alert-warning"}>{locale.startsWith("fr")
+       ?"Catalogue privé : "+detail.privateDrafts.draftProgrammes.toLocaleString(locale)+" programmes, "+detail.privateDrafts.draftAirings.toLocaleString(locale)+" diffusions, "+detail.privateDrafts.draftDays.toLocaleString(locale)+" journées préparées. "+(detail.privateDrafts.draftProgrammes===0?"Aucun programme enregistré : vérifiez les droits des sources et les associations EPG.":"Aucune publication publique.")
+       :"Private catalogue: "+detail.privateDrafts.draftProgrammes.toLocaleString(locale)+" programmes, "+detail.privateDrafts.draftAirings.toLocaleString(locale)+" airings, "+detail.privateDrafts.draftDays.toLocaleString(locale)+" day revisions. "+(detail.privateDrafts.draftProgrammes===0?"No programmes stored: check source rights and EPG mappings.":"Nothing published publicly.")}</p>}
      <ul>
      {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {s.sourceName??sources.find(source=>source.id===s.sourceId)?.name??("Source "+(s.sourceId??"inconnue"))} · {s.status}
        {s.errorMessage?" — "+importDiagnostic(s.errorMessage):""}</li>)}</ul>
@@ -1305,7 +1300,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
         setReload(v=>v+1);}catch(e){setError((e as Error).message);}
       }}>Relancer uniquement les échecs</button>}
      <h3 className="h6 mt-3">Journal d’événements</h3>
-     <ul>{events.map(e=>{const scope=detail.scopes.find(s=>s.id===e.scopeId);return <li key={e.id}>{new Date(e.occurredAt).toLocaleString("fr-FR")} · {e.level==="INFO"?"Info":e.level==="WARN"?"Avertissement":e.level} · {scope?" · "+region(countryCodes.get(scope.countryId)??"",locale,countryNames)+" / "+(scope.sourceName??sources.find(s=>s.id===scope.sourceId)?.name??"Source inconnue"):""} · {tvEventText(e,locale)}{e.message.startsWith("EPG_")?" — "+importDiagnostic(e.message):""}</li>;})}</ul>
+     <ul>{events.map(e=>{const scope=detail.scopes.find(s=>s.id===e.scopeId);return <li key={e.id}>{new Date(e.occurredAt).toLocaleString("fr-FR")} · {e.level==="INFO"?"Info":e.level==="WARN"?"Avertissement":e.level} · {scope?region(countryCodes.get(scope.countryId)??"",locale,countryNames)+" / "+(scope.sourceName??sources.find(s=>s.id===scope.sourceId)?.name??"Source inconnue"):""} · {tvEventText(e,locale)}{e.message.startsWith("EPG_")?" — "+importDiagnostic(e.message):""}</li>;})}</ul>
     </>:<p>Chargement…</p>}
    </div>
   </AdminDataPanel>}
