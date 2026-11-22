@@ -32,6 +32,7 @@ function isSchedule(input:unknown):input is TvSchedule{
 }
 function safeProgrammeImage(url:string|null):string|null{
  if(!url)return null;
+ if(/^\/tv-icons\/[a-z0-9_.-]+$/i.test(url))return url;
  try{const parsed=new URL(url);return parsed.protocol==="https:"?parsed.toString():null;}
  catch{return null;}
 }
@@ -39,9 +40,9 @@ function duration(start:string,end:string):string{
  const minutes=Math.max(0,Math.round((Date.parse(end)-Date.parse(start))/60000));
  return Number.isFinite(minutes)?minutes+" min":"";
 }
-function TvCard({item,locale,mode,tab,countryIso2,nowMs}:{
+function TvCard({item,locale,mode,tab,countryIso2,nowMs,preview=false}:{
  item:TvScheduleItem;locale:TvLocale;mode:ClockMode;tab:TvTab;
- countryIso2:string;nowMs:number|null;
+ countryIso2:string;nowMs:number|null;preview?:boolean;
 }){
  const copy=TV_COPY[locale],a=item.airing,zone=mode==="VISITOR"
   ?Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -64,12 +65,12 @@ function TvCard({item,locale,mode,tab,countryIso2,nowMs}:{
    <span className={styles.channelNumber} aria-label={`${copy.channelNumber} ${item.channel.number}`}>{item.channel.number}</span>
   </div>
   <div className={styles.cardBody}>
-   <div className={styles.channelName}><Link href={channelHref}>{item.channel.name}</Link></div>
+   <div className={styles.channelName}>{preview?item.channel.name:<Link href={channelHref}>{item.channel.name}</Link>}</div>
    {a&&item.programmeState==="AVAILABLE"
     ?<>
       <span className={styles.time}>{formatBroadcast(a.startsAt,zone,locale)}</span>
       <h2 className={styles.programmeTitle}>
-       {programmeHref?<Link href={programmeHref}>{a.title}</Link>:a.title}
+       {programmeHref&&!preview?<Link href={programmeHref}>{a.title}</Link>:a.title}
       </h2>
       <div className={styles.metadata}>{[a.category,duration(a.startsAt,a.endsAt)].filter(Boolean).join(" · ")}</div>
       {progress!==null&&<div className={styles.progress} role="progressbar"
@@ -89,7 +90,7 @@ function TvCard({item,locale,mode,tab,countryIso2,nowMs}:{
  </article>;
 }
 
-export function TvGuideHome({locale}: {locale:TvLocale}){
+export function TvGuideHome({locale,preview=false}: {locale:TvLocale;preview?:boolean}){
  const copy=TV_COPY[locale];
  const countryNames=useTvCountryNames(locale);
  const router=useRouter();
@@ -124,10 +125,17 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
  useEffect(()=>{
   if(!ready)return;
   const controller=new AbortController();
-  fetch("/api/public/tv/countries?locale="+locale,{signal:controller.signal,cache:"no-store"})
+  fetch(preview?"/api/admin/tv/catalog/countries":"/api/public/tv/countries?locale="+locale,{signal:controller.signal,cache:"no-store"})
    .then(async response=>{
      if(!response.ok)throw new Error("TV countries unavailable");
      const parsed:unknown=await response.json();
+     if(preview){
+      const raw=parsed as {items?:Array<{isoCode2:string;referenceTimezone:string;isActive:boolean}>};
+      if(!Array.isArray(raw.items))throw new Error("Bad admin countries response");
+      return raw.items.filter(c=>c.isActive).map(c=>({
+       countryIso2:c.isoCode2,referenceTimeZone:c.referenceTimezone,label:c.isoCode2,
+      }));
+     }
      if(!isCountryResponse(parsed))throw new Error("Bad country response");
      return parsed.items;
    }).then(items=>{
@@ -139,14 +147,14 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
      if(!controller.signal.aborted)setCountryError(true);
    }).finally(()=>{if(!controller.signal.aborted)setLoadingCountries(false);});
   return ()=>controller.abort();
- },[ready,preferences.countryIso2,locale,retry]);
+ },[ready,preferences.countryIso2,locale,retry,preview]);
 
  useEffect(()=>{
   if(!selectedCountry||!date)return;
   const controller=new AbortController();
   const params=new URLSearchParams({country:selectedCountry.countryIso2,localDate:date,
     tab,page:String(page),pageSize:"100"});
-  fetch("/api/public/tv/schedule?"+params.toString(),{cache:"no-store",signal:controller.signal})
+  fetch((preview?"/api/admin/tv/catalog/preview/schedule":"/api/public/tv/schedule")+"?"+params.toString(),{cache:"no-store",signal:controller.signal})
    .then(async response=>{
      if(!response.ok)throw new Error("TV schedule unavailable");
      const raw:unknown=await response.json();
@@ -163,7 +171,7 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
    }).catch(()=>{if(!controller.signal.aborted)setError(true);})
    .finally(()=>{if(!controller.signal.aborted)setLoading(false);});
   return ()=>controller.abort();
- },[selectedCountry,date,tab,page,retry]);
+ },[selectedCountry,date,tab,page,retry,preview]);
 
  const changeCountry=useCallback((iso:string)=>{
   setCountryIso2(iso);setSchedule(null);setPage(1);setDayIndex(0);setError(false);
@@ -188,17 +196,18 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
  const validScope=!!schedule&&schedule.countryIso2===countryIso2
    &&schedule.localDate===date&&schedule.tab===tab;
  return <main className={`container py-4 py-lg-5 ${styles.page}`}>
+  {preview&&<div role="status" className="alert alert-warning">Aperçu privé réservé à l’administration — données non publiées. La grille publique reste désactivée.</div>}
   <header className={styles.header}>
    <h1>{copy.title}</h1><p>{copy.subtitle}</p>
   </header>
-  <div className={styles.searchLine}>
+  {!preview&&<div className={styles.searchLine}>
    <form onSubmit={event=>{event.preventDefault();if(search.trim())router.push(`/${locale}/tv/search?q=${encodeURIComponent(search.trim())}`);}}>
     <label className="visually-hidden" htmlFor="tv-global-search">{copy.search}</label>
     <input id="tv-global-search" className="form-control" type="search" value={search}
       onChange={event=>setSearch(event.target.value)} placeholder={copy.search} maxLength={120}/>
     <button type="submit" className="btn btn-outline-primary" aria-label={copy.search}>⌕</button>
    </form>
-  </div>
+  </div>}
   <div className={styles.filters}>
    <label>{copy.country}
     <select className="form-select" disabled={loadingCountries||!countries.length}
@@ -265,7 +274,7 @@ export function TvGuideHome({locale}: {locale:TvLocale}){
      <p className={styles.feedback}>{copy.empty}</p>}
    {validScope&&visible.length>0&&<div className={styles.grid}>
      {visible.map((item,i)=><TvCard key={item.channel.id+":"+i} item={item}
-       locale={locale} mode={clockMode} tab={tab} countryIso2={countryIso2??""} nowMs={nowMs}
+       locale={locale} mode={clockMode} tab={tab} countryIso2={countryIso2??""} nowMs={nowMs} preview={preview}
        />)}
     </div>}
    {validScope&&!loading&&!error&&schedule.items.length===0&&
