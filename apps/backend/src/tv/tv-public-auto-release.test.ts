@@ -11,7 +11,8 @@ describe("Guide TV: automatic availability of imported programmes",()=>{
  it("queries the latest staged or published revision without a manual current pointer",()=>{
   const schedule=service.slice(service.indexOf("private async publishedAirings("),service.indexOf("private coverage()"));
   expect(schedule).toContain("r.status IN ('STAGING','PUBLISHED')");
-  expect(schedule).toContain("NOT EXISTS (SELECT 1 FROM public.tv_schedule_revision newer");
+  expect(schedule).toContain("SELECT DISTINCT ON (r.variant_id,r.local_date)");
+  expect(schedule).toContain("JOIN public.tv_airing a ON a.revision_id=latest.id");
   expect(schedule).not.toContain("JOIN public.tv_schedule_current");
   expect(schedule).not.toContain("programme_rights_reference");
  });
