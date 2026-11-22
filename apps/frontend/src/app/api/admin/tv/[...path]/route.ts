@@ -5,6 +5,7 @@ export const dynamic="force-dynamic";
 type Context={params:Promise<{path:string[]}>};
 const patterns=[
  /^catalog\/(?:countries|channels)$/,
+ /^catalog\/preview\/schedule$/,
  /^catalog\/countries\/[0-9a-f-]{36}$/i,
  /^catalog\/channels\/discover$/,
  /^catalog\/channels\/associations\/[0-9a-f-]{36}$/i,
