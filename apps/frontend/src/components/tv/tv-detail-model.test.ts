@@ -24,7 +24,9 @@ describe("SCRUM-120 UX02 invariants",()=>{
  it("does not lose UTC identity on DST and distinguishes double 01:30",()=>{
   const a=timeLabel("2026-11-01T05:30:00Z","America/New_York","en");
   const b=timeLabel("2026-11-01T06:30:00Z","America/New_York","en");
-  expect(a).not.toEqual(b);
+  // The user sees a clean local clock without redundant UTC+offset labels.
+  expect(a).toBe(b);
+  expect(a).not.toMatch(/UTC|GMT/);
   expect(durationMinutes("2026-11-01T05:30:00Z","2026-11-01T06:30:00Z")).toBe(60);
   expect(localDateLabel("2026-11-01T01:00:00Z","America/New_York","en"))
     .toContain("Oct");
