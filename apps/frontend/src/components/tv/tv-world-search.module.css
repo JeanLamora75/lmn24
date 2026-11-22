@@ -13,3 +13,41 @@
 .result a{flex-shrink:0}.result small{color:var(--bs-secondary-color)}
 .page :is(input,button,a):focus-visible{outline:3px solid var(--bs-primary);outline-offset:2px}
 @media(max-width:400px){.result{align-items:flex-start;flex-direction:column}.controls button{flex:1}}
+
+/* Search programmes share the same visual hierarchy as Guide TV cards. */
+.programmeList{list-style:none;padding:0;margin:14px 0;display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.programmeCard{display:grid;grid-template-columns:52px minmax(0,1fr) 84px;
+ align-items:center;gap:12px;padding:13px;border:1px solid var(--bs-border-color);
+ border-radius:14px;background:var(--bs-body-bg);box-shadow:0 2px 12px rgba(0,0,0,.035);
+ min-width:0;color:var(--bs-body-color)}
+.programmeLive{border-color:var(--bs-primary);background:var(--bs-primary-bg-subtle);
+ box-shadow:0 0 0 1px var(--bs-primary-border-subtle)}
+.programmeIdentity{display:flex;flex-direction:column;align-items:center;gap:5px;align-self:start}
+.programmeLogo{width:48px;height:48px;display:grid;place-items:center;overflow:hidden;
+ border:1px solid var(--bs-border-color);border-radius:9px;background:#17263d}
+.programmeLogo img{width:100%;height:100%;object-fit:contain}
+.programmeLogo span{color:#fff;font-weight:750}
+.programmeNumber{font-size:.75rem;font-weight:750;border:1px solid var(--bs-border-color);
+ border-radius:7px;padding:1px 6px}
+.programmeBody{min-width:0;overflow-wrap:anywhere}
+.programmeChannel{font-size:.78rem;color:var(--bs-secondary-color);font-weight:600}
+.programmeTime{font-size:.9rem;font-weight:800;color:var(--bs-primary);margin-top:3px}
+.programmeTitle{display:block;font-weight:750;line-height:1.35;color:inherit;
+ text-decoration:none;margin:4px 0;font-size:.98rem}
+.programmeTitle:hover{text-decoration:underline}
+.programmeMeta{font-size:.76rem;color:var(--bs-secondary-color)}
+.programmePoster{width:84px;height:88px;background:var(--bs-tertiary-bg);
+ border-radius:10px;overflow:hidden;display:grid;place-items:center}
+.programmePoster img{width:100%;height:100%;object-fit:cover}
+.programmePosterPlaceholder{font-size:2rem;color:var(--bs-secondary-color)}
+.onAirBadge{display:inline-block;margin-left:8px;padding:2px 7px;border-radius:999px;
+ background:var(--bs-primary);color:white;font-size:.7rem;font-weight:700;vertical-align:middle}
+.programmeProgress{height:5px;background:var(--bs-border-color);margin-top:9px;
+ border-radius:9px;overflow:hidden}
+.programmeProgress span{display:block;height:100%;background:var(--bs-primary)}
+@media(max-width:991px){.programmeList{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:575px){.programmeCard{grid-template-columns:44px minmax(0,1fr) 58px;
+ gap:9px;padding:10px}.programmeLogo{width:42px;height:42px}
+ .programmePoster{width:58px;height:72px}.programmeTitle{font-size:.88rem}
+ .programmeChannel,.programmeMeta{font-size:.72rem}}
