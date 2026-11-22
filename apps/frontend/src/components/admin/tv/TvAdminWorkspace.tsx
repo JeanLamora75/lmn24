@@ -89,8 +89,8 @@ const tvEventLabels:Record<string,{fr:string;en:string}>={
 const tvEventMessages:Record<string,{fr:string;en:string}>={
  RIGHTS_REQUIRED:{fr:"Droits programmes non approuvés pour cette source : aucun programme enregistré.",en:"Programme rights are not approved for this source: no programmes staged."},
  MAPPINGS_REQUIRED:{fr:"Aucune émission éligible : vérifiez les correspondances EPG et l'activation des chaînes.",en:"No eligible programmes: check verified EPG mappings and active channels."},
- PROGRAMMES_STAGED:{fr:"Programmes préparés dans le catalogue privé, sans publication publique.",en:"Programmes staged privately, without public publication."},
- "Private programme staging; no public schedule":{fr:"Préparation des programmes dans le catalogue privé ; aucune grille publique modifiée.",en:"Private programme staging; no public schedule."},
+ PROGRAMMES_STAGED:{fr:"Programmes importés : ils sont consultables dans le Guide TV public.",en:"Programmes imported and available in the public TV Guide."},
+ "Private programme staging; no public schedule":{fr:"Import des programmes : consultation publique automatique après enregistrement.",en:"Programme import: publicly accessible after storage."},
  "EPG import queued for isolated processing":{fr:"Import EPG ajouté à la file de traitement.",en:"EPG import queued for isolated processing."},
  "Source requires approved programme rights and a non-empty evidence reference; no programmes staged":{fr:"Droits programmes non approuvés : aucun programme enregistré.",en:"Approved programme rights and a supporting reference are required; no programmes staged."},
  "Source scanned; unknown mappings await review, no programmes published":{fr:"Source analysée ; correspondances inconnues à vérifier ; aucun programme publié.",en:"Source scanned; unknown mappings await review, no programmes published."},
@@ -935,12 +935,12 @@ function ImportEditor({countries,sources,locale,countryNames,onClose,onSaved}:{c
    <select id="tv-import-mode" className="form-select mb-3" value={mode}
     onChange={e=>setMode(e.target.value as "DISCOVERY"|"STAGING")}>
     <option value="DISCOVERY">Découvrir les identifiants des chaînes</option>
-    <option value="STAGING">Importer les programmes dans le catalogue privé</option>
+    <option value="STAGING">Importer les programmes dans le Guide TV</option>
    </select>
    <p className="text-body-secondary">{eligible.length} pays concernés, {new Set(perCountry.flatMap(x=>x.sources.map(s=>s.id))).size} sources distinctes potentiellement éligibles.
     {mode==="DISCOVERY"
      ?" Les identifiants des chaînes sont découverts et attendent une vérification ; aucun programme n’est enregistré."
-     :" Seules les émissions des chaînes actives ayant un identifiant EPG associé sont importées depuis les sources dont les droits programmes sont approuvés. Aucun justificatif supplémentaire ni validation manuelle de la correspondance n’est nécessaire pour le catalogue privé. Aucune grille n’est publiée."}
+     :" Seules les émissions des chaînes actives ayant un identifiant EPG associé sont importées depuis les sources dont les droits programmes sont approuvés. Aucun justificatif supplémentaire ni validation manuelle de la correspondance n’est nécessaire pour le catalogue privé. Les programmes importés sont directement visibles dans le Guide TV public."}
     {" "}Les sources actives sont prises en compte selon leur priorité par pays.</p>
    {eligible.length===0&&<p className="alert alert-warning">Aucun pays éligible : activez les pays souhaités dans Guide TV — Pays ou sélectionnez un pays précis.</p>}
    {eligible.length>0&&<details className="mb-3"><summary>Voir les sources prévues par pays ({perCountry.reduce((n,x)=>n+x.sources.length,0)} périmètres potentiels)</summary>
@@ -1322,7 +1322,7 @@ export function TvAdminWorkspace({view}:{view:TvView}){
     <h2 className="h5">Import {selectedRun}</h2>
     {detail?<><p>Statut : {detail.status}</p>
      {detail.privateDrafts&&<p className={detail.privateDrafts.draftProgrammes>0?"alert alert-info":"alert alert-warning"}>{locale.startsWith("fr")
-       ?"Catalogue privé : "+detail.privateDrafts.draftProgrammes.toLocaleString(locale)+" programmes, "+detail.privateDrafts.draftAirings.toLocaleString(locale)+" diffusions, "+detail.privateDrafts.draftDays.toLocaleString(locale)+" journées préparées. "+(detail.privateDrafts.draftProgrammes===0?"Aucun programme enregistré : vérifiez les droits des sources et les associations EPG.":"Aucune publication publique.")
+       ?"Catalogue privé : "+detail.privateDrafts.draftProgrammes.toLocaleString(locale)+" programmes, "+detail.privateDrafts.draftAirings.toLocaleString(locale)+" diffusions, "+detail.privateDrafts.draftDays.toLocaleString(locale)+" journées préparées. "+(detail.privateDrafts.draftProgrammes===0?"Aucun programme enregistré : vérifiez les droits des sources et les associations EPG.":"Programmes directement consultables dans le Guide TV public.")
        :"Private catalogue: "+detail.privateDrafts.draftProgrammes.toLocaleString(locale)+" programmes, "+detail.privateDrafts.draftAirings.toLocaleString(locale)+" airings, "+detail.privateDrafts.draftDays.toLocaleString(locale)+" day revisions. "+(detail.privateDrafts.draftProgrammes===0?"No programmes stored: check source rights and EPG mappings.":"Nothing published publicly.")}</p>}
      <ul>
      {detail.scopes.map(s=><li key={s.id}>{region(countryCodes.get(s.countryId)??"",locale,countryNames)} · {s.sourceName??sources.find(source=>source.id===s.sourceId)?.name??("Source "+(s.sourceId??"inconnue"))} · {s.status}
