@@ -11,7 +11,7 @@ const fixture=Buffer.from(JSON.stringify({programmes:[{
  start:"2026-11-21T19:30:00Z",end:"2026-11-21T20:30:00Z",
  title:"Fixture",synopsis:"Fixture synopsis",imageUrl:"https://example.org/a.jpg",
 }]}));
-function setup(geographicScope:"GLOBAL"|"COUNTRY"="GLOBAL",channelActive=true,rightsReference:string|null="https://example.org/licence",missingVariant=false,imageRightsStatus="UNREVIEWED",imageRightsReference:string|null=null){
+function setup(geographicScope:"GLOBAL"|"COUNTRY"="GLOBAL",channelActive=true,rightsReference:string|null="https://example.org/licence",missingVariant=false,imageRightsStatus="UNREVIEWED",imageRightsReference:string|null=null,synopsisRightsStatus="UNREVIEWED",synopsisRightsReference:string|null=null){
  const query=vi.fn(async(sql:string,_params?:unknown[])=>{
   void _params;
   if(sql.includes("SELECT requested_days"))return {rows:[{requested_days:7}]};
@@ -19,7 +19,7 @@ function setup(geographicScope:"GLOBAL"|"COUNTRY"="GLOBAL",channelActive=true,ri
    {scopeId:"s1",sourceId,sourceUrl:"https://example.org/feed.json",format:"JSON",priority:1,geographicScope,
     scopeCountryId:geographicScope==="COUNTRY"?countryId:null,
     programmeRightsStatus:"APPROVED",programmeRightsReference:rightsReference,
-    synopsisRightsStatus:"UNREVIEWED",synopsisRightsReference:null,
+    synopsisRightsStatus,synopsisRightsReference,
     imageRightsStatus,imageRightsReference},
    {scopeId:"s2",sourceId:"a2000000-0000-4000-8000-000000000002",
     sourceUrl:"https://example.org/other",format:"JSON",priority:2,geographicScope,
@@ -104,9 +104,35 @@ describe("SCRUM-117 licensed in-memory EPG ingestion adapter",()=>{
   const insert=query.mock.calls.find(call=>call[0].includes("INSERT INTO public.tv_programme"));
   expect(insert?.[1]?.[4]).toBe("https://example.org/a.jpg");
   expect(insert?.[0]).toContain("ON CONFLICT(id) DO UPDATE");
-  expect(insert?.[0]).toContain("tv_programme.image_url IS NULL");
+  expect(insert?.[0]).toContain("NULLIF(public.tv_programme.image_url,'') IS NULL");
   expect(insert?.[0]).toContain("EXCLUDED.image_url IS NOT NULL");
-  expect(insert?.[0]).toContain("SET image_url=EXCLUDED.image_url");
+  expect(insert?.[0]).toContain("image_url=CASE");
+ });
+ it("accepts APPROVED synopsis without a rights reference and backfills only missing synopsis",async()=>{
+  const {lease,query}=setup("GLOBAL",true,null,false,"UNREVIEWED",null,"APPROVED",null);
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+    transport:async()=>fixture,attest:noCoverageAttested,stagingOnly:true,
+    now:new Date("2026-11-21T12:00:00Z"),
+  });
+  await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  const insert=query.mock.calls.find(call=>call[0].includes("INSERT INTO public.tv_programme"));
+  expect(insert?.[1]?.[2]).toBe("Fixture synopsis");
+  expect(insert?.[1]?.[4]).toBeNull();
+  expect(insert?.[0]).toContain("synopsis=CASE");
+  expect(insert?.[0]).toContain("NULLIF(public.tv_programme.synopsis,'') IS NULL");
+  expect(insert?.[0]).toContain("NULLIF(EXCLUDED.synopsis,'') IS NOT NULL");
+  expect(insert?.[0]).toContain("ELSE public.tv_programme.synopsis END");
+ });
+ it("does not import synopsis when rights have not been approved",async()=>{
+  const {lease,query}=setup("GLOBAL",true,null,false,"APPROVED",null,"REJECTED",null);
+  const loader=createVerifiedDbEpgLoader(lease,"run",{
+    transport:async()=>fixture,attest:noCoverageAttested,stagingOnly:true,
+    now:new Date("2026-11-21T12:00:00Z"),
+  });
+  await loader.loadCountry(countryId,["s1","s2"],new AbortController().signal);
+  const insert=query.mock.calls.find(call=>call[0].includes("INSERT INTO public.tv_programme"));
+  expect(insert?.[1]?.[2]).toBeNull();
+  expect(insert?.[1]?.[4]).toBe("https://example.org/a.jpg");
  });
  it("keeps programme images absent when the source is not approved",async()=>{
   const {lease,query}=setup("GLOBAL",true,null,false,"UNREVIEWED",null);
