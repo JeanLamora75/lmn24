@@ -342,12 +342,18 @@ export function createVerifiedDbEpgLoader(
           id=deterministicUuid(row.sourceId,p.externalProgrammeId);
           await db.query(`
             INSERT INTO public.tv_programme(id,title,synopsis,category,image_url)
-            VALUES($1::uuid,$2,$3,$4,$5) ON CONFLICT(id) DO NOTHING`,
+            VALUES($1::uuid,$2,$3,$4,$5)
+            ON CONFLICT(id) DO UPDATE
+            SET image_url=EXCLUDED.image_url
+            WHERE (public.tv_programme.image_url IS NULL OR public.tv_programme.image_url='')
+              AND EXCLUDED.image_url IS NOT NULL`,
             [id,p.originalTitle,
              row.synopsisRightsStatus==="APPROVED"&&row.synopsisRightsReference?.trim()
                 ?p.originalSynopsis:null,
              p.category,
-             row.imageRightsStatus==="APPROVED"&&row.imageRightsReference?.trim()
+             // Image approval alone authorizes storing the feed's HTTPS illustration.
+             // A separate evidence reference is not mandatory.
+             row.imageRightsStatus==="APPROVED"&&p.imageUrl?.startsWith("https://")
                 ?p.imageUrl:null]);
           await db.query("COMMIT");
         }catch(err){await db.query("ROLLBACK").catch(()=>undefined);throw err;}
