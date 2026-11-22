@@ -11,6 +11,18 @@ describe("LMN24 Guide TV — no public release without owner GO", () => {
     expect(TV_GUIDE_PUBLIC_ENABLED).toBe(false);
   });
 
+  it("restricts private programme previews to authenticated administrators", () => {
+    const preview=readFileSync(new URL("../../app/[locale]/tv-preview/page.tsx",import.meta.url),"utf8");
+    const layout=readFileSync(new URL("../../app/[locale]/layout.tsx",import.meta.url),"utf8");
+    const client=readFileSync(new URL("../tv/TvGuideHome.tsx",import.meta.url),"utf8");
+    expect(preview).toContain('user?.role!=="ADMIN"');
+    expect(preview).toContain("notFound()");
+    expect(preview).toContain("robots:{index:false,follow:false}");
+    expect(layout).toContain('session?.role==="ADMIN"?"preview"');
+    expect(client).toContain('/api/admin/tv/catalog/preview/schedule');
+    expect(client).toContain("Aperçu privé réservé à l’administration");
+  });
+
   it("never advertises a TV guide to anonymous visitors before release", () => {
     expect(header).toContain('tvNavigation=null');
     expect(header).toContain('...(tvNavigation?');
