@@ -48,6 +48,18 @@ describe("SCRUM-118 TV public date and window contracts",()=>{
   const boundary=airing("boundary","2026-11-21T20:30:00Z","2026-11-21T21:31:00Z");
   expect(choose([boundary]).airing).toEqual(boundary);
  });
+ it("late-night prefers France 2 programme starting at 22:45 over prime-time airing at 21:10",()=>{
+  const day="2026-11-22";
+  const prime=airing("niegalo","2026-11-22T20:10:00Z","2026-11-22T21:45:00Z");
+  const late=airing("beau-geste","2026-11-22T21:45:00Z","2026-11-22T22:35:00Z");
+  const choose=(items:TvAiring[])=>stateForChannel({
+    tab:"LATE",localDate:day,timezone:"Europe/Paris",variantId:"v",
+    airings:items,coverage:[],now:new Date("2026-11-22T12:00:00Z"),
+  });
+  expect(choose([prime,late]).airing?.id).toBe("beau-geste");
+  expect(choose([prime]).airing?.id).toBe("niegalo");
+  expect(choose([]).programmeState).toBe("EPG_UNAVAILABLE");
+ });
  it("NOW is half-open and uses a real UTC instant only",()=>{
   const a=airing("n","2026-11-21T08:30:00Z","2026-11-21T09:00:00Z");
   expect(stateForChannel({tab:"NOW",localDate:day,timezone:zone,variantId:"v",
