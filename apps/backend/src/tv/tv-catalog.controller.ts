@@ -106,6 +106,24 @@ export class TvCatalogController {
     return this.catalog.upsertCountry(id, parsed.data.referenceTimezone, parsed.data.isActive,parsed.data.expectedVersion);
   }
 
+  @Get("preview/schedule")
+  @Header("Cache-Control","no-store")
+  async previewSchedule(@Req() request:RequestLike,
+    @Query("country") country?:string,@Query("localDate") localDate?:string,
+    @Query("tab") tab?:string,@Query("page") rawPage?:string,
+    @Query("pageSize") rawSize?:string){
+    await this.assertAdmin(request);
+    const parsed=z.object({
+      country:z.string().regex(/^[A-Za-z]{2}$/),
+      localDate:z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      tab:z.enum(["CHANNELS","NOW","TONIGHT","LATE"]),
+      page:z.coerce.number().int().min(1).max(10000),
+      pageSize:z.coerce.number().int().min(1).max(100),
+    }).strict().safeParse({country,localDate,tab,page:rawPage??"1",pageSize:rawSize??"100"});
+    if(!parsed.success)throw new BadRequestException("Invalid TV preview parameters");
+    return this.catalog.previewSchedule(parsed.data);
+  }
+
   @Get("channels")
   @Header("Cache-Control", "no-store")
   async listChannels(@Req() request: RequestLike, @Query("countryId") countryId?: string,
