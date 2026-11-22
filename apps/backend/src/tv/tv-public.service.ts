@@ -93,39 +93,48 @@ export class TvPublicService {
     variantIds:readonly string[],countryId:string,from:number,to:number,
   ):Promise<TvAiring[]>{
     if(!variantIds.length)return [];
-    // Latest STAGING/PUBLISHED revision is the public grid after the owner GO. Query
-    // neighboring dates too, because a real airing can cross local midnight.
+    // First choose the latest visible revision for each requested variant/day.
+    // Avoid joining every historical airing and evaluating a correlated
+    // newer-revision anti-join for each row.
+    const earliestDate=new Date(from-86_400_000).toISOString().slice(0,10);
+    const latestDate=new Date(to+86_400_000).toISOString().slice(0,10);
     const rows=await this.db.prisma.$queryRaw<AiringRow[]>`
-      SELECT DISTINCT ON (a.id) a.id,a.source_id AS "sourceId",
-        r.variant_id AS "variantId",to_char(a.starts_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "startsAt",
-        to_char(a.ends_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "endsAt",p.title,p.category,
+      WITH latest AS (
+        SELECT DISTINCT ON (r.variant_id,r.local_date) r.id,r.variant_id
+        FROM public.tv_schedule_revision r
+        WHERE r.variant_id=ANY(${[...variantIds]}::uuid[])
+          AND r.status IN ('STAGING','PUBLISHED')
+          AND r.local_date BETWEEN ${earliestDate}::date AND ${latestDate}::date
+        ORDER BY r.variant_id,r.local_date,r.created_at DESC,r.id DESC
+      )
+      SELECT a.id,a.source_id AS "sourceId",
+        latest.variant_id AS "variantId",
+        to_char(a.starts_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "startsAt",
+        to_char(a.ends_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "endsAt",
+        p.title,p.category,
         CASE WHEN src.synopsis_rights_status='APPROVED'
           THEN p.synopsis ELSE NULL END AS description,
         CASE WHEN src.image_rights_status='APPROVED'
           THEN p.image_url ELSE NULL END AS "imageUrl"
-      FROM public.tv_airing a
-      JOIN public.tv_schedule_revision r ON r.id=a.revision_id
-      -- The latest imported STAGING revision is immediately visible to readers.
+      FROM latest
+      JOIN public.tv_airing a ON a.revision_id=latest.id
       JOIN public.tv_programme p ON p.id=a.programme_id
       JOIN public.tv_source src ON src.id=a.source_id
-      JOIN public.tv_variant_country vc ON vc.variant_id=r.variant_id
-      JOIN public.tv_channel_country cc ON cc.id=vc.channel_country_id
-      LEFT JOIN public.tv_source_country sc ON sc.source_id=src.id
-        AND sc.country_id=cc.country_id
-      JOIN public.tv_country tc ON tc.country_id=cc.country_id
-      JOIN public.country c ON c.id=tc.country_id
-      WHERE r.status IN ('STAGING','PUBLISHED')
-        AND NOT EXISTS (SELECT 1 FROM public.tv_schedule_revision newer
-          WHERE newer.variant_id=r.variant_id AND newer.local_date=r.local_date
-            AND newer.status IN ('STAGING','PUBLISHED')
-            AND (newer.created_at,newer.id)>(r.created_at,r.id))
-        AND cc.country_id=${countryId}::uuid
-        AND r.variant_id=ANY(${[...variantIds]}::uuid[])
-        AND a.starts_at < ${new Date(to)}::timestamptz
+      WHERE a.starts_at < ${new Date(to)}::timestamptz
         AND a.ends_at > ${new Date(from)}::timestamptz
-        AND src.is_active AND (sc.source_id IS NULL OR sc.is_active) AND tc.is_active AND c.is_active
-        AND cc.is_active AND (sc.source_id IS NULL OR sc.is_active)
-        AND src.programme_rights_status='APPROVED'
+        AND src.is_active AND src.programme_rights_status='APPROVED'
+        AND EXISTS (
+          SELECT 1 FROM public.tv_variant_country vc
+          JOIN public.tv_channel_country cc ON cc.id=vc.channel_country_id
+          JOIN public.tv_country tc ON tc.country_id=cc.country_id
+          JOIN public.country c ON c.id=tc.country_id
+          LEFT JOIN public.tv_source_country sc ON sc.source_id=src.id
+            AND sc.country_id=cc.country_id
+          WHERE vc.variant_id=latest.variant_id
+            AND cc.country_id=${countryId}::uuid
+            AND cc.is_active AND tc.is_active AND c.is_active
+            AND (sc.source_id IS NULL OR sc.is_active)
+        )
       ORDER BY a.id,a.starts_at
       LIMIT 15000`;
     return serializeAirings(rows);
