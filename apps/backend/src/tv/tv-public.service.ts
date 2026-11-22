@@ -15,7 +15,7 @@ type ChannelRow={
   broadcastLanguages:string[];
 };
 type AiringRow={
-  id:string;variantId:string;sourceId:string;startsAt:Date;endsAt:Date;
+  id:string;variantId:string;sourceId:string;startsAt:string;endsAt:string;
   title:string;category:string|null;description:string|null;imageUrl:string|null;
 };
 type VariantRow={id:string;code:string;name:string;timeZone:string};
@@ -91,8 +91,8 @@ export class TvPublicService {
     // neighboring dates too, because a real airing can cross local midnight.
     const rows=await this.db.prisma.$queryRaw<AiringRow[]>`
       SELECT DISTINCT ON (a.id) a.id,a.source_id AS "sourceId",
-        r.variant_id AS "variantId",a.starts_at AS "startsAt",
-        a.ends_at AS "endsAt",p.title,p.category,
+        r.variant_id AS "variantId",to_char(a.starts_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "startsAt",
+        to_char(a.ends_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "endsAt",p.title,p.category,
         CASE WHEN src.synopsis_rights_status='APPROVED'
           THEN p.synopsis ELSE NULL END AS description,
         CASE WHEN src.image_rights_status='APPROVED'
@@ -209,7 +209,7 @@ export class TvPublicService {
       countryIso2:string;referenceTimeZone:string;variantTimeZone:string;
     }>>`
       SELECT a.id,r.variant_id AS "variantId",a.source_id AS "sourceId",
-        a.starts_at AS "startsAt",a.ends_at AS "endsAt",p.title,p.category,
+        to_char(a.starts_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "startsAt",to_char(a.ends_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "endsAt",p.title,p.category,
         cc.channel_id AS "channelId",ch.name AS "channelName",
         COALESCE(cc.manual_number,cc.official_number,cc.assigned_number,0)::int AS "channelNumber",
         trim(c.iso_code2) AS "countryIso2",
@@ -289,7 +289,7 @@ export class TvPublicService {
       const rows=await this.db.prisma.$queryRaw<Array<{
         id:string;variantId:string;countryIso2:string;channelId:string;
         channelName:string;number:number;logoUrl:string|null;title:string;
-        category:string|null;imageUrl:string|null;startsAt:Date;endsAt:Date;
+        category:string|null;imageUrl:string|null;startsAt:string;endsAt:string;
         timeZone:string;
       }>>`
         SELECT DISTINCT a.id,r.variant_id AS "variantId",trim(c.iso_code2) AS "countryIso2",
@@ -297,7 +297,7 @@ export class TvPublicService {
           COALESCE(cc.manual_number,cc.official_number,cc.assigned_number,0)::int AS number,
           ch.logo_url AS "logoUrl",p.title,p.category,
           CASE WHEN src.image_rights_status='APPROVED' THEN p.image_url ELSE NULL END AS "imageUrl",
-          a.starts_at AS "startsAt",a.ends_at AS "endsAt",
+          to_char(a.starts_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "startsAt",to_char(a.ends_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "endsAt",
           tc.reference_timezone AS "timeZone"
         FROM public.tv_airing a
         JOIN public.tv_schedule_revision r ON r.id=a.revision_id
