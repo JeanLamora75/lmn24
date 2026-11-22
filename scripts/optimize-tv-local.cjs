@@ -12,8 +12,8 @@ async function main(){
  if(!raw)throw new Error("DATABASE_URL absent : vérifiez le fichier .env à la racine.");
  let url;
  try{url=new URL(raw);}catch{throw new Error("DATABASE_URL invalide.");}
- const host=url.hostname.replace(/^\\[|\\]$/g,"").toLowerCase();
- const database=decodeURIComponent(url.pathname.replace(/^\\/,""));
+ const host=url.hostname.replace(/^\[|\]$/g,"").toLowerCase();
+ const database=decodeURIComponent(url.pathname.replace(/^\/,""));
  if(!["localhost","127.0.0.1","::1"].includes(host)
    ||database!=="lmn24"
    ||!["postgres:","postgresql:"].includes(url.protocol))
@@ -21,8 +21,8 @@ async function main(){
 
  const filename=path.resolve(__dirname,"../database/migrations/20261122_tv_schedule_performance_indexes.sql");
  const sql=fs.readFileSync(filename,"utf8");
- const statements=sql.split(/;/).map(x=>x.replace(/^\\s*(?:--[^\\n]*\\n\\s*)*/gm,"").trim()).filter(Boolean);
- if(statements.length!==2 || statements.some(x=>!/^CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_tv_(revision_latest_visible|airing_revision_interval)\\s+ON public\\.tv_(schedule_revision|airing)\\s*\\(/i.test(x)))
+ const statements=sql.replace(/^--.*$/gm,"").split(";").map(x=>x.trim()).filter(Boolean);
+ if(statements.length!==2 || statements.some(x=>!/^CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_tv_(revision_latest_visible|airing_revision_interval)\s+ON public\.tv_(schedule_revision|airing)\s*\(/i.test(x)))
   throw new Error("Fichier SQL d'optimisation TV non reconnu.");
 
  const client=new Client({connectionString:raw,connectionTimeoutMillis:10000});
