@@ -1,4 +1,5 @@
 import {lookup} from "node:dns/promises";
+import {isIP} from "node:net";
 import {request as httpsRequest} from "node:https";
 import {isPublicSourceAddress,validateEpgSourceUrl} from "./tv-epg-source-policy";
 import {xmltvHttpUrl} from "./tv-epg-decoder";
@@ -35,7 +36,7 @@ export async function probeHttpsProgrammeImage(raw:string):Promise<boolean>{
    req.end();
   });
   const head=await inspect("HEAD");
-  return head===200||(head===405&&(await inspect("GET"))===200);
+  return head===200||(await inspect("GET"))===200;
  }catch{return false;}
 }
 export function makeProgrammeImageResolver(
@@ -55,6 +56,10 @@ export function makeProgrammeImageResolver(
   if(!raw)return Promise.resolve(null);
   const valid=xmltvHttpUrl(raw,true);
   if(!valid)return Promise.resolve(null);
+  const host=new URL(valid).hostname.toLowerCase();
+  // Do not introduce local-network image requests from untrusted XMLTV feeds.
+  if(isIP(host)||host==="localhost"||host.endsWith(".localhost")
+    ||host.endsWith(".local")||host.endsWith(".internal"))return Promise.resolve(null);
   if(valid.startsWith("https://"))return Promise.resolve(valid);
   const existing=cache.get(valid);
   if(existing)return existing;
