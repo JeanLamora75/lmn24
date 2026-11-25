@@ -1,0 +1,446 @@
+{
+  "date": "2026-12-03",
+  "requestedDateTime": "2026-12-03T12:00:00+01:00",
+  "requestedTimezone": "Europe/Paris",
+  "requestedUtc": "2026-12-03T11:00:00+00:00",
+  "provider": "CosmyDay",
+  "providerUrl": "https://api.cosmyday.com/",
+  "retrievedAt": "2026-11-25T01:38:56.303315+01:00",
+  "attribution": "Données astronomiques : CosmyDay — https://cosmyday.com (utilisation avec attribution requise).",
+  "request": {
+    "endpoint": "POST https://api.cosmyday.com/natal",
+    "parameters": {
+      "year": 2026,
+      "month": 12,
+      "day": 3,
+      "hour": 12,
+      "minute": 0,
+      "lat": 48.8566,
+      "lon": 2.3522
+    },
+    "documentedTimeConvention": "Local time at supplied coordinates; provider resolves timezone"
+  },
+  "responseIdentification": {
+    "houseSystem": "Placidus",
+    "ascendant": 303.6545,
+    "midheaven": 241.7495,
+    "planetCount": 14
+  },
+  "positions": [
+    {
+      "body": "Sun",
+      "longitude": 251.2839,
+      "sign": "Sagittarius",
+      "retrograde": false,
+      "speedLongitude": 1.0142
+    },
+    {
+      "body": "Moon",
+      "longitude": 188.0518,
+      "sign": "Libra",
+      "retrograde": false,
+      "speedLongitude": 12.8592
+    },
+    {
+      "body": "Mercury",
+      "longitude": 235.6557,
+      "sign": "Scorpio",
+      "retrograde": false,
+      "speedLongitude": 1.485
+    },
+    {
+      "body": "Venus",
+      "longitude": 209.4461,
+      "sign": "Libra",
+      "retrograde": false,
+      "speedLongitude": 0.6169
+    },
+    {
+      "body": "Mars",
+      "longitude": 152.8286,
+      "sign": "Virgo",
+      "retrograde": false,
+      "speedLongitude": 0.3564
+    },
+    {
+      "body": "Jupiter",
+      "longitude": 146.8748,
+      "sign": "Leo",
+      "retrograde": false,
+      "speedLongitude": 0.0311
+    },
+    {
+      "body": "Saturn",
+      "longitude": 7.9828,
+      "sign": "Aries",
+      "retrograde": true,
+      "speedLongitude": -0.0137
+    },
+    {
+      "body": "Uranus",
+      "longitude": 63.361,
+      "sign": "Gemini",
+      "retrograde": true,
+      "speedLongitude": -0.0415
+    },
+    {
+      "body": "Neptune",
+      "longitude": 1.6388,
+      "sign": "Aries",
+      "retrograde": true,
+      "speedLongitude": -0.0055
+    },
+    {
+      "body": "Pluto",
+      "longitude": 303.6101,
+      "sign": "Aquarius",
+      "retrograde": false,
+      "speedLongitude": 0.0215
+    },
+    {
+      "body": "NorthNode",
+      "longitude": 323.7937,
+      "sign": "Aquarius",
+      "retrograde": true,
+      "speedLongitude": -0.0709
+    },
+    {
+      "body": "Chiron",
+      "longitude": 26.7963,
+      "sign": "Aries",
+      "retrograde": true,
+      "speedLongitude": -0.0301
+    },
+    {
+      "body": "Lilith",
+      "longitude": 278.8969,
+      "sign": "Capricorn",
+      "retrograde": false,
+      "speedLongitude": 0.1114
+    },
+    {
+      "body": "SouthNode",
+      "longitude": 143.7937,
+      "sign": "Leo",
+      "retrograde": true,
+      "speedLongitude": -0.0709
+    }
+  ],
+  "derivedAspects": [
+    {
+      "a": "Sun",
+      "b": "Moon",
+      "type": "sextile",
+      "separation": 63.2321,
+      "targetAngle": 60,
+      "orb": 3.2321,
+      "allowedOrb": 4
+    },
+    {
+      "a": "Sun",
+      "b": "Saturn",
+      "type": "trine",
+      "separation": 116.6989,
+      "targetAngle": 120,
+      "orb": 3.3011,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Sun",
+      "b": "Uranus",
+      "type": "opposition",
+      "separation": 172.0771,
+      "targetAngle": 180,
+      "orb": 7.9229,
+      "allowedOrb": 8
+    },
+    {
+      "a": "Moon",
+      "b": "Saturn",
+      "type": "opposition",
+      "separation": 179.931,
+      "targetAngle": 180,
+      "orb": 0.069,
+      "allowedOrb": 8
+    },
+    {
+      "a": "Moon",
+      "b": "Uranus",
+      "type": "trine",
+      "separation": 124.6908,
+      "targetAngle": 120,
+      "orb": 4.6908,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Moon",
+      "b": "Neptune",
+      "type": "opposition",
+      "separation": 173.587,
+      "targetAngle": 180,
+      "orb": 6.413,
+      "allowedOrb": 8
+    },
+    {
+      "a": "Moon",
+      "b": "Pluto",
+      "type": "trine",
+      "separation": 115.5583,
+      "targetAngle": 120,
+      "orb": 4.4417,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Moon",
+      "b": "Lilith",
+      "type": "square",
+      "separation": 90.8451,
+      "targetAngle": 90,
+      "orb": 0.8451,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Mercury",
+      "b": "Jupiter",
+      "type": "square",
+      "separation": 88.7809,
+      "targetAngle": 90,
+      "orb": 1.2191,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Mercury",
+      "b": "Uranus",
+      "type": "opposition",
+      "separation": 172.2947,
+      "targetAngle": 180,
+      "orb": 7.7053,
+      "allowedOrb": 8
+    },
+    {
+      "a": "Mercury",
+      "b": "Neptune",
+      "type": "trine",
+      "separation": 125.9831,
+      "targetAngle": 120,
+      "orb": 5.9831,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Mercury",
+      "b": "NorthNode",
+      "type": "square",
+      "separation": 88.138,
+      "targetAngle": 90,
+      "orb": 1.862,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Mercury",
+      "b": "SouthNode",
+      "type": "square",
+      "separation": 91.862,
+      "targetAngle": 90,
+      "orb": 1.862,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Venus",
+      "b": "Mars",
+      "type": "sextile",
+      "separation": 56.6175,
+      "targetAngle": 60,
+      "orb": 3.3825,
+      "allowedOrb": 4
+    },
+    {
+      "a": "Venus",
+      "b": "Jupiter",
+      "type": "sextile",
+      "separation": 62.5713,
+      "targetAngle": 60,
+      "orb": 2.5713,
+      "allowedOrb": 4
+    },
+    {
+      "a": "Venus",
+      "b": "Pluto",
+      "type": "square",
+      "separation": 94.164,
+      "targetAngle": 90,
+      "orb": 4.164,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Venus",
+      "b": "NorthNode",
+      "type": "trine",
+      "separation": 114.3476,
+      "targetAngle": 120,
+      "orb": 5.6524,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Venus",
+      "b": "Chiron",
+      "type": "opposition",
+      "separation": 177.3502,
+      "targetAngle": 180,
+      "orb": 2.6498,
+      "allowedOrb": 8
+    },
+    {
+      "a": "Mars",
+      "b": "Jupiter",
+      "type": "conjunction",
+      "separation": 5.9538,
+      "targetAngle": 0,
+      "orb": 5.9538,
+      "allowedOrb": 8
+    },
+    {
+      "a": "Mars",
+      "b": "Uranus",
+      "type": "square",
+      "separation": 89.4676,
+      "targetAngle": 90,
+      "orb": 0.5324,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Jupiter",
+      "b": "NorthNode",
+      "type": "opposition",
+      "separation": 176.9189,
+      "targetAngle": 180,
+      "orb": 3.0811,
+      "allowedOrb": 8
+    },
+    {
+      "a": "Jupiter",
+      "b": "Chiron",
+      "type": "trine",
+      "separation": 120.0785,
+      "targetAngle": 120,
+      "orb": 0.0785,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Jupiter",
+      "b": "SouthNode",
+      "type": "conjunction",
+      "separation": 3.0811,
+      "targetAngle": 0,
+      "orb": 3.0811,
+      "allowedOrb": 8
+    },
+    {
+      "a": "Saturn",
+      "b": "Neptune",
+      "type": "conjunction",
+      "separation": 6.344,
+      "targetAngle": 0,
+      "orb": 6.344,
+      "allowedOrb": 8
+    },
+    {
+      "a": "Saturn",
+      "b": "Lilith",
+      "type": "square",
+      "separation": 89.0859,
+      "targetAngle": 90,
+      "orb": 0.9141,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Uranus",
+      "b": "Neptune",
+      "type": "sextile",
+      "separation": 61.7222,
+      "targetAngle": 60,
+      "orb": 1.7222,
+      "allowedOrb": 4
+    },
+    {
+      "a": "Uranus",
+      "b": "Pluto",
+      "type": "trine",
+      "separation": 119.7509,
+      "targetAngle": 120,
+      "orb": 0.2491,
+      "allowedOrb": 6
+    },
+    {
+      "a": "Neptune",
+      "b": "Pluto",
+      "type": "sextile",
+      "separation": 58.0287,
+      "targetAngle": 60,
+      "orb": 1.9713,
+      "allowedOrb": 4
+    },
+    {
+      "a": "NorthNode",
+      "b": "Chiron",
+      "type": "sextile",
+      "separation": 63.0026,
+      "targetAngle": 60,
+      "orb": 3.0026,
+      "allowedOrb": 4
+    },
+    {
+      "a": "NorthNode",
+      "b": "SouthNode",
+      "type": "opposition",
+      "separation": 180.0,
+      "targetAngle": 180,
+      "orb": 0.0,
+      "allowedOrb": 8
+    },
+    {
+      "a": "Chiron",
+      "b": "SouthNode",
+      "type": "trine",
+      "separation": 116.9974,
+      "targetAngle": 120,
+      "orb": 3.0026,
+      "allowedOrb": 6
+    }
+  ],
+  "aspectRules": {
+    "separationFormula": "min(abs(lonA-lonB), 360-abs(lonA-lonB))",
+    "orbs": {
+      "conjunction": {
+        "angle": 0,
+        "orb": 8
+      },
+      "sextile": {
+        "angle": 60,
+        "orb": 4
+      },
+      "square": {
+        "angle": 90,
+        "orb": 6
+      },
+      "trine": {
+        "angle": 120,
+        "orb": 6
+      },
+      "opposition": {
+        "angle": 180,
+        "orb": 8
+      }
+    }
+  },
+  "validation": {
+    "status": "PARTIAL",
+    "editorialMode": "astronomical",
+    "longitudeRangesChecked": true,
+    "signConsistencyChecked": true,
+    "retrogradeSpeedConsistencyChecked": true,
+    "aspectArithmeticChecked": true,
+    "independentEphemerisVerification": false,
+    "notes": "La requête a été envoyée pour 12:00 heure locale de Paris, correspondant explicitement à 11:00 UTC le 3 décembre 2026. La documentation établit la convention horaire locale et la méthodologie tropicale. La réponse ne répète pas l’instant calculé ni le référentiel géocentrique; sans vérification indépendante des positions, le niveau reste PARTIAL. Les aspects LMN24 sont recalculés arithmétiquement avec les orbes V4.1; cette cohérence ne constitue pas une validation indépendante."
+  },
+  "referenceVersion": "LMN24 technical V4.1"
+}
